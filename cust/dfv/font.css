@@ -1,5 +1,5 @@
 .header_text:link, .header_text:visited, .header_text:active, .header_text:hover, .header_text:focus {
-	color: #006699;
+	color: #20408f;
 	font-size: 18pt;
 	/*padding-left:10px;*/
 	margin-left:8px;
@@ -9,7 +9,7 @@
 }
 
 .header_text_small:link, .header_text_small:visited, .header_text_small:active, .header_text_small:hover, .header_text_small:focus {
-	color: #006699;
+	color: #20408f;
 	font-size: 12pt;
 	padding-left:10px;
 	font-weight: normal;
@@ -91,7 +91,7 @@
 	text-align:center;
 	text-transform:uppercase;
 	/*background-color: #fe7f02;*/
-	background-color: #006699; 
+	background-color: #20408f; 
 }
 
 .menuserieslevel {
