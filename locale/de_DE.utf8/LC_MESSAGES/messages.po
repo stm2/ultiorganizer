@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-26 12:23+0100\n"
+"POT-Creation-Date: 2016-06-26 20:40+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -3744,15 +3744,11 @@ msgstr ""
 msgid "Warning: Game %s has a scheduling conflict with %s."
 msgstr "Warnung: Spiel %s hat einen Zeitkonflikt mit %s."
 
-#: admin/saveschedule.php:85
-msgid "Error, unknown season!"
-msgstr "Fehler, unbekanntes Turnier!"
-
-#: admin/saveschedule.php:89
+#: admin/saveschedule.php:87
 msgid "Schedule saved with errors:"
 msgstr "Gespeicherter Zeitplan hat Fehler:"
 
-#: admin/saveschedule.php:91
+#: admin/saveschedule.php:90
 msgid "Schedule saved and checked."
 msgstr "Spielplan gespeichert und geprüft."
 
@@ -4336,8 +4332,8 @@ msgstr "Pause: %s&thinsp;min."
 
 #: admin/schedule.php:293
 #, php-format
-msgid "%d&nbsp;min."
-msgstr "%d&nsbp;min."
+msgid "%dmin."
+msgstr "%dmin."
 
 #: admin/schedule.php:332 admin/schedule.php:509
 msgid "Field "
@@ -4385,6 +4381,10 @@ msgid ""
 msgstr ""
 "Wollen Sie trotzdem die Seite verlassen? Wenn Sie Ja auswählen, gehen Ihre "
 "Änderungen verloren."
+
+#: admin/schedule.php:770
+msgid "Unknown error."
+msgstr "Unbekannter Fehler."
 
 #: admin/dbadmin.php:9 admin/dbadmin.php:17
 msgid "Database administration"
@@ -5354,14 +5354,15 @@ msgid "World Flying Disc Federation"
 msgstr "World Flying Disc Federation"
 
 #: cust/wfdf/pdfprinter.php:37 cust/windmill/pdfprinter.php:37
-#: cust/bula/pdfprinter.php:37 cust/default/pdfprinter.php:37
-#: cust/dfv/pdfprinter.php:36
+#: cust/bula/pdfprinter.php:37 cust/gummis/pdfprinter.php:36
+#: cust/default/pdfprinter.php:37 cust/dfv/pdfprinter.php:36
 msgid "Game Record"
 msgstr "Spielbericht"
 
 #: cust/wfdf/pdfprinter.php:48 cust/slkl/pdfprinter.php:48
 #: cust/windmill/pdfprinter.php:48 cust/bula/pdfprinter.php:48
-#: cust/default/pdfprinter.php:48 cust/dfv/pdfprinter.php:47
+#: cust/gummis/pdfprinter.php:46 cust/default/pdfprinter.php:48
+#: cust/dfv/pdfprinter.php:47
 msgid "Game #"
 msgstr "Spiel #"
 
@@ -5763,6 +5764,10 @@ msgstr "BULA"
 msgid "Beach Ultimate Lovers Association"
 msgstr "Beach Ultimate Lovers Association"
 
+#: cust/gummis/pdfprinter.php:34 cust/gummis/pdfprinter.php:124
+msgid "Gummis"
+msgstr "Gummis"
+
 #: cust/gummis/pdfprinter.php:95 cust/default/pdfprinter.php:35
 #: cust/default/pdfprinter.php:100 cust/default/pdfprinter.php:129
 #: cust/dfv/pdfprinter.php:34 cust/dfv/pdfprinter.php:94
@@ -5774,10 +5779,6 @@ msgstr "Organisation"
 #: cust/dfv/pdfprinter.php:96
 msgid "Defenses record"
 msgstr "Defense-Statistik"
-
-#: cust/gummis/pdfprinter.php:124
-msgid "Gummis"
-msgstr "Gummis"
 
 #: cust/fpudd/teamplayers.functions.php:107
 #: cust/default/teamplayers.functions.php:107
@@ -6897,6 +6898,9 @@ msgstr "Kommunikation (sie)"
 #: sql/upgrade_db.php:561
 msgid "Communication (ours)"
 msgstr "Kommunikation (wir)"
+
+#~ msgid "Error, unknown season!"
+#~ msgstr "Fehler, unbekanntes Turnier!"
 
 #~ msgid "has no played players for this game."
 #~ msgstr "Keine Spieler für %s hat keine Spieler gemeldet."

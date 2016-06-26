@@ -81,13 +81,17 @@ if ($season) {
     }
   }
   }
-} else {
-  $response .= "<p>" . _("Error, unknown season!") . "</p>";
 }
 
-if (!empty($response))
+if (!empty($response)) {
   echo "<p>"._("Schedule saved with errors:")."</p>\n". $response;
-else
+  responseValue(-1);
+} else {
   echo _("Schedule saved and checked.");
+  responseValue(1);
+}
 
+function responseValue($value) {
+  echo "<input type='hidden' id='responseValue' value='$value' />";
+}
 ?>

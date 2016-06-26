@@ -75,16 +75,16 @@ echo yuiLoad(array("utilities"));
 
 <style type="text/css">
 body {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 </style>
 
 
 <style type="text/css">
 div.workarea {
-	padding: 0px;
-	float: left;
+  padding: 0px;
+  float: left;
    min-width:150px;
    /* min-width:150px; */ 
 }
@@ -96,48 +96,48 @@ td.scheduling_column {
 }
 
 ul.draglist {
-	position: relative;
-	background: #f7f7f7;
-	border: 1px solid gray;
-	list-style: none;
-	margin: 0;
-	padding: 0;
+  position: relative;
+  background: #f7f7f7;
+  border: 1px solid gray;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 ul.draglist li {
-	margin: 0px;
-	cursor: move;
-	zoom: 1;
-	text-align: center;
-	vertical-align: center;
+  margin: 0px;
+  cursor: move;
+  zoom: 1;
+  text-align: center;
+  vertical-align: center;
 }
 
-li.list1 {
-	background-color: #aaaaaa;
-	border: 1px solid #7EA6B2;
- width:150px;
+li.schedule_item {
+  background-color: #aaaaaa;
+  border: 1px solid #7EA6B2;
+  width:150px;
 }
 
-th.scheduling { width:150px };
+th.scheduling { width:150px }
 
 td.timecolumn {
-   vertical-align:top;
+  vertical-align:top;
 }
 
 ul.timelist {
- position: relative;
- list-style: none;
- margin: 0;
- padding: 0;
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 ul.timelist li {
- border: 1px solid #7EA6B2;
+  border: 1px solid #7EA6B2;
 }
 
 
 #user_actions {
-	float: right;
+  float: right;
 }
 </style>
 <script type="text/javascript">
@@ -146,78 +146,78 @@ var with_ctrl_key=false;
 var with_shift_key = false;
 
 function KeyDown(event){
-   var KeyID = event.keyCode;
-	
-   switch(KeyID){
+  var KeyID = event.keyCode;
+  
+  switch(KeyID){
 
-      case 16:
-      with_shift_key = true;
-      break; 
+  case 16:
+    with_shift_key = true;
+    break; 
 
-      case 17:
- 	  with_ctrl_key = true;
-      break;
+  case 17:
+    with_ctrl_key = true;
+    break;
 
-      case 37:
-      //Arrow Left
-	  if(with_ctrl_key){
-		window.scrollBy(2*-window.innerWidth+50,0);
-	  }else if(with_shift_key){
-		window.scrollBy(-50,0);
-	  }else{
-		window.scrollBy(-window.innerWidth+50,0);
-	  }
+  case 37:
+    //Arrow Left
+    if(with_ctrl_key){
+      window.scrollBy(2*-window.innerWidth+50,0);
+    }else if(with_shift_key){
+      window.scrollBy(-50,0);
+    }else{
+      window.scrollBy(-window.innerWidth+50,0);
+    }
 
-      break;
+    break;
 
-      case 38:
-	  //Arrow Up
-	  if(with_ctrl_key){
-		window.scrollBy(0,2*-window.innerHeight+50);
-	  }else if(with_shift_key){
-		window.scrollBy(0,-50);
-	  }else{
-		window.scrollBy(0,-window.innerHeight+50);
-	  }
-      break;
+  case 38:
+    //Arrow Up
+    if(with_ctrl_key){
+    window.scrollBy(0,2*-window.innerHeight+50);
+    }else if(with_shift_key){
+      window.scrollBy(0,-50);
+    }else{
+      window.scrollBy(0,-window.innerHeight+50);
+    }
+    break;
 
-      case 39:
-	  //Arrow Right
-	  if(with_ctrl_key){
-		window.scrollBy(2*window.innerWidth-50,0);
-	  }else if(with_shift_key){
-		window.scrollBy(50,0);
-	  }else{
-		window.scrollBy(window.innerWidth-50,0);
-	  }
-      break;
+  case 39:
+    //Arrow Right
+    if(with_ctrl_key){
+      window.scrollBy(2*window.innerWidth-50,0);
+    }else if(with_shift_key){
+      window.scrollBy(50,0);
+    }else{
+      window.scrollBy(window.innerWidth-50,0);
+    }
+    break;
 
-      case 40:
-	  //Arrow Down
-	  if(with_ctrl_key){
-		window.scrollBy(0,2*window.innerHeight-50);
-	  }else if(with_shift_key){
-		window.scrollBy(0,50);
-	  }else{
-		window.scrollBy(0,window.innerHeight-50);
-	  }
-      break;
-   }
+  case 40:
+    //Arrow Down
+    if(with_ctrl_key){
+      window.scrollBy(0,2*window.innerHeight-50);
+    }else if(with_shift_key){
+      window.scrollBy(0,50);
+    }else{
+      window.scrollBy(0,window.innerHeight-50);
+    }
+    break;
+  }
 }
 
 function KeyUp(event){
-   var KeyID = event.keyCode;
-	
-   switch(KeyID){
+  var KeyID = event.keyCode;
+  
+  switch(KeyID){
 
-      case 16:
-      with_shift_key = false;
-      break; 
+  case 16:
+    with_shift_key = false;
+    break; 
 
-      case 17:
- 	  with_ctrl_key = false;
-      break;
-	}
+  case 17:
+    with_ctrl_key = false;
+    break;
+  }
 }
 //-->
 
@@ -264,7 +264,7 @@ function jsSecure($string) {
 }
 
 function pauseEntry($height, $duration, $gameId) {
-  $html = "<li class='list1' id='pause" . $gameId . "' style='min-height:" . $height . "px'>";
+  $html = "<li class='schedule_item' id='pause" . $gameId . "' style='min-height:" . $height . "px'>";
   $html .= "<input type='hidden' id='ptime" . $gameId . "' name='ptimes[]' value='" . $duration . "'/>";
   $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
   $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"pause" . $gameId . "\");'>x</a></span></li>\n";
@@ -281,7 +281,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
     $tooltip = "";
   else
     $tooltip = " title='" . $tooltip . "'";
-  $html = "<li class='list1' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" . $height .
+  $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" . $height .
        "px' id='game" . $gameId . "'" . $tooltip . ">";
   $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
   $html .= $poolname;
@@ -290,7 +290,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   } else {
     $html .= "<span style='align:right;float:right;'>#</span>";
   }
-  $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%d&nbsp;min."), $duration);
+  $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%dmin."), $duration);
   $html .= "</li>\n";
   return $html;
 }
@@ -561,18 +561,18 @@ var redirecturl="";
 var modified=0;
 
 function hide(id) {
-	var elem = Dom.get(id);
-	var list = Dom.getAncestorByTagName(elem, "ul");
-	list.removeChild(elem);
+  var elem = Dom.get(id);
+  var list = Dom.getAncestorByTagName(elem, "ul");
+  list.removeChild(elem);
 }
 
 function setModified(newValue) {
- modified=newValue;
- if (modified)
+  modified=newValue;
+  if (modified)
     window.onbeforeunload = function() {
-        return "";
+      return "";
     }
- else
+  else
     window.onbeforeunload = null;
 }
 
@@ -581,12 +581,12 @@ function paramExp(param) {
 }
 
 function getParam(url, param) {
-    var found = 0;
-	var re = paramExp(param);
-    if (url.match(re)){
-        found = url.match(re)[2];
-    }
-    return found;
+  var found = 0;
+  var re = paramExp(param);
+  if (url.match(re)){
+    found = url.match(re)[2];
+  }
+  return found;
 }
 
 function changeParam(url, param, value) {
@@ -662,7 +662,7 @@ function redirectWithConfirm(){
         location.href=redirecturl;
       } else
         return false;
-	  }
+    }
   }else{
     location.href=redirecturl;
   }
@@ -680,233 +680,239 @@ var minHeight = <?php echo MIN_HEIGHT; ?>;
 YAHOO.example.ScheduleApp = {
     init: function() {
 <?php 
-echo "		new YAHOO.util.DDTarget(\"unscheduled\");\n";
+echo "    new YAHOO.util.DDTarget(\"unscheduled\");\n";
 foreach ($reservationData as $day => $dayArray) {
-	foreach ($dayArray as $reservationId => $reservationArray) {
-		echo "		new YAHOO.util.DDTarget(\"res".$reservationId."\");\n";
-		foreach ($reservationArray['games'] as $gameId => $gameInfo) {
-			if (hasEditGamesRight($gameInfo['series'])) {
-				echo "		new YAHOO.example.DDList(\"game".$gameId."\");\n";
-			}
-		}
-	}
+  foreach ($dayArray as $reservationId => $reservationArray) {
+    echo "    new YAHOO.util.DDTarget(\"res".$reservationId."\");\n";
+    foreach ($reservationArray['games'] as $gameId => $gameInfo) {
+      if (hasEditGamesRight($gameInfo['series'])) {
+        echo "    new YAHOO.example.DDList(\"game".$gameId."\");\n";
+      }
+    }
+  }
 }
 foreach ($gameData as $gameId => $gameInfo) {
-	if (hasEditGamesRight($gameInfo['series'])) {
-		echo "		new YAHOO.example.DDList(\"game".$gameId."\");\n";
-	}
+  if (hasEditGamesRight($gameInfo['series'])) {
+    echo "    new YAHOO.example.DDList(\"game".$gameId."\");\n";
+  }
 }
 foreach ($reservedPauses as $pauseId) {
-	echo "		new YAHOO.example.DDList(\"".$pauseId."\");\n";
+  echo "    new YAHOO.example.DDList(\"".$pauseId."\");\n";
 }
 
 ?>
-        Event.on("showButton", "click", this.requestString);
-        Event.on("pauseButton", "click", this.addPause);
-    },
+    Event.on("showButton", "click", this.requestString);
+    Event.on("pauseButton", "click", this.addPause);
+  },
     
-	addPause: function() {
-    	var unscheduled = Dom.get("unscheduled");
-    	var pauseElement = document.createElement("div");
-        var duration = Dom.get("pauseLen").value;
-        var height = (duration * minHeight)-2;
-        var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
-        html = html.replace(/%h%/g, height);
-        html = html.replace(/%d%/g, duration);
-        html = html.replace(/%i%/g, pauseIndex);
-        pauseElement.innerHTML = html;
-        pauseElement = pauseElement.firstChild;
+  addPause: function() {
+    var unscheduled = Dom.get("unscheduled");
+    var pauseElement = document.createElement("div");
+    var duration = Dom.get("pauseLen").value;
+    var height = (duration * minHeight)-2;
+    var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
+    html = html.replace(/%h%/g, height);
+    html = html.replace(/%d%/g, duration);
+    html = html.replace(/%i%/g, pauseIndex);
+    pauseElement.innerHTML = html;
+    pauseElement = pauseElement.firstChild;
         
-	    unscheduled.appendChild(pauseElement);
-	    new YAHOO.example.DDList("pause" + pauseIndex);
-	    pauseIndex++;
-    },	
+    unscheduled.appendChild(pauseElement);
+    new YAHOO.example.DDList("pause" + pauseIndex);
+    pauseIndex++;
+  },  
     
-    requestString: function() {
-        var parseList = function(ul, id) {
-            var items = ul.getElementsByTagName("li");
-            var out = id;
-			var offset = 0;
-            for (i=0;i<items.length;i=i+1) {
-                var duration =  parseInt(items[i].firstChild.value);
-				var nextId = items[i].id.substring(4);
-				if (!isNaN(nextId)) {
-                	out += ":" + nextId + "/" + offset;
-				}
-                offset += duration;
-            }
-            return out;
-        };
-<?php 
-		echo "	var unscheduled=Dom.get(\"unscheduled\");\n";
-        foreach ($reservationData as $day => $dayArray) {
-        	foreach ($dayArray as $reservationId => $reservationArray) {
-      			echo "	var res".$reservationId."=Dom.get(\"res".$reservationId."\");\n";
-        	}
+  requestString: function() {
+    var parseList = function(ul, id) {
+      var items = ul.getElementsByClassName("schedule_item");
+      var out = id;
+      var offset = 0;
+      for (i=0;i<items.length;i=i+1) {
+        var duration =  parseInt(items[i].firstChild.value);
+        var nextId = items[i].id.substring(4);
+        if (!isNaN(nextId)) {
+          out += ":" + nextId + "/" + offset;
         }
-        echo "	var request = parseList(unscheduled, \"0\") + \"\\n\"";
-        foreach ($reservationData as $day => $dayArray) {
-        	foreach ($dayArray as $reservationId => $reservationArray) {
-            	echo " + \"|\" + parseList(res".$reservationId.", \"".$reservationId."\")";
-        	}
-        }
-        echo ";\n";
+        offset += duration;
+      }
+      return out;
+    };
+<?php
+echo "  var unscheduled=Dom.get(\"unscheduled\");\n";
+foreach ($reservationData as $day => $dayArray) {
+  foreach ($dayArray as $reservationId => $reservationArray) {
+    echo "  var res" . $reservationId . "=Dom.get(\"res" . $reservationId . "\");\n";
+  }
+}
+echo "  var request = parseList(unscheduled, \"0\") + \"\\n\"";
+foreach ($reservationData as $day => $dayArray) {
+  foreach ($dayArray as $reservationId => $reservationArray) {
+    echo " + \"|\" + parseList(res" . $reservationId . ", \"" . $reservationId . "\")";
+  }
+}
+echo ";\n";
 ?>
-	var responseDiv = Dom.get("responseStatus");
-	Dom.setStyle(responseDiv,"background-image","url('images/indicator.gif')");
-	Dom.setStyle(responseDiv,"background-repeat","no-repeat");
-	Dom.setStyle(responseDiv,"background-position", "top right");
-	Dom.setStyle(responseDiv,"class", "inprogress");
-	responseDiv.innerHTML = '&nbsp;';
-	var transaction = YAHOO.util.Connect.asyncRequest('POST', 'index.php?view=admin/saveschedule', callback, request);         
-    },
+    var responseDiv = Dom.get("responseStatus");
+    Dom.setStyle(responseDiv,"background-image","url('images/indicator.gif')");
+    Dom.setStyle(responseDiv,"background-repeat","no-repeat");
+    Dom.setStyle(responseDiv,"background-position", "top right");
+    Dom.setStyle(responseDiv,"class", "inprogress");
+    responseDiv.innerHTML = '&nbsp;';
+    var transaction = YAHOO.util.Connect.asyncRequest('POST', 'index.php?view=admin/saveschedule', callback, request);         
+  },
 };
 
 var callback = {
-	success: function(o) {
-		var responseDiv = Dom.get("responseStatus");
-		YAHOO.util.Dom.removeClass(responseDiv,"attention");
-		YAHOO.util.Dom.addClass(responseDiv,"highlight");
-		Dom.setStyle(responseDiv,"background-image","");
-		responseDiv.innerHTML = o.responseText;
-		setModified(false);
-		if(redirecturl){
-			location.href=redirecturl;
-		}
-	},
+  success: function(o) {
+    var responseDiv = Dom.get("responseStatus");
+    Dom.setStyle(responseDiv,"background-image","");
+    if (o.responseText.length == 0) {
+      responseDiv.innerHTML = "<?php echo "<p>".utf8entities(_("Unknown error."))."</p>"; ?>";
+    } else {
+      responseDiv.innerHTML = o.responseText;
+    }
+    var response = Dom.get("responseValue")?parseInt(Dom.get("responseValue").value):null;
+    if (response!=null && response>0) {
+      YAHOO.util.Dom.removeClass(responseDiv,"attention");
+      YAHOO.util.Dom.addClass(responseDiv,"highlight");
+      setModified(false);
+      if(redirecturl){
+        location.href=redirecturl;
+      }
+    } else {
+      YAHOO.util.Dom.removeClass(responseDiv,"highlight");
+      YAHOO.util.Dom.addClass(responseDiv,"attention");
+    }
+  },
 
-	failure: function(o) {
-		var responseDiv = Dom.get("responseStatus");
-		YAHOO.util.Dom.removeClass(responseDiv,"highlight");
-		YAHOO.util.Dom.addClass(responseDiv,"attention");
-		Dom.setStyle(responseDiv,"background-image","");
-		responseDiv.innerHTML = o.responseText;
-	}
+  failure: function(o) {
+    var responseDiv = Dom.get("responseStatus");
+    YAHOO.util.Dom.removeClass(responseDiv,"highlight");
+    YAHOO.util.Dom.addClass(responseDiv,"attention");
+    Dom.setStyle(responseDiv,"background-image","");
+    responseDiv.innerHTML = o.responseText;
+  }
 }
-
-
 
 YAHOO.example.DDList = function(id, sGroup, config) {
 
-    YAHOO.example.DDList.superclass.constructor.call(this, id, sGroup, config);
+  YAHOO.example.DDList.superclass.constructor.call(this, id, sGroup, config);
 
-    this.logger = this.logger || YAHOO;
-    var el = this.getDragEl();
-    Dom.setStyle(el, "opacity", 0.57); // The proxy is slightly transparent
+  this.logger = this.logger || YAHOO;
+  var el = this.getDragEl();
+  Dom.setStyle(el, "opacity", 0.57); // The proxy is slightly transparent
 
-    this.goingUp = false;
-    this.lastY = 0;
+  this.goingUp = false;
+  this.lastY = 0;
 };
 
 YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
 
-    startDrag: function(x, y) {
-        this.logger.log(this.id + " startDrag");
+  startDrag: function(x, y) {
+    this.logger.log(this.id + " startDrag");
 
-        // make the proxy look like the source element
-        var dragEl = this.getDragEl();
-        var clickEl = this.getEl();
-        Dom.setStyle(clickEl, "visibility", "hidden");
+    // make the proxy look like the source element
+    var dragEl = this.getDragEl();
+    var clickEl = this.getEl();
+    Dom.setStyle(clickEl, "visibility", "hidden");
 
-        dragEl.innerHTML = clickEl.innerHTML;
+    dragEl.innerHTML = clickEl.innerHTML;
 
-        Dom.setStyle(dragEl, "color", Dom.getStyle(clickEl, "color"));
-        Dom.setStyle(dragEl, "backgroundColor", Dom.getStyle(clickEl, "backgroundColor"));
-        Dom.setStyle(dragEl, "font-size", Dom.getStyle(clickEl, "font-size"));
-        Dom.setStyle(dragEl, "font-family", Dom.getStyle(clickEl, "font-family"));
-        Dom.setStyle(dragEl, "border", "2px solid gray");
-        Dom.setStyle(dragEl, "text-align", "center");
-    },
+    Dom.setStyle(dragEl, "color", Dom.getStyle(clickEl, "color"));
+    Dom.setStyle(dragEl, "backgroundColor", Dom.getStyle(clickEl, "backgroundColor"));
+    Dom.setStyle(dragEl, "font-size", Dom.getStyle(clickEl, "font-size"));
+    Dom.setStyle(dragEl, "font-family", Dom.getStyle(clickEl, "font-family"));
+    Dom.setStyle(dragEl, "border", "2px solid gray");
+    Dom.setStyle(dragEl, "text-align", "center");
+  },
 
-    
+  endDrag: function(e) {
 
-    endDrag: function(e) {
-
-        var srcEl = this.getEl();
-        var proxy = this.getDragEl();
-        setModified(true);
-        // Show the proxy element and animate it to the src element's location
-        Dom.setStyle(proxy, "visibility", "");
-        var a = new YAHOO.util.Motion( 
-            proxy, { 
-                points: { 
-                    to: Dom.getXY(srcEl)
-                }
-            }, 
-            0.2, 
-            YAHOO.util.Easing.easeOut 
-        )
-        var proxyid = proxy.id;
-        var thisid = this.id;
-
-        // Hide the proxy and show the source element when finished with the animation
-        a.onComplete.subscribe(function() {
-                Dom.setStyle(proxyid, "visibility", "hidden");
-                Dom.setStyle(thisid, "visibility", "");
-            });
-        a.animate();
-    },
-
-    onDragDrop: function(e, id) {
-
-        // If there is one drop interaction, the li was dropped either on the list,
-        // or it was dropped on the current location of the source element.
-        if (DDM.interactionInfo.drop.length === 1) {
-
-            // The position of the cursor at the time of the drop (YAHOO.util.Point)
-            var pt = DDM.interactionInfo.point; 
-
-            // The region occupied by the source element at the time of the drop
-            var region = DDM.interactionInfo.sourceRegion; 
-
-            // Check to see if we are over the source element's location.  We will
-            // append to the bottom of the list once we are sure it was a drop in
-            // the negative space (the area of the list without any list items)
-            if (!region.intersect(pt)) {
-                var destEl = Dom.get(id);
-                var destDD = DDM.getDDById(id);
-                destEl.appendChild(this.getEl());
-                destDD.isEmpty = false;
-                DDM.refreshCache();
-            }
-
+    var srcEl = this.getEl();
+    var proxy = this.getDragEl();
+    setModified(true);
+    // Show the proxy element and animate it to the src element's location
+    Dom.setStyle(proxy, "visibility", "");
+    var a = new YAHOO.util.Motion( 
+      proxy, { 
+        points: { 
+          to: Dom.getXY(srcEl)
         }
-    },
+      }, 
+      0.2, 
+      YAHOO.util.Easing.easeOut 
+    )
+    var proxyid = proxy.id;
+    var thisid = this.id;
 
-    onDrag: function(e) {
+    // Hide the proxy and show the source element when finished with the animation
+    a.onComplete.subscribe(function() {
+        Dom.setStyle(proxyid, "visibility", "hidden");
+        Dom.setStyle(thisid, "visibility", "");
+      });
+    a.animate();
+  },
 
-        // Keep track of the direction of the drag for use during onDragOver
-        var y = Event.getPageY(e);
+  onDragDrop: function(e, id) {
 
-        if (y < this.lastY) {
-            this.goingUp = true;
-        } else if (y > this.lastY) {
-            this.goingUp = false;
-        }
+    // If there is one drop interaction, the li was dropped either on the list,
+    // or it was dropped on the current location of the source element.
+    if (DDM.interactionInfo.drop.length === 1) {
 
-        this.lastY = y;
-    },
+      // The position of the cursor at the time of the drop (YAHOO.util.Point)
+      var pt = DDM.interactionInfo.point; 
 
-    onDragOver: function(e, id) {
-    
-        var srcEl = this.getEl();
+      // The region occupied by the source element at the time of the drop
+      var region = DDM.interactionInfo.sourceRegion; 
+
+      // Check to see if we are over the source element's location.  We will
+      // append to the bottom of the list once we are sure it was a drop in
+      // the negative space (the area of the list without any list items)
+      if (!region.intersect(pt)) {
         var destEl = Dom.get(id);
+        var destDD = DDM.getDDById(id);
+        destEl.appendChild(this.getEl());
+        destDD.isEmpty = false;
+        DDM.refreshCache();
+      }
 
-        // We are only concerned with list items, we ignore the dragover
-        // notifications for the list.
-        if (destEl.nodeName.toLowerCase() == "li") {
-            var orig_p = srcEl.parentNode;
-            var p = destEl.parentNode;
-
-            if (this.goingUp) {
-                p.insertBefore(srcEl, destEl); // insert above
-            } else {
-                p.insertBefore(srcEl, destEl.nextSibling); // insert below
-            }
-
-            DDM.refreshCache();
-        }
     }
+  },
+
+  onDrag: function(e) {
+
+    // Keep track of the direction of the drag for use during onDragOver
+    var y = Event.getPageY(e);
+
+    if (y < this.lastY) {
+      this.goingUp = true;
+    } else if (y > this.lastY) {
+      this.goingUp = false;
+    }
+
+    this.lastY = y;
+  },
+
+  onDragOver: function(e, id) {
+  
+    var srcEl = this.getEl();
+    var destEl = Dom.get(id);
+
+    // We are only concerned with list items, we ignore the dragover
+    // notifications for the list.
+    if (destEl.nodeName.toLowerCase() == "li") {
+      var orig_p = srcEl.parentNode;
+      var p = destEl.parentNode;
+
+      if (this.goingUp) {
+        p.insertBefore(srcEl, destEl); // insert above
+      } else {
+        p.insertBefore(srcEl, destEl.nextSibling); // insert below
+      }
+
+      DDM.refreshCache();
+    }
+  }
 });
 
 Event.onDOMReady(YAHOO.example.ScheduleApp.init, YAHOO.example.ScheduleApp, true);
