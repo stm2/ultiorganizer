@@ -9,7 +9,8 @@ function logo() {
 }
 
 function pageHeader() {
-	return "<a href='http://www.frisbeesportverband.de' class='header_text'>"._("Ultiorganizer")."</a><br/>\n";
+  global $include_prefix;
+	return "<div><a href='http://www.frisbeesportverband.de' class='header_text'><img class='header_logo' src='".$include_prefix."cust/dfv/logo.gif' alt='"._("DFV Logo")."' style='height:45px;'/>"._("DFV - Ultiorganizer")."</a></div>\n";
 }
 
 ?>
