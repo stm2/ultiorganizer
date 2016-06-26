@@ -37,6 +37,7 @@ pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
 
+$html .= "<h2>".U_(PoolName($poolId))."<h2>";
 	
 //process itself on submit
 if(!empty($_POST['remove_x'])) {

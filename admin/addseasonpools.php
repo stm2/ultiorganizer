@@ -282,7 +282,7 @@ if(!$poolId || $addmore) {
 	if($pp['type']=="1")
 		echo "<option class='dropdown' selected='selected' value='1'>"._("Round Robin")."</option>";
 	else
-		echo "<option class='dropdown' value='1'>"._("Division")."</option>";
+		echo "<option class='dropdown' value='1'>"._("Round Robin")."</option>";
 			
 	if($pp['type']=="2")
 		echo "<option class='dropdown' selected='selected' value='2'>"._("Play-off")."</option>";

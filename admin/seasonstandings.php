@@ -266,8 +266,15 @@ foreach ($pools as $spool) {
   $html .= $getHeading($poolId, $poolinfo, count($standings) > 0);
   
   if (count($standings)) {
+    $seeds = array();
     foreach ($standings as $row) {
-      $html .= $getRow($poolId, $poolinfo, $row, $teamNum);
+      if (isset($seeds[$row['Rank']]))
+        ++$seeds[$row['Rank']];
+      else 
+        $seeds[$row['Rank']] = 1;
+    }
+    foreach ($standings as $row) {
+      $html .= $getRow($poolId, $poolinfo, $row, $teamNum, $seeds[$row['Rank']] > 1);
       $teamNum++;
     }
     $html .= "<tr><th></th><th>";
@@ -350,11 +357,14 @@ function swissHeading($poolId, $poolinfo, $editbuttons) {
   return $html;
 }
 
-function swissRow($poolId, $poolinfo, $row, $teamNum) {
+function swissRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
   $html = "";
   $vp = TeamVictoryPointsByPool($poolId, $row['team_id']);
   
-  $html .= "<tr>";
+  if ($warn)
+    $html .= "<tr class='attention'>";
+  else
+    $html .= "<tr>";
   $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['Rank'])) . "</td>";
   $html .= "<td>" . editField("rank", $teamNum, $row['team_id'], intval($row['activerank'])) . "</td>";
   $html .= "<td>" . utf8entities($row['name']) . "</td>";
@@ -392,12 +402,15 @@ function regularHeading($poolId, $poolinfo, $editbuttons) {
   return $html;
 }
 
-function regularRow($poolId, $poolinfo, $row, $teamNum) {
+function regularRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
   $html = "";
   $stats = TeamStatsByPool($poolId, $row['team_id']);
   $points = TeamPointsByPool($poolId, $row['team_id']);
   
-  $html .= "<tr>";
+  if ($warn)
+    $html .= "<tr class='attention'>";
+  else
+    $html .= "<tr>";
   $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['Rank'])) . "</td>";
   $html .= "<td>" . editField("rank", $teamNum, $row['team_id'], intval($row['activerank'])) . "</td>";
   $html .= "<td>" . utf8entities($row['name']) . "</td>";
