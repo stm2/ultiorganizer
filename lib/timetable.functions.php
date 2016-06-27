@@ -850,8 +850,8 @@ function TimetableTimeslots($reservationgroup, $season){
   return DBQueryToArray($query);
 }
 
-function TimetableIntraPoolConflicts($season) {
-  $query = "SELECT g1.game_id as game1, g2.game_id as game2, g1.pool as pool1, g2.pool as pool2,  
+function TimetableIntraPoolConflicts($season, $series=null) {
+  $query = sprintf("SELECT g1.game_id as game1, g2.game_id as game2, g1.pool as pool1, g2.pool as pool2,  
       g1.hometeam as home1, g1.visitorteam as visitor1, g2.hometeam as home2, g2.visitorteam as visitor2, 
       g1.scheduling_name_home as scheduling_home1, g1.scheduling_name_visitor as scheduling_visitor1, 
       g2.scheduling_name_home as scheduling_home2, g2.scheduling_name_visitor as scheduling_visitor2, 
@@ -866,13 +866,18 @@ function TimetableIntraPoolConflicts($season) {
       LEFT JOIN uo_reservation as res2 ON (res2.id = g2.reservation)
       LEFT JOIN uo_series as ser1 ON (ser1.series_id = p1.series)
       LEFT JOIN uo_series as ser2 ON (ser2.series_id = p2.series)
-      WHERE g1.reservation IS NOT NULL AND g2.reservation IS NOT NULL AND ser1.season = '".$season ."' AND ser2.season = '".$season."' AND g1.time <= g2.time
-      ORDER BY time2 ASC, time1 ASC";
+      WHERE g1.reservation IS NOT NULL AND g2.reservation IS NOT NULL 
+      AND ser1.season = '%s' AND ser2.season = '%s'" . 
+      (($series != null) ? " AND ser1.series_id = %d AND ser2.series_id = %d " : "") .
+      " AND g1.time <= g2.time
+      ORDER BY time2 ASC, time1 ASC",
+      mysql_real_escape_string($season), mysql_real_escape_string($season),
+      (int) $series, (int) $series);
   return DBQueryToArray($query);
 }
 
-function TimetableInterPoolConflicts($season) {
-  $query = "SELECT  g1.game_id as game1, g2.game_id as game2, g1.pool as pool1, g2.pool as pool2,  
+function TimetableInterPoolConflicts($season, $series=null) {
+  $query = sprintf("SELECT  g1.game_id as game1, g2.game_id as game2, g1.pool as pool1, g2.pool as pool2,  
       g1.hometeam as home1, g1.visitorteam as visitor1, g2.hometeam as home2, g2.visitorteam as visitor2, 
       g1.scheduling_name_home as scheduling_home1, g1.scheduling_name_visitor as scheduling_visitor1, 
       g2.scheduling_name_home as scheduling_home2, g2.scheduling_name_visitor as scheduling_visitor2, 
@@ -888,10 +893,13 @@ function TimetableInterPoolConflicts($season) {
       LEFT JOIN uo_reservation as res2 ON (res2.id = g2.reservation)
       LEFT JOIN uo_series as ser1 ON (ser1.series_id = p1.series)
       LEFT JOIN uo_series as ser2 ON (ser2.series_id = p2.series)
-      WHERE ser1.season = '".$season."' AND ser2.season = '". $season."'
-        AND (g1.hometeam IS NULL OR g1.visitorteam IS NULL OR g2.hometeam IS NULL OR g2.visitorteam IS NULL OR
+      WHERE ser1.season = '%s' AND ser2.season = '%s'" .
+      (($series != null) ? " AND ser1.series_id = %d AND ser2.series_id = %d " : "") .
+      " AND (g1.hometeam IS NULL OR g1.visitorteam IS NULL OR g2.hometeam IS NULL OR g2.visitorteam IS NULL OR
           (g1.hometeam=g2.hometeam OR g1.visitorteam = g2.visitorteam OR g1.hometeam=g2.visitorteam OR g1.visitorteam = g2.hometeam))
-      ORDER BY time2 ASC, time1 ASC";
+      ORDER BY time2 ASC, time1 ASC",
+      mysql_real_escape_string($season), mysql_real_escape_string($season),
+      (int) $series, (int) $series);
   return DBQueryToArray($query);
 }
 

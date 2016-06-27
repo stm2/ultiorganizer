@@ -7,7 +7,10 @@ CREATE TABLE `uo_accreditationlog` (
   `source` varchar(50) DEFAULT NULL,
   `value` tinyint(1) DEFAULT NULL,
   `time` datetime DEFAULT NULL,
-  `game` int(10) DEFAULT NULL
+  `game` int(10) DEFAULT NULL,
+  INDEX `idx_player` (`player`),
+  INDEX `idx_user` (`userid`),
+  INDEX `idx_game` (`game`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE `uo_club` (
@@ -843,5 +846,6 @@ CREATE TABLE `uo_visitor_counter` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(15) NOT NULL DEFAULT '',
   `visits` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  INDEX `idx_ip` (`ip`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
