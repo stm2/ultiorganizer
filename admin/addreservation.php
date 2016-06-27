@@ -28,58 +28,79 @@ $res = array(
 	"season"=>$season,
 	"timeslots"=>"");
 
-if (isset($_POST['save']) || isset($_POST['add'])) {
-
-  $res['id'] = isset($_POST['id']) ? $_POST['id'] : 0;
-  $res['location'] = isset($_POST['location']) ? $_POST['location'] : 0;
-  $res['fieldname'] = isset($_POST['fieldname']) ? $_POST['fieldname'] : "";
-  $res['reservationgroup'] = isset($_POST['reservationgroup']) ? $_POST['reservationgroup'] : "";
-  $res['date'] = isset($_POST['date']) ? $_POST['date'] : "1.1.19710";
-  $res['starttime'] = isset($_POST['starttime']) ? ToInternalTimeFormat($res['date']." ".$_POST['starttime']) : ToInternalTimeFormat("1.1.1971 00:00");
-  $res['endtime'] = isset($_POST['endtime']) ? ToInternalTimeFormat($res['date']." ".$_POST['endtime']) : ToInternalTimeFormat("1.1.1971 00:00");
-  $res['date'] = ToInternalTimeFormat($res['date']);
-  $res['timeslots'] = isset($_POST['timeslots']) ? $_POST['timeslots'] : "";
-  $res['season'] = isset($_POST['resseason']) ? $_POST['resseason'] : $season;
+  function check_input($post, $season, &$res) {
+    $error = "";
+    if (empty($post['date'])) {
+      $error = "<p>" . _("Date required.") . "</p>";
+    }
+    
+    $res['id'] = isset($post['id']) ? $post['id'] : 0;
+    $res['location'] = isset($post['location']) ? $post['location'] : 0;
+    $res['fieldname'] = isset($post['fieldname']) ? $post['fieldname'] : "";
+    $res['reservationgroup'] = isset($post['reservationgroup']) ? $post['reservationgroup'] : "";
+    $res['date'] = isset($post['date']) ? $post['date'] : date('d.m.Y', time());
+    $res['starttime'] = isset($post['starttime']) ? ToInternalTimeFormat($res['date'] . " " . $post['starttime']) : ToInternalTimeFormat(
+        "00:00");
+    $res['endtime'] = isset($post['endtime']) ? ToInternalTimeFormat($res['date'] . " " . $post['endtime']) : ToInternalTimeFormat(
+        "00:00");
+    $res['date'] = ToInternalTimeFormat($res['date']);
+    $res['timeslots'] = isset($post['timeslots']) ? $post['timeslots'] : "";
+    $res['season'] = isset($post['resseason']) ? $post['resseason'] : $season;
+    
+    if (empty($res['season'])) {
+      $error .= "<p>" . _("Season required.") . "</p>";
+    }
+    if (empty (strtotime($res['endtime'])) || empty (strtotime($res['endtime'])) || strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
+      $error .= "<p>" . sprintf(_("Error: Duration must be at least %d minutes"), 1) . "</p>";
+    }
+    return $error;
+  }
   
-  if($res['id']>0){
-    SetReservation($res['id'], $res);
-  }else{
-    //check if adding more than 1 field
-    $fields = array();
-    $tmpfields = explode(",",$res['fieldname']);
-    foreach ($tmpfields as $field){
-      $morefields = explode("-",$field);
-      if(count($morefields)>1){
-        for($i=$morefields[0];$i<=$morefields[1];$i++){
-          $fields[]=$i;
+  if (isset($_POST['save']) || isset($_POST['add'])) {
+  $error = check_input($_POST, $season, $res);
+  if (empty($error)) {
+    if ($res['id'] > 0) {
+      SetReservation($res['id'], $res);
+    } else {
+      // check if adding more than 1 field
+      $fields = array ();
+      $tmpfields = explode(",", $res['fieldname']);
+      foreach ($tmpfields as $field) {
+        $morefields = explode("-", $field);
+        if (count($morefields) > 1) {
+          for ($i = $morefields[0]; $i <= $morefields[1]; $i++) {
+            $fields[] = $i;
+          }
+        } else {
+          $fields[] = $morefields[0];
         }
-      }else{
-        $fields[]=$morefields[0];
       }
+      if (count($fields) == 0) {
+        $fields[] = $res['fieldname'];
+      }
+      $i = 0;
+      $html .= "<p>" . _("Reservations added:") . "</p>";
+      $html .= "<ul>";
+      $locinfo = LocationInfo($res['location']);
+      $allfields = $res['fieldname'];
+      foreach ($fields as $field) {
+        $res['fieldname'] = $field;
+        $reservationId = AddReservation($res);
+        $html .= "<li>" . $res['reservationgroup'] . ": " . DefWeekDateFormat($res['date']) . " ";
+        if (!empty($res['timeslots'])) {
+          $html .= $res['timeslots'] . " ";
+        } else {
+          $html .= DefHourFormat($res['starttime']) . "-" . DefHourFormat($res['endtime']) . " ";
+        }
+        $html .= $locinfo['name'] . " " . _("field") . " " . $field;
+        $html .= "</li>";
+      }
+      $html .= "</ul><hr/>";
     }
-    if(count($fields)==0){
-      $fields[] = $res['fieldname'];
-    }
-  $i=0;
-  $html .= "<p>". _("Reservations added") .":</p>";
-  $html .= "<ul>";
-  $locinfo = LocationInfo($res['location']);
-  $allfields = $res['fieldname'];
-  foreach ($fields as $field){
-    $res['fieldname'] = $field;
-    $reservationId = AddReservation($res);
-    $html .= "<li>". $res['reservationgroup'] .": ". DefWeekDateFormat($res['date']) ." ";
-    if(!empty($res['timeslots'])){
-      $html .= $res['timeslots'] ." ";
-    }else{
-      $html .=  DefHourFormat($res['starttime']) ."-". DefHourFormat($res['endtime']) ." ";
-    }
-    $html .=  $locinfo['name'] ." "._("field") ." ". $field;
-    $html .= "</li>";
+  } else {
+    $html .= "<p>" . _("No reservations added.") . "</p>\n" . $error . "<hr />\n";
   }
-  $html .= "</ul><hr/>";
-  $addmore = true;
-  }
+  $addmore = $res['id'] <= 0;
 }
 
 $title = _("Add field reservation");
@@ -170,17 +191,17 @@ $html = "<form method='post' action='?view=admin/addreservation&amp;season=".$se
 $html .= "<table>\n";
 
 $html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>";
-$html .= "<input type='text' class='input' name='date' id='date' value='".utf8entities($res['date'])."'/>&nbsp;\n";
+$html .= "<input type='text' class='input' name='date' id='date' value='".utf8entities(ShortDate($res['date']))."'/>&nbsp;\n";
 $html .= "<button type='button' class='button' id='showcal1'>
 		<img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>\n";
 $html .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>\n";
 
 $html .= "<tr><td>"._("Start time")." ("._("hh:mm")."):</td><td>";
-$html .= "<input type='text' class='input' name='starttime' value='".utf8entities($res['starttime'])."'/>\n";
+$html .= "<input type='text' class='input' name='starttime' value='".utf8entities(DefHourFormat($res['starttime']))."'/>\n";
 $html .= "</td></tr>\n";
 
 $html .= "<tr><td>"._("End time")." ("._("hh:mm")."):</td><td>";
-$html .= "<input type='text' class='input' name='endtime' value='".utf8entities($res['endtime'])."'/>\n";
+$html .= "<input type='text' class='input' name='endtime' value='".utf8entities(DefHourFormat($res['endtime']))."'/>\n";
 $html .= "</td></tr>\n";
 
 /* Not yet supported

@@ -101,8 +101,9 @@ if(empty($season)){
   	}
   	$html .= "</p>\n";	
   }
-  $html .= "<form method='post' id='reservations' action='?view=admin/reservations&amp;season=$season&amp;group=".urlencode($group)."'>\n";		  
   $reservations = SeasonReservations($season,$group);
+  if (count ($reservations) > 0) {
+  $html .= "<form method='post' id='reservations' action='?view=admin/reservations&amp;season=$season&amp;group=".urlencode($group)."'>\n";		  
   $html .= "<table class='admintable'><tr><th><input type='checkbox' onclick='checkAll(\"reservations\");'/></th>";
   $html .= "<th>"._("Group")."</th><th>"._("Location")."</th><th>"._("Date")."</th>";
   $html .= "<th>"._("Starts")."</th><th>"._("Ends")."</th><th>"._("Games")."</th>";
@@ -175,6 +176,9 @@ if(empty($season)){
   $html .= "<input type='submit' name='change_times' value='".utf8entities(_("Save times"))."'/>\n";
   
   $html .= "</form>";
+  } else {
+    $html .= "<p>" . _("No reservations.") . "</p>";
+  }
 }
 	
 $html .= "\n<hr/>\n";

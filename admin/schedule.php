@@ -341,7 +341,7 @@ function tableEnd($firstStart, $lastEnd) {
   if (isset($firstStart)) {
     echo "<ul class='timelist'>\n";
     for($t=$firstStart;$t<$lastEnd;$t+=60*60) {
-      echo "<li style='min-height:".(min(60, ($lastEnd-$t)/60)*MIN_HEIGHT-2)."px'>".date("H:i", $t)."</li>\n";
+      echo "<li style='min-height:".(max(10, min(60, ($lastEnd-$t)/60)*MIN_HEIGHT-2))."px'>".date("H:i", $t)."</li>\n";
     }
     echo "</ul>";
   }
@@ -443,7 +443,7 @@ if(count($reservationData)>0){
       $duration = ($endTime - $startTime) / 60;
 
       echo "<div class='workarea' >\n";
-      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".($duration * MIN_HEIGHT)."px'>\n";
+      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
       $nextStart = $startTime;
       foreach ($reservationArray['games'] as $gameId => $gameInfo) {
         $gameStart = strtotime($gameInfo['time']);
@@ -505,10 +505,10 @@ if(count($reservationData)>0){
       $endTime =  strtotime($reservationArray['endtime']);
       $duration = ($endTime - $startTime) / 60;
 
-      echo "<div style='vertical-align:bottom;min-height:".intval($offset * MIN_HEIGHT)."px'>";
+      echo "<div style='vertical-align:bottom;min-height:".max(10,intval($offset * MIN_HEIGHT))."px'>";
       echo "<h3>".$reservationArray['name']." "._("Field ")." ".$reservationArray['fieldname']." ".date("H:i", $startTime)."</h3></div>\n";
       echo "<div class='workarea' >\n";
-      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".($duration * MIN_HEIGHT)."px'>\n";
+      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
       $nextStart = $startTime;
       foreach ($reservationArray['games'] as $gameId => $gameInfo) {
         $gameStart = strtotime($gameInfo['time']);
@@ -709,7 +709,7 @@ foreach ($reservedPauses as $pauseId) {
     var unscheduled = Dom.get("unscheduled");
     var pauseElement = document.createElement("div");
     var duration = Dom.get("pauseLen").value;
-    var height = (duration * minHeight)-2;
+    var height = max(10,(duration * minHeight)-2);
     var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
     html = html.replace(/%h%/g, height);
     html = html.replace(/%d%/g, duration);

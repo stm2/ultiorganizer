@@ -281,20 +281,25 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
 	$ret .= "</table>\n";
 	$ret .= "</form>";
 	
-	$ret .= "<form method='post' id='reservations' action='?".$resultTarget."'>\n";
-	$ret .= ReservationResults();
-	$ret .= "<p>";
-	foreach ($hiddenProperties as $name => $value) {
-		$ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-	}
-	$ret .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/>\n";
-	if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
-		foreach ($submitbuttons as $name => $value) {
-			$ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-		}
-	}
-	$ret .= "</p>";
-	$ret .= "</form>";
+	$results = ReservationResults($_POST, isset($_GET['season'])?$_GET['season']:null);
+  if (!empty($results)) {
+    $ret .= "<form method='post' id='reservations' action='?" . $resultTarget . "'>\n";
+    $ret .= $results;
+    $ret .= "<p>";
+    foreach ($hiddenProperties as $name => $value) {
+      $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
+    }
+    $ret .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/>\n";
+    if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
+      foreach ($submitbuttons as $name => $value) {
+        $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
+      }
+    }
+    $ret .= "</p>";
+    $ret .= "</form>";
+  } else if (!empty($_POST)) {
+    $ret .= "<p>" . _("No reservations.") . "</p>";
+  }
 	
 	return $ret;
 }
@@ -680,50 +685,51 @@ function PlayerResults() {
 	}
 }
 
-function ReservationResults() {
-	if (empty($_POST['searchreservation']) && empty($_GET['season'])) {
+function ReservationResults($post, $season = null) {
+	if (empty($post['searchreservation']) && empty($season)) {
 		return "";
 	} else {
 		$query = "SELECT res.id as reservation_id, res.season, res.location, res.fieldname, res.reservationgroup, res.starttime, res.endtime, loc.name, loc.fields, loc.indoor, loc.address, count(game_id) as games ";
 		$query .= "FROM uo_reservation res left join uo_location as loc on (res.location = loc.id) left join uo_game as game on (res.id = game.reservation) ";
 
 		$start = "";
-		if (isset($_POST['searchstart'])) {
-			$start = $_POST['searchstart'];
+		if (isset($post['searchstart'])) {
+			$start = $post['searchstart'];
 		}
 		
 		//else {
 		//	$start = date('d.m.Y');
 		//}
-		if (isset($_POST['searchend'])) {
-			$end = $_POST['searchend'];
+		if (isset($post['searchend'])) {
+			$end = $post['searchend'];
 		} 
 		
 		if(empty($end)){
-			$query .= "WHERE res.starttime>'".ToInternalTimeFormat($start." 00:00")."'";
+			$query .= "WHERE res.starttime >= '".ToInternalTimeFormat($start." 00:00")."'";
 		}else{
-			$query .= "WHERE res.starttime>'".ToInternalTimeFormat($start." 00:00")."' AND ";
-			$query .= "res.endtime<'".ToInternalTimeFormat($end." 23:59")."' ";
+			$query .= "WHERE res.starttime >= '".ToInternalTimeFormat($start." 00:00")."' AND ";
+			$query .= "res.endtime <= '".ToInternalTimeFormat($end." 23:59")."' ";
 		}
-		if (isset($_POST['searchgroup']) && strlen($_POST['searchgroup']) > 0) {
-			$query .= "AND res.reservationgroup like '%".mysql_real_escape_string($_POST['searchgroup'])."%' ";
+		if (isset($post['searchgroup']) && strlen($post['searchgroup']) > 0) {
+			$query .= "AND res.reservationgroup like '%".mysql_real_escape_string($post['searchgroup'])."%' ";
 		}
-		if (isset($_POST['searchfield']) && strlen($_POST['searchfield']) > 0) {
-			$query .= "AND res.fieldname like '".mysql_real_escape_string($_POST['searchfield'])."' ";
+		if (isset($post['searchfield']) && strlen($post['searchfield']) > 0) {
+			$query .= "AND res.fieldname like '".mysql_real_escape_string($post['searchfield'])."' ";
 		}
-		if (isset($_POST['searchlocation']) && strlen($_POST['searchlocation']) > 0) {
-			$query .= "AND (loc.name like '%".mysql_real_escape_string($_POST['searchlocation'])."%' OR ";
-			$query .= "loc.address like '%".mysql_real_escape_string($_POST['searchlocation'])."%') ";
+		if (isset($post['searchlocation']) && strlen($post['searchlocation']) > 0) {
+			$query .= "AND (loc.name like '%".mysql_real_escape_string($post['searchlocation'])."%' OR ";
+			$query .= "loc.address like '%".mysql_real_escape_string($post['searchlocation'])."%') ";
 		}
 		
-		if (isset($_GET['season']) && strlen($_GET['season']) > 0) {
-			$query .= "AND res.season='".mysql_real_escape_string($_GET['season'])."' ";
+		if (!empty($season)) {
+			$query .= "AND res.season='".mysql_real_escape_string($season)."' ";
 		}
 		$query .= "GROUP BY res.starttime, res.id, res.location, res.fieldname, res.reservationgroup, res.endtime, loc.name, loc.fields, loc.indoor, loc.address";
 
 		$result = mysql_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_error()); }
 		
+		if (mysql_num_rows($result) > 0) {
 		$ret = "<table class='admintable'><tr><th><input type='checkbox' onclick='checkAll(\"reservations\");'/></th>";
 		$ret .= "<th>"._("Group")."</th><th>"._("Location")."</th><th>"._("Date")."</th>";
 		$ret .= "<th>"._("Starts")."</th><th>"._("Ends")."</th><th>"._("Games")."</th>";
@@ -744,6 +750,9 @@ function ReservationResults() {
 			$ret .= "</tr>\n";
 		}
 		$ret .= "</table>\n";
+		} else {
+		  return "";
+		}
 		return $ret;
 		
 	}
