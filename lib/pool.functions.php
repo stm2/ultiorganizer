@@ -635,17 +635,17 @@ function PoolDependsOn($topool) {
 /**
  * Get all movings to given pool.
  *
- * @param int $poolId uo_pool.pool_id
+ * @param int $toPool uo_pool.pool_id
  * @return PHP array of moves
  */
-function PoolMovingsToPool($poolId){
+function PoolMovingsToPool($toPool){
   $query = sprintf("SELECT pmt.*, ps.name, sn.name AS sname
         FROM uo_moveteams pmt
         LEFT JOIN uo_pool ps ON(ps.pool_id=pmt.frompool)
         LEFT JOIN uo_scheduling_name sn ON(pmt.scheduling_id=sn.scheduling_id)
         WHERE pmt.topool = %d
         ORDER BY pmt.torank ASC",
-      (int)$poolId);
+      (int)$toPool);
   return DBQueryToArray($query);
 }
 
@@ -911,9 +911,9 @@ function PoolIsAllMoved($topool){
  * @param int $mvgames: 0 - all, 1 - nothing, 2 - mutual
  * @return PHP array of game ids to move
  */
-function PoolGetGamesToMove($poolId, $mvgames){
+function PoolGetGamesToMove($toPoolId, $mvgames){
   $games = array();
-  $moves = PoolMovingsToPool($poolId);
+  $moves = PoolMovingsToPool($toPoolId);
   foreach($moves as $row){
     $team = PoolTeamFromStandings($row['frompool'],$row['fromplacing']);
     if($mvgames==0){
@@ -932,7 +932,7 @@ function PoolGetGamesToMove($poolId, $mvgames){
         }
       }
     }else if($mvgames==2){
-      $moves2 = PoolMovingsToPool($poolId);
+      $moves2 = PoolMovingsToPool($toPoolId);
         foreach($moves2 as $row2){
         $team2 = PoolTeamFromStandings($row2['frompool'],$row2['fromplacing']);
         if($row2['frompool'] == $row2['frompool']){
@@ -1487,9 +1487,8 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
   $poolInfo = PoolInfo($poolId);
 
   if (!$checkrights || hasEditTeamsRight($poolInfo['series'])) {
-
     if($updaterank){
-      $query = sprintf("INSERT IGNORE INTO uo_team_pool
+      $query = sprintf("INSERT INTO uo_team_pool
                   (team, pool, rank, activerank)
                   VALUES (%d,%d,%d,%d)",
       (int)$teamId,
@@ -1497,7 +1496,7 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
       (int)$rank,
       (int)$rank);
     }else{
-      $query = sprintf("INSERT IGNORE INTO uo_team_pool
+      $query = sprintf("INSERT INTO uo_team_pool
                   (team, pool, rank)
                   VALUES (%d,%d,%d)",
       (int)$teamId,
@@ -1507,13 +1506,13 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
     DBQuery($query);
 
     //update team pool
-    /*
+    /* FIXME
     $query = sprintf("UPDATE uo_team SET
             pool=%d WHERE team_id=%d",
     (int)$poolId,
     (int)$teamId);
-    */
     DBQuery($query);
+    */
 
   } else { die('PAT: Insufficient rights to edit pool teams'); }
 }
@@ -1607,14 +1606,14 @@ function PoolSetMove($frompool, $oldfpos, $fromplacing, $torank) {
 /**
  * Makes moves to given pool.
  *
- * @param int $poolId - pool to moves are done.
+ * @param int $toPoolId - pool to moves are done.
  */
-function PoolMakeMoves($poolId) {
-  $poolInfo = PoolInfo($poolId);
+function PoolMakeMoves($toPoolId) {
+  $poolInfo = PoolInfo($toPoolId);
   if (hasEditTeamsRight($poolInfo['series'])) {
     //move teams
-    LogPoolUpdate($poolId, "Teams moved");
-    $moves = PoolMovingsToPool($poolId);
+    LogPoolUpdate($toPoolId, "Teams moved");
+    $moves = PoolMovingsToPool($toPoolId);
     $topool = 0;
     foreach($moves as $row){
       //store target pool
@@ -1622,44 +1621,16 @@ function PoolMakeMoves($poolId) {
         $topool=$row['topool'];
       }
 
-      //add team to target pool
-      $team = PoolTeamFromStandings($row['frompool'],$row['fromplacing'],$poolInfo['type']!=2); // do not count BYE team if we are moving to a playoff pool
-      PoolAddTeam($row['topool'],$team['team_id'],$row['torank'],true);
-
-      //replace pseudo team with real team in games
-      if(isRespTeamHomeTeam()){
-        $query = sprintf("UPDATE uo_game SET
-                    hometeam=%d, respteam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0",
-                    (int)$team['team_id'],
-                    (int)$team['team_id'],
-                    (int)$row['scheduling_id']);
-      }else{
-        $query = sprintf("UPDATE uo_game SET
-                    hometeam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0",
-                    (int)$team['team_id'],
-                    (int)$row['scheduling_id']);
-      }
-
-      DBQuery($query);
-
-      $query = sprintf("UPDATE uo_game SET visitorteam=%d WHERE scheduling_name_visitor=%d AND scheduling_name_visitor!=0",
-      (int)$team['team_id'],
-      (int)$row['scheduling_id']);
-
-      DBQuery($query);
-
-      //set move done
-      $query = sprintf("UPDATE uo_moveteams SET ismoved='1' WHERE frompool=%d AND fromplacing=%d",
-        (int)$row['frompool'],
-        (int)$row['fromplacing']);
-
-      DBQuery($query);
+      PoolMakeAMove($row['frompool'], $row['fromplacing'], $poolInfo['type']!=2, // do not count BYE team if we are moving to a playoff pool
+          $row['topool'], $row['torank'], true,
+          $row['scheduling_id']);
+      
     }
 
     //games to move
-    $poolinfo = PoolInfo($poolId);
+    $poolinfo = PoolInfo($toPoolId);
     $mvgames = intval($poolinfo['mvgames']);
-    $games = PoolGetGamesToMove($poolId, $mvgames);
+    $games = PoolGetGamesToMove($toPoolId, $mvgames);
     foreach ($games as $id ) {
       $query = sprintf("INSERT IGNORE INTO uo_game_pool
                     (game, pool, timetable)
@@ -1672,6 +1643,8 @@ function PoolMakeMoves($poolId) {
     }
   } else { die('Insufficient rights to move teams'); }
 }
+
+
 
 /**
  * Makes move to given pool.
@@ -1694,46 +1667,60 @@ function PoolMakeMove($frompool, $fromplacing, $checkrights=true) {
       (int)$fromplacing);
     $row = DBQueryToRow($query);
     LogPoolUpdate($row['frompool'], "Teams moved");
-    // add team to target pool
-    $team = PoolTeamFromStandings($row['frompool'], $row['fromplacing'], $poolInfo['type'] != 2); // do not count BYE team if we are moving to a playoff pool
-
-    // delete previously moved team
-    $previous = PoolTeamFromInitialRank($row['topool'], $row['torank']);
-    if (!empty($previous) && CanDeleteTeamFromPool($row['topool'], $previous['team_id'])) {
-      PoolDeleteTeam($row['topool'], $previous['team_id'], $checkrights);
-    }
     
-    PoolAddTeam($row['topool'], $team['team_id'], $row['torank'], true, $checkrights);
-
-    // replace pseudo team with real team in games
-    if (isRespTeamHomeTeam()) {
-      $query = sprintf(
-          "UPDATE uo_game SET
-                    hometeam=%d, respteam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0", (int) $team['team_id'],
-          (int) $team['team_id'], (int) $row['scheduling_id']);
-    } else {
-      $query = sprintf(
-          "UPDATE uo_game SET
-                    hometeam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0", (int) $team['team_id'],
-          (int) $row['scheduling_id']);
-    }
-
-    DBQuery($query);
-
-    $query = sprintf(
-        "UPDATE uo_game SET visitorteam=%d WHERE scheduling_name_visitor=%d AND scheduling_name_visitor!=0",
-        (int) $team['team_id'], (int) $row['scheduling_id']);
-
-    DBQuery($query);
-
-    // set move done
-    $query = sprintf("UPDATE uo_moveteams SET ismoved='1' WHERE frompool=%d AND fromplacing=%d", (int) $row['frompool'],
-        (int) $row['fromplacing']);
-
-    DBQuery($query);
+    PoolMakeAMove($row['frompool'], $row['fromplacing'], $poolInfo['type'] != 2, // do not count BYE team if we are moving to a playoff pool
+        $row['topool'], $row['torank'], $checkrights, $row['scheduling_id']);
+    
+    // FIXME move games?
 
   } else { die('Insufficient rights to move teams'); }
 }
+
+function PoolMakeAMove($frompool, $fromplacing, $countbye, $topool, $torank, $checkrights, $schedulingId){
+
+  //add team to target pool
+  $team = PoolTeamFromStandings($frompool,$fromplacing, $countbye);
+
+  // delete previously moved team
+  $previous = PoolTeamFromInitialRank($topool, $torank);
+  if (!empty($previous) && CanDeleteTeamFromPool($topool, $previous['team_id']) && $previous['team_id'] != $team['team_id']) {
+    PoolDeleteTeam($topool, $previous['team_id'], $checkrights);
+  }
+
+  PoolDeleteTeam($topool, $team['team_id']);
+  
+  PoolAddTeam($topool,$team['team_id'],$torank, true, $checkrights);
+
+  //replace pseudo team with real team in games
+  if(isRespTeamHomeTeam()){
+    $query = sprintf("UPDATE uo_game SET
+                    hometeam=%d, respteam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0",
+        (int)$team['team_id'],
+        (int)$team['team_id'],
+        (int)$schedulingId);
+  }else{
+    $query = sprintf("UPDATE uo_game SET
+                    hometeam=%d WHERE scheduling_name_home=%d AND scheduling_name_home!=0",
+        (int)$team['team_id'],
+        (int)$schedulingId);
+  }
+
+  DBQuery($query);
+
+  $query = sprintf("UPDATE uo_game SET visitorteam=%d WHERE scheduling_name_visitor=%d AND scheduling_name_visitor!=0",
+      (int)$team['team_id'],
+      (int)$schedulingId);
+
+  DBQuery($query);
+
+  //set move done
+  $query = sprintf("UPDATE uo_moveteams SET ismoved='1' WHERE frompool=%d AND fromplacing=%d",
+      (int)$frompool,
+      (int)$fromplacing);
+
+  DBQuery($query);
+}
+
 /**
  * Delete a move from pool.
  *
@@ -1816,19 +1803,19 @@ function PoolUndoMove($frompool, $fromplacing, $topool) {
   } else { die('Insufficient rights to move teams'); }
 }
 
-function PoolConfirmMoves($poolId, $visible = null) {
-  PoolMakeMoves($poolId);
+function PoolConfirmMoves($toPoolId, $visible = null) {
+  PoolMakeMoves($toPoolId);
   // Check if a BYE team has been scheduled. If so, fill in standard result
-  $changes = CheckBYE($poolId);
+  $changes = CheckBYE($toPoolId);
   if ($changes > 0) {
     // check if the game with the BYE team is scheduled. If so, exchange it with the game that is not scheduled.
-    CheckBYESchedule($poolId);
+    CheckBYESchedule($toPoolId);
   }
 
-  ResolvePoolStandings($poolId);
+  ResolvePoolStandings($toPoolId);
 
   if (isset($visible)) {
-    SetPoolVisibility($poolId, $visible);
+    SetPoolVisibility($toPoolId, $visible);
   }
 }
 

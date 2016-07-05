@@ -401,7 +401,6 @@ function TeamStanding($teamId, $poolId){
 }
 
 function TeamMove($teamId, $frompool, $inplayofftree=false){
-
   //get position to move
   $fromplacing = TeamStanding($teamId, $frompool);
 
@@ -411,7 +410,8 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
   //if pool is not follower, do not make move
   $poolinfo = PoolInfo($frompool);
   if($inplayofftree && $poolinfo['follower']!=$move['topool']){
-    return;
+    // FIXME
+    return "<p>"._("Not moving to follower of playoff pool.")."</p>";
   }
 
   if($move['ismoved']){
@@ -421,33 +421,32 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
     (int)$move['topool'],
     (int)$move['torank']);
 
-    $team_exist = count(DBQueryToArray($query));
+    $team_exist = DBQueryToArray($query);
      
     //same team
-    if($team_exist && $team_exist['team'] == $teamId ){
-      return;
-    }
-     
-    //different team in same position
-    if($team_exist && $team_exist['team'] != $teamId ){
+    foreach ($team_exist as $key => $exists) {
       $query = sprintf("SELECT g.game_id FROM uo_game g
-            			LEFT JOIN uo_game_pool gp ON(g.game_id=game)
-      					WHERE (g.hometeam=%d OR g.hometeam=%d) AND (g.hasstarted>0)  
-      					AND gp.pool=%d",
-      (int)$team_exist['team'],
-      (int)$team_exist['team'],
-      (int)$move['topool']);
-
-      $games = DBQueryRowCount($query);
-      if($games){
-        echo "<p>". _("Move not allowed. Game already played!")."</p>";
-        return;
-      }else{
-        $query = sprintf("DELETE FROM uo_team_pool WHERE team=%d AND rank=%d",
-        (int)$move['topool'],
-        (int)$move['torank']);
+            LEFT JOIN uo_game_pool gp ON(g.game_id=game)
+            WHERE (g.hometeam=%d OR g.visitorteam=%d) AND (g.hasstarted>0)
+            AND gp.pool=%d", (int) $exists['team'], (int) $exists['team'], (int) $move['topool']);
+      
+      $games = DBQueryToArray($query);
+      // $games = DBQueryRowCount($query);
+      if (count($games)) {
+        return "<p>" . _("Move not allowed. Game already played!") . "</p>";
       }
     }
+    foreach ($team_exist as $key => $exists) {
+      $query = sprintf("DELETE FROM uo_team_pool WHERE pool=%d AND rank=%d AND team=%d",
+          (int) $move['topool'],
+          (int) $move['torank'],
+          (int) $exists['team']);
+      DBQuery($query);
+    }
+    $query = sprintf("DELETE FROM uo_team_pool WHERE pool=%d AND team=%d",
+        (int) $move['topool'],
+        $teamId);
+    DBQuery($query);
   }
 
   //insert team to next pool
@@ -465,7 +464,7 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
   $query = sprintf("UPDATE uo_team SET
 			pool=%d WHERE team_id=%d",
   (int)$move['topool'],
-  (int)$move['torank']);
+  (int)$teamId);
   	
   DBQuery($query);
 
@@ -502,7 +501,6 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
   //set pool visible
   if($poolinfo['follower']!=$move['topool']){
     $query = sprintf("UPDATE uo_pool SET visible='1' WHERE pool_id=%d",(int)$move['topool']);
-          DBQuery($query);
     DBQuery($query);
   }
 

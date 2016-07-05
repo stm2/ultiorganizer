@@ -70,13 +70,9 @@ if(!empty($_POST['save']) || !empty($_POST['add'])){
 		*/
 		if($teamId) {
 			SetTeam($tp);
-			if(intval($tp['pool']))
-				PoolAddTeam($tp['pool'],$teamId,$tp['rank']);
 			$html .= "<p>"._("Changes saved")."</p><hr/>";
 		}else{
 			$teamId = AddTeam($tp);
-			if(intval($tp['pool']))
-				PoolAddTeam($tp['pool'],$teamId,$tp['rank']);
 
 			$html .= "<p>".$tp['name']." "._("added").".</p><hr/>";
 			$teamId=0;
@@ -165,9 +161,9 @@ $html .= "<tr><td class='infocell'>"._("Division").":</td>
 		<td><input class='input' id='series' name='series' disabled='disabled' size='50' value='".utf8entities($seriesname)."'/></td></tr>";		
 
 $html .= "<tr><td class='infocell'>"._("Starting pool").":</td>";
-//$html .= "<td><input class='input' id='pool' name='pool' disabled='disabled' size='50' value='".utf8entities($team_info['poolname'])."'/></td></tr>";
+$html .= "<td><input class='input' id='pool' name='pool' disabled='disabled' size='50' value='".utf8entities($team_info['poolname'])."'/></td></tr>";
 
-
+/*
 $html .= "<td><select class='dropdown' name='pool'>";
 
 $pools = SeriesPools($seriesId,false,true,true);
@@ -186,6 +182,7 @@ foreach($pools as $row){
 }
 
 $html .= "</select></td></tr>";
+*/
 	
 $html .= "<tr><td class='infocell'>"._("Seed").":</td>
 		<td><input class='input' id='rank' size='4' name='rank' value='".utf8entities($tp['rank'])."'/></td></tr>";		

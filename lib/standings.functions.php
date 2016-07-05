@@ -25,7 +25,7 @@ function ResolvePlayoffPoolStandings($poolId){
 	
 	$teams = DBQueryToArray($query);
 	$steams = PoolSchedulingTeams($poolId);
-
+	
 	if(count($teams)<=1 || count($teams) < count($steams)){
 		return;
 	}
@@ -36,7 +36,7 @@ function ResolvePlayoffPoolStandings($poolId){
 		$teamId2 = $teams[$i+1]['team_id'];
 		$query = sprintf("SELECT 
 				COUNT((hometeam=%d AND (homescore>visitorscore)) OR (visitorteam=%d AND (homescore<visitorscore)) OR NULL) AS team1wins, 
-				COUNT((hometeam=%d AND (homescore>visitorscore)) OR (visitorteam=%d AND (homescore<visitorscore)) OR NULL) AS team2wins 
+				COUNT((hometeam=%d AND (homescore>visitorscore)) OR (visitorteam=%d AND (homescore<visitorscore)) OR NULL) AS team2wins
 				FROM uo_game 
 				WHERE (homescore != visitorscore) AND ((hometeam=%d AND visitorteam=%d) OR (hometeam=%d AND visitorteam=%d)) 
 					AND isongoing=0
