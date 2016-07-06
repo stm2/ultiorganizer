@@ -90,8 +90,6 @@ if(!empty($_POST['add']))
   //series pool
   if($poolinfo['type']==1){
     $total_teams = 10;
-    if($poolinfo['teams']>0)
-    $total_teams = $poolinfo['teams'];
 
     for($i=0;$i<$total_teams;$i++){
       if(isset($_POST["frompool$i"]) && isset($_POST["movefrom$i"]) && isset($_POST["moveto$i"])){
@@ -115,8 +113,6 @@ if(!empty($_POST['add']))
   }else{
     //playoff pool
     $total_teams = 8;
-    if($poolinfo['teams']>0)
-    $total_teams = $poolinfo['teams'];
 
     for($i=0;$i<$total_teams;$i++){
 
@@ -218,8 +214,6 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
 		</tr>";
 
   $total_teams = 10;
-  if($poolinfo['teams']>0)
-  $total_teams = $poolinfo['teams'];
 
   for($i=0;$i<$total_teams;$i++){
     echo "<tr>\n";
@@ -294,8 +288,6 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
 		</tr>";
 
   $total_teams = 8;
-  if($poolinfo['teams']>0)
-  $total_teams = $poolinfo['teams'];
 
   for($i=0;$i<$total_teams;$i++){
 

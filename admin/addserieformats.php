@@ -83,7 +83,6 @@ if($poolId){
   $info = PoolTemplateInfo($poolId);
   $pp['name']=$info['name'];
   $pp['type']=$info['type'];
-  $pp['teams']=$info['teams'];
   $pp['timeoutlen']=$info['timeoutlen'];
   $pp['halftime']=$info['halftime'];
   $pp['winningscore']=$info['winningscore'];

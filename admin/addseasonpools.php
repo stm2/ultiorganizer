@@ -64,7 +64,6 @@ if(!empty($_POST['save'])) {
 	$ok=true;
 	$pp['name']=$_POST['name'];
 	$pp['series']=$seriesId;
-	/*$pp['teams']=intval($_POST['teams']);*/
 	$pp['timeoutlen']=intval($_POST['timeoutlength']);
 	$pp['halftime']=intval($_POST['halftimelength']);
 	$pp['winningscore']=intval($_POST['gameto']);
@@ -125,7 +124,6 @@ if ($poolId) {
 	$info = PoolInfo($poolId);
 	
 	$pp['name']=$info['name'];
-	$pp['teams']=$info['teams'];
 	$pp['timeoutlen']=$info['timeoutlen'];
 	$pp['halftime']=$info['halftime'];
 	$pp['winningscore']=$info['winningscore'];
@@ -270,11 +268,6 @@ if(!$poolId || $addmore) {
 	
 	echo "<tr><td class='infocell'>"._("Order")." (A,B,C,D ...):</td>
 		<td><input class='input' id='ordering' name='ordering' value='".utf8entities($pp['ordering'])."'/></td></tr>";
-/*		
-	echo "<tr><td class='infocell'>"._("Teams").":</td>
-			<td><input class='input' id='teams' name='teams' size='5' value='".utf8entities($pp['teams'])."'/></td>
-			<td></td></tr>";
-*/			
 
 	echo "<tr><td class='infocell'>"._("Type").":</td><td>";
 	

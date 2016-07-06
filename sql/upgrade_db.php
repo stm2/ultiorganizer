@@ -668,6 +668,11 @@ function upgrade76() {
   }
 }
 
+function upgrade77() {
+  dropField("uo_pooltemplate", "teams");
+  dropField("uo_pool", "teams");
+}
+
 function runQuery($query) {
 	$result = mysql_query($query);
 	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }

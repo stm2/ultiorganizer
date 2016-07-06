@@ -1129,9 +1129,9 @@ function AddPoolTemplate($params) {
     $query = sprintf("INSERT INTO uo_pooltemplate
             (name, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap, betweenpointslen, continuingpool, mvgames, type,
-            ordering, teams, timeslot, forfeitagainst, forfeitscore)
+            ordering, timeslot, forfeitagainst, forfeitscore)
             VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s',
-            '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+            '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
     mysql_real_escape_string($params['name']),
     mysql_real_escape_string($params['timeoutlen']),
     mysql_real_escape_string($params['halftime']),
@@ -1150,7 +1150,6 @@ function AddPoolTemplate($params) {
     mysql_real_escape_string($params['mvgames']),
     mysql_real_escape_string($params['type']),
     mysql_real_escape_string($params['ordering']),
-    mysql_real_escape_string($params['teams']),
     mysql_real_escape_string($params['timeslot']),
     mysql_real_escape_string($params['forfeitagainst']),
     mysql_real_escape_string($params['forfeitscore']));
@@ -1171,7 +1170,7 @@ function SetPoolTemplate($poolId, $params) {
             name='%s', timeoutlen='%s', halftime='%s', winningscore='%s', drawsallowed='%s', timecap='%s', scorecap='%s',
             addscore='%s', halftimescore='%s', timeouts='%s', timeoutsper='%s', timeoutsovertime='%s',
             timeoutstimecap='%s', betweenpointslen='%s', continuingpool='%s', mvgames='%s', type='%s', ordering='%s',
-            teams='%s', timeslot='%s', forfeitagainst='%s', forfeitscore='%s'
+            timeslot='%s', forfeitagainst='%s', forfeitscore='%s'
             WHERE template_id='%s'",
     mysql_real_escape_string($params['name']),
     mysql_real_escape_string($params['timeoutlen']),
@@ -1191,7 +1190,6 @@ function SetPoolTemplate($poolId, $params) {
     mysql_real_escape_string($params['mvgames']),
     mysql_real_escape_string($params['type']),
     mysql_real_escape_string($params['ordering']),
-    mysql_real_escape_string($params['teams']),
     mysql_real_escape_string($params['timeslot']),
     mysql_real_escape_string($params['forfeitagainst']),
     mysql_real_escape_string($params['forfeitscore']),

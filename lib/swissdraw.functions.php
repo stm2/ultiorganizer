@@ -484,24 +484,32 @@ function CheckBYE($poolId){
 	return $changes;
 }
 
-function CheckPlayoffMoves($poolId){
-	// returns -1 if the number of teams in the pool is odd, i.e. one team will have a BYE,
-	// and at least one team already had a BYE previously
-	
-	// returns 0 if everything is OK
-	
-	$poolInfo=PoolInfo($poolId);
-	if (is_odd($poolInfo['teams'])==false) {return 0;}  // there is no problem
-	
-	$games = array();
-	//retrieve all moves
-	$moves = PoolMovingsToPool($poolId);
-	foreach($moves as $row)
-		{
-		$team = PoolTeamFromStandings($row['frompool'],$row['fromplacing'],false);		
-		if(TeamPoolCountBYEs($team['team_id'],$row['frompool'])>0) {return -1;}
-		}
-	
+/**
+ * Returns -1 if the number of teams in the pool is odd, i.e. one team will have a BYE, 
+ * and at least one team already had a BYE previously.
+ * 
+ * Returns 0 if everything is OK.
+ * 
+ * @param int $poolId
+ * @return number
+ */
+function CheckPlayoffMoves($poolId) {
+  $query = sprintf("SELECT COUNT(*) FROM uo_team_pool WHERE pool=%d",
+      (int) $poolId);
+  $teams = DBQueryToValue($query);
+  if (is_odd($teams) == false) {
+    return 0;
+  } // there is no problem
+  
+  $games = array ();
+  // retrieve all moves
+  $moves = PoolMovingsToPool($poolId);
+  foreach ($moves as $row) {
+    $team = PoolTeamFromStandings($row['frompool'], $row['fromplacing'], false);
+    if (TeamPoolCountBYEs($team['team_id'], $row['frompool']) > 0) {
+      return -1;
+    }
+  }
 }
 	 
 ?>
