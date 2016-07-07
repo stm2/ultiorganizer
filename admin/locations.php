@@ -376,7 +376,7 @@ sans-serif; font-size:11px; border:1px solid black">
   <table>
   	<tbody>
   	<tr><th><?php echo _("Name")?>:</th><td>
-	<?php echo TranslatedField("name", ""); ?>
+	<?php echo TranslatedField("name", "", 200, 45); ?>
 	</td></tr>
   	<tr><th><?php echo _("Address")?>:</th><td><input type='text' name='address' id='address' size='30' />&nbsp;<a href="javascript:searchLatLng();"><?php echo _("Fetch coordinates") ?></a></td></tr>
 <?php 
