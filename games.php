@@ -190,19 +190,17 @@ if(mysql_num_rows($games)==0){
 }elseif($filter == 'tournaments'){
   $html .= TournamentView($games,$groupheader);
 }elseif($filter == 'series'){
-  $html .= SeriesView($games);
-}elseif($filter == 'today'){
-  $html .= SeriesView($games, false);
+  $html .= SeriesView($games, true, true);
 }elseif($filter == 'next'){
   $html .= TournamentView($games,$groupheader);
-}elseif($filter == 'tomorrow'){
-  $html .= SeriesView($games, false);
 }elseif($filter == 'places'){
   $html .= PlaceView($games,$groupheader);
-}elseif($filter == 'all'){
-  $html .= SeriesView($games);
 }elseif($filter == 'timeslot'){
   $html .= TimeView($games);
+}elseif(in_array($filter, array('today', 'tomorrow', 'yesterday'))){
+  $html .= SeriesView($games, false, true);
+}else { // ($filter == 'all')
+  $html .= SeriesView($games);
 }
 
 
