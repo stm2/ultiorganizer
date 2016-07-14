@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-27 14:06+0100\n"
+"POT-Creation-Date: 2016-07-14 12:05+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -25,24 +25,24 @@ msgid "Standings"
 msgstr "Sijoitukset"
 
 #: poolstatus.php:103 privacy.php:22 privacy.php:24 user_guide.php:18
-#: games.php:212 plugins/reassign_playoffpools.php:118
+#: games.php:209 plugins/reassign_playoffpools.php:118
 #: plugins/lisence_modifier.php:66 user/addmedialink.php:216
 #: user/playerprofile.php:374 user/clubprofile.php:223
 #: user/teamprofile.php:184 admin/editstanding.php:78 admin/dbequalize.php:127
 #: admin/executesql.php:134 admin/addseasons.php:375 admin/serieteams.php:256
 #: admin/help.php:20 admin/failed.php:26 admin/seriesseeding.php:73
 #: admin/addseasonseries.php:139 admin/dbbackup.php:120
-#: admin/addteamadmins.php:89 admin/poolmoves.php:348
-#: admin/addseasonteams.php:215 admin/editgame.php:260
+#: admin/addteamadmins.php:89 admin/poolmoves.php:340
+#: admin/addseasonteams.php:212 admin/editgame.php:260
 #: admin/seasonmoves.php:217 admin/dbrestore.php:64 admin/schedule.php:246
 #: admin/schedule.php:554 admin/eventdataimport.php:62
 #: admin/eventdataimport.php:66 admin/addreservation.php:262
-#: admin/addseasonpools.php:254 admin/addseasonpools.php:493
+#: admin/addseasonpools.php:252 admin/addseasonpools.php:486
 #: admin/success.php:26
 msgid "Return"
 msgstr "Palaa"
 
-#: poolstatus.php:106 privacy.php:25 user_guide.php:20 games.php:219
+#: poolstatus.php:106 privacy.php:25 user_guide.php:20 games.php:216
 #: admin/help.php:22
 msgid "Printable version"
 msgstr "Tulostettava versio"
@@ -242,12 +242,12 @@ msgstr ""
 #: poolstatus.php:762 gameplay.php:15 user/respgames.php:192
 #: user/addscoresheet.php:357 mobile/gameplay.php:11
 #: scorekeeper/gameplay.php:10 scorekeeper/respgames.php:134
-#: lib/timetable.functions.php:533
+#: lib/timetable.functions.php:537
 msgid "Game play"
 msgstr "Pelin kulku"
 
 #: poolstatus.php:769 poolstatus.php:771 scorekeeper/respgames.php:132
-#: lib/timetable.functions.php:540 lib/timetable.functions.php:542
+#: lib/timetable.functions.php:544 lib/timetable.functions.php:546
 msgid "Ongoing"
 msgstr "Kesken"
 
@@ -284,9 +284,9 @@ msgstr "Varaus"
 #: admin/reservations.php:143 mobile/respgames.php:110
 #: mobile/respgames.php:113 scorekeeper/respgames.php:101
 #: lib/reservation.functions.php:23 lib/reservation.functions.php:31
-#: lib/reservation.functions.php:74 lib/timetable.functions.php:263
-#: lib/timetable.functions.php:343 lib/timetable.functions.php:394
-#: lib/timetable.functions.php:448 lib/user.functions.php:1231
+#: lib/reservation.functions.php:74 lib/timetable.functions.php:264
+#: lib/timetable.functions.php:344 lib/timetable.functions.php:398
+#: lib/timetable.functions.php:452 lib/user.functions.php:1231
 #: lib/search.functions.php:268 lib/search.functions.php:339
 #: lib/search.functions.php:740 lib/search.functions.php:768
 #: cust/wfdf/pdfprinter.php:52 cust/wfdf/pdfprinter.php:364
@@ -320,7 +320,7 @@ msgstr "sisällä"
 msgid "Fields"
 msgstr "Kentät"
 
-#: user_guide.php:3 menufunctions.php:664 frontpage.php:21
+#: user_guide.php:3 menufunctions.php:664
 msgid "User Guide"
 msgstr "Käyttöopas"
 
@@ -341,8 +341,8 @@ msgstr "KAIKKI"
 #: user/respteams.php:21 user/userinfo.php:393 user/userinfo.php:397
 #: user/userinfo.php:415 user/userinfo.php:416 admin/dbequalize.php:105
 #: admin/dbequalize.php:136 admin/dbequalize.php:178 admin/seasonstats.php:31
-#: admin/addseasonteams.php:164 admin/editgame.php:213 admin/stats.php:80
-#: admin/addseasonpools.php:267 restful/seasons/index.php:42
+#: admin/addseasonteams.php:160 admin/editgame.php:213 admin/stats.php:80
+#: admin/addseasonpools.php:265 restful/seasons/index.php:42
 #: restful/seasons/series.php:5 restful/seasons/series.php:26
 #: lib/search.functions.php:30 lib/search.functions.php:61
 #: lib/search.functions.php:67 lib/search.functions.php:98
@@ -431,7 +431,7 @@ msgid "Goal difference"
 msgstr "Maaliero"
 
 #: gamecard.php:120 user/addplayerlists.php:213 user/addplayerlists.php:255
-#: admin/addseasonpools.php:341
+#: admin/addseasonpools.php:334
 msgid "Played"
 msgstr "Pelattu"
 
@@ -472,11 +472,11 @@ msgstr "Tarkista tilanne myöhemmin uudelleen."
 #: admin/seasonteams.php:122 admin/seriesseeding.php:44
 #: admin/serieformats.php:27 admin/locations.php:378 admin/clubs.php:55
 #: admin/clubs.php:84 admin/clubs.php:90 admin/seasonpools.php:96
-#: admin/addseasonseries.php:106 admin/addserieformats.php:114
+#: admin/addseasonseries.php:106 admin/addserieformats.php:113
 #: admin/dbbackup.php:92 admin/seasonstats.php:19 admin/seasonstats.php:33
-#: admin/seasons.php:91 admin/addseasonteams.php:144 admin/editgame.php:238
-#: admin/dbadmin.php:41 admin/addseasonpools.php:229
-#: admin/addseasonpools.php:262 admin/addseasonpools.php:391
+#: admin/seasons.php:91 admin/addseasonteams.php:140 admin/editgame.php:238
+#: admin/dbadmin.php:41 admin/addseasonpools.php:227
+#: admin/addseasonpools.php:260 admin/addseasonpools.php:384
 #: admin/seasonseries.php:59 lib/search.functions.php:140
 #: lib/search.functions.php:199 lib/search.functions.php:585
 #: lib/search.functions.php:673 cust/wfdf/pdfprinter.php:130
@@ -542,7 +542,7 @@ msgstr "Kesto"
 msgid "Game events "
 msgstr "Pelitapahtumat"
 
-#: gameplay.php:189 admin/addserieformats.php:121 admin/addseasonpools.php:413
+#: gameplay.php:189 admin/addserieformats.php:120 admin/addseasonpools.php:406
 #: mobile/gameplay.php:34 scorekeeper/gameplay.php:33
 msgid "Half-time"
 msgstr "Puoliaika"
@@ -615,8 +615,8 @@ msgid "Goals from turnovers"
 msgstr "Katkomaalit"
 
 #: gameplay.php:498 user/adddefensesheet.php:238 user/addscoresheet.php:415
-#: admin/serieformats.php:27 admin/addserieformats.php:150
-#: admin/addseasonpools.php:442 mobile/addscoresheet.php:195
+#: admin/serieformats.php:27 admin/addserieformats.php:149
+#: admin/addseasonpools.php:435 mobile/addscoresheet.php:195
 #: scorekeeper/addtimeouts.php:47 scorekeeper/addscoresheet.php:258
 #: cust/wfdf/pdfprinter.php:854 cust/windmill/pdfprinter.php:831
 #: cust/bula/pdfprinter.php:872 cust/gummis/pdfprinter.php:942
@@ -636,7 +636,7 @@ msgstr "Aikalisät"
 msgid "Spirit points"
 msgstr "Spirit-pisteet"
 
-#: gameplay.php:510 teamcard.php:535 lib/timetable.functions.php:522
+#: gameplay.php:510 teamcard.php:535 lib/timetable.functions.php:526
 msgid "Game history"
 msgstr "Otteluhistoria"
 
@@ -791,8 +791,8 @@ msgstr "Sähköposti"
 
 #: teamcard.php:26 user/enrollteam.php:83 admin/dbequalize.php:136
 #: admin/serieteams.php:144 admin/seasonteams.php:126
-#: admin/seriesseeding.php:46 admin/addseasonteams.php:147
-#: admin/addseasonpools.php:391
+#: admin/seriesseeding.php:46 admin/addseasonteams.php:143
+#: admin/addseasonpools.php:384
 msgid "Club"
 msgstr "Seura"
 
@@ -862,7 +862,7 @@ msgstr "Yhteensä"
 #: admin/seasonadmin.php:68 admin/serieteams.php:22 admin/seasonteams.php:14
 #: admin/clubs.php:55 admin/clubs.php:90 admin/seasonpools.php:213
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/stats.php:77
-#: admin/addseasonpools.php:386 admin/seasonseries.php:106
+#: admin/addseasonpools.php:379 admin/seasonseries.php:106
 #: restful/seasons/series.php:30
 msgid "Teams"
 msgstr "Joukkueet"
@@ -1216,25 +1216,29 @@ msgstr "Huomenna"
 msgid "Yesterday"
 msgstr "Eilen"
 
-#: games.php:177 games.php:179 user/respgames.php:97 user/respgames.php:99
-#: admin/addseasonpools.php:310 admin/addseasonpools.php:312
-#: admin/reservations.php:98 admin/reservations.php:100
-msgid "All"
-msgstr "Kaikki"
+#: games.php:170 lib/timetable.functions.php:999
+#, fuzzy
+msgid "Without grouping"
+msgstr "Oletus"
 
-#: games.php:189 ext/teamcoming.php:33 ext/teamplayed.php:34
+#: games.php:177
+#, fuzzy
+msgid "All groupings"
+msgstr "Oletus"
+
+#: games.php:188 ext/teamcoming.php:33 ext/teamplayed.php:34
 msgid "No games"
 msgstr "Ei pelejä"
 
-#: games.php:216
+#: games.php:213
 msgid "iCalendar (.ical)"
 msgstr "iCalendar (.ical)"
 
-#: games.php:217
+#: games.php:214
 msgid "Grid (PDF)"
 msgstr "Ruudukko (PDF)"
 
-#: games.php:218
+#: games.php:215
 msgid "List (PDF)"
 msgstr "Listaus (PDF)"
 
@@ -1331,7 +1335,7 @@ msgstr "Seuraprofiili"
 
 #: clubcard.php:28 user/clubprofile.php:139 user/enrollteam.php:86
 #: admin/seasonteams.php:129 admin/seriesseeding.php:49
-#: admin/addseasonteams.php:157
+#: admin/addseasonteams.php:153
 msgid "Country"
 msgstr "Kotimaa"
 
@@ -1452,10 +1456,10 @@ msgstr "Vierasmaalit"
 #: admin/seriesseeding.php:72 admin/seasonstandings.php:512
 #: admin/locations.php:296 admin/locations.php:396 admin/clubs.php:80
 #: admin/clubs.php:117 admin/translations.php:137 admin/seasonpools.php:290
-#: admin/addseasonseries.php:135 admin/addserieformats.php:187
-#: admin/seasongames.php:236 admin/addseasonteams.php:209
+#: admin/addseasonseries.php:135 admin/addserieformats.php:186
+#: admin/seasongames.php:236 admin/addseasonteams.php:206
 #: admin/editgame.php:258 admin/seasonmoves.php:216 admin/schedule.php:547
-#: admin/addreservation.php:258 admin/addseasonpools.php:492
+#: admin/addreservation.php:258 admin/addseasonpools.php:485
 #: admin/seasonseries.php:158 mobile/addhalftime.php:34
 #: mobile/addplayerlists.php:126 mobile/addtimeouts.php:95
 #: mobile/respgames.php:131 mobile/addspiritpoints.php:54
@@ -1479,6 +1483,11 @@ msgstr "Olet kirjautunut ulos"
 msgid "Frontpage"
 msgstr "Etusivu"
 
+#: frontpage.php:21
+#, fuzzy
+msgid "User Guide Ultiorganizer"
+msgstr "Pelikone"
+
 #: frontpage.php:27
 #, fuzzy
 msgid ""
@@ -1490,14 +1499,14 @@ msgstr ""
 
 #: plugins/reassign_playoffpools.php:47 admin/smsmoves.php:101
 #: admin/serieteams.php:183 admin/seasonstandings.php:441
-#: admin/poolmoves.php:182 admin/poolmoves.php:214 admin/poolmoves.php:251
-#: admin/poolmoves.php:257 admin/poolmoves.php:291 admin/seasonmoves.php:160
+#: admin/poolmoves.php:178 admin/poolmoves.php:210 admin/poolmoves.php:245
+#: admin/poolmoves.php:251 admin/poolmoves.php:285 admin/seasonmoves.php:160
 #: lib/swissdraw.functions.php:183
 msgid "From pool"
 msgstr "Lohkosta"
 
 #: plugins/reassign_playoffpools.php:48 admin/serieteams.php:184
-#: admin/poolmoves.php:252 admin/poolmoves.php:256
+#: admin/poolmoves.php:246 admin/poolmoves.php:250
 #: lib/swissdraw.functions.php:184
 msgid "From pos."
 msgstr "Sijalta"
@@ -1509,14 +1518,14 @@ msgstr "Sijalle"
 
 #: plugins/reassign_playoffpools.php:51 admin/smsmoves.php:103
 #: admin/serieteams.php:187 admin/seasonstandings.php:444
-#: admin/poolmoves.php:184 admin/seasonmoves.php:162
+#: admin/poolmoves.php:180 admin/seasonmoves.php:162
 #: lib/swissdraw.functions.php:187
 msgid "To pool"
 msgstr "Lohkoon"
 
 #: plugins/reassign_playoffpools.php:52 admin/serieteams.php:188
-#: admin/poolmoves.php:187 admin/poolmoves.php:217 admin/poolmoves.php:253
-#: admin/poolmoves.php:255 admin/poolmoves.php:293
+#: admin/poolmoves.php:183 admin/poolmoves.php:213 admin/poolmoves.php:247
+#: admin/poolmoves.php:249 admin/poolmoves.php:287
 #: lib/swissdraw.functions.php:188
 msgid "Name in Schedule"
 msgstr "Nimi aikataulussa"
@@ -1538,8 +1547,8 @@ msgstr "Ei siirrettäviä pelejä"
 #: admin/translations.php:123 admin/seasonpools.php:248
 #: admin/addteamadmins.php:69 admin/seasons.php:146
 #: admin/addseasonusers.php:69 admin/addseasonusers.php:94
-#: admin/addseasonusers.php:200 admin/poolmoves.php:205
-#: admin/poolmoves.php:280 admin/seasongames.php:226 admin/seasonmoves.php:167
+#: admin/addseasonusers.php:200 admin/poolmoves.php:201
+#: admin/poolmoves.php:274 admin/seasongames.php:226 admin/seasonmoves.php:167
 #: admin/seasonseries.php:114 admin/reservations.php:122
 #: lib/search.functions.php:747
 msgid "X"
@@ -1593,7 +1602,7 @@ msgstr "Nykyinen tapahtuma"
 #: admin/select_userrole.php:57 admin/select_userrole.php:60
 #: admin/select_userrole.php:63 admin/select_userrole.php:66
 #: admin/select_userrole.php:69 admin/select_userrole.php:72
-#: admin/addseasonpools.php:375 ext/index.php:61
+#: admin/addseasonpools.php:368 ext/index.php:61
 msgid "Select"
 msgstr "Valitse"
 
@@ -1627,7 +1636,7 @@ msgstr "valinnainen"
 #: admin/addseasons.php:276 admin/seasonadmin.php:28 admin/seasonpools.php:101
 #: admin/addseasonseries.php:113 admin/eventviewer.php:72
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasons.php:92
-#: admin/addseasonpools.php:279 admin/seasonseries.php:59
+#: admin/addseasonpools.php:272 admin/seasonseries.php:59
 msgid "Type"
 msgstr "Tyyppi"
 
@@ -1677,9 +1686,9 @@ msgstr "Seuraa sähköpostissa olevia ohjeita vahvistaaksesi rekisteröitymisen"
 #: admin/serieformats.php:50 admin/locations.php:327 admin/locations.php:351
 #: admin/clubs.php:52 admin/clubs.php:87 admin/translations.php:133
 #: admin/seasonpools.php:286 admin/addseasonseries.php:137
-#: admin/addserieformats.php:189 admin/seasons.php:155 admin/poolmoves.php:346
-#: admin/addseasonteams.php:211 admin/addreservation.php:260
-#: admin/addseasonpools.php:253 admin/seasonseries.php:151
+#: admin/addserieformats.php:188 admin/seasons.php:155 admin/poolmoves.php:338
+#: admin/addseasonteams.php:208 admin/addreservation.php:260
+#: admin/addseasonpools.php:251 admin/seasonseries.php:151
 msgid "Add"
 msgstr "Lisää"
 
@@ -1799,7 +1808,7 @@ msgid "Profile Id"
 msgstr "Profiili Id"
 
 #: user/teamplayers.php:168 admin/users.php:52 admin/locations.php:298
-#: admin/locations.php:397 admin/poolmoves.php:188 admin/poolmoves.php:258
+#: admin/locations.php:397 admin/poolmoves.php:184 admin/poolmoves.php:252
 #: mobile/deletescore.php:24 mobile/deletescore.php:44
 #: scorekeeper/deletescore.php:51
 msgid "Delete"
@@ -2279,6 +2288,12 @@ msgstr ""
 msgid "..."
 msgstr "..."
 
+#: user/respgames.php:97 user/respgames.php:99 admin/addseasonpools.php:303
+#: admin/addseasonpools.php:305 admin/reservations.php:98
+#: admin/reservations.php:100
+msgid "All"
+msgstr "Kaikki"
+
 #: user/respgames.php:106 admin/seasongames.php:132
 msgid "Hide played games"
 msgstr "Piilota pelatut pelit"
@@ -2357,7 +2372,7 @@ msgid "Abbreviation already used by"
 msgstr "Lyhenne on jo käytössä joukkueella"
 
 #: user/teamprofile.php:102 admin/clubs.php:85 admin/clubs.php:90
-#: admin/addseasonteams.php:160
+#: admin/addseasonteams.php:156
 msgid "Abbreviation"
 msgstr "Lyhenne"
 
@@ -2727,8 +2742,8 @@ msgstr "Tarkista pelaajan profiili Ultiorganizer:sta"
 
 #: admin/editstanding.php:15 admin/seasonstandings.php:116
 #: admin/seasonstandings.php:508 admin/addseasonseries.php:16
-#: admin/addserieformats.php:8 admin/addseasonteams.php:99
-#: admin/addseasonpools.php:156
+#: admin/addserieformats.php:8 admin/addseasonteams.php:95
+#: admin/addseasonpools.php:154
 msgid "Edit"
 msgstr "Muokkaa"
 
@@ -2739,7 +2754,7 @@ msgstr "Sijoitus"
 #: admin/editstanding.php:49 admin/serieteams.php:143
 #: admin/seasonteams.php:121 admin/seriesseeding.php:43
 #: admin/seasonstandings.php:348 admin/seasonstandings.php:390
-#: admin/addseasonteams.php:190
+#: admin/addseasonteams.php:187
 msgid "Seed"
 msgstr "Rankkaus"
 
@@ -2786,12 +2801,12 @@ msgstr "Tulos"
 msgid "SMS"
 msgstr "SMS"
 
-#: admin/smsmoves.php:102 admin/poolmoves.php:183 admin/poolmoves.php:215
-#: admin/poolmoves.php:292 admin/seasonmoves.php:161
+#: admin/smsmoves.php:102 admin/poolmoves.php:179 admin/poolmoves.php:211
+#: admin/poolmoves.php:286 admin/seasonmoves.php:161
 msgid "From position"
 msgstr "Sijalta"
 
-#: admin/smsmoves.php:104 admin/poolmoves.php:185 admin/poolmoves.php:216
+#: admin/smsmoves.php:104 admin/poolmoves.php:181 admin/poolmoves.php:212
 #: admin/seasonmoves.php:163
 msgid "To position"
 msgstr "Sijalle"
@@ -2896,7 +2911,7 @@ msgstr "UI asetukset"
 
 #: admin/serverconf.php:344 admin/addseasonlinks.php:89
 #: admin/seasonpools.php:97 admin/addseasonseries.php:110
-#: admin/addseasonpools.php:233 admin/addseasonpools.php:271
+#: admin/addseasonpools.php:231 admin/addseasonpools.php:269
 msgid "Order"
 msgstr "Järjestys"
 
@@ -3078,12 +3093,12 @@ msgstr "Järjestäjä"
 msgid "Category"
 msgstr "Kategoria"
 
-#: admin/addseasons.php:327 admin/addseasonpools.php:379
+#: admin/addseasons.php:327 admin/addseasonpools.php:372
 msgid "Comment (you can use <b>, <em>, and <br /> tags)"
 msgstr ""
 
 #: admin/addseasons.php:330 admin/seasonadmin.php:43
-#: lib/timetable.functions.php:557
+#: lib/timetable.functions.php:561
 msgid "Timezone"
 msgstr "Aikavyöhyke"
 
@@ -3281,7 +3296,7 @@ msgid "Enrollment"
 msgstr "Ilmoittautuminen"
 
 #: admin/seasonadmin.php:51 admin/seasonpools.php:98 admin/seasons.php:96
-#: admin/addseasonpools.php:326 admin/seasonseries.php:59
+#: admin/addseasonpools.php:319 admin/seasonseries.php:59
 msgid "Visible"
 msgstr "Näkyvissä"
 
@@ -3589,18 +3604,18 @@ msgstr "Sääntöpohjat"
 msgid "Winning points"
 msgstr "Voittopiste"
 
-#: admin/serieformats.php:27 admin/addserieformats.php:137
-#: admin/addseasonpools.php:429
+#: admin/serieformats.php:27 admin/addserieformats.php:136
+#: admin/addseasonpools.php:422
 msgid "Point cap"
 msgstr "Pistekatto"
 
-#: admin/serieformats.php:27 admin/addserieformats.php:177
-#: admin/addseasonpools.php:481
+#: admin/serieformats.php:27 admin/addserieformats.php:176
+#: admin/addseasonpools.php:474
 msgid "Draws allowed"
 msgstr ""
 
-#: admin/serieformats.php:27 admin/addserieformats.php:129
-#: admin/addseasonpools.php:421
+#: admin/serieformats.php:27 admin/addserieformats.php:128
+#: admin/addseasonpools.php:414
 msgid "Time cap"
 msgstr "Aikakatto"
 
@@ -3670,7 +3685,7 @@ msgid "Id"
 msgstr "Jnro"
 
 #: admin/clubs.php:55 admin/clubs.php:90 admin/addseasonseries.php:127
-#: admin/addseasonteams.php:193 admin/editgame.php:245 admin/editgame.php:250
+#: admin/addseasonteams.php:190 admin/editgame.php:245 admin/editgame.php:250
 msgid "Valid"
 msgstr "Voimassa"
 
@@ -3854,74 +3869,74 @@ msgstr "Id2"
 msgid "Delete events"
 msgstr "Poista tapahtumat"
 
-#: admin/addserieformats.php:106
+#: admin/addserieformats.php:105
 msgid "Edit rule template"
 msgstr "Muokkaa sääntöpohjaa"
 
-#: admin/addserieformats.php:109
+#: admin/addserieformats.php:108
 msgid "Add rule template"
 msgstr "Lisää sääntöpohja"
 
-#: admin/addserieformats.php:117 admin/addseasonpools.php:409
+#: admin/addserieformats.php:116 admin/addseasonpools.php:402
 msgid "Game points"
 msgstr "Pelit pisteeseen"
 
-#: admin/addserieformats.php:123 admin/addserieformats.php:131
-#: admin/addserieformats.php:135 admin/schedule.php:422
-#: admin/addseasonpools.php:415 admin/addseasonpools.php:423
-#: admin/addseasonpools.php:427
+#: admin/addserieformats.php:122 admin/addserieformats.php:130
+#: admin/addserieformats.php:134 admin/schedule.php:422
+#: admin/addseasonpools.php:408 admin/addseasonpools.php:416
+#: admin/addseasonpools.php:420
 msgid "minutes"
 msgstr "minuuttia"
 
-#: admin/addserieformats.php:125 admin/addseasonpools.php:417
+#: admin/addserieformats.php:124 admin/addseasonpools.php:410
 msgid "Half-time at point"
 msgstr "Puoliaika pisteessä"
 
-#: admin/addserieformats.php:133 admin/addseasonpools.php:425
+#: admin/addserieformats.php:132 admin/addseasonpools.php:418
 msgid "Time slot"
 msgstr "Aikavaraus"
 
-#: admin/addserieformats.php:139 admin/addserieformats.php:143
-#: admin/addseasonpools.php:431 admin/addseasonpools.php:435
+#: admin/addserieformats.php:138 admin/addserieformats.php:142
+#: admin/addseasonpools.php:424 admin/addseasonpools.php:428
 msgid "points"
 msgstr "pistettä"
 
-#: admin/addserieformats.php:141 admin/addseasonpools.php:433
+#: admin/addserieformats.php:140 admin/addseasonpools.php:426
 msgid "Additional points after time cap"
 msgstr "Lisäpisteet aikarajan täytyttyä"
 
-#: admin/addserieformats.php:146 admin/addseasonpools.php:438
+#: admin/addserieformats.php:145 admin/addseasonpools.php:431
 msgid "Time between points"
 msgstr "Pisteiden välinen aika"
 
-#: admin/addserieformats.php:148 admin/addserieformats.php:171
-#: admin/addseasonpools.php:440 admin/addseasonpools.php:461
+#: admin/addserieformats.php:147 admin/addserieformats.php:170
+#: admin/addseasonpools.php:433 admin/addseasonpools.php:454
 msgid "seconds"
 msgstr "sekuntia"
 
-#: admin/addserieformats.php:156 admin/addserieformats.php:158
-#: admin/addseasonpools.php:447 admin/addseasonpools.php:449
+#: admin/addserieformats.php:155 admin/addserieformats.php:157
+#: admin/addseasonpools.php:440 admin/addseasonpools.php:442
 msgid "per game"
 msgstr "per peli"
 
-#: admin/addserieformats.php:162 admin/addserieformats.php:164
-#: admin/addseasonpools.php:452 admin/addseasonpools.php:454
+#: admin/addserieformats.php:161 admin/addserieformats.php:163
+#: admin/addseasonpools.php:445 admin/addseasonpools.php:447
 msgid "per half"
 msgstr "per puoliaika"
 
-#: admin/addserieformats.php:169 admin/addseasonpools.php:459
+#: admin/addserieformats.php:168 admin/addseasonpools.php:452
 msgid "Time-out duration"
 msgstr "Aikalisän kesto"
 
-#: admin/addserieformats.php:173
+#: admin/addserieformats.php:172
 msgid "Time-outs on overtime"
 msgstr "Aikalisiä lisäajalla"
 
-#: admin/addserieformats.php:175 admin/addseasonpools.php:465
+#: admin/addserieformats.php:174 admin/addseasonpools.php:458
 msgid "per team"
 msgstr "per joukkue"
 
-#: admin/addserieformats.php:192 scorekeeper/respgames.php:74
+#: admin/addserieformats.php:191 scorekeeper/respgames.php:74
 #: scorekeeper/respgames.php:80 scorekeeper/respgames.php:96
 #: scorekeeper/respgames.php:162 scorekeeper/respgames.php:167
 msgid "Back"
@@ -4115,48 +4130,48 @@ msgstr ""
 msgid "Roster accreditation rights"
 msgstr "Pelaajalistan akkreditointi oikeudet"
 
-#: admin/poolmoves.php:19 admin/addseasonpools.php:349
+#: admin/poolmoves.php:19 admin/addseasonpools.php:342
 msgid "Continuing pool"
 msgstr "Jatkolohko"
 
-#: admin/poolmoves.php:104 admin/poolmoves.php:133
+#: admin/poolmoves.php:102 admin/poolmoves.php:129
 msgid "No scheduling name given"
 msgstr "Aikataulunimi puuttuu"
 
-#: admin/poolmoves.php:107 admin/poolmoves.php:136
+#: admin/poolmoves.php:105 admin/poolmoves.php:132
 msgid "Transfer already exists"
 msgstr "Siirto on jo olemassa"
 
-#: admin/poolmoves.php:151 admin/poolmoves.php:161
+#: admin/poolmoves.php:147 admin/poolmoves.php:157
 msgid "Team has already moved."
 msgstr "Siirto on jo tehty."
 
-#: admin/poolmoves.php:186 admin/seasonmoves.php:165
-#: admin/addseasonpools.php:306
+#: admin/poolmoves.php:182 admin/seasonmoves.php:165
+#: admin/addseasonpools.php:299
 msgid "Move games"
 msgstr "Siirrä pelit"
 
-#: admin/poolmoves.php:199 admin/seasonmoves.php:190
+#: admin/poolmoves.php:195 admin/seasonmoves.php:190
 msgid "all"
 msgstr "kaikki"
 
-#: admin/poolmoves.php:201 admin/seasonmoves.php:192
+#: admin/poolmoves.php:197 admin/seasonmoves.php:192
 msgid "nothing"
 msgstr "ei mitään"
 
-#: admin/poolmoves.php:203 admin/seasonmoves.php:194
+#: admin/poolmoves.php:199 admin/seasonmoves.php:194
 msgid "mutual"
 msgstr "keskinäiset"
 
-#: admin/poolmoves.php:210 admin/poolmoves.php:288
+#: admin/poolmoves.php:206 admin/poolmoves.php:282
 msgid "Make transfer rule"
 msgstr "Tee siirtosäännöt"
 
-#: admin/poolmoves.php:270
+#: admin/poolmoves.php:264
 msgid "vs."
 msgstr "vs."
 
-#: admin/poolmoves.php:302
+#: admin/poolmoves.php:294
 msgid "Pair"
 msgstr "Pari"
 
@@ -4213,27 +4228,27 @@ msgstr ""
 msgid "Name is mandatory!"
 msgstr "Nimi on pakollinen"
 
-#: admin/addseasonteams.php:75
+#: admin/addseasonteams.php:73
 msgid "Changes saved"
 msgstr "Muutokset tallennettu"
 
-#: admin/addseasonteams.php:81
+#: admin/addseasonteams.php:77
 msgid "added"
 msgstr "lisätty"
 
-#: admin/addseasonteams.php:137
+#: admin/addseasonteams.php:133
 msgid "Edit team"
 msgstr "Muokkaa joukkuetta"
 
-#: admin/addseasonteams.php:140
+#: admin/addseasonteams.php:136
 msgid "Add team"
 msgstr "Lisää joukkue"
 
-#: admin/addseasonteams.php:167
+#: admin/addseasonteams.php:163
 msgid "Starting pool"
 msgstr "Alkulohko"
 
-#: admin/addseasonteams.php:206
+#: admin/addseasonteams.php:203
 msgid "Select contact person"
 msgstr "Valitse yhteyshenkilö"
 
@@ -4571,92 +4586,92 @@ msgstr "lisätty"
 msgid "Pool name is mandatory!"
 msgstr "Lohkon nimi on pakollinen tieto!"
 
-#: admin/addseasonpools.php:225
+#: admin/addseasonpools.php:223
 msgid "Add pool"
 msgstr "Lisää lohko"
 
-#: admin/addseasonpools.php:237
+#: admin/addseasonpools.php:235
 msgid "Template"
 msgstr "Pohja"
 
-#: admin/addseasonpools.php:257
+#: admin/addseasonpools.php:255
 msgid "Edit pool"
 msgstr "Muokkaa lohkoa"
 
-#: admin/addseasonpools.php:283 admin/addseasonpools.php:285
+#: admin/addseasonpools.php:276 admin/addseasonpools.php:278
 msgid "Round Robin"
 msgstr "Round Robin"
 
-#: admin/addseasonpools.php:288 admin/addseasonpools.php:290
+#: admin/addseasonpools.php:281 admin/addseasonpools.php:283
 msgid "Play-off"
 msgstr "Pudotuspeli"
 
-#: admin/addseasonpools.php:293 admin/addseasonpools.php:295
+#: admin/addseasonpools.php:286 admin/addseasonpools.php:288
 msgid "Swissdraw"
 msgstr "Swissdraw"
 
-#: admin/addseasonpools.php:298 admin/addseasonpools.php:300
+#: admin/addseasonpools.php:291 admin/addseasonpools.php:293
 msgid "Crossmatch"
 msgstr "Ristipeli"
 
-#: admin/addseasonpools.php:302
+#: admin/addseasonpools.php:295
 #, fuzzy
 msgid "Special playoff template"
 msgstr "Playoff puun mallia ei löytynyt."
 
-#: admin/addseasonpools.php:315 admin/addseasonpools.php:317
+#: admin/addseasonpools.php:308 admin/addseasonpools.php:310
 msgid "Nothing"
 msgstr "Ei mitään"
 
-#: admin/addseasonpools.php:320 admin/addseasonpools.php:322
+#: admin/addseasonpools.php:313 admin/addseasonpools.php:315
 msgid "Mutual"
 msgstr "Keskinäiset"
 
-#: admin/addseasonpools.php:361
+#: admin/addseasonpools.php:354
 msgid "Placement pool"
 msgstr "Sijoituslohko"
 
-#: admin/addseasonpools.php:369
+#: admin/addseasonpools.php:362
 msgid "Initial moves"
 msgstr "Alkusarjat"
 
-#: admin/addseasonpools.php:370
+#: admin/addseasonpools.php:363
 msgid "select"
 msgstr "valitse"
 
-#: admin/addseasonpools.php:373
+#: admin/addseasonpools.php:366
 msgid "Color"
 msgstr "Väri"
 
-#: admin/addseasonpools.php:401
+#: admin/addseasonpools.php:394
 msgid "No teams"
 msgstr "Ei joukkueita"
 
-#: admin/addseasonpools.php:405 admin/seasonseries.php:59
+#: admin/addseasonpools.php:398 admin/seasonseries.php:59
 msgid "Rules"
 msgstr "Säännöt"
 
-#: admin/addseasonpools.php:405
+#: admin/addseasonpools.php:398
 msgid "(from the selected template)"
 msgstr "(valitusta pohjasta)"
 
-#: admin/addseasonpools.php:463
+#: admin/addseasonpools.php:456
 msgid "Time-outs in overtime"
 msgstr "Aikalisiä lisäajalla"
 
-#: admin/addseasonpools.php:471
+#: admin/addseasonpools.php:464
 msgid "Forfeit/BYE against"
 msgstr "Forfeit/BYE vastaan"
 
-#: admin/addseasonpools.php:473
+#: admin/addseasonpools.php:466
 msgid "points for the team giving up / BYE"
 msgstr "pisteet luovuttaneelle joukkueelle / BYE"
 
-#: admin/addseasonpools.php:475
+#: admin/addseasonpools.php:468
 msgid "Forfeit/BYE score"
 msgstr "Forfeit/BYE pisteet"
 
-#: admin/addseasonpools.php:477
+#: admin/addseasonpools.php:470
 msgid "points for their remaining opponent"
 msgstr "pisteet jäljelle jääneelle vastustajalle"
 
@@ -5252,11 +5267,15 @@ msgstr "Video"
 msgid "Live video"
 msgstr "Live video"
 
-#: lib/timetable.functions.php:504
+#: lib/timetable.functions.php:392
+msgid "No field defined"
+msgstr ""
+
+#: lib/timetable.functions.php:508
 msgid "Live Broadcasting"
 msgstr "Suoralähetys"
 
-#: lib/timetable.functions.php:560
+#: lib/timetable.functions.php:564
 msgid "Local time"
 msgstr "Paikallisaika"
 
@@ -5288,21 +5307,25 @@ msgstr "Pe"
 msgid "Sat"
 msgstr "La"
 
-#: lib/team.functions.php:443
+#: lib/team.functions.php:414
+msgid "Not moving to follower of playoff pool."
+msgstr ""
+
+#: lib/team.functions.php:436
 msgid "Move not allowed. Game already played!"
 msgstr "Siirto ei sallittu. Peli on jo pelattu!"
 
-#: lib/team.functions.php:1201 lib/club.functions.php:197
+#: lib/team.functions.php:1199 lib/club.functions.php:197
 #: lib/player.functions.php:516
 msgid "File is too large"
 msgstr "Tiedosto on liian suuri"
 
-#: lib/team.functions.php:1209 lib/club.functions.php:205
+#: lib/team.functions.php:1207 lib/club.functions.php:205
 #: lib/player.functions.php:524
 msgid "File is not supported image format"
 msgstr "Tiedosto ei ole tuettu kuvaformaatti"
 
-#: lib/team.functions.php:1213 lib/club.functions.php:209
+#: lib/team.functions.php:1211 lib/club.functions.php:209
 #: lib/player.functions.php:528
 #, fuzzy
 msgid "Missing gd extension for image handling."
@@ -7013,6 +7036,10 @@ msgstr "Communication (ne)"
 #: sql/upgrade_db.php:561
 msgid "Communication (ours)"
 msgstr "Communication (me)"
+
+#, fuzzy
+#~ msgid "No grouping"
+#~ msgstr "Oletus"
 
 #~ msgid "has no played players for this game."
 #~ msgstr "ei pelanneita pelaajia tässä pelissä."

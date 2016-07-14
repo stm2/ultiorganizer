@@ -162,25 +162,24 @@ if(!$print && !$singleview){
   $menutabs[_("Yesterday")]= ($baseurl)."&filter=yesterday&group=$group";
 
   $html .= pageMenu($menutabs,"",false);
-
-  if(count($groups)>1){
+  
+  if (count($groups) > 1) {
     $html .= "<p>\n";
-    foreach($groups as $grouptmp){
-      if($group==$grouptmp['reservationgroup']){
-        $html .= "<a class='groupinglink' href='".utf8entities($baseurl)."&amp;filter=".$filter."&amp;group=".urlencode($grouptmp['reservationgroup'])."'><span class='selgroupinglink'>".U_($grouptmp['reservationgroup'])."</span></a>";
-      }else{
-        $html .= "<a class='groupinglink' href='".utf8entities($baseurl)."&amp;filter=".$filter."&amp;group=".urlencode($grouptmp['reservationgroup'])."'>".U_($grouptmp['reservationgroup'])."</a>";
+    foreach ($groups as $grouptmp) {
+      if (empty($grouptmp['reservationgroup'])) {
+        $html .= grouplink($baseurl, $filter, "none", _("Without grouping"));
+      } else {
+        $html .= grouplink($baseurl, $filter, $grouptmp['reservationgroup'], U_($grouptmp['reservationgroup']), 
+            $group == $grouptmp['reservationgroup']);
       }
-      $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
+      $html .= " ";
     }
-    if($group=="all"){
-      $html .= "<a class='groupinglink' href='".utf8entities($baseurl)."&amp;filter=".$filter."&amp;group=all'><span class='selgroupinglink'>"._("All")."</span></a>";
-    }else{
-      $html .= "<a class='groupinglink' href='".utf8entities($baseurl)."&amp;filter=".$filter."&amp;group=all'>"._("All")."</a>";
-    }
+    $html .= grouplink($baseurl, $filter, "all", _("All groupings"), $group == "all");
     $html .= "</p>\n";
+    $html .= "<p style='clear:both'></p>\n";
   }
 }
+
 if(!empty($group) && $group!="all"){
   $groupheader=false;
 }
@@ -212,8 +211,8 @@ if($print){
   $html .= "<hr/>\n";
   $html .= "<p>";
   $html .= "<a href='?view=ical&amp;$gamefilter=$id&amp;time=$timefilter&amp;order=$order'>"._("iCalendar (.ical)")."</a> | ";
-  $html .= "<a href='".utf8entities($baseurl)."&filter=onepage&group=$group'>"._("Grid (PDF)")."</a> | ";
-  $html .= "<a href='".utf8entities($baseurl)."&filter=season&group=$group'>"._("List (PDF)")."</a> | ";
+  $html .= "<a href='".utf8entities($baseurl)."&amp;filter=onepage&group=$group'>"._("Grid (PDF)")."</a> | ";
+  $html .= "<a href='".utf8entities($baseurl)."&amp;filter=season&group=$group'>"._("List (PDF)")."</a> | ";
   $html .= "<a href='?".utf8entities($querystring)."&amp;print=1'>"._("Printable version")."</a>";
   $html .= "</p>\n";
 }
@@ -222,5 +221,15 @@ if($print){
 }else{
   showPage($title, $html);
 }
+
+function grouplink($baseurl, $filter, $group, $name, $selected = false) {
+  if ($selected)
+    return "<a class='groupinglink' href='" . utf8entities($baseurl) . "&amp;filter=" . $filter . "&amp;group=" .
+         utf8entities($group) . "'><span class='selgroupinglink'>" . utf8entities($name) . "</span></a>";
+  else
+    return "<a class='groupinglink' href='" . utf8entities($baseurl) . "&amp;filter=" . $filter . "&amp;group=" .
+         utf8entities($group) . "'>" . utf8entities($name) . "</a>";
+}
+
 
 ?>
