@@ -279,7 +279,7 @@ foreach ($pools as $spool) {
     }
     $html .= "<tr><th></th><th>";
     if (count(PoolTeams($poolId))) {
-      $html .= "<input class='button' type='submit' name='recalculate' value='" . _("Reset") . "' onclick='setPoolId(" . $poolId . ");'/>";
+      $html .= "<input class='button' type='submit' name='recalculate' value='" . _("Recalc.") . "' onclick='setPoolId(" . $poolId . ");'/>";
     }
     $html .= "</th>";
     for ($i = 0; $i < $columns - 2; ++$i) {
@@ -485,10 +485,10 @@ function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId) {
       } else {
         if ($poolinfo['visible'])
           $html .= "<input class='button' type='submit' name='setInvisible' value='" . _("Hide pool") .
-               "' onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
+               "' title='". _("Don't show pool in public menus") . " onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
         else
           $html .= "<input class='button' type='submit' name='setVisible' value='" . _("Show pool") .
-               "' onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
+               "' title='". _("Show pool in public menus") . " onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
       }
     }
     $html .= "<a href='?view=admin/serieteams&amp;season=$seasonId&amp;series=". $seriesId ."&amp;pool=". $poolId ."'>". _("Manage moves") ."</a>";
