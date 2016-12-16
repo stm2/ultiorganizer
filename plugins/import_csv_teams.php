@@ -31,13 +31,13 @@ if (isset($_POST['import'])) {
 	$series = SeasonSeries($season);
 	$ser = array();
 	while($row = mysql_fetch_assoc($series)){
-		$ser[] = array('id'=>$row['series_id'], 'name' =>$row['seriesname']);
+		$ser[] = array('id'=>$row['series_id'], 'name' =>$row['name']);
 	}
 
 	if(is_uploaded_file($_FILES['file']['tmp_name'])) {
     	$row = 1;
 		if (($handle = fopen($_FILES['file']['tmp_name'], "r")) !== FALSE) {
-			while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+			while (($data = fgetcsv($handle, 0, $separator)) !== FALSE) {
 				$team = $utf8 ? $data[0] : utf8_encode($data[0]);
 				$club = $utf8 ? $data[1] : utf8_encode($data[1]);
 				$country = $utf8 ? $data[2] : utf8_encode($data[2]);
