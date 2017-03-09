@@ -347,7 +347,7 @@ $i=0;
 foreach($urls as $url){
 	$html .= "<tr>";
 	$html .= "<td>".$url['type']."<input type='hidden' name='urltype".$i."' value='".utf8entities($url['type'])."'/></td>";
-	$html .= "<td><input class='input' size='3' maxlength='2' name='urlorder".$i."' value='".utf8entities($url['ordering'])."'/></td>";
+	$html .= "<td><input class='input' size='3' maxlength='3' name='urlorder".$i."' value='".utf8entities($url['ordering'])."'/></td>";
 	$html .= "<td><input class='input' size='30' maxlength='150' name='urlname".$i."' value='".utf8entities($url['name'])."'/></td>";
 	$html .= "<td><input class='input' size='40' maxlength='500' name='url".$i."' value='".utf8entities($url['url'])."'/></td>";
 	$html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId(".$url['url_id'].");\"/></td>";

@@ -673,6 +673,15 @@ function upgrade77() {
   dropField("uo_pool", "teams");
 }
 
+function upgrade78() {
+	if(hasTable("uo_series")){
+	  runQuery("ALTER TABLE uo_series MODIFY ordering varchar(5)");
+    }
+	if(hasTable("uo_urls")){
+	  runQuery("ALTER TABLE uo_urls MODIFY ordering varchar(5)");
+    }
+}
+
 function runQuery($query) {
 	$result = mysql_query($query);
 	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }

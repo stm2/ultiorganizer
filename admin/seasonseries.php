@@ -94,7 +94,7 @@ foreach($templates as $template) {
 
 $html .=  "</select></td>";
 
-  $html .= "<td><input class='input' size='3' maxlength='1' name='ordering$id' value='".utf8entities($row['ordering'])."'/></td>";
+  $html .= "<td><input class='input' size='3' maxlength='3' name='ordering$id' value='".utf8entities($row['ordering'])."'/></td>";
   
   if(intval($row['valid'])){
     $html .= "<td class='center'><input class='input' type='checkbox' name='valid$id' checked='checked'/></td>";
@@ -145,7 +145,7 @@ foreach($templates as $template) {
 
 $html .=  "</select></td>";
 
-$html .= "<td style='padding-top:15px'><input class='input' size='3' maxlength='1' name='ordering0' value='$last_ordering'/></td>";
+$html .= "<td style='padding-top:15px'><input class='input' size='3' maxlength='3' name='ordering0' value='$last_ordering'/></td>";
 $html .= "<td style='padding-top:15px'><input class='input' type='checkbox' name='valid0' checked='checked'/></td>";
 
 $html .= "<td style='padding-top:15px'><input id='add' class='button' name='add' type='submit' value='"._("Add")."'/></td>";
