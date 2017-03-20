@@ -184,46 +184,73 @@ if($list=="allteams" || $list=="byseeding"){
     }
     $htmlseries[] = $htmlteams;
   }
-  
-  $html .= "<table cellpadding='2' style='width:100%;'>\n";
-  $html .= "<tr>";
-  $html .= "<th style='width:20%;'>". _("Placement"). "</th>";
-  foreach($series as $ser){
-    $html .= "<th style='width:" . (80 / count($series)) . "%;'><a href='?view=seriesstatus&series=" .
-         $ser['series_id'] . "'>" . utf8entities(U_($ser['name'])) . "</a></th>";
-    $maxplacements = max(count(SeriesTeams($ser['series_id'])), $maxplacements);
+
+  function get_ordering($series, $index) {
+    $o = $series[$index]['ordering'];
+    if (empty($o)) {
+      return "";
+    }
+    return $o[0];
   }
-  $html .= "</tr>\n";
-  for($i=0;$i<$maxplacements;$i++){
 
-    if($i<3){
-      $html .= "<tr style='font-weight:bold;border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
-    }else{
-      $html .= "<tr style='border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
-    }
-    if($i==0){
-      $html .= "<td>"._("Gold")."</td>";
-    }elseif($i==1){
-      $html .= "<td>"._("Silver")."</td>";
-    }elseif($i==2){
-      $html .= "<td>"._("Bronze")."</td>";
-    }elseif($i>2){
-      $html .= "<td>".ordinal($i+1)."</td>";
-    }
-
-    for($j=0;$j<count($series);$j++){
-      $html .= "<td>";
-      if(!empty($htmlseries[$j][$i])){
-        $html .= $htmlseries[$j][$i];
-      }else{
-        $html .= "&nbsp;";
+  $batches = array();
+  $prev_ordering = "";
+  
+  if (count($series) <= 4) {
+    $batches[] = 0;
+  } else {
+    for($series_index=0;$series_index<count($series);$series_index++){
+      if (get_ordering($series, $series_index) != $prev_ordering) {
+        $batches[] = $series_index;
+        $prev_ordering = get_ordering($series, $series_index);
       }
-      $html .= "</td>";
+    }
+  }
+  $batches[] = count($series);
+  
+  for($c = 0; $c < count($batches)-1; $c++) {
+    $html .= "<table cellpadding='2' style='width:100%;'>\n";
+    $html .= "<tr>";
+    $html .= "<th style='width:20%;'>". _("Placement") . "</th>";
+    
+    $maxplacements = 3;
+    for ($series_index = $batches[$c]; $series_index < $batches[$c+1]; $series_index++) {
+      $ser = $series[$series_index];
+      $html .= "<th style='width:" . (80 / ($batches[$c+1]-$batches[$c])) . "%;'><a href='?view=seriesstatus&series=" .
+        $ser['series_id'] . "'>" . utf8entities(U_($ser['name'])) . "</a></th>";
+      $maxplacements = max(count(SeriesTeams($ser['series_id'])), $maxplacements);
     }
     $html .= "</tr>\n";
+    for($pos=0; $pos<$maxplacements; $pos++){
+      
+      if($pos<3){
+        $html .= "<tr style='font-weight:bold;border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
+      }else{
+        $html .= "<tr style='border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
+      }
+      if($pos==0){
+        $html .= "<td>"._("Gold")."</td>";
+      }elseif($pos==1){
+        $html .= "<td>"._("Silver")."</td>";
+      }elseif($pos==2){
+        $html .= "<td>"._("Bronze")."</td>";
+      }elseif($pos>2){
+        $html .= "<td>".ordinal($pos+1)."</td>";
+      }
+      
+      for($series_index = $batches[$c]; $series_index < $batches[$c+1]; $series_index++){
+        $html .= "<td>";
+        if(!empty($htmlseries[$series_index][$pos])){
+          $html .= $htmlseries[$series_index][$pos];
+        }else{
+          $html .= "&nbsp;";
+        }
+        $html .= "</td>";
+      }
+      $html .= "</tr>\n";
+    }
+    $html .= "</table><br />\n";
   }
-  $html .= "</table>\n";
-
 
 }
 
