@@ -50,7 +50,7 @@ $res = array(
     if (empty($res['season'])) {
       $error .= "<p>" . _("Season required.") . "</p>";
     }
-    if (empty (strtotime($res['endtime'])) || empty (strtotime($res['endtime'])) || strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
+    if (empty ($res['starttime']) || empty ($res['endtime']) || strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
       $error .= "<p>" . sprintf(_("Error: Duration must be at least %d minutes"), 1) . "</p>";
     }
     return $error;

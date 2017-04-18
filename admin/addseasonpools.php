@@ -19,7 +19,6 @@ $pp = array(
 	"visible"=>"0",
 	"continuingpool"=>"0",
 	"placementpool"=>"0",
-	"teams"=>"0",
 	"mvgames"=>"0",
 	"timeoutlen"=>"0",
 	"halftime"=>"0",

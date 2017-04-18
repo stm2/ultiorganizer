@@ -1262,10 +1262,10 @@ function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
     $query = sprintf("INSERT INTO uo_pool
             (type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, visible, played,
-            mvgames, ordering, teams, timeslot, name, series)
+            mvgames, ordering, timeslot, name, series)
             SELECT type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, 0, 0,
-            mvgames, '%s', teams, timeslot, '%s', %d
+            mvgames, '%s', timeslot, '%s', %d
             FROM uo_pooltemplate WHERE template_id=%d",
     mysql_real_escape_string($ordering),
     mysql_real_escape_string($name),
@@ -1309,10 +1309,10 @@ function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=fal
     $query = sprintf("INSERT INTO uo_pool
             (type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, visible, played,
-            mvgames, ordering, teams, timeslot, name, series)
+            mvgames, ordering, timeslot, name, series)
             SELECT type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, 0, 0,
-            mvgames, '%s', teams, timeslot, '%s', %d
+            mvgames, '%s', timeslot, '%s', %d
             FROM uo_pool WHERE pool_id=%d",
     mysql_real_escape_string($ordering),
     mysql_real_escape_string($name),
