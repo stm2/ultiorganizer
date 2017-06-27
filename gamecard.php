@@ -228,7 +228,7 @@ if($nGames){
   }
    
   if(($sorting == "ptotal")||(!$sorted)){
-    $html .= "<th><b>Yht.</b></th></tr>\n";
+    $html .= "<th><b>"._("Tot.")."</b></th></tr>\n";
     mergesort($points, create_function('$a,$b','return $a[6]==$b[6]?0:($a[6]>$b[6]?-1:1);'));
   }else{
     $html .= "<th><a class='thsort' href='".$viewUrl."sort=ptotal'>"._("Tot.")."</a></th></tr>\n";
