@@ -290,7 +290,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   } else {
     $html .= "<span style='align:right;float:right;'>#</span>";
   }
-  $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%dmin."), $duration);
+  $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%d&thinsp;min."), $duration);
   $html .= "</li>\n";
   return $html;
 }
@@ -709,7 +709,7 @@ foreach ($reservedPauses as $pauseId) {
     var unscheduled = Dom.get("unscheduled");
     var pauseElement = document.createElement("div");
     var duration = Dom.get("pauseLen").value;
-    var height = max(10,(duration * minHeight)-2);
+    var height = Math.max(10,(duration * minHeight)-2);
     var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
     html = html.replace(/%h%/g, height);
     html = html.replace(/%d%/g, duration);
