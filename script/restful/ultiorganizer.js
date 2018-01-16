@@ -150,7 +150,7 @@ ultiorganizer.Fetcher = function(parent, listname, child) {
 					manipulator = new ultiorganizer.DateAccessor(ret, name);
 				} else if (type == 'boolean') {
 					manipulator = new ultiorganizer.BoolAccessor(ret, name);
-				} else if (type.startsWith(enum)) {
+				} else if (type.startsWith('enum')) {
 					manipulator = new ultiorganizer.EnumAccessor(ret, name, type);
 					ret['_' + name] = manipulator;
 				}
