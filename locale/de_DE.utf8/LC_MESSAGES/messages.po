@@ -3767,7 +3767,7 @@ msgstr "Besucherzahl"
 
 #: admin/eventviewer.php:44
 msgid "Select type of event"
-msgstr "Turnier-/Saisontyp wählen"
+msgstr "Ereignistyp wählen"
 
 #: admin/eventviewer.php:64
 msgid "Resolve IDs"
