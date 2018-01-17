@@ -22,6 +22,8 @@ class EventDataXMLHandler{
   var $followers = array(); // pools with unresolved followers
   var $mode; //import mode: 'add' or 'replace'
 
+  const NULL_MARKER = "%NULL";
+  
   /**
    * Default construction
    */
@@ -98,13 +100,31 @@ class EventDataXMLHandler{
         }
         
         //uo_scheduling_name, referenced by either games or moves 
-        $schedulings = DBQuery("SELECT sched.* FROM uo_scheduling_name sched 
-            LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
-            LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
-            LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
-            LEFT JOIN uo_pool pool2 ON (mv.frompool = pool2.pool_id OR mv.topool = pool2.pool_id)
-            WHERE pool2.series = $seriesId  OR pool.series = $seriesId 
-            GROUP BY scheduling_id");
+        $schedulings = 
+//         DBQuery("SELECT sched.* FROM uo_scheduling_name sched 
+//             LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
+//             LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
+//             LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
+//             LEFT JOIN uo_pool pool2 ON (mv.frompool = pool2.pool_id OR mv.topool = pool2.pool_id)
+//             WHERE pool2.series = $seriesId  OR pool.series = $seriesId 
+//             GROUP BY scheduling_id");
+        
+        // this is faster
+            DBQuery("SELECT * FROM ( 
+                (SELECT sched.*
+                    FROM uo_scheduling_name sched
+                    LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
+                    LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
+                    WHERE pool.series = $seriesId)
+                UNION
+                (SELECT sched.*
+                    FROM uo_scheduling_name sched
+                    LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
+                    LEFT JOIN uo_pool pool ON (mv.frompool = pool.pool_id OR mv.topool = pool.pool_id)
+                    WHERE pool.series = $seriesId )
+                ) as unioned
+                GROUP BY scheduling_id");
+        
         while ($row = mysql_fetch_assoc($schedulings)) {
           $ret .= $this->RowToXML("uo_scheduling_name", $row);
         }
@@ -185,11 +205,7 @@ class EventDataXMLHandler{
     $ret = "<".$elementName." ";
      
     for ($i=0; $i < $total; $i++) {
-      if($values[$i]==''){
-        $ret .=  $columns[$i]."='NULL' ";
-      }else{
-        $ret .=  $columns[$i]."='".htmlspecialchars($values[$i],ENT_QUOTES,"UTF-8")."' ";
-      }
+      $ret .= $this->do_attribute($columns[$i], $values[$i]);
     }
 
     if($endtag){
@@ -199,6 +215,31 @@ class EventDataXMLHandler{
     }
 
     return $ret;
+  }
+  
+  function do_attribute($name, $value) {
+    if($value === NULL) {
+      $value = self::NULL_MARKER;
+    } else if (is_string($value)) {
+      if (substr($value, 0, 1) === '%') {
+        $value = "%" . $value;
+      }
+    }
+    if ($name === htmlspecialchars($name)) {
+      return $name . "='" . htmlspecialchars($value, ENT_QUOTES,"UTF-8") . "' ";
+    } else {
+      die ('invalid attribute name "' . $name .'"');
+    }
+  }
+  
+  function get_attribute(&$row, $name, $value) {
+    if ($value === self::NULL_MARKER) {
+      $row[$name] = NULL;
+    } else if (substr($value, 0, 2) === '%%') {
+      $row[$name] = substr($value, 1, strlen($value)-1);
+    } else {
+      $row[$name] = $value;
+    }
   }
 
   /**
@@ -247,11 +288,7 @@ class EventDataXMLHandler{
     if (is_array($attribs)) {
       $row = array();
       while(list($key,$val) = each($attribs)) {
-        if($val=="NULL"){
-          $row[$key]="NULL";
-        } else {
-          $row[$key]=$val;
-        }
+        $this->get_attribute($row, $key, $val);
       }
       switch($this->mode){
         case "new":
@@ -357,7 +394,7 @@ class EventDataXMLHandler{
         $newId = $this->InsertRow($name, $row);
         $this->uo_pool[$key]=$newId;
 
-        if(!empty($row["FOLLOWER"]) && $row["FOLLOWER"]!="NULL"){
+        if(!empty($row["FOLLOWER"]) && !is_null($row["FOLLOWER"])){
           $this->followers[$newId] = (int)$row["FOLLOWER"];
         }
         
@@ -382,21 +419,18 @@ class EventDataXMLHandler{
         $key = $row["GAME_ID"];
         unset($row["GAME_ID"]);
         
-        if(!empty($row["HOMETEAM"]) && $row["HOMETEAM"]!="NULL" && $row["HOMETEAM"]>0){
+        if(!empty($row["HOMETEAM"]) && !is_null($row["HOMETEAM"]) && $row["HOMETEAM"]>0){
           $row["HOMETEAM"] = $this->uo_team[$row["HOMETEAM"]];
         }
-        if(!empty($row["VISITORTEAM"]) && $row["VISITORTEAM"]!="NULL" && $row["VISITORTEAM"]>0){
+        if(!empty($row["VISITORTEAM"]) && !is_null($row["VISITORTEAM"]) && $row["VISITORTEAM"]>0){
           $row["VISITORTEAM"] = $this->uo_team[$row["VISITORTEAM"]];
         }
-        if (!empty($row["RESPTEAM"]) && $row["RESPTEAM"] != "NULL" && $row["RESPTEAM"] > 0) {
+        if (!empty($row["RESPTEAM"]) && !is_null($row["RESPTEAM"]) && $row["RESPTEAM"] > 0) {
           $oldresp = $row["RESPTEAM"];
-          if ($row["HOMETEAM"] == "NULL") {
+          if (is_null($row["HOMETEAM"])) {
             $row["RESPTEAM"] = $this->uo_scheduling_name[$row["RESPTEAM"]];
           } else {
             $row["RESPTEAM"] = $this->uo_team[$row["RESPTEAM"]];
-          }
-          if (is_null($row["RESPTEAM"])) {
-            $row["RESPTEAM"] = "NULL";
           }
         }
         if(!empty($row["RESERVATION"]) && isset($this->uo_reservation[$row["RESERVATION"]])){
@@ -473,13 +507,13 @@ class EventDataXMLHandler{
     $values = "";
     foreach ($row as $key => $value) {
       if ($columns[strtolower($key)]==='int') {
-        if ($value==="NULL"){
+        if (is_null($value)){
           $values .= "NULL,";
-        }elseif (is_numeric($value))
+        } elseif (is_numeric($value))
           $values .= "'".mysql_real_escape_string($value)."',";
         else
           die("Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
-      }else {
+      } else {
         $values .= "'".mysql_real_escape_string($value)."',";
       }
     }
@@ -512,14 +546,14 @@ class EventDataXMLHandler{
         $query = "SELECT season_id FROM uo_season WHERE ". $cond;
         $exist = DBQueryRowCount($query);
         if($exist){
-          if("'$this->eventId'" == $row["SEASON_ID"]){
+          if($this->eventId === $row["SEASON_ID"]){
             $this->SetRow($name,$row,$cond);
             $this->uo_season[$row["SEASON_ID"]]=$row["SEASON_ID"];
           }else{
-            die(_("Target event is not the same as in a file."));
+            die(sprintf(_("Target event %s is not the same as in the file (%s)."), $this->eventId, utf8entities($row["SEASON_ID"])));
           }
         }else{
-          die(_("Event to replace doesn't exist"));
+          die(sprintf(_("Event to replace (%s) doesn't exist."), utf8entities($row['SEASON_ID'])));
         }
         break;
 
@@ -653,13 +687,13 @@ class EventDataXMLHandler{
         $key = $row["GAME_ID"];
         unset($row["GAME_ID"]);
         
-        if(!empty($row["HOMETEAM"]) && $row["HOMETEAM"]!="NULL" && $row["HOMETEAM"]>0){
+        if(!empty($row["HOMETEAM"]) && !is_null($row["HOMETEAM"]) && $row["HOMETEAM"]>0){
           $row["HOMETEAM"] = $this->uo_team[$row["HOMETEAM"]];
         }
-        if(!empty($row["VISITORTEAM"]) && $row["VISITORTEAM"]!="NULL" && $row["VISITORTEAM"]>0){
+        if(!empty($row["VISITORTEAM"]) && !is_null($row["VISITORTEAM"]) && $row["VISITORTEAM"]>0){
           $row["VISITORTEAM"] = $this->uo_team[$row["VISITORTEAM"]];
         }
-        if(!empty($row["RESPTEAM"]) && $row["RESPTEAM"]!="NULL" && $row["RESPTEAM"]>0){
+        if(!empty($row["RESPTEAM"]) && !is_null($row["RESPTEAM"]) && $row["RESPTEAM"]>0){
           $row["RESPTEAM"] = $this->uo_team[$row["RESPTEAM"]];
         }
         if(!empty($row["RESERVATION"]) && isset($this->uo_reservation[$row["RESERVATION"]])){
