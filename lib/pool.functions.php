@@ -2400,20 +2400,42 @@ function SeriesRanking($series_id) {
   return $ranking;
 }
 
-function PlayoffTemplate($teams, $rounds, $id="") {
+function get_template_path($cust='default') {
   global $include_prefix;
+  return $include_prefix."cust/".$cust."/layouts/";
+}
+
+function PlayoffTemplate($teams, $rounds, $id="") {
 
   //read layout templates
   if (empty($id)) {
     $id = $teams."_teams_".$rounds."_rounds";
   }
-  if (is_file($include_prefix."cust/".CUSTOMIZATIONS."/layouts/".$id.".html")) {
-    $ret2 = file_get_contents($include_prefix."cust/".CUSTOMIZATIONS."/layouts/".$id.".html");
-  }elseif (is_file($include_prefix."cust/default/layouts/".$id.".html")) {
-    $ret2 = file_get_contents($include_prefix."cust/default/layouts/".$id.".html");
+  if (is_file(get_template_path(CUSTOMIZATIONS).$id.".html")) {
+    $ret2 = file_get_contents(get_template_path(CUSTOMIZATIONS).$id.".html");
+  }elseif (is_file(get_template_path().$id.".html")) {
+    $ret2 = file_get_contents(get_template_path().$id.".html");
   }else{
     $ret2 = "";
   }
   return $ret2;
+}
+
+function add_entries(&$entries, $path) {
+  if ($handle = opendir($path)) {
+    while (false !== ($entry = readdir($handle))) {
+      if (preg_match("/^.*\.html$/", $entry) && is_file($path.$entry) && is_readable($path.$entry)) {
+        $entries[] = $entry;
+      }
+    }
+    closedir($handle);
+  }
+}
+
+function PlayoffTemplates() {
+  $templates = array();
+  add_entries($templates, get_template_path(CUSTOMIZATIONS));
+  add_entries($templates, get_template_path());
+  return $templates;
 }
 ?>
