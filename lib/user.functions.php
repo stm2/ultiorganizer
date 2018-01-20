@@ -458,11 +458,6 @@ function hasPlayerAdminRights() {
 	return isset($_SESSION['userproperties']['userrole']['playeradmin']);
 }
 
-function isSeasonAdmin($season) {
-	return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
-	isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
-}
-
 function hasScheduleRights() {
 	return isset($_SESSION['userproperties']['userrole']['resadmin']);
 }
@@ -489,9 +484,21 @@ function hasCurrentSeasonsEditRight() {
 	return false;
 }
 
+function isSeasonAdmin($season) {
+  return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
+  isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
+}
+
 function hasEditSeasonSeriesRight($season) {
-	return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
-	isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
+  return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
+  isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
+}
+
+function hasEditSeriesRight($series) {
+  $season = SeriesSeasonId($series);
+  return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
+  isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
+  isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]);
 }
 
 function hasEditPlacesRight($season) {
