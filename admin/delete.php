@@ -39,7 +39,7 @@ $html = "";
 if (!empty($_POST['reset_games'])) {
   foreach ($_POST['pools'] as $key => $poolId) {
     if (hasEditSeriesRight(PoolSeries($poolId))) {
-      // PoolUndoAllGames($poolId);
+      PoolUndoAllGames($poolId);
       $html .= "<p>" . sprintf(_("Pool %s has been reset."), PoolName($poolId)) . "</p>\n";
     }
   }
@@ -76,7 +76,7 @@ if (empty($mode)) {
     $html .= "</div>\n";
     $html .= "</form>";
   }
-} else {
+} else if (mode == 'series' ) {
   // delete series:
   // uo_enrolledteam
   // uo_player_stats
@@ -113,8 +113,14 @@ if (empty($mode)) {
   /////+resgameadmin:resid
   /////+gameadmin:gameid
   /////+seriesadmin:seriesid
+  /////  poolselector
+  /////  locale
+  /////  editseason id
+  /////  facebookuid
+  /////  facebooktoken
+  /////  facebookplayer
+  /////  facebookmessage
   // uo_spirit_category
-  
   // uo_season_stats(!)
   
   
