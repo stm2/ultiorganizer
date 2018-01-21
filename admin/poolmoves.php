@@ -37,12 +37,6 @@ function setId2(ids)
 	input.value = ids;
 	}
 	
-function toggleField(checkbox, fieldid) 
-	{
-    var input = document.getElementById(fieldid);
-	input.disabled = !checkbox.checked;
-	}
-	
 function checkMove(frompool, infield, outfield, pteamname) 
 	{
 	var frompool = document.getElementById(frompool);

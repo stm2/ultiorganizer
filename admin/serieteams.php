@@ -84,11 +84,7 @@ function setId(id) {
 	var input = document.getElementById("hiddenDeleteId");
 	input.value = id;
   }
-	
-function toggleField(checkbox, fieldid) {
-    var input = document.getElementById(fieldid);
-	input.disabled = !checkbox.checked;
-  }
+
 //-->
 </script>
 <?php

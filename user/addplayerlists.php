@@ -159,11 +159,6 @@ include_once 'script/disable_enter.js.inc';
 ?>
 <script type="text/javascript">
 <!--
-function toggleField(checkbox, fieldid) {
-    var input = document.getElementById(fieldid);
-	input.disabled = !checkbox.checked;
-}
-	
 function checkAll(field){
 	var div = document.getElementById(field);
 		 

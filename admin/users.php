@@ -25,21 +25,6 @@ if (hasEditUsersRight()) {
 	}
 }
 pageTopHeadOpen($title);
-?>
-<script type="text/javascript">
-<!--
-function checkAll(field)
-	{
-	var form = document.getElementById(field);
-		 
-		for (var i=1; i < form.elements.length; i++) 
-		{
-		 form.elements[i].checked = !form.elements[i].checked;
-		}
-	}
-//-->
-</script>
-<?php
 pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
