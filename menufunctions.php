@@ -493,7 +493,10 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
       echo "<td class='menuseasonlevel'><a style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
       echo "</tr><tr><td>\n";
       foreach ($links as $href => $name) {
-        echo "<a class='subnav' href='".$href."'>&raquo; ".utf8entities($name)."</a>\n";
+        if (empty($href))
+          echo "<hr />";
+        else
+          echo "<a class='subnav' href='".$href."'>&raquo; ".utf8entities($name)."</a>\n";
       }
       echo "</td></tr>\n";
       echo "</table>\n";
@@ -685,6 +688,7 @@ function getEditSeasonLinks() {
       $ret[$season] = array();
     }
     $respgamesset = array();
+    $deleteset = array();
     foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
         $links['?view=admin/seasonadmin&amp;season='.$season] = _("Event");
@@ -696,6 +700,7 @@ function getEditSeasonLinks() {
         $links['?view=admin/seasonstandings&amp;season='.$season] = _("Standings");
         $links['?view=admin/accreditation&amp;season='.$season] = _("Accreditation");
         $respgamesset[$season] = "set";
+        $deleteset[$season] = "set";
       }
       $ret[$season] = $links;
     }
@@ -712,6 +717,7 @@ function getEditSeasonLinks() {
           $links['?view=admin/accreditation&amp;season='.$seriesseason] = _("Accreditation");
           $ret[$seriesseason] = $links;
           $respgamesset[$seriesseason] = "set";
+          $deleteset[$season] = "set";
         }
       }
     }
@@ -782,6 +788,10 @@ function getEditSeasonLinks() {
       $links = $ret[$season];
       $links['?view=user/respgames&amp;season='.$season] = _("Game responsibilities");
       $links['?view=user/contacts&amp;season='.$season] = _("Contacts");
+      if (!empty($deleteset[$season])) {
+        $links[''] = "";
+        $links['?view=admin/delete&amp;season='.$season] = _("Delete");
+      }
       $ret[$season] = $links;
     }
   }

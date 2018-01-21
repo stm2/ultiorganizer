@@ -1316,11 +1316,10 @@ function PoolDeleteAllGames($poolId) {
 }
 
 function PoolSeries($poolId) {
-	$query = sprintf("SELECT pool_id
+  $query = sprintf("SELECT series
 		FROM uo_pool
-		WHERE series='%d'",
-		(int) $poolId);
-	return DBQueryToValue($query);
+		WHERE pool_id='%d'", (int) $poolId);
+  return DBQueryToValue($query);
 }
 
 function UnscheduledGameInfo($teams=array()) {

@@ -2438,4 +2438,86 @@ function PlayoffTemplates() {
   add_entries($templates, get_template_path());
   return $templates;
 }
+
+function undoPoolMoves($poolId) {
+  $frompools = PoolMovingsToPool($poolId);
+  
+  foreach ($frompools as $pool) {
+    $poolinfo = PoolInfo($pool['topool']);
+    
+//     $savePerm = $_SESSION['userproperties']['userrole']['seriesadmin'][$poolinfo['series']];
+//     $_SESSION['userproperties']['userrole']['seriesadmin'][$poolinfo['series']] = 1;
+    PoolUndoMove($pool['frompool'], $pool['fromplacing'], $poolId);
+//     $_SESSION['userproperties']['userrole']['seriesadmin'][$poolinfo['series']] = $savePerm;
+  }
+}
+
+// delete series:
+// uo_enrolledteam
+// uo_player_stats
+// uo_pool ->
+//// uo_game ->
+////// (uo_scheduling_name
+////// uo_spirit_score
+////// uo_game_event
+////// uo_goal
+////// uo_played
+////// uo_timeout
+////// uo_defense
+//// uo_game_pool
+//// uo_move_teams
+////// uo_scheduling_id
+//// uo_specialranking
+////// uo_scheduling_id
+//// uo_team_pool
+// uo_series(1)
+// uo_series_stats
+// uo_team ->
+//// uo_accreditionlog
+//// uo_player ->
+//// uo_player_stats
+//// uo_team_profile
+//// uo_team_stats
+// uo_team_stats
+// uo_user_properties
+//// userrole
+/////+playeradmin:playerid
+/////+teamadmin:teamid
+/////+accradmin:teamid
+/////+resadmin:resid
+/////+resgameadmin:resid
+/////+gameadmin:gameid
+/////+seriesadmin:seriesid
+// uo_spirit_category
+
+// uo_season_stats(!)
+
+
+function PoolUndoAllGames($poolId) {
+  $poolinfo = PoolInfo($poolId);
+  $games = PoolGames($poolId);
+  set_time_limit(300); // game simulation takes time because so much inserts
+  
+  foreach ($games as $game) {
+    
+    GameRemoveAllPlayers($game['game_id']);
+    
+    GameSetStartingTeam($game['game_id'], NULL);
+    
+    GameRemoveAllScores($game['game_id']);
+    GameSetHalftime($game['game_id'], NULL);
+    
+    GameRemoveAllTimeouts($game['game_id']);
+    
+    GameSetScoreSheetKeeper($game['game_id'], NULL);
+    
+    GameClearResult($game['game_id'], false); // FIXME: twitter/facebook
+  }
+  
+  undoPoolMoves($poolId);
+  
+  ResolvePoolStandings($poolId);
+  PoolResolvePlayed($poolId);
+  // TODO undo moves, uo_team_pool.activerank, special ranks, ...
+}
 ?>

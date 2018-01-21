@@ -708,4 +708,41 @@ function SpiritTotal($points, $categories) {
   else
     return null;
 }
+
+function SeasonPoolGamesTable($formId, $seasonId, $series = null) {
+  $html = "<table>";
+  $html .= "<tr><th class='left'><input type='checkbox' onclick='checkAll(\"$formId\");'/></th>";
+  $html .= "<th>" . ("Pool") . "</th>";
+  $html .= "<th>" . ("Series") . "</th>";
+  $html .= "<th>" . ("Teams") . "</th>";
+  $html .= "<th>" . ("Played/Total") . "</th>";
+  $html .= "</tr>\n";
+  
+  if (is_null($series)) {
+    $series = SeasonSeries($seasonId);
+  }
+  
+  foreach ($series as $seriesRow) {
+    
+    $pools = SeriesPools($seriesRow['series_id']);
+    foreach ($pools as $pool) {
+      $html .= "<tr>";
+      if (PoolTotalPlayedGames($pool['pool_id']) < count(PoolGames($pool['pool_id'])) && PoolIsMoveFromPoolsPlayed($pool['pool_id'])) {
+        $checked = "disabled='disabled'";
+      } else {
+        $checked = "";
+      }
+      $html .= "<td class='left'><input type='checkbox' $checked name='pools[]' value='" . utf8entities($pool['pool_id']) . "' /></td>";
+      
+      $html .= "<td>" . $pool['name'] . "</td>";
+      $html .= "<td>" . $seriesRow['name'] . "</td>";
+      $html .= "<td class='center'>" . count(PoolTeams($pool['pool_id'])) . "</td>";
+      $html .= "<td class='center'>" . PoolTotalPlayedGames($pool['pool_id']);
+      $html .= "/" . count(PoolGames($pool['pool_id'])) . "</td>";
+      $html .= "</tr>\n";
+    }
+  }
+  $html .= "</table>\n";
+  return $html;
+}
 ?>

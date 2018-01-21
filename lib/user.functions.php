@@ -507,17 +507,11 @@ function hasEditPlacesRight($season) {
 }
 
 function hasEditTeamsRight($series) {
-	$season = SeriesSeasonId($series);
-	return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
-	isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
-	isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]);
+  return hasEditSeriesRight($series);
 }
 
 function  hasEditGamesRight($series) {
-	$season = SeriesSeasonId($series);
-	return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
-	isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
-	isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]);
+  return hasEditSeriesRight($series);
 }
 
 function hasEditPlayerProfileRight($playerId) {
