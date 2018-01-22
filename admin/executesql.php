@@ -102,7 +102,7 @@ $html .= "<form method='post' action='?view=admin/executesql'>";
 				$html .= "<tr>";
 				foreach ($arraycolumnsname as $i => $columnname)
 					{
-					if(mysql_adapt_is_blob($result, $i)){
+					if(!mysql_adapt_is_blob($result, $i)){
 						$html .= "<td  class='dbrow'>" . utf8entities($row[$columnname]) . "</td>";
 					}else{
 						$html .= "<td  class='dbrow'>BINARY</td>";
