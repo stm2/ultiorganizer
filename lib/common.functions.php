@@ -690,7 +690,7 @@ function ResultsetToCsv($result, $separator){
 	
     $fields_cnt = mysqli_num_fields($result);
  
-     $schema_insert = '';
+    $schema_insert = '';
  
     for ($i = 0; $i < $fields_cnt; $i++){
         $l = $csv_enclosed . str_replace($csv_enclosed, $csv_escaped . $csv_enclosed,

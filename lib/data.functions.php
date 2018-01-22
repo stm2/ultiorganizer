@@ -31,7 +31,7 @@ class EventDataXMLHandler{
   /**
    * Default construction
    */
-  function EventDataXMLHandler(){}
+  function __construct(){}
 
   // FIXME include defense, gameevent, played (?)
   /**

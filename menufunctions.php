@@ -365,7 +365,8 @@ function navigationBar($title) {
         $lastvalue = end($_SESSION['navigation']);
         if($lastvalue){
           if($lastvalue == $title){
-            $lastkey = end((array_keys($_SESSION['navigation'])));
+            $tmp_keys = array_keys($_SESSION['navigation']);
+            $lastkey = end($tmp_keys);
             unset($_SESSION['navigation'][$lastkey]);
           }
         }

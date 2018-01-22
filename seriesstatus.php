@@ -34,7 +34,6 @@ foreach ($teams as $team) {
   $teamstats['team_id']=$team['team_id'];
   $teamstats['seed']=$team['rank'];
   $teamstats['flagfile']=$team['flagfile'];
-  $teamstats['pool']=$team['poolname'];
 
   $teamstats['wins']=$stats['wins'];
   $teamstats['games']=$stats['games'];
@@ -170,13 +169,6 @@ foreach($allteams as $stats){
   }else{
     $html .= "<td>$flag<a href='?view=teamcard&amp;team=".$stats['team_id']."'>".utf8entities(U_($stats['name']))."</a></td>";
   }
-  /*
-   if($sort == "pool") {
-   $html .= "<td class='highlight'>",utf8entities(U_($stats['pool'])),"</td>";
-   }else{
-   $html .= "<td>",utf8entities(U_($stats['pool'])),"</td>";
-   }
-   */
   if($sort == "seed") {
     $html .= "<td class='center highlight'>".intval($stats['seed']).".</td>";
   }else{
