@@ -28,11 +28,6 @@ if(isset($_POST['update'])){
 }
 
 //common page
-pageTopHeadOpen($title);
-include 'script/common.js.inc';
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
 
 $html .= "<form method='post' action='?view=admin/eventviewer'>";
 
@@ -147,7 +142,5 @@ if(!empty($event_ids)){
 }
 $html .= "</form>\n";
 
-echo $html;
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

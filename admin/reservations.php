@@ -54,13 +54,8 @@ if (!empty($_POST['change_times'])) {
 //common page
 $title = _("Fields");
 $LAYOUT_ID = RESERVATIONS;
-pageTopHeadOpen($title);
 
 $html .=  file_get_contents('script/rescalendar.inc');
-include 'script/common.js.inc';
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
 
 $searchItems = array();
 $searchItems[] = 'searchstart';
@@ -119,7 +114,7 @@ if(empty($season)){
     $html  .= "<td class='center'>".$row['games']."</td>";
     $html  .= "<td class='center'><a href='?view=user/pdfscoresheet&amp;reservation=".$row['id']."'>"._("PDF")."</a></td>";
     if(intval($row['games'])==0){
-      $html  .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' name='remove' alt='"._("X")."' onclick=\"setId(".$row['id'].");\"/></td>";
+      $html  .= "<td class='center'>" . getDeleteButton('remove', $row['id']) . "</td>";
     }
     	
     $html .= "</tr>\n";
@@ -185,8 +180,5 @@ $html .= "\n<hr/>\n";
 $html .= "<p><a href='?view=admin/addreservation&amp;season=".$season."'>"._("Add reservation")."</a> | ";
 $html .= "<a href='?view=admin/locations&amp;season=".$season."'>"._("Add location")."</a></p>";
 
-echo $html;
-
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

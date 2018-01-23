@@ -81,11 +81,6 @@ $html .= yuiLoad(array("utilities"));
 ?>
 <script type="text/javascript">
 <!--
-function setId(id)
-  {
-  var input = document.getElementById("hiddenDeleteId");
-  input.value = id;
-  }
 function ChgName(index) {
   YAHOO.util.Dom.get('gamenameEdited' + index).value = 'yes';
   YAHOO.util.Dom.get("save").disabled = false;
@@ -223,7 +218,7 @@ foreach ($pools as $pool) {
     $html .= "<a href='?view=admin/editgame&amp;season=$season&amp;game=" . $game['game_id'] . "'><img class='deletebutton' src='images/settings.png' alt='D' title='" . _("edit details") . "'/></a>";
 
     if (CanDeleteGame($game['game_id'])) {
-      $html .= "<input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" . _("X") . "' onclick=\"setId(" . $game['game_id'] . ");\"/>";
+      $html .= getDeleteButton('remove', $game['game_id']); 
     }
     $html .= "</td>\n";
 

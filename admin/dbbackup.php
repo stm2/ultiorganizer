@@ -77,11 +77,7 @@ if (isset($_POST['backup']) && !empty($_POST['tables']) && isSuperAdmin()){
 //common page
 $title = _("Database backup");
 $LAYOUT_ID = DBBACKUP;
-pageTopHeadOpen($title);
-include 'script/common.js.inc';
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
+
 if(isSuperAdmin()){
 	
 	$html .= "<form method='post' id='tables' action='?view=admin/dbbackup'>\n";
@@ -123,8 +119,6 @@ if(isSuperAdmin()){
 }else{
 	$html .= "<p>"._("User credentials does not match")."</p>\n";
 }
-echo $html;
 
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

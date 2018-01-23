@@ -141,7 +141,7 @@ function RemoveClub($clubId) {
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 		
 		return $result;
-	} else { die('Insufficient rights to remove player'); }
+	} else { die('Insufficient rights to remove club'); }
 }
 
 function AddClub($seriesId, $name) {

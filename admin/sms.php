@@ -27,11 +27,8 @@ $title = _("SMS handling");
 //}
 
 //common page
-pageTopHeadOpen($title);
-include 'script/common.js.inc';
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
+
+$html = "";
 
 if(!empty($_POST["sms_1"])) {
 	debugvar($_POST);
@@ -73,20 +70,17 @@ if(!empty($_POST["sms_1"])) {
 	$smscount=0;
 	while($row = mysqli_fetch_assoc($sms))	{
 		
-		echo "<tr>";
-		echo "<td>".utf8entities($row['msg'])."</td>";
-		echo "<td>".utf8entities($row['to1'])."</td>";
-		echo "<td>".utf8entities($row['to2'])."</td>";
-		echo "<td>".utf8entities($row['to3'])."</td>";
-		echo "<td>".utf8entities($row['created'])."</td>";
-		echo "<td>".utf8entities($row['sent'])."</td>";
-		echo "<td>".utf8entities($row['delivered'])."</td>";
-		echo "</tr>";
+		$html .= "<tr>";
+		$html .= "<td>".utf8entities($row['msg'])."</td>";
+		$html .= "<td>".utf8entities($row['to1'])."</td>";
+		$html .= "<td>".utf8entities($row['to2'])."</td>";
+		$html .= "<td>".utf8entities($row['to3'])."</td>";
+		$html .= "<td>".utf8entities($row['created'])."</td>";
+		$html .= "<td>".utf8entities($row['sent'])."</td>";
+		$html .= "<td>".utf8entities($row['delivered'])."</td>";
+		$html .= "</tr>";
 		
 	}
 
-	echo "</table>";
-
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

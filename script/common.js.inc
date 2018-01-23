@@ -22,9 +22,21 @@ function clearAll(field) {
   }
 }
 
-function setId(id) {
-  var input = document.getElementById("hiddenDeleteId");
-  input.value = id;
+function setId(value) {
+  setId1('hiddenDeleteId', value);
+}
+
+function setId1(id, value) {
+  var input = document.getElementById(id);
+  input.value = value;
+}
+
+function setId2(id1, id2, v1, v2) 
+{
+  var input = document.getElementById(id1);
+  input.value = v1;
+  input = document.getElementById(id2);
+  input.value = v2;
 }
 
 function changeseason(id) {

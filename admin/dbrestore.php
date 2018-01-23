@@ -71,13 +71,6 @@ if(isSuperAdmin()){
 //common page
 $title = _("Database backup");
 $LAYOUT_ID = DBRESTORE;
-pageTopHeadOpen($title);
-include 'script/common.js.inc';
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
-echo $html;
 
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

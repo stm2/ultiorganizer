@@ -1354,4 +1354,35 @@ function mergesort(&$array, $cmp_function = 'strcmp') {
   while ($ptr2 < count($array2)) $array[] = $array2[$ptr2++];
   return;
 }
+
+/**
+ * Returns html code for an 'X' delete button, that changes element $element's value to $value by javascript.
+ * Your page must include common.js.inc. (It usually does, by way of menufunctions.php.)
+ *
+ * You must provide the hidden element on your page (e.g. by calling getHidden Input.
+ *
+ * @param string $name
+ *          The name of the input element
+ * @param string $value
+ *          The value that the element should get once the button is clicked. It is converted with htmlentities.
+ * @param string $element
+ *          The id of the (hidden input) element to change.
+ * @return string HTML code for an input (class='deletebutton')
+ */
+function getDeleteButton($name, $value, $element = 'hiddenDeleteId', $img = 'images/remove.png', $alt = 'X') {
+  return "<input class='deletebutton' type='image' src='$img' alt='$alt' name='$name' value='" . _("X") . "' onclick=\"setId1('" . $element . "', '" . utf8entities($value) . "');\"/>";
+}
+
+/**
+ * Return html code for a hidden input field with id (and name) $id.
+ *
+ * @param string $id
+ *          element id
+ * @return string HTML code for hidden input.
+ *        
+ */
+function getHiddenInput($id = 'hiddenDeleteId') {
+  return "<input type='hidden' id='$id' name='$id'/>";
+}
+
 ?>

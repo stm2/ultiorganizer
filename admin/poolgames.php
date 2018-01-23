@@ -22,23 +22,12 @@ $html = "";
 
 //common page
 pageTopHeadOpen($title);
-?>
-<script type="text/javascript">
-<!--
-function setId(id) 
-	{
-	var input = document.getElementById("hiddenDeleteId");
-	input.value = id;
-	}
-//-->
-</script>
-<?php
 pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
 
 $html .= "<h2>".U_(PoolName($poolId))."<h2>";
-	
+
 //process itself on submit
 if(!empty($_POST['remove_x'])) {
 	$id = $_POST['hiddenDeleteId'];
@@ -49,7 +38,7 @@ if(!empty($_POST['remove_x'])) {
 	if(mysqli_num_rows($goals)){
 		$html .= "<p class='warning'>"._("Game has")." ".mysqli_num_rows($goals)." "._("goals").". "._("Goals must be removed before removing the team").".</p>";
 		$ok = false;
-	}	
+	}
 	if($ok)
 		DeleteGame($id);
 }elseif(!empty($_POST['swap_x'])) {
@@ -57,7 +46,7 @@ if(!empty($_POST['remove_x'])) {
 	$goals = GameAllGoals($id);
 	if(!mysqli_num_rows($goals)){
 	  GameChangeHome($id);
-	}		
+	}
 }elseif(!empty($_POST['removemoved'])){
 	$id = $_POST['hiddenDeleteId'];
 	DeleteMovedGame($id, $poolId);
@@ -98,7 +87,7 @@ if(!empty($_POST['remove_x'])) {
 			if($gpool['specialmoves']) { $fakegames .= "<p>playoff layout with moves found, using special moves.</p>"; }
 		}
 	}elseif($poolInfo['type']==3){
-		// Swiss-draw: 
+		// Swiss-draw:
 		if($generatedgames[0]==false) {
 			$fakegames .= "<p>The number of teams in a Swiss-draw pool should be even. Please add or remove a team.</p>";
 		}else{
@@ -127,7 +116,7 @@ if(!empty($_POST['remove_x'])) {
 				$fakegames .= "<p>".TeamName($game['home'])." - ".TeamName($game['away'])."</p>";
 			}
 		}
-	}	
+	}
 }elseif(!empty($_POST['generate'])){
 	if(!empty($_POST['rounds'])){
 		$rounds = $_POST['rounds'];
@@ -149,8 +138,8 @@ if(!empty($_POST['remove_x'])) {
 	}elseif($poolInfo['type']==3){ //in case of Swissdraw, create pools and moves
 		if($generatedgames[0]==false) {
 			echo "<p>The number of teams in a Swiss-draw pool should be even. Please add or remove a team.</p>";
-		}else{		
-			//generate pools (with games) and moves 
+		}else{
+			//generate pools (with games) and moves
 			$generatedpools = GenerateSwissdrawPools($poolId, $rounds, true);
 		}
 	}
@@ -198,7 +187,7 @@ if($poolInfo['type']=="1"){
 	if (isRespTeamHomeTeam()) {
 		$html .= "checked='checked'";
 	}
-	$html .="/></p>";	
+	$html .="/></p>";
 	
 }elseif($poolInfo['type']=="4"){
 	$html .= "<p>"._("Crossmatch pool")."</p>\n";
@@ -207,7 +196,7 @@ if($poolInfo['type']=="1"){
 	if (isRespTeamHomeTeam()) {
 		$html .= "checked='checked'";
 	}
-	$html .="/></p>";	
+	$html .="/></p>";
 	
 }
 
@@ -280,9 +269,13 @@ foreach($reservations as $res){
 			}
 			$html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$season&amp;game=".$row['game_id']."'>"._("edit")."</a></td>";
 			$html .= "<td style='width:5%'>". intval($row['homescore']) ."</td><td style='width:2%'>-</td><td style='width:5%'>". intval($row['visitorscore']) ."</td>";
-			$html .= "<td class='center'><input class='deletebutton' type='image' src='images/swap.png' alt='<->' name='swap' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";
-			$html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";		
-			$html .= "</tr>\n";	
+			$html .= "<td class='center'> "
+			   . getDeleteButton('swap', $row['game_id'], 'hiddenSwapId', 'images/swap.png', "<->")
+			   . "</td>";
+			$html .= "<td class='center'>"
+			   .getDeleteButton('remove', $row['game_id'])
+			   . "</td>";
+			$html .= "</tr>\n";
 			}
 		
 		$html .= "</table>";
@@ -315,9 +308,13 @@ if(count($games)){
 			$html .= "<td style='width:30%'>". utf8entities(U_($row['pvisitorteamname'])) ."</td>";
 		}
 		$html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$season&amp;game=".$row['game_id']."'>"._("edit")."</a></td>";
-		$html .= "<td class='center'><input class='deletebutton' type='image' src='images/swap.png' alt='<->' name='swap' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";
-		$html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";		
-		$html .= "</tr>\n";	
+		$html .= "<td class='center'>"
+		  . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->')
+		  . "</td>";
+		$html .= "<td class='center'>"
+		  . getDeleteButton('remove', $row['game_id'])
+		  . "</td>";
+		$html .= "</tr>\n";
 	}
 	$html .= "</table>";
 }
@@ -334,9 +331,13 @@ if(count($games)){
 		$html .= "<td style='width:30%'>". utf8entities($row['visitorteamname']) ."</td>";
 		$html .= "<td style='width:5%'>". intval($row['homescore']) ."</td><td style='width:2%'>-</td><td style='width:5%'>". intval($row['visitorscore']) ."</td>";
 		$html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$season&amp;game=".$row['game_id']."'>"._("edit")."</a></td>";
-		$html .= "<td class='center'><input class='deletebutton' type='image' src='images/swap.png' alt='<->' name='swap' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";
-		$html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='removemoved' value='"._("X")."' onclick=\"setId(".$row['game_id'].");\"/></td>";		
-		$html .= "</tr>\n";	
+		$html .= "<td class='center'>"
+		  . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->')
+		  . "</td>";
+		$html .= "<td class='center'>"
+		   . getDeleteButton('removemoved', $row['game_id'])
+		   . "</td>";
+		$html .= "</tr>\n";
 		}
 	$html .= "</table>";
 }
@@ -352,7 +353,7 @@ if(!$poolInfo['played']){
 	if (isRespTeamHomeTeam()) {
 		$html .= "checked='checked'";
 	}
-	$html .="/></p>";	
+	$html .="/></p>";
 	
 	$html .= "<table border='0' cellpadding='4px' width='400px'>\n";
 	$html .= "<tr>";
@@ -377,14 +378,14 @@ if(!$poolInfo['played']){
 	$html .= "<td style='width:30%'><select class='dropdown' style='width:100%' name='newaway'>";
 	$html .= $teamlist;
 	$html .= "</select></td>";
-	$html .= "<td class='center'><input class='button' type='submit' value='"._("Create")."' name='addnew'/></td>";		
+	$html .= "<td class='center'><input class='button' type='submit' value='"._("Create")."' name='addnew'/></td>";
 	$html .= "</tr>\n";
 	$html .= "</table>";
 }
 
 
 //stores id to delete
-$html .= "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
+$html .= "<p>" . getHiddenInput() . "</p>";
 $html .= "</form>\n";
 
 echo $html;

@@ -88,11 +88,6 @@ if (isset($_POST['rename']) && !empty($_POST['ids']) && isSuperAdmin()){
 	$result .= "<hr/>";
 }
 
-pageTopHeadOpen($title);
-include 'script/common.js.inc';
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
 $html .= $result;
 $html .=  "<div>\n";	
 $html .=  _("List").": ";
@@ -217,7 +212,6 @@ if($filter == 'teams'){
 $html .= "</table>\n";
 $html .= "<div><input type='hidden' id='filter' name='filter' value='$filter'/></div>\n";
 $html .= "</form>\n";
-echo $html;
-contentEnd();
-pageEnd();
+
+showPage($title, $html);
 ?>

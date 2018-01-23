@@ -25,7 +25,7 @@ if (isset($_POST['acknowledge'])) {
     AcknowledgeUnaccredited($playerGameArr[0], $playerGameArr[1], "accreditation");
   }
 }
-if (isset($_POST['remacknowledge']) && isset($_POST['deleteAckId'])) {
+if (isset($_POST['remacknowledge_x']) && isset($_POST['deleteAckId'])) {
   $playerGameArr = explode("_", $_POST['deleteAckId']);
   UnAcknowledgeUnaccredited($playerGameArr[0], $playerGameArr[1], "accreditation");
 }
@@ -41,17 +41,6 @@ $unAccredited = SeasonUnaccredited($season);
 
 //common page
 pageTopHeadOpen($title);
-?>
-<script type="text/javascript">
-<!--
-function setId(id, name) 
-	{
-	var input = document.getElementById(name);
-	input.value = id;
-	}
-//-->
-</script>
-<?php
 pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
@@ -116,8 +105,7 @@ if($view=="acclog"){
       echo "<td>".utf8entities($row['firstname'])." ".utf8entities($row['lastname'])."</td>";
       echo "<td>".utf8entities($row['teamname'])."</td>";
       echo "<td>".utf8entities(GameName($row))."</td>";
-      echo "<td style='text-align:center'><input class='deletebutton' type='image' src='images/remove.png' name='remacknowledge' ";
-      echo "value='X' alt='X' onclick='setId(\"".$row['player_id']."_".$row['game_id']."\", \"deleteAckId\");'/>";
+      echo "<td style='text-align:center'>" . getDeleteButton('remacknowledge', $row['player_id']."_".$row['game_id'], "deleteAckId"); 
       echo "</td></tr>\n";
     }
   }

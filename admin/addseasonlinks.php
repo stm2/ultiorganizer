@@ -8,7 +8,7 @@ $title = _("Event links");
 $html = "";
 $seasonId = $_GET["season"];
 
-if(!empty($_POST['save'])){
+if(!empty($_POST['savebutton'])){
 
 	$settings = array();
 
@@ -59,7 +59,7 @@ if(!empty($_POST['save'])){
 	}
 	$serverConf = GetSimpleServerConf();
 	
-}elseif(!empty($_POST['remove_x'])) {
+}elseif(isset($_POST['remove_x'])) {
 	$id = $_POST['hiddenDeleteId'];
 	RemoveUrl($id);
 }
@@ -95,8 +95,7 @@ foreach($urls as $url){
 	$html .= "<td><input class='input' size='3' maxlength='2' name='urlorder".$i."' value='".utf8entities($url['ordering'])."'/></td>";
 	$html .= "<td><input class='input' size='30' maxlength='150' name='urlname".$i."' value='".utf8entities($url['name'])."'/></td>";
 	$html .= "<td><input class='input' size='40' maxlength='500' name='url".$i."' value='".utf8entities($url['url'])."'/></td>";
-	$html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' name='remove' alt='"._("X")."' onclick=\"setId(".$url['url_id'].");\"/></td>";
-	$html .= "<td><input type='hidden' name='urlid".$i."' value='".utf8entities($url['url_id'])."'/></td>";
+	$html .= "<td class='center'>" . getDeleteButton('remove', $url['url_id']) . "</td>";
 	$html .= "</tr>\n";
 	$i++;
 }
@@ -117,9 +116,8 @@ $html .= $htmltmp1;
 $html .= "</table>\n";
 
 
-$html .= "<input type='hidden' name='save' value='hiddensave'/>\n";
 $html .= "<p><input class='button' name='savebutton' type='submit' value='"._("Save")."'/></p>";
-$html .= "<div><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></div>";
+$html .= "<div>" . getHiddenInput() . "</div>";
 $html .= "</form>";
 echo $html;
 contentEnd();
