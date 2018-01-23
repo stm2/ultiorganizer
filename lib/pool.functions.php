@@ -626,8 +626,7 @@ function PoolDependsOn($topool) {
         FROM uo_moveteams pmt
         LEFT JOIN uo_pool ps ON(ps.pool_id=pmt.frompool)
         WHERE pmt.topool = %d
-		GROUP BY frompool
-        ORDER BY pmt.torank ASC",
+		GROUP BY frompool",
       (int)$topool);
   return DBQueryToArray($query);
 }
@@ -1424,7 +1423,7 @@ function PoolDeleteTeam($poolId, $teamId, $checkrights=true) {
     DBQuery($query);
 
     $teaminfo = TeamInfo($teamId);
-    if($teaminfo['pool']==$poolId){
+    if($teaminfo['pool']==$poolId){ /* FIXME: pool obsolete? */
       $query = sprintf("UPDATE uo_team SET pool=NULL WHERE team_id=%d",
         (int)$teamId);
       DBQuery($query);
@@ -1466,7 +1465,7 @@ function PoolSetTeam($curpool, $teamId, $rank, $newpool) {
   }
 
   $teaminfo = TeamInfo($teamId);
-  if ($teaminfo['pool'] == $curpool) {
+  if ($teaminfo['pool'] == $curpool) { /* FIXME: pool obsolete? */
     $query = sprintf("UPDATE uo_team SET pool=%d WHERE team_id=%d", (int) $newpool, (int) $teamId);
 
     DBQuery($query);
@@ -1503,7 +1502,7 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
     }
     DBQuery($query);
 
-    //update team pool
+    //update team pool /* FIXME: pool obsolete? */
     /* FIXME
     $query = sprintf("UPDATE uo_team SET
             pool=%d WHERE team_id=%d",

@@ -263,10 +263,10 @@ function ResolveSwissdrawPoolStandings($poolId)
 		{	
 		//echo "<p>win t".$points[$i]['team']." v".$points[$i]['wins']." s".$points[$i]['arank']."</p>";
 		$query = sprintf("UPDATE uo_team_pool 
-				SET activerank='%s' WHERE pool='%s' AND team='%s'",
-			mysql_adapt_real_escape_string($points[$i]['arank']),
-			mysql_adapt_real_escape_string($poolId),
-			mysql_adapt_real_escape_string($points[$i]['team']));
+				SET activerank=%d WHERE pool=%d AND team=%d",
+			intval($points[$i]['arank']),
+			intval($poolId),
+			intval($points[$i]['team']));
 		
 		mysql_adapt_query($query);
 		}
@@ -387,10 +387,10 @@ function ResolveSeriesPoolStandings($poolId){
   for ($i=0; $i < mysqli_num_rows($standings) && !empty($points[$i]['team']); $i++)  {
     //echo "<p>win t".$points[$i]['team']." v".$points[$i]['wins']." s".$points[$i]['arank']."</p>";
     $query = sprintf("UPDATE uo_team_pool
-			SET activerank='%s' WHERE pool='%s' AND team='%s'",
-    mysql_adapt_real_escape_string($points[$i]['arank']),
-    mysql_adapt_real_escape_string($poolId),
-    mysql_adapt_real_escape_string($points[$i]['team']));
+			SET activerank=%d WHERE pool=%d AND team=%d",
+      intval($points[$i]['arank']),
+      intval($poolId),
+      intval($points[$i]['team']));
 
     mysql_adapt_query($query);
   }
@@ -616,7 +616,7 @@ function getMatchesGoals($points, $poolId, $shared=false) {
 }
 
 function TeamPoolStanding($teamId, $poolId){
-	$query = sprintf("SELECT u.activerank FROM uo_team_pool u WHERE pool='%d' AND team='%d'",
+	$query = sprintf("SELECT u.activerank FROM uo_team_pool u WHERE pool=%d AND team=%d",
 		(int)$poolId,
 		(int)$teamId);
 	return DBQueryToValue($query);

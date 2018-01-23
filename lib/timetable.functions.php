@@ -942,7 +942,7 @@ function TimeTableSetMoveTimes($season, $times) {
         $query = sprintf(" 
           INSERT INTO uo_movingtime
           (season, fromlocation, fromfield, tolocation, tofield, time) 
-          VALUES ('%s', '%d', '%d', '%d', '%d', '%d') ON DUPLICATE KEY UPDATE time='%d'", 
+          VALUES ('%s', %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE time=%d", 
             mysql_adapt_real_escape_string($season), 
             (int) $times[$from]['location'], 
             (int) $times[$from]['field'],

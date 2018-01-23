@@ -289,7 +289,7 @@ function SchedulingNameByMoveTo($topool, $torank)	{
 }
 
 
-function TeamSerieGames($teamId, $serieId)
+function TeamSerieGames($teamId, $poolId)
 {
   $query = sprintf("
 			SELECT pp.game_id, pp.hometeam, pp.visitorteam, pp.homescore, 
@@ -297,7 +297,7 @@ function TeamSerieGames($teamId, $serieId)
 			FROM uo_game pp 
 			WHERE pp.pool='%s' AND pp.valid=true AND (pp.visitorteam='%s' OR pp.hometeam='%s') 
 			ORDER BY pp.time ASC",
-  mysql_adapt_real_escape_string($serieId),
+  mysql_adapt_real_escape_string($poolId),
   mysql_adapt_real_escape_string($teamId),
   mysql_adapt_real_escape_string($teamId));
 
@@ -460,7 +460,7 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
   	
   $result = DBQuery($query);
 
-  //update team pool
+  //update team pool /* FIXME: pool obsolete? */
   $query = sprintf("UPDATE uo_team SET
 			pool=%d WHERE team_id=%d",
   (int)$move['topool'],
@@ -663,10 +663,10 @@ GROUP BY pool,team_id) swiss
 
 ON swiss.pool=tot.pool AND tot.opp_id=swiss.team_id		
 		
-WHERE tot.team_id='%d' AND tot.pool='%s'
+WHERE tot.team_id=%d AND tot.pool=%d
 GROUP BY tot.pool,tot.team_id",
-  mysql_adapt_real_escape_string($teamId),
-  mysql_adapt_real_escape_string($poolId));
+  intval($teamId),
+  intval($poolId));
   	
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
@@ -1134,8 +1134,8 @@ function AddPlayer($teamId, $firstname, $lastname, $profileId, $num=-1) {
 }
 
 function CanDeletePlayer($playerId) {
-  $query = sprintf("SELECT count(*) FROM uo_played WHERE player='%s'",
-  mysql_adapt_real_escape_string($playerId));
+  $query = sprintf("SELECT count(*) FROM uo_played WHERE player=%d",
+  intval($playerId));
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
   if (!$row = mysqli_fetch_row($result)) return false;
@@ -1147,9 +1147,9 @@ function SetTeamProfile($profile) {
   if (hasEditPlayersRight($profile['team_id'])) {
 
     if(!empty($profile['abbreviation'])){
-      $query = sprintf("UPDATE uo_team SET abbreviation='%s' WHERE team_id='%s'",
+      $query = sprintf("UPDATE uo_team SET abbreviation='%s' WHERE team_id=%d",
       mysql_adapt_real_escape_string($profile['abbreviation']),
-      mysql_adapt_real_escape_string($profile['team_id']));
+      intval($profile['team_id']));
       	
       DBQuery($query);
     }
@@ -1157,8 +1157,8 @@ function SetTeamProfile($profile) {
     $query = sprintf("
 			SELECT team_id
 			FROM uo_team_profile 
-			WHERE team_id='%s'",
-    mysql_adapt_real_escape_string($profile['team_id']));
+			WHERE team_id=%d",
+      intval($profile['team_id']));
 
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
@@ -1167,8 +1167,8 @@ function SetTeamProfile($profile) {
     if(mysqli_num_rows($result)==0){
       $query = sprintf("INSERT INTO uo_team_profile (team_id,
 			captain, coach, story, achievements) VALUES 
-			('%s', '%s', '%s', '%s', '%s')",
-      mysql_adapt_real_escape_string($profile['team_id']),
+			(%d, '%s', '%s', '%s', '%s')",
+        intval($profile['team_id']),
       mysql_adapt_real_escape_string($profile['captain']),
       mysql_adapt_real_escape_string($profile['coach']),
       mysql_adapt_real_escape_string($profile['story']),
@@ -1176,12 +1176,12 @@ function SetTeamProfile($profile) {
       //update
     }else{
       $query = sprintf("UPDATE uo_team_profile SET captain='%s', coach='%s',
-				story='%s', achievements='%s' WHERE team_id='%s'",
+				story='%s', achievements='%s' WHERE team_id=%d",
       mysql_adapt_real_escape_string($profile['captain']),
       mysql_adapt_real_escape_string($profile['coach']),
       mysql_adapt_real_escape_string($profile['story']),
       mysql_adapt_real_escape_string($profile['achievements']),
-      mysql_adapt_real_escape_string($profile['team_id']));
+      intval($profile['team_id']));
     }
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
@@ -1235,9 +1235,9 @@ function UploadTeamImage($teamId){
 function SetTeamProfileImage($teamId, $filename) {
   if (isSuperAdmin() || hasEditPlayersRight($teamId)) {
 
-    $query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id='%s'",
+    $query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id=%d",
     mysql_adapt_real_escape_string($filename),
-    mysql_adapt_real_escape_string($teamId));
+    intval($teamId));
     	
     DBQuery($query);
 
@@ -1264,8 +1264,8 @@ function RemoveTeamProfileImage($teamId) {
         unlink($file);//  remove old images if present
       }
 
-      $query = sprintf("UPDATE uo_team_profile SET profile_image=NULL WHERE team_id='%s'",
-      mysql_adapt_real_escape_string($teamId));
+      $query = sprintf("UPDATE uo_team_profile SET profile_image=NULL WHERE team_id=%d",
+      intval($teamId));
       	
       DBQuery($query);
     }
@@ -1273,16 +1273,16 @@ function RemoveTeamProfileImage($teamId) {
 }
 
 function AddTeam($params) {
-  if (hasEditTeamsRight($params['series'])) {
+  if (hasEditTeamsRight($params['series'])) { /* FIXME: pool obsolete? */
     $query = sprintf("
 			INSERT INTO uo_team
 			(name, pool, rank, valid, series) 
-			VALUES ('%s', '%s', '%s', '%s', '%s')",
-    mysql_adapt_real_escape_string($params['name']),
-    mysql_adapt_real_escape_string($params['pool']),
-    mysql_adapt_real_escape_string($params['rank']),
-    mysql_adapt_real_escape_string($params['valid']),
-    mysql_adapt_real_escape_string($params['series']));
+			VALUES ('%s', %d, %d, %d, %d)",
+      mysql_adapt_real_escape_string($params['name']),
+      intval($params['pool']),
+      intval($params['rank']),
+      intval($params['valid']),
+      intval($params['series']));
     	
     $result = DBQuery($query);
     $teamId = mysql_adapt_insert_id();
@@ -1303,20 +1303,20 @@ function AddTeam($params) {
   } else { die('Insufficient rights to add team'); }
 }
 
-function SetTeam($params) {
+function SetTeam($params) { /* FIXME: pool obsolete? */
   if (hasEditTeamsRight($params['series'])) {
     $query = sprintf("
 			UPDATE uo_team SET
-			name='%s', pool='%s', abbreviation='%s',
-			rank='%s', valid='%s', series='%s'
-			WHERE team_id='%s'",
-    mysql_adapt_real_escape_string($params['name']),
-    mysql_adapt_real_escape_string($params['pool']),
-    mysql_adapt_real_escape_string($params['abbreviation']),
-    mysql_adapt_real_escape_string($params['rank']),
-    mysql_adapt_real_escape_string($params['valid']),
-    mysql_adapt_real_escape_string($params['series']),
-    mysql_adapt_real_escape_string($params['team_id']));
+			name='%s', pool=%d, abbreviation='%s',
+			rank=%d, valid=%d, series=%d
+			WHERE team_id=%d",
+      mysql_adapt_real_escape_string($params['name']),
+      intval($params['pool']),
+      mysql_adapt_real_escape_string($params['abbreviation']),
+      intval($params['rank']),
+      intval($params['valid']),
+      intval($params['series']),
+      intval($params['team_id']));
     	
     $result = DBQuery($query);
 
@@ -1335,9 +1335,9 @@ function SetTeamName($teamId, $name) {
   $series = getTeamSeries($teamId);
   if (hasEditTeamsRight($series)){
     $query = sprintf("
-			UPDATE uo_team SET name='%s' WHERE team_id='%s'",
-    mysql_adapt_real_escape_string($name),
-    mysql_adapt_real_escape_string($teamId));
+			UPDATE uo_team SET name='%s' WHERE team_id=%d",
+      mysql_adapt_real_escape_string($name),
+      intval($teamId));
     	
     return DBQuery($query);
   } else { die('Insufficient rights to edit team'); }
@@ -1347,9 +1347,9 @@ function SetTeamOwner($teamId, $clubId) {
   $series = getTeamSeries($teamId);
   if (hasEditTeamsRight($series)){
     $query = sprintf("
-			UPDATE uo_team SET club='%s' WHERE team_id='%s'",
-    mysql_adapt_real_escape_string($clubId),
-    mysql_adapt_real_escape_string($teamId));
+			UPDATE uo_team SET club=%d WHERE team_id=%d",
+      intval($clubId),
+      intval($teamId));
     	
     return DBQuery($query);
   } else { die('Insufficient rights to edit team'); }
@@ -1360,8 +1360,8 @@ function SetTeamSerieRank($teamId, $poolId, $rank, $activerank) {
   if (hasEditTeamsRight($poolInfo['series'])) {
     $query = sprintf("
 			UPDATE uo_team_pool SET
-			rank='%s', activerank='%s'
-			WHERE team='%s' AND pool='%s'",
+			rank=%d, activerank=%d
+			WHERE team=%d AND pool=%d",
     (int) $rank,
     (int) $activerank,
     (int) $teamId,
@@ -1379,8 +1379,8 @@ function SetTeamPoolRank($teamId, $poolId, $rank) {
   if (hasEditTeamsRight($poolInfo['series'])) {
     $query = sprintf("
 			UPDATE uo_team_pool SET
-			rank='%s'
-			WHERE team='%s' AND pool='%s'",
+			rank=%d
+			WHERE team=%d AND pool=%d",
         (int) $rank,
         (int) $teamId,
         (int) $poolId);
@@ -1397,8 +1397,8 @@ function SetTeamRank($teamId, $poolId, $activerank) {
   if (hasEditTeamsRight($poolInfo['series'])) {
     $query = sprintf("
 			UPDATE uo_team_pool SET
-			activerank='%s'
-			WHERE team='%s' AND pool='%s'",
+			activerank=%d
+			WHERE team=%d AND pool=%d",
         (int) $activerank,
         (int) $teamId,
         (int) $poolId);

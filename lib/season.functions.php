@@ -573,7 +573,7 @@ function AddSeason($seasonId, $params, $comment=null) {
 			(season_id, name, type, istournament, isinternational, organizer, category, isnationalteams,
 			starttime, endtime, iscurrent, enrollopen, enroll_deadline,spiritmode,showspiritpoints,
 			timezone) 
-			VALUES ('%s', '%s', '%s', %d, %d, '%s', '%s', '%d', '%s', '%s', %d, %d, '%s', %d, %d, '%s')",
+			VALUES ('%s', '%s', '%s', %d, %d, '%s', '%s', %d, '%s', '%s', %d, %d, '%s', %d, %d, '%s')",
     mysql_adapt_real_escape_string($seasonId),
     mysql_adapt_real_escape_string($params['name']),
     mysql_adapt_real_escape_string($params['type']),
@@ -615,8 +615,8 @@ function SetSeason($seasonId, $params, $comment=null) {
   if (isSeasonAdmin($seasonId)) {
     $query = sprintf("
 			UPDATE uo_season SET
-			season_id='%s', name='%s', type='%s', istournament='%d', isinternational='%d', 
-			organizer='%s', category='%s', isnationalteams='%d',
+			season_id='%s', name='%s', type='%s', istournament=%d, isinternational=%d, 
+			organizer='%s', category='%s', isnationalteams=%d,
 			starttime='%s', endtime='%s', iscurrent=%d, enrollopen=%d, enroll_deadline='%s',
 			spiritmode=%d, showspiritpoints=%d, timezone='%s'
 			WHERE season_id='%s'",

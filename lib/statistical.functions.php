@@ -189,8 +189,8 @@ function SetTeamSeasonStanding($teamId, $standing) {
   $teaminfo = TeamInfo($teamId);
   if (isSeasonAdmin($teaminfo['season'])){
 		$query = sprintf("UPDATE uo_team_stats SET
-						standing='%d' 
-						WHERE team_id='%d'",
+						standing=%d 
+						WHERE team_id=%d",
 						(int)($standing),(int)($teamId));
 		
 		DBQuery($query);
@@ -428,17 +428,23 @@ function CalcTeamStats($season) {
 				$defense_str=" ";
 				if(ShowDefenseStats())
 					{
-					$defense_str=",defenses_total=$defenses_total ";
+					  $defense_str=sprintf(", defenses_total=%d ", $defenses_total);
 					}
-				$query = "UPDATE uo_team_stats SET
-						season='".$season_info['season_id']."', 
-						series=".$team_info['series'].", 
-						goals_made=$goals_made, 
-						goals_against=$goals_against, 
-						standing=$standing, 
-						wins=$wins, 
-						losses=$losses".$defense_str.
-						"WHERE team_id=".$team['team_id'];
+				$query = sprintf("UPDATE uo_team_stats SET
+						season='%s', 
+						series=%d, 
+						goals_made=%d, 
+						goals_against=%d, 
+						standing=%d, 
+						wins=%d, 
+						losses=%d".$defense_str.
+						"WHERE team_id=%d",
+						$season_info['season_id'],
+						$team_info['series'],
+						$goals_made,						$goals_against,
+						(int) $standing,						$wins,
+						$losses,
+						intval($team['team_id']));
 				DBQuery($query);
 			}
 		}

@@ -75,11 +75,11 @@ function AutoResolveTies($poolId) {
 //			print "Adjusting team ".$row['team']."'s rank to ".$i."<br>";
 			$query = sprintf("
 				UPDATE uo_team_pool
-				SET activerank='%s'
-				WHERE pool='%s' AND team='%s'",				
-				mysql_adapt_real_escape_string($i),
-				mysql_adapt_real_escape_string($poolId),
-				mysql_adapt_real_escape_string($row['team']));
+				SET activerank=%d
+				WHERE pool=%d AND team=%d",				
+				intval($i),
+				intval($poolId),
+				intval($row['team']));
 			$result2 = mysql_adapt_query($query);
 			if (!$result2) { die('Invalid query: ' . mysql_adapt_error()); }
 		}				

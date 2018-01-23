@@ -1265,7 +1265,7 @@ function someHTML($string) {
  */
 function CommentRaw($type, $id) {
   $query = sprintf("SELECT comment FROM uo_comment
-		WHERE type='%d' AND id='%s'",
+		WHERE type=%d AND id='%s'",
       (int) $type, mysql_adapt_real_escape_string($id));
   $comment = DBQueryToValue($query);
   if ($comment != -1)
@@ -1299,7 +1299,7 @@ function CommentHTML($type, $id) {
  */
 function SetComment($type, $id, $comment) {
   if (empty($comment))
-    $query = sprintf("DELETE FROM uo_comment WHERE type='%d' AND id='%s'", 
+    $query = sprintf("DELETE FROM uo_comment WHERE type=%d AND id='%s'", 
         (int) $type, 
         mysql_adapt_real_escape_string($id));
   else {

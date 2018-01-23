@@ -111,7 +111,7 @@ function SeriesTeams($seriesId, $orderbyseeding=false){
 			LEFT JOIN uo_series ser ON(ser.series_id=t.series)
 			LEFT JOIN uo_club cl ON(cl.club_id=t.club)
 			LEFT JOIN uo_country c ON(c.country_id=t.country)
-			WHERE t.series = '%d'
+			WHERE t.series = %d
 			GROUP BY t.team_id
 			",
   (int)($seriesId));
@@ -162,7 +162,7 @@ function SeriesAllPlayers($seriesId) {
   $query = sprintf("SELECT p.player_id, p.accreditation_id, p.profile_id FROM uo_player p
 			LEFT JOIN uo_team t ON (p.team=t.team_id)
 			LEFT JOIN uo_series ser ON (t.series=ser.series_id)
-			WHERE ser.series_id='%d'",
+			WHERE ser.series_id=%d",
   (int) $seriesId);
   return DBQueryToArray($query);
 }
@@ -421,7 +421,7 @@ function SeriesAllGames($seriesId){
 		FROM uo_game_pool gp 
 		LEFT JOIN uo_pool pool ON (pool.pool_id=gp.pool) 
 		LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
-		WHERE ser.series_id='%d' AND gp.timetable=1
+		WHERE ser.series_id=%d AND gp.timetable=1
 		ORDER BY gp.game",
   (int) $seriesId);
 
@@ -469,7 +469,7 @@ function DeleteSeries($seriesId) {
   $seriesInfo = SeriesInfo($seriesId);
   if (hasEditSeasonSeriesRight($seriesInfo['season'])) {
     Log2("series","delete",SeriesName($seriesId));
-    $query = sprintf("DELETE FROM uo_series WHERE series_id='%d'",
+    $query = sprintf("DELETE FROM uo_series WHERE series_id=%d",
       (int)$seriesId);
     	
     return DBQuery($query);
@@ -668,19 +668,21 @@ function ConfirmEnrolledTeam($seriesId, $id) {
     (int)$seriesId);
 
     DBQuery($query);
-    $teamId = mysql_adapt_insert_id();
+    $teamId = (int) mysql_adapt_insert_id();
 
     //update team/country info if available
     if($countryId){
-      DBQuery("UPDATE uo_team SET country=$countryId WHERE team_id=$teamId");
+      DBQuery(sprintf("UPDATE uo_team SET country=%d WHERE team_id=%d", (int) $countryId), (int) $teamId);
     }
     if($clubId){
-      DBQuery("UPDATE uo_team SET club=$clubId WHERE team_id=$teamId");
+      DBQuery(sprintf("UPDATE uo_team SET club=%d WHERE team_id=%d", (int) $clubId, (int) $teamId));
     }
 
     if($countryId && !$clubId){
       $countryinfo = CountryInfo($countryId);
-      DBQuery("UPDATE uo_team SET abbreviation=UPPER('".$countryinfo['abbreviation']."') WHERE team_id=$teamId");
+      DBQuery(sprintf("UPDATE uo_team SET abbreviation=UPPER('%s') WHERE team_id=%d"
+        , mysql_adapt_real_escape_string($countryinfo['abbreviation'])
+        , (int) $teamId));
     }else{
       $allteams = SeriesTeams($seriesId);
       $notfound=true;

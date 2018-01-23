@@ -859,9 +859,9 @@ function copyProfileImages() {
 		
 			ConvertToJpeg($target, $basedir.$imgname);
 			CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 320, 240);
-			$query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id='%s'",
+			$query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id=%d",
 					mysql_adapt_real_escape_string($imgname),
-					mysql_adapt_real_escape_string($row['team_id']));
+					intval($row['team_id']));
 			runQuery($query);	
 			unlink($target);
 		}
