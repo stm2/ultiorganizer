@@ -55,11 +55,11 @@ function OpenConnection() {
   }
 
   //select schema
-  $db = ((bool)mysqli_query($mysqlconnectionref, "USE " . constant('DB_DATABASE')));
-  mysql_set_charset('utf8');
+  $db = ((bool)mysqli_query($mysqlconnectionref, "USE `" . DB_DATABASE ."`"));
+  mysqli_set_charset($mysqlconnectionref, 'utf8');
 
   if(!$db) {
-    die("Unable to select database");
+      die("Unable to select database " . mysql_adapt_error());
   }
   
   //check if database is up-to-date
@@ -252,7 +252,7 @@ function DBCastArray($result, $row) {
   return $ret;
 }
 
-if (function_exists('mysql_set_charset') === false) {
+if (function_exists('mysqli_set_charset') === false) {
   /**
    * Sets the client character set.
    *
@@ -263,7 +263,7 @@ if (function_exists('mysql_set_charset') === false) {
    * @param resource $link_identifier The MySQL connection
    * @return TRUE on success or FALSE on failure
    */
-  function mysql_set_charset($charset, $link_identifier = null){
+  function mysqli_set_charset($charset, $link_identifier = null){
     if ($link_identifier == null) {
       return mysql_adapt_query('SET CHARACTER SET "'.$charset.'"');
     } else {
@@ -282,6 +282,7 @@ function DBLink() {
 }
 
 function mysql_adapt_real_escape_string($string, $link_identifier = NULL) {
+  if (is_null($string)) return NULL;
   if (is_null($link_identifier))
     return mysqli_real_escape_string(DBLink(), $string);
   else
@@ -309,7 +310,7 @@ function mysql_adapt_stat($link_identifier = NULL) {
 }
 
 function mysql_adapt_insert_id($link_identifier = NULL) {
-  return (is_null($link_identifier) ? DBLink() : $link_identifier);
+  return mysqli_insert_id(is_null($link_identifier) ? DBLink() : $link_identifier);
 }
 
 function mysql_adapt_field_type($result, $field_offset) {
