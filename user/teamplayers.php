@@ -283,11 +283,11 @@ if(!empty($gameId)) {
 
 //echo "<hr/>\n";
 
-//if (is_file('cust/'.CUSTOMIZATIONS.'/teamplayers.inc.php')) {
-//  include_once 'cust/'.CUSTOMIZATIONS.'/teamplayers.inc.php';
-//} else {
+if (is_file('cust/'.CUSTOMIZATIONS.'/teamplayers.inc.php')) {
+  include_once 'cust/'.CUSTOMIZATIONS.'/teamplayers.inc.php';
+} else {
   include_once 'cust/default/teamplayers.inc.php';
-//}
+}
 echo "<div><a href='?view=user/pdfscoresheet&amp;team=".$teamId."'>"._("Print roster")."</a></div>";
 //common end
 contentEnd();

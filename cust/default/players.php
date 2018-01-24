@@ -29,7 +29,7 @@ OpenConnection();
 if (hasEditPlayersRight($teamId)) {
 	
 	$query = sprintf("SELECT pp.profile_id, pp.accreditation_id, pp.firstname, pp.lastname, pp.birthdate, pp.gender, pp.email,
-			    pp.num, p2.teamname, p2.seasoname
+			    pp.num, ANY_VALUE(p2.teamname) as teamname, ANY_VALUE(p2.seasoname) as seasoname
 			FROM uo_player_profile pp 
 			LEFT JOIN(SELECT p.profile_id, p.firstname, p.lastname,
 			    p.num, t.name AS teamname, sea.name AS seasoname FROM uo_player p
