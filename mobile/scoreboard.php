@@ -8,7 +8,7 @@ $html = "";
 $gameId = intval(iget("game"));
 $teamId = intval(iget("team"));
 $game_result = GameResult($gameId);
-$team_score_board = GameTeamScoreBorad($gameId, $teamId);
+$team_score_board = GameTeamScoreBoard($gameId, $teamId);
 
 mobilePageTop(_("Players of the game"));
 

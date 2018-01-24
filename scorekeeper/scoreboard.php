@@ -4,7 +4,7 @@ $html = "";
 $gameId = intval(iget("game"));
 $teamId = intval(iget("team"));
 $game_result = GameResult($gameId);
-$team_score_board = GameTeamScoreBorad($gameId, $teamId);
+$team_score_board = GameTeamScoreBoard($gameId, $teamId);
 
 $html .= "<div data-role='header'>\n";
 $html .= "<h1>". utf8entities(TeamName($teamId)) ." "._("Players of the game")."</h1>\n";

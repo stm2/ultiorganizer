@@ -307,10 +307,11 @@ function SeasonReservations($seasonId, $group="all"){
  */
 function SeasonReservationgroups($seasonId) {
   $query = sprintf("
-		SELECT DISTINCT pr.reservationgroup
+		SELECT pr.reservationgroup
 		FROM uo_reservation pr
 		WHERE pr.season='%s'
-		ORDER BY pr.starttime, pr.reservationgroup ASC, pr.fieldname+0",
+		GROUP BY pr.reservationgroup
+		ORDER BY MIN(pr.starttime), pr.reservationgroup ASC, MIN(pr.fieldname+0)",
   mysql_adapt_real_escape_string($seasonId));
 
   return DBQueryToArray($query);
@@ -395,18 +396,20 @@ function SeasonTeamAdmins($seasonId, $group=false) {
   $seasonrights = getEditSeasons($_SESSION['uid']);
   if (isset($seasonrights[$seasonId])) {
     if($group){
-      $namefield = "GROUP_CONCAT(j.name SEPARATOR ',')";
-      $groupclause = " GROUP BY u.email ";
+      $namefield = "";
+      $groupclause = " GROUP BY u.userid";
+      $orderclause = "";
     }else{
-      $namefield = "j.name";
+      $namefield = ", j.team_id, j.name as teamname";
       $groupclause = "";
+      $orderclause = "ORDER BY j.series, j.name";
     }
-    $query = sprintf("SELECT u.userid, u.name, u.email, j.team_id, $namefield as teamname FROM uo_users u
+    $query = sprintf("SELECT u.userid, u.name, u.email $namefield FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
   			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
   			WHERE j.series IN (SELECT series_id FROM uo_series WHERE season='%s') AND up.value LIKE 'teamadmin:%%'
   			$groupclause
-  			ORDER BY j.series, j.name",
+  			$orderclause",
       mysql_adapt_real_escape_string($seasonId));
     
     return DBQueryToArray($query);

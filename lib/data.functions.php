@@ -143,7 +143,7 @@ class EventDataXMLHandler{
       //             GROUP BY scheduling_id");
     
     // this is faster
-    DBQuery("SELECT * FROM (
+    DBQuery("SELECT scheduling_id, ANY_VALUE(name) as name FROM (
                 (SELECT sched.*
                     FROM uo_scheduling_name sched
                     LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)

@@ -14,8 +14,8 @@ $awaycaptain = GameCaptain($gameId, $game_result['visitorteam']);
 
 $title = _("Game play").": ".utf8entities($game_result['hometeamname'])." vs. ".utf8entities($game_result['visitorteamname']);
 
-$home_team_score_board = GameTeamScoreBorad($gameId, $game_result['hometeam']);
-$guest_team_score_board = GameTeamScoreBorad($gameId, $game_result['visitorteam']);
+$home_team_score_board = GameTeamScoreBoard($gameId, $game_result['hometeam']);
+$guest_team_score_board = GameTeamScoreBoard($gameId, $game_result['visitorteam']);
 
 $poolinfo = PoolInfo($game_result['pool']);
 

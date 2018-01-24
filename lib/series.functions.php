@@ -757,7 +757,7 @@ function SeriesTeamResponsibles($seriesId) {
   $seasonrights = getEditSeasons($_SESSION['uid']);
   $season = SeriesSeasonId($seriesId);
   if (isset($seasonrights[$season])) {
-    $query = sprintf("SELECT u.userid, u.name, u.email, j.name AS teamname
+    $query = sprintf("SELECT u.userid, u.name, u.email
 			FROM uo_users u
 			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
 			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
