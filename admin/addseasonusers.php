@@ -21,6 +21,8 @@ if(!empty($_POST['add'])){
   if(IsRegistered($userid)){
     if($_GET["access"]=="eventadmin"){
       AddSeasonUserRole($userid, "seasonadmin:".$seasonId, $seasonId);
+    }elseif($_GET["access"]=="seriesadmin"){
+      AddSeasonUserRole($userid, "seriesadmin:".$_POST["series"], $seasonId);
     }elseif($_GET["access"]=="teamadmin"){
       AddSeasonUserRole($userid, "teamadmin:".$_POST["team"], $seasonId);    
     }elseif($_GET["access"]=="gameadmin"){
@@ -44,6 +46,8 @@ if(!empty($_POST['add'])){
 }elseif(!empty($_POST['remove_x'])){
   if($_GET["access"]=="eventadmin"){
     RemoveSeasonUserRole($_POST['delId'], "seasonadmin:".$seasonId, $seasonId);
+  }elseif($_GET["access"]=="seriesadmin"){
+    RemoveSeasonUserRole($_POST['delId'], "seriesadmin:".$_POST['seriesId'], $seasonId);
   }elseif($_GET["access"]=="teamadmin"){
     RemoveSeasonUserRole($_POST['delId'], "teamadmin:".$_POST['teamId'], $seasonId);    
   }elseif($_GET["access"]=="accradmin"){
@@ -59,68 +63,102 @@ pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
 
-$html .= "<h3>"._("Event admins").":</h3>";
-$admins = SeasonAdmins($seasonId);
-$html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=eventadmin' name='eventadmin'>";
-$html .= "<table>";
-foreach($admins as $user){
-  $html .= "<tr>";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
-  $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"document.eventadmin.delId.value='".utf8entities($user['userid'])."';\"/></td>";
-  $html .= "</tr>\n";
+function adminHeader($title, $formId) {
+  global $seasonId;
+  $html = "<h3>${title}:</h3>\n";
+  $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=" . $seasonId . "&amp;access=$formId' name='$formId'>\n";
+  return $html;
 }
-$html .= "</table>";
-if(!empty($_GET["access"]) && $_GET["access"]=="eventadmin"){
-  $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
-  $html .= "<tr><td>"._("User Id")."</td><td><input class='input' size='20' name='userid'/></td><td>"._("or")."</td>\n";
-  $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
-  $html .= "</table>";
-  $html .= "<p><input class='button' name='add' type='submit' value='"._("Grant rights")."'/></p>";  
-}else{
-  $html .= "<p><a href='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=eventadmin'>"._("Add more ...")."</a></p>";
-}
-$html .= "<div><input type='hidden' name='delId'/></div>";
-$html .= "</form>";
 
-$html .= "<h3>"._("Team admins").":</h3>";
-$admins = SeasonTeamAdmins($seasonId);
-$html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=teamadmin' name='teamadmin'>";
-$html .= "<table style='white-space: nowrap;'>";
-foreach($admins as $user){
-  $html .= "<tr>";
-  $teaminfo = TeamInfo($user['team_id']);
-  $html .= "<td style='width:175px'>".utf8entities(U_($teaminfo['seriesname'])).", ".utf8entities(U_($teaminfo['name']))."</td>\n";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
-  $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"document.teamadmin.delId.value='".utf8entities($user['userid'])."';document.teamadmin.teamId.value='".utf8entities($user['team_id'])."';\"/></td>";
-  $html .= "</tr>\n";;
-}
-$html .= "</table>";
-if(!empty($_GET["access"]) && $_GET["access"]=="teamadmin"){
-  $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
-  $html .= "<tr><td>";
-  $teams = SeasonTeams($seasonId);
-  $html .= "<select class='dropdown' name='team'>";
-  foreach($teams as $team){
-    $html .= "<option class='dropdown' value='".utf8entities($team['team_id'])."'>". utf8entities(U_($team['seriesname'])).", ".utf8entities(U_($team['name'])) ."</option>";
+function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $dropdownId = null, $groupValueTag = null, $nameTag = null) {
+  global $seasonId;
+  $html = "<table>";
+  foreach ($admins as $user) {
+    $html .= "<tr>";
+    if (! empty($groupTag)) {
+      $html .= "<td style='width:175px'>" . utf8entities(U_($user[$groupTag])) . "</td>\n";
+    }
+    $html .= "<td style='width:75px'>" . $user['userid'] . "</td><td>" . utf8entities($user['name']) . " (<a href='mailto:" . utf8entities($user['email']) . "'>" . utf8entities($user['email']) . "</a>)</td>";
+    $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" . _("X") . "' ";
+    if (! empty($delIds)) {
+      $html .= "onclick=\"";
+      foreach ($delIds as $id => $tag) {
+        $html .= "document.$formId.$id.value='" . utf8entities($user[$tag]) . "';";
+      }
+      $html .= "\"/></td>";
+    }
+    $html .= "</tr>\n";
   }
-  $html .= "</select>";
+  $html .= "</table>\n";
   
-  $html .= "</td><td>"._("User Id")."</td><td><input class='input' size='20' name='userid'/></td><td>"._("or")."</td>\n";
-  $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
-  $html .= "</table>";
-  $html .= "<p><input class='button' name='add' type='submit' value='"._("Grant rights")."'/></p>";  
-}else{
-  $html .= "<p><a href='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=teamadmin'>"._("Add more ...")."</a></p>";
+  if (! empty($_GET["access"]) && $_GET["access"] == $formId) {
+    $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
+    $html .= "<tr>";
+    
+    if (! empty($adminGroups)) {
+      $html .= "<td><select class='dropdown' name='$dropdownId'>\n";
+      foreach ($adminGroups as $group) {
+        $html .= "<option class='dropdown' value='" . utf8entities($group[$groupValueTag]) . "'>" . utf8entities(U_($group[$nameTag])) . "</option>\n";
+      }
+      $html .= "</select>\n";
+    }
+    
+    $html .= "<td>" . _("User Id") . "</td><td><input class='input' size='20' name='userid'/></td><td>&nbsp;" . _("or") . "&nbsp;</td>\n";
+    $html .= "<td>" . _("E-Mail") . "</td><td><input class='input' size='20' name='email'/></td></tr>\n";
+    $html .= "</table>\n";
+    $html .= "<p><input class='button' name='add' type='submit' value='" . _("Grant rights") . "'/></p>\n";
+  } else {
+    $html .= "<p><a href='?view=admin/addseasonusers&amp;season=" . $seasonId . "&amp;access=$formId'>" . _("Add more ...") . "</a></p>\n";
+  }
+  foreach ($delIds as $id => $field) {
+    $html .= "<div><input type='hidden' name='$id'/></div>\n";
+  }
+  $html .= "</form>\n";
+  
+  return $html;
 }
-$html .= "<div><input type='hidden' name='delId'/></div>";
-$html .= "<div><input type='hidden' name='teamId'/></div>";
-$html .= "</form>";
 
+$html .= adminHeader(_("Event admins"), 'eventadmin');
+$admins = SeasonAdmins($seasonId);
+$html .= adminTable($admins, 'eventadmin', null, array(
+  'delId' => 'userid'
+));
 
-$html .= "<h3>"._("Scorekeepers").":</h3>";
+$html .= adminHeader(_("Series admins"), 'seriesadmin');
+$series = SeasonSeries($seasonId);
+$admins = array();
+foreach ($series as $serie) {
+  $sadmins = SeriesAdmins($serie['series_id']);
+  foreach ($sadmins as $user) {
+    $user['series_id'] = $serie['series_id'];
+    $user['seriesname'] = $serie['name'];
+    $admins[] = $user;
+  }
+}
+$html .= adminTable($admins, 'seriesadmin', 'seriesname', array(
+  'delId' => 'userid',
+  'seriesId' => 'series_id'
+), $series, 'series', 'series_id', 'name');
+
+$html .= adminHeader(_("Team admins"), 'teamadmin');
+$admins = SeasonTeamAdmins($seasonId);
+foreach ($admins as &$user) {
+  $teaminfo = TeamInfo($user['team_id']);
+  $user['teamname'] = $teaminfo['seriesname'] . ", " . $user['teamname'];
+}
+$teams = SeasonTeams($seasonId);
+foreach ($teams as &$team) {
+  $team['name'] = $team['seriesname'] . ", " . $team['name'];
+}
+$html .= adminTable($admins, 'teamadmin', 'teamname', array(
+  'delId' => 'userid',
+  'teamId' => 'team_id'
+), $teams, 'team', 'team_id', 'name');
+
+$html .= "<h3>"._("Scorekeepers").":</h3>\n";
 $seasongames = SeasonAllGames($seasonId);
-$html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=gameadmin' name='gameadmin'>";
-$html .= "<table style='white-space: nowrap;'>";
+$html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=gameadmin' name='gameadmin'>\n";
+$html .= "<table style='white-space: nowrap;'>\n";
 //all event admins have score keeping rights
 $admins = SeasonAdmins($seasonId);
 foreach($admins as $user){
