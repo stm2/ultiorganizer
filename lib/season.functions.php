@@ -44,7 +44,7 @@ function SeasonSeriesMult($selected, $seriesname=null) {
   debugMsg($query);
   $DEBUG = false;
   
-  if (!empty($seriesname) && !empty(trim($seriesname))) {
+  if (!empty($seriesname) && trim($seriesname) !== '') {
     $query .= " AND ser.name like '%" . mysql_adapt_real_escape_string(trim($seriesname)) . "%'";
   }
   
