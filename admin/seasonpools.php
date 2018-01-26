@@ -170,12 +170,10 @@ foreach($pools as $pool){
   if($info['type']==2){
     $rootid = PoolPlayoffRoot($id);
     if($rootid!=$id){
+      $info['continuingpool'] = 1;
       $root_info = PoolInfo($rootid);
-      $is_visible = intval($root_info['visible'])?"checked='checked'":"";
       $is_visible .= " disabled='disabled'";
-      $is_continuation = intval($root_info['continuingpool'])?"checked='checked'":"";
       $is_continuation .= " disabled='disabled'";
-      $is_placement = intval($root_info['placementpool'])?"checked='checked'":"";
       $is_placement .= " disabled='disabled'";
     }
   }
@@ -201,7 +199,6 @@ foreach($pools as $pool){
   //$html .= "<td><a href='?view=admin/addseasonpools&amp;pool=$id'>"._("Edit")."</a></td>";
    
   $html .= "<td>";
-
 
   if(!intval($info['continuingpool']) && !$started){
     if($teams){

@@ -71,25 +71,25 @@ if (isset($_POST['load']) && isSuperAdmin()) {
     } else {
       $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
     }
-    
-    // $html .= "<p>" . print_r($seasonInfo, true) . "</p>\n";
   } else {
     $html .= "<p>" . sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected"), $filename, $_FILES['restorefile']['error']) . "</p>\n";
   }
 } elseif (isset($_POST['add']) && isSuperAdmin()) {
   $mode = 'add';
 } elseif (isset($_POST['replace'])) {
-  $mode = 'replace';
+  if ($_POST['rename_mode'] === 'replace_mode') {
+    $mode = 'replace';
+  } elseif ($_POST['rename_mode'] === 'insert_mode') {
+    $mode = 'insert';
+  }
 }
-if ($mode === 'new' || $mode === 'replace') {
+if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
   set_time_limit(300);
   $eventdatahandler = new EventDataXMLHandler();
   
-  $html .= "<p>XMLToEvent $filename POST: " . print_r($_POST, true) . "</p>";
-    
-  $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), true);
+  $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), false);
   
-  $html .= "<p>" . eregi_replace("\n", "<br />\n", $eventdatahandler->debug) ."</p>";
+  // $html .= "<p>" . preg_replace("/\n/i", "<br />\n", $eventdatahandler->debug) ."</p>";
 
   // unlink($filename);
   $imported = true;
@@ -109,14 +109,23 @@ if($imported) {
 }
 
 if ($mode == 'rename') {
+  if (!empty($seasonId)) {
+    $html .= "<fieldset>";
+    $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
+    $html .= "<label for='insert_mode'>"._("This operation inserts one or more new series in the database with the content of the file. It will only add, not alter any data or change user rights.")."</label></p>\n";
+    $html .= "<p><input type='radio' id='replace_mode' name='rename_mode' value='replace_mode' />";
+    $html .= "<label for='replace_mode'>"._("This operation updates and adds event data in the database with the content of the file. It will not delete any data or change user rights.")."</label></p>\n";
+    $html .= "</fieldset>";
+  }
   $html .= "<table><tr><td colspan='4' class='infocell'>" . _("Confirm or replace event data:") . "</td></tr>\n";
-  if (!empty($seasonId))
-    $disabled = "disabled='disabled'";
-  else
-    $disabled = "";
-  // $html .= "<tr><td><input class='input' type='checkbox' id='change_name' name='change_name' /></td>\n";
-  $html .= "<td>" ._("Event ID"). "</td><td><input class='input' $disabled size='20' maxlength='30' name='new_season_id' value='". utf8entities($seasonInfo['season_id']) ."'/></td>\n";  
-  $html .= "<td>" ._("Event Name"). "</td><td><input class='input' $disabled size='30' maxlength='50' name='new_season_name' value='". utf8entities($seasonInfo['season_name']) ."'/></td></tr>\n";
+  if (!empty($seasonId)) {
+    $html .= "<td class='infocell'>" . _("Event ID") . "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
+    $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" . utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";
+  } else {
+    $html .= "<td>" . _("Event ID") . "</td><td><input class='input' size='20' maxlength='30' name='new_season_id' value='" . utf8entities($seasonInfo['season_id']) . "'/></td>\n";
+    $html .= "<td>" . _("Event Name") . "</td><td><input class='input' size='30' maxlength='50' name='new_season_name' value='" . utf8entities($seasonInfo['season_name']) . "'/></td></tr>\n";
+  }
+  
   
   $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
   foreach ($seasonInfo['reservations'] as $rkey => $rval) {
@@ -153,11 +162,7 @@ if ($mode == 'select') {
   $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='30000000'/></p>";
   
   $button_name = 'load';
-  $button_label = _("Check file");
-}
-
-if (!empty($seasonId)) {
-  $html .= "<p>"._("This operation updates and adds event data in the database with the content of the file. It will not delete any data or change user rights.")."</p>";
+  $button_label = _("Check file ...");
 }
   
 $html .= "<p><input class='button' type='submit' name='$button_name' value='$button_label'/>";

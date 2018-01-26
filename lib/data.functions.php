@@ -21,7 +21,8 @@ class EventDataXMLHandler{
   var $uo_reservation=array(); //reservation id mapping array
   var $followers = array(); // pools with unresolved followers
   var $mode; //import mode: 'add' or 'replace'
-  var $mock; // should we do a dry run? 
+  var $mock; // should we do a dry run?
+  var $mockId = 10000;
   var $debug; // logging
   var $structure; // document structure
   var $structure_seriesId; // current series in structure parse
@@ -174,6 +175,14 @@ class EventDataXMLHandler{
     return $ret;
   }
   
+  function is_continuing($pool) {
+    if ($pool['continuingpool'] != 0)
+      return true;
+    if (PoolPlayoffRoot($pool['pool_id']) != $pool['pool_id'])
+      return true;
+    return false;
+  }
+  
   function write_pools($seriesId, $template) {
     $ret = "";
     $pools = DBQuery("SELECT * FROM uo_pool WHERE series='$seriesId'");
@@ -184,7 +193,10 @@ class EventDataXMLHandler{
       
       $ret .= $this->RowToXML("uo_pool", $poolRow, false);
 
-      if (!$template || $poolRow['continuingpool'] == 0) {
+      $this->debug .= print_r($poolRow, true) . ":" . ($this->is_continuing($poolRow)?1:0) . "..";
+      
+            
+      if (!$template || !$this->is_continuing($poolRow)) { /* FIXME playoff pools may have continuing == FALSE */
         //uo_team_pool
         $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
         while($teampool = mysqli_fetch_assoc($teampools)){
@@ -204,8 +216,11 @@ class EventDataXMLHandler{
     $games = DBQuery("SELECT * FROM uo_game WHERE pool='".mysql_adapt_real_escape_string($poolId)."'");
     while($gameRow = mysqli_fetch_assoc($games)){
       if($template) {
-        $gameRow['hometeam'] = NULL;
-        $gameRow['visitorteam'] = NULL;
+        if (!empty($gameRow['scheduling_name_home'])) {
+          // must be continuing pool
+          $gameRow['hometeam'] = NULL;
+          $gameRow['visitorteam'] = NULL;
+        }
         $gameRow['homescore'] = NULL;
         $gameRow['visitorscore'] = NULL;
         $gameRow['homedefenses'] = 0;
@@ -380,7 +395,7 @@ class EventDataXMLHandler{
     
     //remove extra spaces
     while ($data = fread($fp, 4096)){
-      // $data=eregi_replace(">"."[[:space:]]+"."< ",">< ",$data);
+      // $data=pregi_replace(";>"."[[:space:]]+"."< ;",">< ",$data);
       if (!xml_parse($xmlparser, $data, feof($fp))) {
         $reason = xml_error_string(xml_get_error_code($xmlparser));
         $reason .= xml_get_current_line_number($xmlparser);
@@ -465,7 +480,7 @@ class EventDataXMLHandler{
 
       //remove extra spaces
       while ($data = fread($fp, 4096)){
-        $data=eregi_replace(">"."[[:space:]]+"."< ",">< ",$data);
+        $data=preg_replace(";>"."[[:space:]]+"."< ;",">< ",$data);
         if (!xml_parse($xmlparser, $data, feof($fp))) {
           $reason = xml_error_string(xml_get_error_code($xmlparser));
           $reason .= xml_get_current_line_number($xmlparser);
@@ -500,6 +515,7 @@ class EventDataXMLHandler{
       }
       switch($this->mode){
         case "new":
+        case "insert":
           $this->InsertToDatabase(strtolower($name), $row);
           break;
            
@@ -574,41 +590,56 @@ class EventDataXMLHandler{
 
     switch($tagName){
       case "uo_season":
-
-        $seasonId = $row["season_id"];
-        $newId = empty($this->replacers['season_id'])?$seasonId:$this->replacers['season_id'];
-        $newName = empty($this->replacers['season_name'])?$row["name"]:$this->replacers['season_name'];
-        
-        $max = 1;
-        while (SeasonExists($newId) || SeasonNameExists($newName)) {
-          $modifier = rand(1,++$max);
-          $newId = substr($seasonId,0,7) ."_$modifier";
-          $newName = $row["name"]." ($modifier)";
-        }
-        $row["name"] = $newName; 
-        $this->uo_season[$row["season_id"]]=$newId;
-        unset($row["season_id"]);
-
-        $values = "'".implode("','",array_values($row))."'";
-        $fields = implode(",",array_keys($row));
-
-        $query = "INSERT INTO ".mysql_adapt_real_escape_string($tagName)." (";
-        $query .= "season_id,";
-        $query .= mysql_adapt_real_escape_string($fields);
-        $query .= ") VALUES (";
-        $query .= "'".mysql_adapt_real_escape_string($newId)."',";
-        $query .= $values;
-        $query .= ")";
-        if ($this->mock) {
-          $this->debug .= $query . "\n";
-        } else {
-          DBQueryInsert($query);
-
-          AddEditSeason($_SESSION['uid'],$newId);
-          AddUserRole($_SESSION['uid'], 'seasonadmin:'.$newId);
+        if ($this->mode == "new") {
+          $seasonId = $row["season_id"];
+          $newId = empty($this->replacers['season_id']) ? $seasonId : $this->replacers['season_id'];
+          $newName = empty($this->replacers['season_name']) ? $row["name"] : $this->replacers['season_name'];
+          
+          $max = 1;
+          while (SeasonExists($newId) || SeasonNameExists($newName)) {
+            $modifier = rand(1, ++ $max);
+            $newId = substr($seasonId, 0, 7) . "_$modifier";
+            $newName = $row["name"] . " ($modifier)";
+          }
+          $row["name"] = $newName;
+          $this->uo_season[$row["season_id"]] = $newId;
+          unset($row["season_id"]);
+          
+          $values = "'" . implode("','", array_values($row)) . "'";
+          $fields = implode(",", array_keys($row));
+          
+          $query = "INSERT INTO " . mysql_adapt_real_escape_string($tagName) . " (";
+          $query .= "season_id,";
+          $query .= mysql_adapt_real_escape_string($fields);
+          $query .= ") VALUES (";
+          $query .= "'" . mysql_adapt_real_escape_string($newId) . "',";
+          $query .= $values;
+          $query .= ")";
+          if ($this->mock) {
+            $this->debug .= $query . "\n";
+          } else {
+            DBQueryInsert($query);
+            
+            AddEditSeason($_SESSION['uid'], $newId);
+            AddUserRole($_SESSION['uid'], 'seasonadmin:' . $newId);
+          }
+        } else if ($this->mode == "insert") {
+          $key = $row['season_id'];
+          unset($row['season_id']);
+          $this->uo_season[$key] = empty($this->replacers['season_id'])?$this->eventId:$this->replacers['season_id'];
+          
+          $cond = "season_id='" . $this->uo_season[$key] . "'";
+          $query = "SELECT season_id FROM uo_season WHERE $cond";
+          $exist = DBQueryRowCount($query);
+          if($exist){
+            $this->SetRow($tagName, $row, $cond);
+          }else{
+            die(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
+          }
+          break;
         }
         break;
-
+        
       case "uo_series":
         $key = $row["series_id"];
         unset($row["series_id"]);
@@ -777,7 +808,7 @@ class EventDataXMLHandler{
         } elseif (is_numeric($value))
           $values .= "'".mysql_adapt_real_escape_string($value)."',";
         else
-          die("Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
+          die($this->debug . "Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
       } else {
         $values .= "'".mysql_adapt_real_escape_string($value)."',";
       }
@@ -791,8 +822,8 @@ class EventDataXMLHandler{
     $query .= $values;
     $query .= ")";
     if ($this->mock) {
-      $this->debug .= $query ."\n";
-      return FALSE;
+      $this->debug .= $query .":" . (++$this->mockId). "\n";
+      return $this->mockId;
     } else {
       return DBQueryInsert($query);
     }
@@ -812,13 +843,13 @@ class EventDataXMLHandler{
     switch($tagName){
       case "uo_season":
         // no replace
-        
+
         $cond = "season_id='".$row["season_id"]."'";
         $query = "SELECT season_id FROM uo_season WHERE ". $cond;
         $exist = DBQueryRowCount($query);
         if($exist){
           if($this->eventId === $row["season_id"]){
-            $this->SetRow($tagName, $row, $cond);
+          $this->SetRow($tagName, $row, $cond);
             $this->uo_season[$row["season_id"]]=$row["season_id"];
           }else{
             die(sprintf(_("Target event %s is not the same as in the file (%s)."), $this->eventId, utf8entities($row["season_id"])));

@@ -90,9 +90,9 @@ foreach ($pools as $poolId) {
 	echo "<div style='vertical-align:bottom;height:100%'><h3>".$poolinfo['name']."</h3></div>\n";
 	echo "<div class='workarea' >\n";
 	echo "<ol id='res".$poolId."' class='draglist' style='height:".($total_teams*TEAM_HEIGHT)."px'>\n";
-	$poolteams = PoolTeams($poolId);
+	$poolteams = PoolTeams($poolId, 'seed');
 	foreach($poolteams as $team){
-		teamEntry("ffffff",TEAM_HEIGHT,$team['team_id'],$team['name'],$team['seed']);
+		teamEntry(TEAM_HEIGHT,$team['team_id'],$team['name'],$team['seed']);
 	}
 	echo "</ol>\n";
 	echo "</div>\n</td>\n";

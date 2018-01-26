@@ -2055,9 +2055,12 @@ function GeneratePlayoffPools($poolId, $generate=true){
         //create pool
         $name = $poolname." ". $name;
         $id = PoolFromAnotherPool($poolInfo['series'],$name,$poolInfo['ordering'].$i,$prevpoolId,true);
-        if($rounds-$i==1){
-          DBQuery("UPDATE uo_pool SET placementpool=1 WHERE pool_id=$id");
+        $update = "continuingpool=1";
+        if($rounds-$i==1 && $poolInfo['placementpool'] == 1){
+          $update .= ", placementpool=1";
         }
+        DBQuery("UPDATE uo_pool SET $update WHERE pool_id=$id");
+        
 
         //add moves
 
