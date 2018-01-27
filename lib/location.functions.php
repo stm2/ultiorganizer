@@ -125,4 +125,58 @@ function RemoveLocation($id) {
 	} else { die('Insufficient rights to remove location'); }	
 }
 
+function LocationInput($id, $group, $value, $label, $location) {
+  $html = "<tr><td>&nbsp;</td><td><div id='${id}Autocomplete' class='yui-skin-sam'>";
+  $html .= "<input class='input' id='${id}Name' size='30' type='text' style='width:200px' name='${id}Name' value='";
+  $html .= utf8entities($value);
+  $html .= "'/><div style='width:400px' id='${id}NameContainer'></div></div>\n";
+  $html .= "</td></tr>\n";
+  $html .= "<tr><td>$label</td><td><input type='hidden'  name='${group}[]' id='${id}' value='".utf8entities($location)."'/></td></tr>\n";
+  
+  return $html;
+}
+
+function LocationScript($id) {
+  return "<script type=\"text/javascript\">
+//<![CDATA[
+var ${id}SelectHandler = function(sType, aArgs) {
+	var oData = aArgs[2];
+	document.getElementById(\"${id}\").value = oData[2];
+};
+
+Fetch${id} = function(){        
+	var locationSource = new YAHOO.util.XHRDataSource(\"ext/locationtxt.php\");
+    locationSource.responseSchema = {
+         recordDelim: \"\\n\",
+         fieldDelim: \"\\t\"
+    };
+    locationSource.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
+    locationSource.maxCacheEntries = 60;
+
+    // First AutoComplete
+    var locationAutoComp = new YAHOO.widget.AutoComplete(\"${id}Name\",\"${id}NameContainer\",locationSource);
+    locationAutoComp.formatResult = function(oResultData, sQuery, sResultMatch) { 
+
+    	// some other piece of data defined by schema 
+		var moreData1 = oResultData[1];  
+
+		var aMarkup = [\"<div class='myCustomResult'>\", 
+		\"<span style='font-weight:bold'>\", 
+		sResultMatch, 
+		\"</span>\", 
+		\" / \", 
+		moreData1, 
+		\"</div>\"]; 
+		return (aMarkup.join(\"\")); 
+	}; 
+	locationAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
+    return {
+        oDS: locationSource,
+        oAC: locationAutoComp
+    }
+}();
+//]]>
+</script>";
+}
+
 ?>

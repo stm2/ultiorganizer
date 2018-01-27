@@ -68,14 +68,7 @@ class EventDataXMLHandler{
     $query = sprintf("SELECT * FROM uo_series WHERE season='%s'",
       mysql_adapt_real_escape_string($eventId));
     if (!empty($series)) {
-      $query .= "AND series_id IN (";
-      $num = 0;
-      foreach ($series as $num => $seriesId) {
-        if ($num> 0)
-          $query .= ", ";
-          $query .= $seriesId;
-      }
-      $query .= ")";
+      $query .= "AND series_id IN (" . mysql_adapt_real_escape_string(implode(",", $series)) . ")";
     }
     
     return DBQuery($query);
@@ -92,16 +85,27 @@ class EventDataXMLHandler{
         
     return $this->RowToXML("uo_season", $row, false);
   }
-  
-  function write_reservations($eventId, $template) {
+
+  function write_reservations($eventId, $template, $series = null) {
     $ret = "";
-    $reservations = DBQuery("SELECT * FROM uo_reservation WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
-    while($reservation = mysqli_fetch_assoc($reservations)){
+    
+    $select = sprintf("rr.season='%s'", mysql_adapt_real_escape_string($eventId));
+    if (! empty($series))
+      $select .= sprintf(" AND series IN (%s)", mysql_adapt_real_escape_string(implode(",", $series)));
+    
+    $query = "SELECT rr.* FROM uo_reservation rr 
+        LEFT JOIN uo_game gg ON (gg.reservation = rr.id)
+        LEFT JOIN uo_pool pp on (pp.pool_id = gg.pool)
+        
+    WHERE $select GROUP BY rr.id";
+    $reservations = DBQuery($query);
+    
+    while ($reservation = mysqli_fetch_assoc($reservations)) {
       $ret .= $this->RowToXML("uo_reservation", $reservation);
     }
     
-    $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
-    while($time = mysqli_fetch_assoc($times)){
+    $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='" . mysql_adapt_real_escape_string($eventId) . "'");
+    while ($time = mysqli_fetch_assoc($times)) {
       $ret .= $this->RowToXML("uo_movingtime", $time);
     }
     return $ret;
@@ -193,9 +197,6 @@ class EventDataXMLHandler{
       
       $ret .= $this->RowToXML("uo_pool", $poolRow, false);
 
-      $this->debug .= print_r($poolRow, true) . ":" . ($this->is_continuing($poolRow)?1:0) . "..";
-      
-            
       if (!$template || !$this->is_continuing($poolRow)) { /* FIXME playoff pools may have continuing == FALSE */
         //uo_team_pool
         $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
@@ -291,7 +292,7 @@ class EventDataXMLHandler{
 
       //uo_reservation
       //uo_movingtime
-      $ret .= $this->write_reservations($eventId, $template);
+      $ret .= $this->write_reservations($eventId, $template, $series);
 
       //uo_series
       $seriesResult = $this->selectSeries($eventId, $series);
@@ -440,7 +441,7 @@ class EventDataXMLHandler{
           break;
           
         case 'uo_reservation':
-          $this->structure['reservations'][$row['id']] = array('location' => $row['location'], 'starttime' => $row['starttime']);
+          $this->structure['reservations'][$row['id']] = array('location' => $row['location'], 'starttime' => $row['starttime'], 'reservationgroup' => $row['reservationgroup']);
           break;
       }
     }
@@ -548,11 +549,14 @@ class EventDataXMLHandler{
         if (!empty($this->replacers['location'][$key])) {
           $row['location'] = $this->replacers['location'][$key];
         }
+        if (!empty($this->replacers['reservationgroup'][$key])) {
+          $row['reservationgroup'] = $this->replacers['reservationgroup'][$key];
+        }
         if (!empty($this->replacers['date'][$key])) {
           $this->debug .= "(".$row['starttime']."->".$this->shiftTime($row['starttime'], $key).")";
           $row['starttime'] = $this->shiftTime($row['starttime'], $key);
           $row['endtime'] = $this->shiftTime($row['endtime'], $key);
-          $row['date'] = $this->shiftTime($row['end'], $key);
+          $row['date'] = $this->shiftTime($row['date'], $key);
         }
         break;
         
@@ -632,7 +636,7 @@ class EventDataXMLHandler{
           $query = "SELECT season_id FROM uo_season WHERE $cond";
           $exist = DBQueryRowCount($query);
           if($exist){
-            $this->SetRow($tagName, $row, $cond);
+            // don't update
           }else{
             die(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
           }

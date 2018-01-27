@@ -19,6 +19,9 @@ if (!empty($_GET['season'])){
   if (!isSuperAdmin()) { die('Insufficient rights to import data');}
 }
 
+$html = "";
+$scripts = "";
+
 if (empty($seasonId)) {
   $html = "<h2>" . $title . "</h2>";
 } else {
@@ -43,6 +46,7 @@ function get_replacers($post) {
   $replacers['season_name'] = $post['new_season_name'];
   foreach ($post['reservations'] as $i => $resId) {
     $replacers['location'][$resId] = $post['rlocations'][$i];
+    $replacers['reservationgroup'][$resId] = $post['resgroups'][$i];
     $date0 = $post['olddates'][$i];
     $date1 = $post['newdates'][$i];
     if ($date0 !== $date1)
@@ -89,12 +93,21 @@ if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
   
   $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), false);
   
-  // $html .= "<p>" . preg_replace("/\n/i", "<br />\n", $eventdatahandler->debug) ."</p>";
+  $html .= "<p>" . preg_replace("/\n/i", "<br />\n", $eventdatahandler->debug) ."</p>\n";
 
   // unlink($filename);
   $imported = true;
   $mode = 'select';
 }
+
+pageTopHeadOpen($title);
+include_once 'lib/yui.functions.php';
+$html .= yuiLoad(array("utilities", "datasource", "autocomplete", "calendar"));
+
+pageTopHeadClose($title);
+leftMenu();
+contentStart();
+
 
 //common page
 ini_set("post_max_size", "30M");
@@ -129,12 +142,20 @@ if ($mode == 'rename') {
   
   $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
   foreach ($seasonInfo['reservations'] as $rkey => $rval) {
-    $html .= "<tr><td>" . sprintf(_("Reservation %d, Location %s map to"), $rkey, utf8entities($rval['location']))
-      . "<input type='hidden' id='reservations" . utf8entities($rkey) . "' name='reservations[]' value='" .utf8entities($rkey). "' />"
-      . " <input class='input' size='6' maxlength='8' id='rlocations$rkey' name='rlocations[]' value='" . utf8entities($rval['location']) . "'/></td>"
-      . "<td>(" . utf8entities(LocationInfo($rval['location'])['name']) . ")</td>\n";
+    $id = "rlocation" . utf8entities($rkey);
+    $value = utf8entities($rval['location']);
+    $html .= LocationInput($id, 'rlocations', LocationInfo($rval['location'])['name'], 
+      "<input type='hidden' id='reservation" . utf8entities($rkey) . "' name='reservations[]' value='" . utf8entities($rkey) . "' />" 
+      . sprintf(_("Reservation %d, Location %s map to"), $rkey, $value), $rval['location']);
+    $html .= "<tr><td></td><td>&nbsp;</td></tr>\n";
+    $scripts .= LocationScript($id);
+    
+    $html .= "<tr><td>"._("Reservation Group").":</td><td>"
+      . "<input type='text' class='input' size='20' name='resgroups[]' id='resgroup" . utf8entities($rkey) . "' value='" . $rval['reservationgroup'] ."'/>&nbsp;</td></tr>\n";
+      
+      
     $olddate = utf8entities(ShortDate($rval['starttime']));
-    $html .= "<td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>"
+    $html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>"
       . "<input type='hidden' name='olddates[]' id='olddates" . utf8entities($rkey) . "' value='$olddate' />"
       . "<input type='text' class='input' size='20' name='newdates[]' id='newdates" . utf8entities($rkey) . "' value='$olddate'/>&nbsp;</td></tr>\n";
   }
@@ -170,6 +191,12 @@ $html .= "<input class='button' type='button' name='return'  value='"._("Return"
 
 $html .= "</form>";
 
-showPage($title, $html);
+$html .= $scripts;
+
+// showPage($title, $html);
+echo $html;
+contentEnd();
+pageEnd();
+
 
 ?>

@@ -35,7 +35,7 @@ $res = array(
     }
     
     $res['id'] = isset($post['id']) ? $post['id'] : 0;
-    $res['location'] = isset($post['location']) ? $post['location'] : 0;
+    $res['location'] = isset($post['location'][0]) ? $post['location'][0] : 0;
     $res['fieldname'] = isset($post['fieldname']) ? $post['fieldname'] : "";
     $res['reservationgroup'] = isset($post['reservationgroup']) ? $post['reservationgroup'] : "";
     $res['date'] = isset($post['date']) ? $post['date'] : date('d.m.Y', time());
@@ -221,16 +221,13 @@ if(!$addmore){
 }
 $html .= "</td></tr>\n";
 
-$html .= "<tr><td>&nbsp;</td><td><div id='locationAutocomplete' class='yui-skin-sam'>";
-$html .= "<input class='input' id='locationName' size='30' type='text' style='width:200px' name='locationName' value='";
+$location_info=null;
 if($res['location']>0){
   $location_info = LocationInfo($res['location']);
-  $html .= utf8entities($location_info['name']);
+  $location_info = $location_info['name'];
 }
-$html .= "'/><div style='width:400px' id='locationContainer'></div></div>\n";
-$html .= "</td></tr>\n";
-$html .= "<tr><td>"._("Location").":</td><td>";
-$html .= "</td></tr>\n";
+$html .= LocationInput('location', 'location', $location_info, _("Location"), $res['location']); 
+
 $html .= "<tr><td></td><td>&nbsp;</td></tr>\n";
 if(isSuperAdmin()){
   $html .= "<tr><td>"._("Season").":</td><td>";
@@ -251,7 +248,6 @@ if(isSuperAdmin()){
 
 $html .= "<tr><td>";
 
-$html .= "<input type='hidden'  name='location' id='location' value='".utf8entities($res['location'])."'/>";
 
 if (!$addmore) {
   $html .= "<input type='hidden' name='id' value='".utf8entities($res['id'])."'/>";
@@ -264,47 +260,9 @@ $html .= "</td><td>&nbsp;</td></tr>\n";
 $html .= "</table>\n";
 $html .= "</form>";
 echo $html;
+echo LocationScript('location');
 ?>
-<script type="text/javascript">
-//<![CDATA[
-var locationSelectHandler = function(sType, aArgs) {
-	var oData = aArgs[2];
-	document.getElementById("location").value = oData[2];
-};
 
-FetchLocation = function(){        
-	var locationSource = new YAHOO.util.XHRDataSource("ext/locationtxt.php");
-    locationSource.responseSchema = {
-         recordDelim: "\n",
-         fieldDelim: "\t"
-    };
-    locationSource.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
-    locationSource.maxCacheEntries = 60;
-
-    // First AutoComplete
-    var locationAutoComp = new YAHOO.widget.AutoComplete("locationName","locationContainer",locationSource);
-    locationAutoComp.formatResult = function(oResultData, sQuery, sResultMatch) { 
-
-    	// some other piece of data defined by schema 
-		var moreData1 = oResultData[1];  
-
-		var aMarkup = ["<div class='myCustomResult'>", 
-		"<span style='font-weight:bold'>", 
-		sResultMatch, 
-		"</span>", 
-		" / ", 
-		moreData1, 
-		"</div>"]; 
-		return (aMarkup.join("")); 
-	}; 
-	locationAutoComp.itemSelectEvent.subscribe(locationSelectHandler);
-    return {
-        oDS: locationSource,
-        oAC: locationAutoComp
-    }
-}();
-//]]>
-</script>
 <?php
 echo TranslationScript("reservationgroup");
 echo TranslationScript("fieldname");
