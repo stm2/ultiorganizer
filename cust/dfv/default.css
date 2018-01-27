@@ -45,7 +45,7 @@ table {
 /* end reset */
 
 body{
-	background-color: #E8E8E8;
+	background-color: #e8f0f8;
 	font-family: Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
 
@@ -69,7 +69,7 @@ th{
 	font-size: 10px; 
 	text-align: left; 
 	text-decoration: none; 
-	background-color: #20408f;
+	background-color: #094aa0;
 }
 
 th a:link, th a:visited {

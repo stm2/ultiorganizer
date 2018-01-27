@@ -65,11 +65,15 @@
 	/*margin-bottom: 2px;*/
 }
 
+.header_logo {
+    height : 300px;
+}
+
 .logo{
 	border: 0; 
 	vertical-align: middle;
 	text-align: center;
-	/*width:100px;*/ 
+	width:175px;
 	/*height:114px;*/
 	margin:5px;
 }
@@ -105,7 +109,7 @@
 }
 .seasondropdown {
 	width:175px;
-	background-color: #eeeeee;
+	background-color: #eeeeff;
 	color: #004466; 
 	font-size: 12px; 
 	border-top: solid #EEEEDD 1px; 
@@ -136,7 +140,7 @@
 }
 
 .menuseparator{	
-	border-bottom:1px dotted #333;
+	border-bottom:1px dotted #094aa0;
 }
 
 .center{
@@ -244,7 +248,7 @@ yuicalendar.table {
 }
 
 .calheader{
-	color: #20408f;
+	color: #094aa0;
 }
 
 .twitter-list {
@@ -292,7 +296,7 @@ yuicalendar.table {
 }
 
 .tablelowlight {
-	background-color: #E0E0E0;
+	background-color: #E0E0f0;
 }
 
 .flag{

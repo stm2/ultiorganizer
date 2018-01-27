@@ -5,12 +5,12 @@ function logo() {
 	if (!isset($styles_prefix)) {
 		$styles_prefix = $include_prefix;
 	}
-	return "<img class='header_logo' src='".$styles_prefix."cust/dfv/logo.gif' alt='"._("DFV Logo")."'/>";
+	return "<img class='logo' src='".$styles_prefix."cust/dfv/DFV-Logo2018.jpg' alt='"._("DFV Logo")."'/>";
 }
 
 function pageHeader() {
   global $include_prefix;
-	return "<div><a href='http://www.frisbeesportverband.de' class='header_text'><img class='header_logo' src='".$include_prefix."cust/dfv/logo.gif' alt='"._("DFV Logo")."' style='height:45px;'/>"._("DFV - Ultiorganizer")."</a></div>\n";
+  return "<div><a style='float:left;' href='http://www.frisbeesportverband.de' class='header_text'><img class='header_logo' src='".$include_prefix."cust/dfv/DFV-Logo2018.jpg' alt='"._("DFV Logo")."' style='height:45px;'/></a><div style='float:left;padding:16px 20px' class='header_text' style='align:right'>" . _("Ultiorganizer") . "</span></div>\n";
 }
 
 ?>
