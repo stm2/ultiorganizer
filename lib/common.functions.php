@@ -1385,4 +1385,32 @@ function getHiddenInput($id = 'hiddenDeleteId') {
   return "<input type='hidden' id='$id' name='$id'/>";
 }
 
+function mailto_address($email, $name = null) {
+  if (!is_null($name))
+    return utf8entities($name) . "<" . utf8entities($email) . ">";
+  else
+    return utf8entities($email);
+}
+
+function mailto_encode($email, $nameOrmailtag = null, $nameTag = null) {
+  if (! is_array($email)) {
+    return "mailto:" . mailto_address($email, $nameOrmailtag);
+  } else {
+    $link = "mailto:";
+    foreach ($email as $amail) {
+        /* FIXME without the if, this fails with PHP warning: Illegal string offset 'email'; I don't know why */
+        if (is_string($amail))
+          $link .= mailto_address($amail);
+        else
+        $link .= mailto_address($amail[$nameOrmailtag], null) . ";";
+    }
+    return $link;
+  }
+}
+
+function mailto_link($email, $name = null, $text = null) {
+  $encode = mailto_encode($email, $name);
+  $text = is_null($text) ? is_null($name) ? utf8entities($email) : utf8entities($name) : utf8entities($text);
+  return "<a href='$encode'>$text</a>";
+}
 ?>

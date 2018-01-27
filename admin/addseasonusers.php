@@ -78,7 +78,8 @@ function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $
     if (! empty($groupTag)) {
       $html .= "<td style='width:175px'>" . utf8entities(U_($user[$groupTag])) . "</td>\n";
     }
-    $html .= "<td style='width:75px'>" . $user['userid'] . "</td><td>" . utf8entities($user['name']) . " (<a href='mailto:" . utf8entities($user['email']) . "'>" . utf8entities($user['email']) . "</a>)</td>";
+    $html .= "<td style='width:75px'>" . $user['userid'] . "</td><td>" . utf8entities($user['name']) . " ("
+      . mailto_link($user['email'], $user['name'], $user['email']) . ")</td>";
     $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" . _("X") . "' ";
     if (! empty($delIds)) {
       $html .= "onclick=\"";
@@ -163,7 +164,8 @@ $html .= "<table style='white-space: nowrap;'>\n";
 $admins = SeasonAdmins($seasonId);
 foreach($admins as $user){
   $html .= "<tr>";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
+  $html .= "<td style='width:75px'>" . $user['userid'] . "</td><td>" 
+    . utf8entities($user['name']) . " (" . mailto_link($user['email'], $user['name'], $user['email']) . ")</td>";
   $html .= "<td>"._("All games")."</td>";
   $html .= "<td>"._("In role of event admin")."</td>";
   $html .= "</tr>\n";;
@@ -173,7 +175,8 @@ $admins = SeasonGameAdmins($seasonId);
 
 foreach($admins as $user){
   $html .= "<tr>";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
+  $html .= "<td style='width:75px'>".$user['userid']."</td><td>"
+    . utf8entities($user['name']) . " (" . mailto_link($user['email'], $user['name'], $user['email']) . ")</td>";
   if($user['games']==count($seasongames)){
     $html .= "<td>"._("All games")."</td>";
   }else{
@@ -202,7 +205,7 @@ if(!empty($_GET["access"]) && $_GET["access"]=="gameadmin"){
   $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
 
   $reservations = SeasonReservations($seasonId);
-  $html .= "<tr><td colspan='5'><select multiple='multiple' size='".count($reservations)."' name='reservations[]'>";
+  $html .= "<tr><td colspan='5'><select class='series_select' multiple='multiple' size='".count($reservations)."' name='reservations[]'>";
   foreach($reservations as $row){
     $html .= "<option value='".utf8entities($row['id'])."'>";
     $html .= utf8entities($row['reservationgroup']) ." ". utf8entities($row['name']) .", "._("Field")." ".utf8entities($row['fieldname'])." (".JustDate($row['starttime']) .")";
@@ -224,8 +227,9 @@ $admins = SeasonAdmins($seasonId);
 foreach($admins as $user){
   $html .= "<tr>";
   $html .= "<td style='width:175px'>"._("All teams")."</td>";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
-  $html .= "<td>"._("In role of event admin")."</td>";
+  $html .= "<td style='width:75px'>".$user['userid']."</td><td>"
+    . utf8entities($user['name']) . " (" . mailto_link($user['email'], $user['name'], $user['email']) . ")</td>";
+    $html .= "<td>"._("In role of event admin")."</td>";
   $html .= "</tr>\n";;
 }
 
@@ -234,7 +238,8 @@ foreach($admins as $user){
   $html .= "<tr>";
   $teaminfo = TeamInfo($user['team_id']);
   $html .= "<td style='width:175px'>".utf8entities(U_($teaminfo['seriesname'])).", ".utf8entities(U_($teaminfo['name']))."</td>\n";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
+  $html .= "<td style='width:75px'>".$user['userid']."</td><td>"
+    . utf8entities($user['name']) . " (" . mailto_link($user['email'], $user['name'], $user['email']) . ")</td>";
   $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"document.accradmin.delId.value='".utf8entities($user['userid'])."';document.accradmin.teamId.value='".utf8entities($user['team_id'])."';\"/></td>";
   $html .= "</tr>\n";;
 }
@@ -245,7 +250,7 @@ if(!empty($_GET["access"]) && $_GET["access"]=="accradmin"){
   $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
   
   $teams = SeasonTeams($seasonId);
-  $html .= "<tr><td colspan='5'><select multiple='multiple' size='".count($teams)."' name='teams[]'>";
+  $html .= "<tr><td colspan='5'><select class='series_select' multiple='multiple' size='".count($teams)."' name='teams[]'>";
   foreach($teams as $team){
     $html .= "<option value='".utf8entities($team['team_id'])."'>";
     $html .= utf8entities(U_($team['seriesname'])).", ".utf8entities(U_($team['name']));

@@ -146,7 +146,7 @@ if($view=="accevents"){
         echo "<td>-</td>";
       }
       if (!empty($row['email'])) {
-        echo "<td><a href='mailto:".$row['email']."'>".utf8entities($row['uname'])."</a></td>";
+        echo "<td>" . mailto_link($row['email'], $row['uname']) . "</td>";
       } else {
         echo "<td>".utf8entities($row['uname'])."</td>";
       }

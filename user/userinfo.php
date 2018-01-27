@@ -265,7 +265,7 @@ if ($_SESSION['uid'] != "anonymous") {
 		<tr><td class='infocell'>"._("Username").":</td>
 			<td><input class='input' maxlength='20' id='UserName' name='UserName' value='".utf8entities($userinfo['userid'])."'/></td></tr>
 		<tr><td class='infocell'>"._("Primary email").":</td>
-			<td><a href='mailto:".$userinfo['email']."'/>".$userinfo['email']."</a>&nbsp;
+			<td>" . mailto_link($userinfo['email'], $userinfo['name'], $userinfo['email']) . "&nbsp;
 			<a href='?view=user/addextraemail&amp;user=".utf8entities($userid)."'>"._("Add extra address")."</a></td></tr>\n";
   $extraEmails = UserExtraEmails($userid);
   if ($extraEmails) {
