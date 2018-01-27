@@ -57,18 +57,17 @@ if (!empty($_POST['save'])) {
 $respGameArray = GameResponsibilityArray($season);
 $html .= "<form action='?".utf8entities($_SERVER['QUERY_STRING'])."' method='post'>\n"; 
 $html .= "<table cellpadding='2'>\n";
-$html .= "<tr><td>\n";
 
 if(count($respGameArray) == 0) {
-	$html .= "<p>"._("No game responsibilities").".</p>\n";	
+	$html .= headerrow(_("No game responsibilities"));	
 } else	{
 	$prevdate="";
 	$prevrg = "";
 	$prevloc = "";
 	if ($_SESSION['massinput']) {
-		$html .= "<p><a class='button' href='?view=mobile/respgames$allPar$rgPar$locationPar$dayPar&amp;massinput=0'>" . _("Just display values") . "</a></p>";
+		$html .= headerrow("<a class='button' href='?view=mobile/respgames$allPar$rgPar$locationPar$dayPar&amp;massinput=0'>" . _("Just display values") . "</a>");
 	}else {
-		$html .= "<p><a class='button' href='?view=mobile/respgames$allPar$rgPar$locationPar$dayPar&amp;massinput=1'>" . _("Mass input") . "</a></p>";
+		$html .= headerrow("<a class='button' href='?view=mobile/respgames$allPar$rgPar$locationPar$dayPar&amp;massinput=1'>" . _("Mass input") . "</a>");
 	}
 	
 	foreach ($respGameArray as $tournament => $resArray) {
@@ -80,9 +79,9 @@ if(count($respGameArray) == 0) {
 				
 				if($showall){
 					if(!empty($prevdate) && $prevdate != JustDate($game['time'])){
-						$html .= "</td></tr><tr><td>\n";
-						$html .= "<hr/>\n";
-						$html .= "</td></tr><tr><td>\n";
+						$html .= "<tr><td colspan='3'>";
+						$html .= "<hr/>";
+						$html .= "</td></tr>\n";
 					}
 					$html .= gamerow($gameId, $game, $mass);
 					$prevdate = JustDate($game['time']);
@@ -90,13 +89,11 @@ if(count($respGameArray) == 0) {
 				}
 				
 				if($prevrg != $game['reservationgroup']){
-					$html .= "</td></tr><tr><td>\n";
 					if($reservationgroup == $game['reservationgroup']){
-						$html .= "<b>".utf8entities($game['reservationgroup'])."</b>";
+						$html .= headerRow("<b>".utf8entities($game['reservationgroup'])."</b>");
 					}else{
-						$html .= "+ <a href='?view=mobile/respgames&amp;rg=".urlencode($game['reservationgroup'])."$massPar'>".utf8entities($game['reservationgroup'])."</a>";
+						$html .= headerRow("+ <a href='?view=mobile/respgames&amp;rg=".urlencode($game['reservationgroup'])."$massPar'>".utf8entities($game['reservationgroup'])."</a>");
 					}
-					$html .= "</td></tr><tr><td>\n";
 					$prevrg = $game['reservationgroup'];
 				}
 
@@ -105,15 +102,13 @@ if(count($respGameArray) == 0) {
 					$gameloc = $game['location']."#".$game['fieldname'];
 					
 					if($prevloc != $gameloc){
-						$html .= "</td></tr><tr><td>\n";
 						if($location == $gameloc && $day==JustDate($game['starttime'])){
-							$html .= "&nbsp;&nbsp;<b>". utf8entities($game['locationname']) . " " . _("Field") . " " . utf8entities($game['fieldname'])."</b>";
+							$html .= headerRow("&nbsp;<b>". utf8entities($game['locationname']) . " " . _("Field") . " " . utf8entities($game['fieldname'])."</b>");
 						}else{
-							$html .= "&nbsp;+<a href='?view=mobile/respgames&amp;rg=".urlencode($game['reservationgroup'])."&amp;loc=".urlencode($gameloc)."&amp;day=".urlencode(JustDate($game['starttime']))."$massPar'>";
-							$html .= utf8entities($game['locationname']) . " " . _("Field") . " " . utf8entities($game['fieldname'])."</a>";
+							$html .= headerRow("&nbsp;+<a href='?view=mobile/respgames&amp;rg=".urlencode($game['reservationgroup'])
+							  ."&amp;loc=".urlencode($gameloc)."&amp;day=".urlencode(JustDate($game['starttime']))."$massPar'>"
+							  . utf8entities($game['locationname']) . " " . _("Field") . " " . utf8entities($game['fieldname'])."</a>");
 						}
-						
-						$html .= "</td></tr><tr><td>\n";
 						$prevloc = $gameloc;
 					}
 					
@@ -126,51 +121,55 @@ if(count($respGameArray) == 0) {
 		}
 	}
 }
-$html .= "</td></tr>\n";
 if ($_SESSION['massinput']) {
-	$html .= "<tr><td><input class='button' name='save' type='submit' value='" . _("Save") . "' onclick='confirmLeave(null, false, null);'/></td></tr>\n";
+	$html .= headerRow("<input class='button' name='save' type='submit' value='" . _("Save") . "' onclick='confirmLeave(null, false, null);'/>");
 }
 if ($feedback)
-  $html .="<tr><td>".$feedback."</td></tr>";
+  $html .= headerRow($feedback);
 
-$html .= "<tr><td><hr/>\n";
 if($showall){
-	$html .= "<a href='?view=mobile/respgames'>"._("Group games")."</a>";
+	$html .= headerRow("<a href='?view=mobile/respgames'>"._("Group games")."</a>");
 }else{
-	$html .= "<a href='?view=mobile/respgames&amp;all=1'>"._("Show all")."</a>";
+	$html .= headerRow("<a href='?view=mobile/respgames&amp;all=1'>"._("Show all")."</a>");
 }
-$html .= "</td></tr></table>\n";
+$html .= "</table>\n";
 $html .= "</form>";
 
 echo $html;
 		
 pageEnd();
 
+function headerRow($content) {
+  return "<tr><td colspan='3'><p>$content</p></td></tr>\n";
+}
+
 function gamerow($gameId, $game, $mass){
-	$ret = "&nbsp;&nbsp;&nbsp;&nbsp;";
-	$ret .= DefTimeFormat($game['time']) ." ";
+     global $thinsp, $nobrthinsp;
+     $gamesep = "${thinsp}-${thinsp}";
+	$ret = "<tr><td>&nbsp;&nbsp;";
+	$ret .= str_replace(" ", $nobrthinsp, ShortTimeFormat($game['time'])) ."</td><td>";
 	if($game['hometeam'] && $game['visitorteam']){
-		$ret .= utf8entities($game['hometeamname']) ." - ". utf8entities($game['visitorteamname']) ." ";
+	  $ret .= utf8entities($game['hometeamname']) . $gamesep . utf8entities($game['visitorteamname']) ."</td><td>";
 
 		if ($mass=="1") {
-			$ret .= "<input type='hidden' id='scoreId" . $gameId . "' name='scoreId[]' value='$gameId'/>
-			<input type='text' size='3' maxlength='3' style='width:4ex' value='" . (is_null($game['homescore'])?"":intval($game['homescore'])) . "' id='homescore$gameId' name='homescore[]' oninput='confirmLeave(this, true, null);' /> -
-			<input type='text' size='3' maxlength='3' style='width:4ex' value='" . (is_null($game['visitorscore'])?"":intval($game['visitorscore'])) . "' id='visitorscore$gameId' name='visitorscore[]' oninput='confirmLeave(this, true, null);' />";
+			$ret .= "<input type='hidden' id='scoreId" . $gameId . "' name='scoreId[]' value='$gameId'/>";
+			$ret .= "<span style='white-space:nowrap'><input type='text' size='3' maxlength='3' style='width:4ex' value='" . (is_null($game['homescore'])?"":intval($game['homescore'])) . "' id='homescore$gameId' name='homescore[]' oninput='confirmLeave(this, true, null);' />";
+			$ret .= "<input type='text' size='3' maxlength='3' style='width:4ex' value='" . (is_null($game['visitorscore'])?"":intval($game['visitorscore'])) . "' id='visitorscore$gameId' name='visitorscore[]' oninput='confirmLeave(this, true, null);' /></span>";
 			// $ret .= "<input class='button' name='saveOne' type='submit' value='" . _("Save") . "' onPress='setSaved(".$gameID.")'/></td></tr><tr><td>\n";
 		}elseif(GameHasStarted($game)){
 			$ret .=  "<a style='white-space: nowrap' href='?view=mobile/gameplay&amp;game=".$gameId."'>".intval($game['homescore']) ." - ". intval($game['visitorscore'])."</a>";
 		}else{
 			$ret .= intval($game['homescore']) ." - ". intval($game['visitorscore']);
 		}
-		$ret .= "</td></tr><tr><td>\n";
-		$ret .= "&nbsp;&nbsp;&nbsp;&nbsp;";
+		$ret .= "</td></tr><tr><td colspan='3'>\n";
+		$ret .= "&nbsp;&nbsp;";
 		$ret .=  "<a style='white-space: nowrap' href='?view=mobile/addresult&amp;game=".$gameId."'>"._("Result")."</a> | ";
 		$ret .=  "<a style='white-space: nowrap' href='?view=mobile/addplayerlists&amp;game=".$gameId."&amp;team=".$game['hometeam']."'>"._("Players")."</a> | ";
 		$ret .=  "<a style='white-space: nowrap' href='?view=mobile/addscoresheet&amp;game=$gameId'>"._("Scoresheet")."</a>";
-		$ret .= "</td></tr><tr><td>\n";
+		$ret .= "</td></tr>\n";
 	}else{
-		$ret .= utf8entities($game['phometeamname']) ." - ". utf8entities($game['pvisitorteamname']) ." ";
-		$ret .= "</td></tr><tr><td>\n";
+		$ret .= utf8entities($game['phometeamname']) . $gamesep . utf8entities($game['pvisitorteamname']);
+		$ret .= "</td></tr>\n";
 	}
 	return $ret;
 }

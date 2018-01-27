@@ -1,6 +1,9 @@
 <?php
 include_once $include_prefix.'lib/HSVClass.php';
 
+$thinsp="&thinsp;";
+$nobrthinsp="<span style='white-space:nowrap'>&thinsp;</span>";
+
 function StripFromQueryString($query_string, $needle) {
    $query_string = preg_replace("/(\&|\?)*$needle=[a-zA-Z0-9].*?(\&;|$)/", '$2',   $query_string);
    return preg_replace("/(&)+/","&",$query_string);
@@ -114,7 +117,7 @@ function JustDate($timestamp)
 	
 function DefWeekDateFormat($timestamp)
 	{
-	return WeekdayString($timestamp,true) ." ". ShortDate($timestamp);
+	   return empty($timestamp)?"":(WeekdayString($timestamp,true) ." ". ShortDate($timestamp));
 	}
 
 function DefHourFormat($timestamp)

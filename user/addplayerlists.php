@@ -22,135 +22,78 @@ $away_playerlist = TeamPlayerList($game_result['visitorteam']);
 $html = "";
 $html2 = "";
 
-//process itself if submit was pressed
-if(!empty($_POST['save']))	{
+function processInput($teamtag, $checktag) {
+  global $gameId, $game_result, $_POST;
+  $html2 = "";
+  
+  $played_players = GamePlayers($gameId, $game_result[$teamtag]);
+  
+  // delete unchecked players
+  foreach ($played_players as $player) {
+    $found = false;
+    if (!empty($_POST[$checktag])) {
+      foreach ($_POST[$checktag] as $playerId) {
+        if ($player['player_id'] == $playerId) {
+          $found = true;
+          break;
+        }
+      }
+    }
+    if (!$found) {
+      GameRemovePlayer($gameId, $player['player_id']);
+    }
+  }
+  
+  // handle checked players
+  if (!empty($_POST[$checktag])) {
+    foreach ($_POST[$checktag] as $playerId) {
+      $number = $_POST["p$playerId"];
+      // if number
+      if (is_numeric($number) && intval($number) < 127 && intval($number) >= 0) {
+        // check if already in list with correct number
+        $played_players = GamePlayers($gameId, $game_result[$teamtag]);
+        $found = false;
+        foreach ($played_players as $player) {
+          // if exist
+          if ($player['player_id'] == $playerId && $player['num'] == $number) {
+            $found = true;
+            break;
+          }
+          // if found, but with different number
+          if ($player['player_id'] == $playerId && $player['num'] != $number) {
+            GameSetPlayerNumber($gameId, $playerId, $number);
+            $found = true;
+            break;
+          }
+          // if two players with same number
+          if ($player['player_id'] != $playerId && $player['num'] == $number) {
+            $playerinfo1 = PlayerInfo($playerId);
+            $playerinfo2 = PlayerInfo($player['player_id']);
+            $html2 .= "<p  class='warning'><i>" . utf8entities($playerinfo1['firstname'] . " " . $playerinfo1['lastname']) . "</i> " . _("and") . " <i>" . utf8entities($playerinfo2['firstname'] . " " . $playerinfo2['lastname']) . "</i> " . _("same number") . " '$number'.</p>";
+            $found = true;
+            break;
+          }
+        }
+        
+        if (!$found) {
+          GameAddPlayer($gameId, $playerId, $number);
+        }
+      } else {
+        $playerinfo = PlayerInfo($playerId);
+        $html2 .= "<p  class='warning'><i>" . utf8entities($playerinfo['firstname'] . " " . $playerinfo['lastname']) . "</i> " . _("erroneous number") . " '$number'.</p>";
+      }
+    }
+  }
+  return $html2;
+}
+
+// process itself if submit was pressed
+if (!empty($_POST['save'])) {
   $backurl = $_POST['backurl'];
   LogGameUpdate($gameId, "playerlist saved", "addplayerlist");
-  //HOME PLAYERS
-  $played_players = GamePlayers($gameId, $game_result['hometeam']);
-
-  //delete unchecked players
-  foreach($played_players as $player){
-    $found=false;
-    if(!empty($_POST["homecheck"]))	 {
-      foreach($_POST["homecheck"] as $playerId) {
-        if($player['player_id']==$playerId)	{
-          $found=true;
-          break;
-        }
-      }
-    }
-    if(!$found){
-      GameRemovePlayer($gameId, $player['player_id']);
-    }
-  }
-
-  //handle checked players
-  if(!empty($_POST["homecheck"])) {
-    foreach($_POST["homecheck"] as $playerId) {
-      $number = $_POST["p$playerId"];
-      //if number
-      if(is_numeric($number)) {
-        //check if already in list with correct number
-        $played_players = GamePlayers($gameId, $game_result['hometeam']);
-        $found = false;
-        foreach($played_players as $player){
-          //$html .= "<p>".$player['player_id']."==".$playerId ."&&". $player['num']."==".$number."</p>";
-
-          //if exist
-          if($player['player_id']==$playerId && $player['num']==$number) {
-            $found = true;
-            break;
-          }
-          //if found, but with different number
-          if($player['player_id']==$playerId && $player['num']!=$number) {
-            GameSetPlayerNumber($gameId, $playerId, $number);
-            $found = true;
-            break;
-          }
-          //if two players with same number
-          if($player['player_id']!=$playerId && $player['num']==$number) {
-            $playerinfo1 = PlayerInfo($playerId);
-            $playerinfo2 = PlayerInfo($player['player_id']);
-            $html2 .= "<p  class='warning'><i>". utf8entities($playerinfo1['firstname'] ." ". $playerinfo1['lastname']) ."</i> " . _("and")
-            ." <i>". utf8entities($playerinfo2['firstname'] ." ". $playerinfo2['lastname']) ."</i> ". _("same number"). " '$number'.</p>";
-            $found = true;
-            break;
-          }
-        }
-         
-        if(!$found){
-          GameAddPlayer($gameId, $playerId, $number);
-        }
-      }else{
-        $playerinfo = PlayerInfo($playerId);
-        $html2 .= "<p  class='warning'><i>". utf8entities($playerinfo['firstname'] ." ". $playerinfo['lastname']) ."</i> ". _("erroneous number"). " '$number'.</p>";
-      }
-    }
-  }
-  //AWAY PLAYERS
-  $played_players = GamePlayers($gameId, $game_result['visitorteam']);
-
-  //delete unchecked players
-  foreach($played_players as $player){
-    $found=false;
-    if(!empty($_POST["awaycheck"])) {
-      foreach($_POST["awaycheck"] as $playerId) {
-        if($player['player_id']==$playerId) {
-          $found=true;
-          break;
-        }
-      }
-    }
-    if(!$found){
-      GameRemovePlayer($gameId, $player['player_id']);
-    }
-  }
-
-  if(!empty($_POST["awaycheck"])) {
-    //handle checked players
-    foreach($_POST["awaycheck"] as $playerId) {
-      $number = $_POST["p$playerId"];
-      //if number
-      if(is_numeric($number)) {
-        //check if already in list with correct number
-        $played_players = GamePlayers($gameId, $game_result['visitorteam']);
-        $found = false;
-        foreach($played_players as $player){
-          //$html .= "<p>".$player['player_id']."==".$playerId ."&&". $player['num']."==".$number."</p>";
-
-          //if exist
-          if($player['player_id']==$playerId && $player['num']==$number) {
-            $found = true;
-            break;
-          }
-          //if found, but with different number
-          if($player['player_id']==$playerId && $player['num']!=$number) {
-            GameSetPlayerNumber($gameId, $playerId, $number);
-            $found = true;
-            break;
-          }
-          //if two players with same number
-          if($player['player_id']!=$playerId && $player['num']==$number) {
-            $playerinfo1 = PlayerInfo($playerId);
-            $playerinfo2 = PlayerInfo($player['player_id']);
-            $html2 .= "<p  class='warning'><i>". utf8entities($playerinfo1['firstname'] ." ". $playerinfo1['lastname']) ."</i> " . _("and")
-            ." <i>". utf8entities($playerinfo2['firstname'] ." ". $playerinfo2['lastname']) ."</i> ". _("same number"). "'$number'.</p>";
-            $found = true;
-            break;
-          }
-        }
-         
-        if(!$found){
-          GameAddPlayer($gameId, $playerId, $number);
-        }
-      }else {
-        $playerinfo = PlayerInfo($playerId);
-        $html2 .= "<p  class='warning'><i>". utf8entities($playerinfo['firstname'] ." ". $playerinfo['lastname']) ."</i> ". _("erroneous number"). " '$number'.</p>";
-      }
-    }
-  }
-  $html2 .= "<p>"._("Player lists saved!")."</p>";
+  $html2 .= processInput('hometeam', 'homecheck');
+  $html2 .= processInput('visitorteam', 'awaycheck');
+  $html2 .= "<p>" . _("Player lists saved!") . "</p>";
 }
 
 //common page
