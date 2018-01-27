@@ -742,19 +742,13 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
 
 function TimetableGrouping($id, $gamefilter, $timefilter)
 {
-  //common game query
-  $query = "SELECT pool.name AS poolname, ps.name AS seriesname, pr.fieldname, pr.reservationgroup,
-			pl.name AS placename
+  //common game query 
+  $query = "SELECT pr.reservationgroup
 			FROM uo_game pp 
-			LEFT JOIN (SELECT COUNT(*) AS goals, game FROM uo_goal GROUP BY game) AS pm ON (pp.game_id=pm.game)
-			LEFT JOIN uo_pool pool ON (pool.pool_id=pp.pool) 
+			LEFT JOIN uo_pool pool ON (pool.pool_id=pp.pool)
 			LEFT JOIN uo_series ps ON (pool.series=ps.series_id)
 			LEFT JOIN uo_reservation pr ON (pp.reservation=pr.id)
-			LEFT JOIN uo_location pl ON (pr.location=pl.id)
-			LEFT JOIN uo_team AS home ON (pp.hometeam=home.team_id)
-			LEFT JOIN uo_team AS visitor ON (pp.visitorteam=visitor.team_id)
-			LEFT JOIN uo_scheduling_name AS phome ON (pp.scheduling_name_home=phome.scheduling_id)
-			LEFT JOIN uo_scheduling_name AS pvisitor ON (pp.scheduling_name_visitor=pvisitor.scheduling_id)";
+			LEFT JOIN uo_location pl ON (pr.location=pl.id)";
 
   switch($gamefilter)
   {
@@ -765,7 +759,12 @@ function TimetableGrouping($id, $gamefilter, $timefilter)
     case "series":
       $query .= " WHERE pp.valid=true AND ps.series_id='".(int)$id."'";
       break;
-
+      
+    case "seriesgroup":
+      $series = explode(",", mysql_adapt_real_escape_string($id));
+      $query .= " WHERE pp.valid=true AND ps.series_id IN(". implode(",", $series).")";
+      break;
+      
     case "pool":
       $query .= " WHERE pp.valid=true AND pp.pool='".(int)$id."'";
       break;
@@ -827,7 +826,7 @@ function TimetableGrouping($id, $gamefilter, $timefilter)
       $query .= " AND DATE_FORMAT(pp.time,'%Y-%m-%d') = '".mysql_adapt_real_escape_string($timefilter)."'";
       break;
   }
-  $query .= " GROUP BY pr.reservationgroup ORDER BY pp.time ASC, ps.ordering, pr.reservationgroup";
+  $query .= " GROUP BY pr.reservationgroup ORDER BY MIN(ps.ordering) ASC, MIN(pp.time) ASC, pr.reservationgroup";
 
   return DBQueryToArray($query);
 }
