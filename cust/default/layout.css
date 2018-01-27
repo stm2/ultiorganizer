@@ -215,8 +215,8 @@ select {
 	text-align: center;
 }
 
-table.results td td {
-  padding-right: 1em;
+form table td + td {
+  padding-left: 3px;
 }
 
 form table td {
@@ -319,7 +319,7 @@ td.scheduling_column {
    font-size:8px;
 }
 
-ul.draglist, ol.draglist {
+ul.draglist, ol.draglist, select.series_select {
   position: relative;
   width: 200px; 
   background: #f7f7f7;
@@ -329,11 +329,16 @@ ul.draglist, ol.draglist {
   padding: 0;
 }
 
+select.series_select {
+  width: 400px;
+  max-height: 20ex;
+}
+
 ul.draglist li, ol.draglist li {
   margin: 0px;
   cursor: move;
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   background-color: #D1E6EC;
   border:1px solid #7EA6B2;
 }
