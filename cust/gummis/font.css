@@ -1,4 +1,5 @@
-.header_text:link, .header_text:visited, .header_text:active, .header_text:hover, .header_text:focus {
+.header_text:link, .header_text:visited, .header_text:active,
+  .header_text:hover, .header_text:focus {
   color: #006699;
   font-size: 18pt;
   /*padding-left:10px;*/
@@ -7,25 +8,26 @@
   text-transform: uppercase;
 }
 
-.header_text_small:link, .header_text_small:visited, .header_text_small:active, .header_text_small:hover, .header_text_small:focus {
+.header_text_small:link, .header_text_small:visited, .header_text_small:active,
+  .header_text_small:hover, .header_text_small:focus {
   color: #006699;
   font-size: 12pt;
-  padding-left:10px;
+  padding-left: 10px;
   font-weight: normal;
   text-decoration: none;
 }
 
 .seasonnav:link, .seasonnav:visited {
-
   font-size: 10pt;
   font-weight: bold;
-  text-align:center;
+  text-align: center;
   color: #ffffff;
   text-decoration: underline;
   /*background-color: #fe7f02;*/
-  text-transform:uppercase;
-  display:block;
+  text-transform: uppercase;
+  display: block;
 }
+
 .seasonnav:active, .seasonnav:hover, .seasonnav:focus {
   text-decoration: none;
   font-weight: normal;
@@ -37,9 +39,10 @@
   padding: 2px;
   color: #2d2d2d;
   text-decoration: none;
-  text-transform:uppercase;
-  display:block;
+  text-transform: uppercase;
+  display: block;
 }
+
 .nav:active, .nav:hover, .nav:focus {
   color: #000000;
   text-decoration: none;
@@ -52,8 +55,9 @@
   padding-left: 2px;
   color: #2d2d2d;
   text-decoration: none;
-  display:block;
+  display: block;
 }
+
 .subnav:active, .subnav:hover, .subnav:focus {
   color: #000000;
   text-decoration: underline;
@@ -62,19 +66,19 @@
 
 .navpoollink, .navpoollink:link, .navpoollink:visited {
   font-size: 8pt;
-  /*padding: 2px;*/
-  padding-left: 8px;
+  padding-left: 1ex;
   color: #2d2d2d;
   text-decoration: none;
-  display:block;
+  display: block;
 }
+
 .navpoollink:active, .navpoollink:hover, .navpoollink:focus {
   color: #000000;;
   text-decoration: underline;
   background-color: #d3d3d3;
 }
 
-.navigation_bar_text{
+.navigation_bar_text {
   padding: 0px;
   margin: 0px;
   margin-top: 2px;
@@ -89,88 +93,87 @@
   font-size: 10px;
   color: #ffffff;;
   font-weight: bold;
-  text-align:center;
-  text-transform:uppercase;
+  text-align: center;
+  text-transform: uppercase;
   /*background-color: #fe7f02;*/
   background-color: #2d2d2d;
-  background:black url(nav.png) no-repeat center;
-  margin: 0px;
-  padding: 0px;
+  background: black url(nav.png) no-repeat center;
 }
 
 .menuserieslevel {
   font-size: 10px;
   font-weight: bold;
 }
+
 .menupoollevel {
   font-size: 10px;
   /*padding-left:10px*/;
 }
 
-.pagemenu_container{
+.pagemenu_container {
   width: 100%;
   margin: 0px;
   padding: 0px;
-/*  height:15px;*/
+  /*  height:15px;*/
 }
 
-ul#pagemenu{
-  list-style-type:none;
-  position:relative;
-  width:100%;
-  font-weight:bold;
+ul#pagemenu {
+  list-style-type: none;
+  position: relative;
+  width: 100%;
+  font-weight: bold;
   font-size: 10px;
-  margin:0px;
-  padding:0px;
+  margin: 0px;
+  padding: 0px;
 }
 
-table#pagemenu{
+table#pagemenu {
   font-size: 10px;
-  margin:0px;
+  margin: 0px;
 }
 
-ul#pagemenu li{
-  display:block;
-  float:left;
-  margin:0 0 0 4px;
+ul#pagemenu li {
+  display: block;
+  float: left;
+  margin: 0 0 0 4px;
 }
 
-ul#pagemenu li.left{
-  margin:0;
+ul#pagemenu li.left {
+  margin: 0;
 }
 
 table#pagemenu th {
-  background:#ffffff;
+  background: #ffffff;
 }
 
 ul#pagemenu li a, table#pagemenu a {
-  display:block;
-  float:left;
+  display: block;
+  float: left;
   color: #000000;;
   background-color: #f0f0f0;
   text-decoration: none;
-  padding:3px 17px 0 18px;
+  padding: 3px 17px 0 18px;
 }
 
-ul#pagemenu li a.right{
-  padding-right:19px;
+ul#pagemenu li a.right {
+  padding-right: 19px;
 }
 
 ul#pagemenu li a:hover, table#pagemenu a:hover {
   text-decoration: underline;
   background-color: #d3d3d3;
-  border-left:1px solid #333;
-  border-right:1px solid #333;
-  border-top:1px solid #333;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  border-top: 1px solid #333;
 }
 
 ul#pagemenu li a.current, table#pagemenu a.current {
   color: #000000;;
   background-color: #d3d3d3;
   text-decoration: underline;
-  border-left:1px solid #333;
-  border-right:1px solid #333;
-  border-top:1px solid #333;
+  border-left: 1px solid #333;
+  border-right: 1px solid #333;
+  border-top: 1px solid #333;
 }
 
 .thsort, .thsort:link, .thsort:visited {
@@ -178,6 +181,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   color: #ffffff;
   text-decoration: underline;
 }
+
 .thsort:active, .thsort:hover, .thsort:focus {
   color: #996699;
   text-decoration: none;
@@ -194,13 +198,13 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   text-decoration: none;
 }
 
-.topheadertext{
+.topheadertext {
   color: #000000;
   background-color: #ffffff;
-  padding:1px;
+  padding: 1px;
 }
 
-.topheaderlink, .topheaderlink:link, .topheaderlink:visited{
+.topheaderlink, .topheaderlink:link, .topheaderlink:visited {
   color: #000000;
   text-decoration: underline;
 }
@@ -210,42 +214,42 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   text-decoration: none;
 }
 
-.highlight{
+.highlight {
   background-color: #d7c2ee;
 }
 
-.attention{
+.attention {
   background-color: #FFB6C1;
 }
 
-.lowlight{
+.lowlight {
   color: #a0a0a0;
 }
 
-.schedulingname{
-  font-style:italic;
+.schedulingname {
+  font-style: italic;
 }
 
-.list_letter{
+.list_letter {
   color: #000000;
   font-size: 10pt;
   line-height: 12pt;
   font-weight: bold;
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 
-.selectable_highlight{
+.selectable_highlight {
   background-color: #A6C7E9;
-  cursor:pointer;
+  cursor: pointer;
   font-weight: bold;
 }
 
-.callahan{
+.callahan {
   background-color: #e0e0e0;
   color: #a0a0a0;
 }
 
-.warning{
+.warning {
   color: #FF0000;
 }
 
@@ -260,8 +264,8 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .mediaevent {
-  width:14px;
-  height:14px;
+  width: 14px;
+  height: 14px;
   margin: 0px;
   padding: 0px;
   white-space: nowrap;
@@ -282,17 +286,17 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   text-align: center
 }
 
-.infocell{
+.infocell {
   color: #000000;
   font-size: 8pt;
   text-align: left;
   text-decoration: none;
   font-weight: bold;
-  /*vertical-align: bottom;*/
+  vertical-align: bottom;
   font-variant: small-caps;
 }
 
-.headerlink{
+.headerlink {
   color: #000000;
   font-size: 12pt;
   text-align: left;
@@ -302,7 +306,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   font-variant: small-caps;
 }
 
-.groupinglink:link, .groupinglink:visited{
+.groupinglink:link, .groupinglink:visited {
   color: #2d2d2d;
   font-size: 10pt;
   text-align: left;
@@ -310,6 +314,9 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   font-weight: bold;
   vertical-align: bottom;
   font-variant: small-caps;
+  display: block;
+  padding: 0px 5px 0 5px;
+  float: left;
 }
 
 .groupinglink:hover, .groupinglink:focus {
@@ -318,7 +325,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   font-weight: bold;
 }
 
-.selgroupinglink{
+.selgroupinglink {
   color: #986598;
   font-size: 10pt;
   text-align: left;
@@ -328,21 +335,21 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   font-variant: small-caps;
 }
 
-.profileheader{
+.profileheader {
   font-weight: bold;
 }
 
-.dbrow{
+.dbrow {
   font-size: 1em;
 }
 
-.timezone{
+.timezone {
   color: #a0a0a0;
-  font-style:italic;
+  font-style: italic;
 }
 
-.guides{
-  font-style:italic;
+.guides {
+  font-style: italic;
   font-size: 8pt;
   text-align: center;
   vertical-align: middle;
@@ -352,9 +359,7 @@ a.button {
   -webkit-appearance: button;
   -moz-appearance: button;
   appearance: button;
-
   text-decoration: none;
   color: initial;
   white-space: nowrap;
 }
-

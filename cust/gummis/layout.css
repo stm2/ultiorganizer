@@ -1,39 +1,49 @@
-.page{
+.page {
   width: 998px;
   margin-left: auto;
   margin-right: auto;
   overflow: visible;
-  padding-top: 0px;
-  padding-bottom: 25px;
-  padding-right: 25px;
-  border:1px solid #333;
+  padding: 8px;
+  border: 1px solid #333;
   background-color: #FFFFFF;
 }
 
-.page_top{
+.mobile_page {
+  width: 300px;
+  border: 1px solid #333;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: visible;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 10px;
+  background-color: #FFFFFF;
+}
+
+.page_top {
   width: 100%;
-  padding:0px;
+  padding: 0px;
   padding-right: 0px;
-  height:60px;
+  height: 60px;
   border-bottom: 1px dashed #333;
   /*background-color: #afafaf;*/
 }
 
-.top_banner_space{
+.top_banner_space {
   height: 0px;
 }
 
-.page_middle{
+.page_middle {
   width: 100%;
   clear: both;
-
 }
 
-.page_bottom{
+.page_bottom {
   width: 100%;
 }
 
-.navigation_bar{
+.navigation_bar {
   width: 95%;
   height: 16px;
   margin-top: 0px;
@@ -51,13 +61,17 @@
   /*margin-bottom: 2px;*/
 }
 
-.logo{
+.header_logo {
+  height: 60px;
+}
+
+.logo {
   border: 0;
   vertical-align: middle;
   text-align: center;
   /*width:100px;*/
   /*height:114px;*/
-  margin:5px;
+  margin: 5px 0px 5px 0px;
 }
 
 .menu_left {
@@ -67,7 +81,7 @@
 }
 
 .leftmenulinks {
-  float:left;
+  float: left;
   text-align: left;
   vertical-align: top;
   background-color: #f0f0f0;
@@ -78,19 +92,34 @@
   border-right: solid #464646 1px;
 }
 
-.topheader_right{
+table.leftmenulinks+table.leftmenulinks {
+  margin-top: 8px;
+}
+
+.leftmenulinks th {
+  padding: 4px 3px 4px 3px;
+}
+
+.leftmenulinks tr+tr td {
+  padding: 1px 3px 3px 2px;
+}
+
+.topheader_right {
   /*background-image: url("header_right.jpg");*/
   /*background-repeat:repeat-x;*/
-  vertical-align:top;
-  padding-top:0px;
-  padding-right:10px;
+  vertical-align: top;
+  padding-top: 0px;
+  padding-right: 10px;
   width: 200px;
 }
-.topheader_left{
+
+.topheader_left {
   /*width: 503px;*/
+  
 }
+
 .seasondropdown {
-  width:175px;
+  width: 175px;
   background-color: #eeeeee;
   color: #004466;
   font-size: 12px;
@@ -102,46 +131,45 @@
 
 .tdcontent {
   /*border-left: solid #598788 4px;*/
+  padding-left: 1.5ex;
 }
 
 .content {
   width: 785px;
-  height:100%;
-  margin: 0px;
-  margin-left:5px;
-  margin-right:5px;
+  height: 100%;
+  margin: 0;
+  margin-left: 0px;
+  margin-right: 5px;
   background-color: #ffffff;
   padding-right: 0px;
-  padding-left: 5px;
-  padding-top: 5px;
-  /*border:1px solid #333;*/
+  padding-left: 0px;
 }
 
 .nomenu {
-        width: 965px;
+  width: 965px;
 }
 
-.menuseparator{
-  border-bottom:1px dotted #333;
+.menuseparator {
+  border-bottom: 1px dotted #333;
 }
 
-.center{
+.center {
   text-align: center;
   vertical-align: middle;
 }
 
-.right{
+.right {
   text-align: right;
   vertical-align: middle;
 }
 
-.left{
+.left {
   text-align: left;
   vertical-align: middle;
 }
 
 .button {
-  cursor:pointer;
+  cursor: pointer;
   font-size: 10px;
 }
 
@@ -172,7 +200,7 @@ select {
 }
 
 .deletebutton {
-  cursor:pointer;
+  cursor: pointer;
   padding: 0;
   margin: 0;
   border: 1px solid #ffffff;
@@ -184,48 +212,77 @@ select {
 
 .dropdown {
   font-size: 10px;
+  width: auto;
+}
+
+.admintable {
+  width: 100%;
+}
+
+.admintable + .admintable {
+  margin-top: 5px;
 }
 
 .infotable td {
-  padding-left: 5px;
   padding-right: 5px;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
 }
 
 .infotable th {
-  padding-left: 5px;
-  padding-right: 5px;
   padding-top: 2px;
   padding-bottom: 2px;
   text-align: center;
 }
 
-form table td + td {
+.infotable td+td {
+  padding-left: 5px;
+}
+
+.infotable th+th {
+  padding-left: 5px;
+}
+
+.contenttable td+td {
+  padding-left: 5px;
+}
+
+.contenttable tr+tr {
+  padding-top: 5px;
+}
+
+
+
+form table td+td {
+  padding-left: 3px;
+}
+
+form table th+th {
   padding-left: 3px;
 }
 
 .posvalue td {
   color: #2f5721;
 }
+
 .negvalue td {
   color: #6b1a1a;
 }
 
 .localeselection {
   border: 1px solid #000000;
-  height:10px;
+  height: 10px;
 }
 
 yuicalendar.table {
-  font-size:small;
+  font-size: small;
 }
 
-.calweekdaycell{
+.calweekdaycell {
   background-color: #FFFFFF;
 }
 
-.calheader{
+.calheader {
   color: #006699;
 }
 
@@ -235,16 +292,18 @@ yuicalendar.table {
   list-style-type: none;
 }
 
-.twitter-list li{
+.twitter-list li {
   margin: 0 0 10px 0;
   padding: 0;
   list-style-type: none;
 }
 
-.twitter-list li a{
+.twitter-list li a {
   padding: 0 0 0 19px;
-  background: url("../../images/linkicons/twitter_14x14.png") no-repeat 0 50%;
+  background: url("../../images/linkicons/twitter_14x14.png") no-repeat 0
+    50%;
 }
+
 .feed {
   margin-left: 3px;
   padding: 0 0 0 19px;
@@ -274,36 +333,35 @@ yuicalendar.table {
 }
 
 .tablelowlight {
-	background-color: #E0E0E0;
+  background-color: #E0E0E0;
 }
 
-.flag{
-  border-collapse:collapse;
-  border:1px solid black;
+.flag {
+  border-collapse: collapse;
+  border: 1px solid black;
 }
 
 /* scheduling */
-
 table.scheduling {
-    margin: 0px;
+  margin: 0px;
 }
 
 div.workarea {
   padding: 0px;
   float: left;
-  min-width:180px;
+  min-width: 180px;
   /* min-width:150px; */
 }
 
 td.scheduling_column {
-   vertical-align:top;
-   padding:0px;
-   font-size:8px;
+  vertical-align: top;
+  padding: 0px;
+  font-size: 8px;
 }
 
 ul.draglist, ol.draglist, select.series_select {
   position: relative;
-  width: 200px; 
+  width: 200px;
   background: #f7f7f7;
   border: 1px solid gray;
   list-style: none;
@@ -322,19 +380,21 @@ ul.draglist li, ol.draglist li {
   text-align: center;
   vertical-align: middle;
   background-color: #D1E6EC;
-  border:1px solid #7EA6B2;
+  border: 1px solid #7EA6B2;
 }
 
 li.schedule_item {
   background-color: #aaaaaa;
   border: 1px solid #7EA6B2;
-  width:180px;
+  width: 180px;
 }
 
-th.scheduling { width:180px }
+th.scheduling {
+  width: 180px
+}
 
 td.timecolumn {
-  vertical-align:top;
+  vertical-align: top;
 }
 
 ul.timelist {
@@ -348,3 +408,18 @@ ul.timelist li {
   border: 1px solid #7EA6B2;
 }
 
+.radioselect * {
+  vertical-align: middle;
+}
+
+div.tabular {
+  display: table;
+}
+
+div.tabrow {
+  display: table-row;
+}
+
+div.tabcell {
+  display: table-cell;
+}
