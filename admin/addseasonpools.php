@@ -235,7 +235,7 @@ echo $html;
 if (! $poolId || $addmore) {
   echo "<h2>" . _("Add pool") . "</h2>\n";
   echo "<form method='post' action='?view=admin/addseasonpools&amp;season=$season&amp;series=$seriesId'>";
-  echo "<table cellpadding='2'>
+  echo "<table class='formtable'>
       <tr>
       <td class='infocell'>" . _("Name") . ":</td>
       <td>" . TranslatedField("name", $pp['name']) . "</td>
@@ -268,7 +268,7 @@ if (! $poolId || $addmore) {
   echo "<h2>" . _("Edit pool") . ":</h2>\n";
   echo "<form method='post' action='?view=admin/addseasonpools&amp;pool=$poolId&amp;season=$season'>";
   
-  echo "<table cellpadding='2'>
+  echo "<table class='formtable'>
     <tr>
       <td class='infocell'>" . _("Name") . ":</td>
       <td>" . TranslatedField("name", $pp['name']) . "</td>
@@ -396,7 +396,7 @@ if (! $poolId || $addmore) {
   
   $teams = PoolTeams($poolId);
   if (count($teams)) {
-    echo "<table width='75%' cellpadding='4'><tr><th>" . _("Name") . "</th><th>" . _("Club") . "</th></tr>\n";
+    echo "<table class='infotable'><tr><th>" . _("Name") . "</th><th>" . _("Club") . "</th></tr>\n";
     
     foreach ($teams as $team) {
       echo "<tr>";
@@ -412,7 +412,7 @@ if (! $poolId || $addmore) {
   
   echo "<h2>" . _("Rules") . " " . _("(from the selected template)") . ":</h2>";
   
-  echo "<table cellpadding='2'>";
+  echo "<table class='formtable'>";
   
   echo "<tr><td class='infocell'>" . _("Game points") . ":</td>
       <td><input class='input' id='gameto' name='gameto' value='" . utf8entities($pp['winningscore']) . "'/></td>

@@ -72,7 +72,7 @@ function adminHeader($title, $formId) {
 
 function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $dropdownId = null, $groupValueTag = null, $nameTag = null) {
   global $seasonId;
-  $html = "<table>";
+  $html = "<table class='admintable'>";
   foreach ($admins as $user) {
     $html .= "<tr>";
     if (! empty($groupTag)) {
@@ -93,7 +93,7 @@ function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $
   $html .= "</table>\n";
   
   if (! empty($_GET["access"]) && $_GET["access"] == $formId) {
-    $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
+    $html .= "<table class='formtable'>\n";
     $html .= "<tr>";
     
     if (! empty($adminGroups)) {
@@ -159,7 +159,7 @@ $html .= adminTable($admins, 'teamadmin', 'teamname', array(
 $html .= "<h3>"._("Scorekeepers").":</h3>\n";
 $seasongames = SeasonAllGames($seasonId);
 $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=gameadmin' name='gameadmin'>\n";
-$html .= "<table style='white-space: nowrap;'>\n";
+$html .= "<table class='formtable'>\n";
 //all event admins have score keeping rights
 $admins = SeasonAdmins($seasonId);
 foreach($admins as $user){
@@ -200,7 +200,7 @@ if($teamresp){
 
 $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="gameadmin"){
-  $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
+  $html .= "<table class='formtable'>\n";
   $html .= "<tr><td>"._("User Id")."</td><td><input class='input' size='20' name='userid'/></td><td>"._("or")."</td>\n";
   $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
 
@@ -221,7 +221,7 @@ $html .= "</form>";
 
 $html .= "<h3>"._("Roster accreditation rights").":</h3>";
 $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=accradmin' name='accradmin'>";
-$html .= "<table  style='white-space: nowrap;'>";
+$html .= "<table  class='formtable'>";
 //all event admins have score keeping rights
 $admins = SeasonAdmins($seasonId);
 foreach($admins as $user){
@@ -245,7 +245,7 @@ foreach($admins as $user){
 }
 $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="accradmin"){
-  $html .= "<table style='white-space: nowrap' cellpadding='2px'>\n";
+  $html .= "<table class='formtable'>\n";
   $html .= "<tr><td>"._("User Id")."</td><td><input class='input' size='20' name='userid'/></td><td>"._("or")."</td>\n";
   $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email'/</td></tr>\n";
   

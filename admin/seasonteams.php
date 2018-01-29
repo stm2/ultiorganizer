@@ -139,12 +139,12 @@ foreach($teams as $team){
     $teamname = _("No name");
   }
   $html .= "<tr class='admintablerow'>";
-  $html .= "<td><input class='input' size='3' maxlength='4' name='seed$team_id' value='".utf8entities($team['rank'])."'/></td>";
+  $html .= "<td><input class='input' size='2' maxlength='4' name='seed$team_id' value='".utf8entities($team['rank'])."'/></td>";
   $html .= "<td><input class='input' size='20' maxlength='50' name='name$team_id' value='".utf8entities($team['name'])."'/></td>";
   $html .= "<td><input class='input' size='4' maxlength='15' name='abbrev$team_id' value='".utf8entities($team['abbreviation'])."'/></td>";
 
   if(!intval($seasonInfo['isnationalteams'])){
-    $html .= "<td><input class='input' size='25' maxlength='50' name='club$team_id' value='".utf8entities($team['clubname'])."'/></td>";
+    $html .= "<td><input class='input' size='20' maxlength='50' name='club$team_id' value='".utf8entities($team['clubname'])."'/></td>";
   }
 
   if(intval($seasonInfo['isinternational'])){

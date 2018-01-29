@@ -85,7 +85,7 @@ $html .=  "<form method='post' action='?view=admin/seasons'>";
 
 $html .=  "<h2>"._("Seasons/Tournaments")."</h2>\n";
 
-$html .=  "<table style='white-space: nowrap;width:90%' border='0' cellpadding='4px'>\n";
+$html .=  "<table class='admintable'>\n";
 
 $html .=  "<tr>
 	<th>"._("Name")."</th>
@@ -144,6 +144,8 @@ while($row = mysqli_fetch_assoc($seasons))
 	
 	if(CanDeleteSeason($row['season_id'])){
 		$html .=  "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId('".$row['season_id']."');\"/></td>";
+	} else {
+		$html .= "<td></td>";
 	}
 	$html .=  "</tr>\n";
 	}

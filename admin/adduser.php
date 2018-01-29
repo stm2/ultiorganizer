@@ -87,7 +87,7 @@ contentStart();
 
 $html .= "<form method='post' action='?view=admin/adduser";
 $html .= "'>\n";
-$html .= "<table cellpadding='8'>
+$html .= "<table class='formtable'>
 		<tr><td class='infocell'>"._("Name").":</td>
 			<td><input type='text' class='input' maxlength='256' id='Name' name='Name' value='";
 if (isset($_POST['Name'])) $html .= $_POST['Name'];

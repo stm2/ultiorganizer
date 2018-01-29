@@ -37,7 +37,7 @@ if(isSuperAdmin()){
 	$total_size = 0;
 	$result = mysql_adapt_query("SHOW TABLE STATUS");
 	$html .= "<p><span class='profileheader'>"._("Tables").": </span></p>\n";
-	$html .= "<table>";
+	$html .= "<table class='infotable'>";
 	$html .= "<tr><th>"._("Name")."</th>";
 	$html .= "<th>"._("Rows")."</th>";
 	$html .= "<th>"._("avg. row length")."</th>";
@@ -79,7 +79,7 @@ if(isSuperAdmin()){
 	$html .= "&nbsp;"._("Execute").": <a href='?view=admin/executesql&amp;sql=$sql'>"."SHOW GLOBAL STATUS"."</a>";
 	$html .= "</p>\n";	
 	
-	$html .= "<p><span class='profileheader'>"._("Client Library version").": </span>".mysqli_get_client_info(DBLink())."<br/>\n";
+	$html .= "<p><span class='profileheader'>"._("Client library version").": </span>".mysqli_get_client_info(DBLink())."<br/>\n";
 	$html .= "<span class='profileheader'>"._("Type of connection in use").": </span>".mysqli_get_host_info(DBLink())."<br/>\n";
 	$html .= "<span class='profileheader'>"._("Protocol version").": </span>".mysqli_get_proto_info(DBLink())."<br/>\n";
 	$html .= "<span class='profileheader'>"._("Server version").": </span>".mysqli_get_server_info(DBLink())."</p>\n";

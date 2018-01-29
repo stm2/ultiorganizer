@@ -57,7 +57,7 @@ $html .= "<form method='post' action='?view=admin/addteamadmins&amp;series=".$se
 
 
 $admins = SeasonTeamAdmins($seriesinfo['season']);
-$html .= "<table style='white-space: nowrap;'>";
+$html .= "<table class='formtable'>";
 foreach($admins as $user){
   $teaminfo = TeamInfo($user['team_id']);
   if($teaminfo['series'] != $seriesId){
@@ -72,7 +72,7 @@ foreach($admins as $user){
 $html .= "</table>";
 
 $html .= "<h3>"._("Add more")."</h3>";
-$html .= "<table style='white-space: nowrap;'>";
+$html .= "<table class='formtable'>";
 
 foreach($teams as $team){
   $teaminfo = TeamInfo($team['team_id']);

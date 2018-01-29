@@ -109,7 +109,7 @@ if($poolId){
   $html .= "<form method='post' action='?view=admin/addserieformats'>";
 }
 
-$html .= "<table cellpadding='2'>
+$html .= "<table class='formtable'>
 			<tr><td class='infocell'>"._("Name").":</td>
 			<td>".TranslatedField("name", $pp['name'], "150", "30")."</td><td></td></tr>\n";
 

@@ -118,7 +118,7 @@ function scoreboard($id, $seriesScoreboard){
   
   if($seriesScoreboard){
     $ret .= "<h2>"._("Scoreboard leaders")."</h2>\n";
-    $ret .= "<table cellspacing='0' border='0' width='100%'>\n";
+    $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
 
@@ -137,7 +137,7 @@ function scoreboard($id, $seriesScoreboard){
     $ret .= "<a href='?view=scorestatus&amp;series=".$id."'>"._("Scoreboard")."</a>";
   }else{
     $ret .= "<h2>"._("Scoreboard leaders")."</h2>\n";
-    $ret .= "<table cellspacing='0' border='0' width='100%'>\n";
+    $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
 
@@ -180,7 +180,7 @@ function defenseboard($id, $seriesDefenseboard){
   
   if($seriesDefenseboard){
     $ret .= "<h2>"._("Defenseboard leaders")."</h2>\n";
-    $ret .= "<table cellspacing='0' border='0' width='100%'>\n";
+    $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Total defenses")."</th></tr>\n";
 
@@ -198,7 +198,7 @@ function defenseboard($id, $seriesDefenseboard){
 
   }else{
     $ret .= "<h2>"._("Defenseboard leaders")."</h2>\n";
-    $ret .= "<table cellspacing='0' border='0' width='100%'>\n";
+    $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Total defenses")."</th></tr>\n";
 
@@ -237,12 +237,12 @@ function printSwissdraw($seasoninfo, $poolinfo){
   // prints Swiss draw standing
 
   $ret = "";
-  $style = "";
+  $style = "class='admintable";
 
   if($poolinfo['played']){
-    $style = "class='playedpool'";
+    $style = "class='admintable playedpool'";
   }
-  $ret .= "<table $style border='2' width='100%'>\n";
+  $ret .= "<table $style >\n";
   $ret .= "<tr><th>#</th><th style='width:200px'>"._("Team")."</th>";
   $ret .= "<th class='center'>"._("Games")."</th>";
   $ret .= "<th class='center'>"._("Victory Points")."</th>";
@@ -287,7 +287,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
   }
   $ret .= "</table>\n";
 
-  $ret .= "<table width='100%'>\n";
+  $ret .= "<table class='admintable'>\n";
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
     foreach($mvgames as $game){
@@ -314,7 +314,7 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
   if($poolinfo['played']){
     $style = "style='font-weight: bold;'";
   }
-  $ret .= "<table $style border='2' width='100%'>\n";
+  $ret .= "<table  class='admintable' $style >\n";
   $ret .= "<tr><th>#</th><th style='width:200px'>"._("Team")."</th>";
   $ret .= "<th class='center'>"._("Games")."</th>";
   $ret .= "<th class='center'>"._("Wins")."</th>";
@@ -408,7 +408,7 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
   $ret .= "</table>\n";
 
   if(count($continuationpools)){
-    $ret .= "<table width='100%'><tr>\n";
+    $ret .= "<table class='admintable'><tr>\n";
     $prev="";
     $width = 100 / count($continuationpools);
     foreach($continuationpools as $cpool){
@@ -425,7 +425,7 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
     }
     $ret .= "</tr></table>\n";
   }
-  $ret .= "<table width='100%'>\n";
+  $ret .= "<table class='admintable'>\n";
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
     foreach($mvgames as $game){
@@ -502,7 +502,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
       if(empty($pool)) {
         $notemplate .= "<p>???</p>";
       } else {
-        $notemplate .= "<table width='100%'>\n";
+        $notemplate .= "<table class='admintable'>\n";
         $games = TimetableGames($pool['pool_id'], "pool", "all", "series");
         while ($game = mysqli_fetch_assoc($games)) {
           $notemplate .= GameRow($game, false, false, false, false, false, true);
@@ -624,7 +624,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
 
   //placements
   $notemplate .= "<h4>"._("Placement")."</h4>\n";
-  $notemplate .= "<table width='100%'>\n";
+  $notemplate .= "<table class='admintable'>\n";
   
   $template = str_replace("[placement]", _("Placement"), $template);
   for($i=1;$i<=$totalteams;$i++){
@@ -690,7 +690,7 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
     $style = "style='font-weight: bold;'";
   }
 
-  $ret .= "<table $style width='100%'>\n";
+  $ret .= "<table class='admintable' $style >\n";
    
    
   $games = TimetableGames($poolinfo['pool_id'], "pool", "all", "crossmatch");
@@ -776,11 +776,11 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
   }
   $ret .= "</table>\n";
 
-  $ret .= "<table style='white-space: nowrap' cellpadding='2' width='100%'><tr>\n";
+  $ret .= "<table class='admintable'><tr>\n";
 
   $ret .= "<td>"._("Winners continues in:")."</td>";
   foreach ($winnerspools as $winnerId => $color) {
-    $ret .= "<td style='background-color:#".$color.";background-color:".RGBtoRGBa($color,0.3).";color:#".textColor($color).";width:".(50/count($winnerspools))."%'>";
+    $ret .= "<td style='background-color:#".$color.";background-color:".RGBtoRGBa($color,0.3).";color:#".textColor($color).";'>";
     if($winnerspool['visible']){
       $ret .= "<a href='?view=poolstatus&amp;pool=".$winnerId."'>".utf8entities(U_(PoolName($winnerId)))."</a>";
     }else{
@@ -791,7 +791,7 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
 
   $ret .= "<td>"._("Losers continues in:")."</td>";
   foreach ($loserspools as $loserId => $color) {
-    $ret .= "<td style='background-color:#".$color.";background-color:".RGBtoRGBa($color,0.3).";color:#".textColor($color).";width:".(50/count($loserspools))."%'>";
+    $ret .= "<td style='background-color:#".$color.";background-color:".RGBtoRGBa($color,0.3).";color:#".textColor($color).";'>";
     if($loserspool['visible']){
       $ret .= "<a href='?view=poolstatus&amp;pool=".$loserId."'>".utf8entities(PoolName($loserId))."</a>";
     }else{

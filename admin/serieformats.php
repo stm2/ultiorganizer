@@ -22,7 +22,7 @@ if(!empty($_POST['remove_x']))	{
 
 $html .= "<form method='post' action='?view=admin/serieformats'>";
 $html .= "<h2>"._("Rule templates")."</h2>\n";
-$html .= "<table style='width:100%' border='0' cellpadding='4'>\n";
+$html .= "<table class='admintable'>\n";
 $html .= "<tr>";
 $html .= "<th>"._("Name")."</th> <th class='center'>"._("Winning points")."</th> <th class='center'>"._("Point cap")."</th> <th class='center'>"._("Draws allowed")."</th>  <th class='center'>"._("Time cap")."</th><th class='center'>"._("Time-outs")."</th><th></th>";
 $html .= "</tr>\n";

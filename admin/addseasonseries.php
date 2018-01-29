@@ -101,7 +101,7 @@ else
 	echo "<h2>"._("Add division")."</h2>\n";	
 	
 	echo "<form method='post' action='?view=admin/addseasonseries&amp;series=$seriesId&amp;season=$season'>";
-	echo "<table cellpadding='2px'>
+	echo "<table class='formtable'>
 			<tr>
 			<td class='infocell'>"._("Name").":</td>
 			<td>".TranslatedField("name", $sp['name'])."

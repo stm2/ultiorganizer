@@ -35,7 +35,7 @@ $html .="<p><a href='?view=admin/visitors'>"._("Visitor count")."</a></p>\n";
 
 $categories = EventCategories();
 
-$html .= "<table border='0'>\n";
+$html .= "<table class='formtable'>\n";
 $html .= "<tr><td colspan='4'><b>"._("Select type of event").":</b></td></tr>\n";
 $html .= "<tr>\n";
 
@@ -62,7 +62,7 @@ $html .= "<p>"._("Only user").": ";
 $html .= "<input class='input' maxlength='50' size='40' name='userid' value='$userfilter'/></p>\n";
 $html .= "<p><input class='button' type='submit' name='update' value='"._("Refresh")."'/></p>";
 
-$html .= "<table border='0'>\n";
+$html .= "<table class='infotable'>\n";
 $html .= "<tr><th>"._("Time")."</th><th>"._("User")."</th>
 	<th>"._("IP Address")."</th><th>"._("Category")."</th><th>"._("Type")."</th>
 	<th>"._("Source")."</th><th>"._("Id1")."</th>

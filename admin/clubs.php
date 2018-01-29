@@ -43,12 +43,12 @@ if (isset($_POST['removeclub_x']) && isset($_POST['hiddenDeleteId'])) {
 //common page
 
 $html .= "<form method='post' action='?view=admin/clubs'>";
-$html .= "<h1>"._("All Clubs")."</h1>";
+$html .= "<h2>"._("All Clubs")."</h2>";
 $html .= "<p>"._("Add new").": ";
 $html .= "<input class='input' maxlength='50' size='40' name='clubname'/> ";
 $html .= "<input class='button' type='submit' name='addclub' value='"._("Add")."'/></p>";
 
-$html .= "<table border='0'>\n";
+$html .= "<table class='admintable'>\n";
 $html .= "<tr><th>"._("Id")."</th> <th>"._("Name")."</th><th>"._("Teams")."</th><th>"._("Valid")."</th><th></th></tr>\n";
 
 $i=0;
@@ -77,14 +77,16 @@ while($row = mysqli_fetch_assoc($clubs)){
 $html .= "</table>";
 $html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."'/></p>";
 
-$html .= "<h1>"._("All Countries")."</h1>";
-$html .= "<p>"._("Add new")."<br/>";
-$html .= _("Name") .": <input class='input' maxlength='50' size='40' name='countryname'/><br/>";
-$html .= _("Abbreviation") .": <input class='input' maxlength='50' size='40' name='abbreviation'/><br/>";
-$html .= _("Flag filename") .": <input class='input' maxlength='50' size='40' name='flag'/><br/>";
-$html .= "<input class='button' type='submit' name='addcountry' value='"._("Add")."'/></p>";
+$html .= "<h2>"._("All Countries")."</h2>";
+$html .= "<h3>"._("Add new")."</h3>";
+$html .= "<table class='formtable'>";
+$html .= "<tr><td>" . _("Name") ."</td><td><input class='input' maxlength='50' size='40' name='countryname'/></td></tr>\n";
+$html .= "<tr><td>" . _("Abbreviation") ."</td><td><input class='input' maxlength='50' size='40' name='abbreviation'/></td></tr>\n";
+$html .= "<tr><td>" . _("Flag filename") ."</td><td><input class='input' maxlength='50' size='40' name='flag'/></td></tr>\n";
+$html .= "</table>\n";
+$html .= "<p><input class='button' type='submit' name='addcountry' value='"._("Add")."'/></p>";
 
-$html .= "<table border='0'>\n";
+$html .= "<table class='admintable'>\n";
 $html .= "<tr><th>"._("Id")."</th> <th>"._("Name")."</th><th>"._("Abbreviation")."</th><th>"._("Teams")."</th><th>"._("Valid")."</th><th></th></tr>\n";
 
 $i=0;

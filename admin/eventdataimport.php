@@ -130,7 +130,7 @@ if ($mode == 'rename') {
     $html .= "<label for='replace_mode'>"._("This operation updates and adds event data in the database with the content of the file. It will not delete any data or change user rights.")."</label></p>\n";
     $html .= "</fieldset>";
   }
-  $html .= "<table><tr><td colspan='4' class='infocell'>" . _("Confirm or replace event data:") . "</td></tr>\n";
+  $html .= "<table class='formtable'><tr><td colspan='4' class='infocell'>" . _("Confirm or replace event data:") . "</td></tr>\n";
   if (!empty($seasonId)) {
     $html .= "<td class='infocell'>" . _("Event ID") . "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
     $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" . utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";

@@ -61,7 +61,7 @@ if (! empty($_POST['sql']) || ! empty($_GET['sql'])) {
 
 	if(!empty($result))
         {
-	  $html .= "<table>";
+	  $html .= "<table class='infotable'>";
 	  $html .= "<tr>";
 	  foreach ($arraycolumnsname as $i => $columnname)
 		{

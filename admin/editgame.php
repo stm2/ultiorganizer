@@ -156,22 +156,22 @@ $poolId=$info['pool'];
 
 if(GameHasStarted($info))
 	{
-	echo "<p>"._("Game played").". "._("Final scores").": ".$info['homescore'] ." - ". $info['visitorscore']."</p>";
+	echo "<p>"._("Game played").". "._("Final score").": ".$info['homescore'] ." - ". $info['visitorscore']."</p>";
 	}
-echo "<table>";
-echo "<tr><td><a href='?view=user/addresult&amp;game=".$gameId."'>"._("Change game result")."</a></td></tr>";
-echo "<tr><td><a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Change game roster")."</a></td></tr>";
-echo "<tr><td><a href='?view=user/addscoresheet&amp;game=".$gameId."'>"._("Change game score sheet")." </a></td></tr>";
+echo "<ul>";
+echo "<li><a href='?view=user/addresult&amp;game=".$gameId."'>"._("Change game result")."</a></li>";
+echo "<li><a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Change game roster")."</a></li>";
+echo "<li><a href='?view=user/addscoresheet&amp;game=".$gameId."'>"._("Change game score sheet")." </a></li>";
 if(ShowDefenseStats())
 {
-echo "<tr><td><a href='?view=user/adddefensesheet&amp;game=".$gameId."'>"._("Change game defense sheet")." </a></td></tr>";
+echo "<li><a href='?view=user/adddefensesheet&amp;game=".$gameId."'>"._("Change game defense sheet")." </a></li>";
 }
 
-echo "<tr><td><a href='?view=user/pdfscoresheet&amp;game=".$gameId."'>"._("Print score sheet")." </a></td></tr>";
-echo "<tr><td><a href='?view=user/addmedialink&amp;game=$gameId'>"._("Add media")."</a></td></tr>";
-echo "</table>\n";
+echo "<li><a href='?view=user/pdfscoresheet&amp;game=".$gameId."'>"._("Print score sheet")." </a></li>";
+echo "<li><a href='?view=user/addmedialink&amp;game=$gameId'>"._("Add media")."</a></li>";
+echo "</ul>\n";
 
-echo "<table cellpadding='2px'>";
+echo "<table class='formtable'>";
 
 
 echo "<tr><td class='infocell'>"._("Home team").":</td><td>";

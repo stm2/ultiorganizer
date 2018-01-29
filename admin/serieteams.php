@@ -130,7 +130,7 @@ if ($continuation && $SwissOK==-1) {
   echo "<p>Swissdraw moves cannot be determined, because the previous pool has not been played yet.</p>";
 }elseif(!$continuation || ($moved && $moves>0)) {
   echo "<h2>"._("Select teams").":</h2>\n";
-  echo "<table border='0' cellpadding='4px'>\n";
+  echo "<table class='admintable'>\n";
 
   $allteams = PoolTeams($poolId,"seed");
   $serieteams = SeriesTeamsWithoutPool($seriesId);
@@ -175,7 +175,7 @@ if ($continuation && $SwissOK==-1) {
 }else{
   $playoffpool = false;
 
-  echo "<table border='1' width='600px'><tr>
+  echo "<table class='admintable'><tr>
 		<th>"._("From pool")."</th>
 		<th>"._("From pos.")."</th>
 		<th>"._("Team")."</th>
@@ -228,7 +228,7 @@ if ($continuation && $SwissOK==-1) {
   $games = PoolGetGamesToMove($poolId, $mvgames);
 
   if(count($games)) {
-    echo "<table cellpadding='2'>";
+    echo "<table class='infotable'>";
     foreach ($games as $id ) {
       echo "<tr>";
       $result = GameResult($id);

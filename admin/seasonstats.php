@@ -15,7 +15,7 @@ leftMenu($LAYOUT_ID);
 contentStart();
 
 $html .= "<h3>"._("Events")."</h3>\n";
-$html .= "<table border='1' width='100%'><tr>
+$html .= "<table class='admintable'><tr>
 	<th>"._("Name")."</th><th>"._("Type")."</th><th>"._("Teams")."</th><th>"._("Players")."</th><th>"._("Games")."</th></tr>\n";
 foreach($season_stats as $ss){
 	$html .= "<tr>";
@@ -29,7 +29,7 @@ foreach($season_stats as $ss){
 $html .= "</table>";
 
 $html .= "<h3>"._("Division")."</h3>\n";
-$html .= "<table border='1' width='100%'><tr>
+$html .= "<table class='admintable'><tr>
 	<th>"._("Name")."</th><th>"._("Type")."</th><th>"._("Event")."</th><th>"._("Type")."</th><th>"._("Teams")."</th><th>"._("Players")."</th><th>"._("Games")."</th></tr>\n";
 foreach($series_stats as $ss){
 	$html .= "<tr>";

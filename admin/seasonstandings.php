@@ -262,7 +262,7 @@ foreach ($pools as $spool) {
     $getRow = 'regularRow';
     $columns = 10;
   }
-  $html .= "<table $style border='0' width='100%' id='poolstanding_" . $poolId . "'>\n";
+  $html .= "<table $style id='poolstanding_" . $poolId . "'>\n";
   $html .= $getHeading($poolId, $poolinfo, count($standings) > 0);
   
   if (count($standings)) {
@@ -307,19 +307,19 @@ foreach ($pools as $spool) {
   $fromMoves = PoolMovingsFromPool($poolId);
   $toMoves = PoolMovingsToPool($poolId);
   
-  $html .= "<table style='width:100%'><tr><td style='width:50%; vertical-align:top;'>\n";
+  $html .= "<div style='display: table; width: 100%;'><div style='display: table-cell; width:50%; vertical-align:top;'>\n";
   
   if (count($toMoves)) {
     $html .= moveTable($toMoves, "to", $poolId, $poolinfo, $season, $series_id);
   }
   
-  $html .= "</td><td style='width:50%; vertical-align:top;'>\n";
+  $html .= "</div><div style='display: table-cell; width:50%; vertical-align:top;'>\n";
   
   if (count($fromMoves)) {
     $html .= moveTable($fromMoves, "from", $poolId, $poolinfo, $season, $series_id);
   }
   
-  $html .= "</td></tr></table>\n";
+  $html .= "</div></div>\n";
  
   ++$poolNum;
 }

@@ -83,7 +83,7 @@ if(isSuperAdmin()){
 	$html .= "<form method='post' id='tables' action='?view=admin/dbbackup'>\n";
 	
 	$html .= "<p><span class='profileheader'>"._("Select tables to backup").": </span></p>\n";
-	$html .= "<table>";
+	$html .= "<table class='infotable'>";
 	$html .= "<tr><th><input type='checkbox' onclick='checkAll(\"tables\");'/></th>";
 	$html .= "<th>"._("Name")."</th>";
 	$html .= "<th>"._("Data")."</th>";

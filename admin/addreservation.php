@@ -188,7 +188,7 @@ if ($reservationId > 0) {
 echo $html;
 
 $html = "<form method='post' action='?view=admin/addreservation&amp;season=".$season."&amp;reservation=".$res['id']."'>\n";
-$html .= "<table>\n";
+$html .= "<table class='formtable'>\n";
 
 $html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>";
 $html .= "<input type='text' class='input' name='date' id='date' value='".utf8entities(ShortDate($res['date']))."'/>&nbsp;\n";

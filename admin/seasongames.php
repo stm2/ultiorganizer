@@ -109,7 +109,7 @@ foreach($series as $row){
 $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
 pageMenu($menutabs, seasongameslink($season, $series_id, $group, null, $mass, $showpool));
 
-$html .= "<table width='100%'><tr><td>";
+$html .= "<table class='admintable'><tr><td>";
 if (!$showpool) {
   if ($_SESSION['hide_played_pools']) {
     $html .= "<a href='" . seasongameslink($season, $series_id, $group, "pool", $mass, $showpool) . "' tabindex='" .
@@ -139,7 +139,7 @@ $html .= "<form method='post' action='?view=admin/seasongames&amp;season=$season
 
 $pools = SeriesPools($series_id);
 
-$html .= "<table class='admintable' style='width:100%'>\n";
+$html .= "<table class='admintable'>\n";
 
 $total = 0;
 $MAX_INPUT = 120;

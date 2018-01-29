@@ -77,7 +77,7 @@ foreach($settings as $setting){
 	if($setting['name']=="FacebookUpdatePage"){
 		$htmltmp1 .= "<tr>";
 		$htmltmp1 .= "<td class='infocell'>"._("Facebook Update Page").":</td>";
-		$htmltmp1 .= "<td><input class='input' size='70' name='FacebookUpdatePage' value='".utf8entities($setting['value'])."'/></td>";
+		$htmltmp1 .= "<td><input class='input' size='60' name='FacebookUpdatePage' value='".utf8entities($setting['value'])."'/></td>";
 		$htmltmp1 .= "</tr>\n";
 	}
 	
@@ -85,7 +85,7 @@ foreach($settings as $setting){
 
 $html .= "<form method='post' action='?view=admin/addseasonlinks&amp;season=".$seasonId."' id='Form'>";
 
-$html .= "<table style='white-space: nowrap' cellpadding='2'>\n";
+$html .= "<table class='admintable'>\n";
 $html .= "<tr><th>"._("Type")."</th><th>"._("Order")."</th><th>"._("Name")."</th><th>"._("Url")."</th><th></th></tr>\n";
 $urls = GetUrlListByTypeArray(array("menulink","menumail"),$seasonId);
 $i=0;
@@ -94,7 +94,7 @@ foreach($urls as $url){
 	$html .= "<td>".$url['type']."<input type='hidden' name='urltype".$i."' value='".utf8entities($url['type'])."'/></td>";
 	$html .= "<td><input class='input' size='3' maxlength='2' name='urlorder".$i."' value='".utf8entities($url['ordering'])."'/></td>";
 	$html .= "<td><input class='input' size='30' maxlength='150' name='urlname".$i."' value='".utf8entities($url['name'])."'/></td>";
-	$html .= "<td><input class='input' size='40' maxlength='500' name='url".$i."' value='".utf8entities($url['url'])."'/></td>";
+	$html .= "<td><input class='input' size='30' maxlength='500' name='url".$i."' value='".utf8entities($url['url'])."'/></td>";
 	$html .= "<td class='center'>" . getDeleteButton('remove', $url['url_id']) . "</td>";
 	$html .= "</tr>\n";
 	$i++;
@@ -105,13 +105,13 @@ $html .= "<option value='menumail'>"._("Menu mail")."</option>\n";
 $html .= "</select></td>";
 $html .= "<td><input class='input' size='3' maxlength='2' name='newurlorder' value=''/></td>";
 $html .= "<td><input class='input' size='30' maxlength='150' name='newurlname' value=''/></td>";
-$html .= "<td><input class='input' size='40' maxlength='500' name='newurl' value=''/></td>";
+$html .= "<td><input class='input' size='30' maxlength='500' name='newurl' value=''/></td>";
 $html .= "</tr>\n";
 $html .= "</table>\n";
 
 
 $html .= "<h1>". _("3rd party API settings") ."</h1>";
-$html .= "<table style='white-space: nowrap' cellpadding='2'>\n";
+$html .= "<table class='admintable'>\n";
 $html .= $htmltmp1;
 $html .= "</table>\n";
 
