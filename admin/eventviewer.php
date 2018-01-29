@@ -14,18 +14,36 @@ $userfilter="";
 $categoryfilter= array();//EventCategories();
 $resolve = false;
 
-if(isset($_POST['update'])){
-	$userfilter=$_POST["userid"];
-	if(!empty($_POST["category"])){
-		$categoryfilter=$_POST["category"];
-	}
-	if(!empty($_POST["resolve"])){
-		$resolve=true;
-	}
+$offset = 0;
+$event_limit = 100;
+
+$update = isset($_POST['update']);
+if (isset($_POST['next'])) {
+  $offset = $_POST['offset'] + $_POST['limit'];
+  $update=true;
+} else if (isset($_POST['prev'])) {
+  $offset = $_POST['offset'] - $_POST['limit'];
+  $update=true;
+}
+if($update){
+  $userfilter = $_POST["userid"];
+  if (!empty($_POST["category"])) {
+    $categoryfilter = $_POST["category"];
+  }
+  if (!empty($_POST["resolve"])) {
+    $resolve = true;
+  }
 }elseif(isset($_POST['delete']) && !empty($_POST["event_ids"])){
 	$ids=$_POST["event_ids"];
 	ClearEventList($ids);
 }
+
+if ($offset < 0)
+  $offset = 0;
+if ($event_limit <= 0)
+  $event_limit = 100;
+if ($event_limit > 10000)
+  $event_limit = 10000;
 
 //common page
 
@@ -70,10 +88,10 @@ $html .= "<tr><th>"._("Time")."</th><th>"._("User")."</th>
 	</tr>\n";
 
 $event_ids = ""; 
+$count = 0;
 if(count($categoryfilter)>0){
-	$events = EventList($categoryfilter, $userfilter);
-	
-	while($event = mysqli_fetch_assoc($events)){
+	$events = EventList($categoryfilter, $userfilter, $offset, $event_limit+1);
+	while($count++ < $event_limit && $event = mysqli_fetch_assoc($events)){
 		
 		if ($event['type']=='add' || ($event['category']=='security' && $event['description']=='success')) {
 			$html .= "<tr class='posvalue'>";
@@ -136,6 +154,21 @@ if(count($categoryfilter)>0){
 $event_ids = trim($event_ids,',');
 $html .= "</table>";
 $html .= "<p><input type='hidden' name='event_ids' value='$event_ids'/>";
+$html .= "<input type='hidden' name='offset' value='$offset' />";
+$html .= "<input type='hidden' name='limit' value='$event_limit' />";
+
+function showLink($name, $caption) {
+  return " <input class='button' type='submit' name='$name', value='$caption' />";
+}
+
+if (--$count > 0) {
+  $html .= "<div>" . sprintf(_("Events %d to %d."), $offset + 1, $offset + $count);
+  if ($offset > 0)
+    $html .= showLink('prev', sprintf(_("Previous %d results"), $event_limit));
+  if ($count >= $event_limit)
+    $html .= showLink('next', sprintf(_("Next %d results"), $event_limit));
+  $html .= "</div>";
+}
 
 if(!empty($event_ids)){
 	$html .= "<input class='button' type='submit' name='delete' value='"._("Delete events")."'/></p>\n";

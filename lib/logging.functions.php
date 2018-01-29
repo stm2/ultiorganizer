@@ -53,7 +53,7 @@ function LogEvent($event){
 	return mysql_adapt_insert_id();
 	}	
 
-function EventList($categoryfilter, $userfilter){
+function EventList($categoryfilter, $userfilter, $offset, $limit){
 	if(isSuperAdmin()){
 		if(count($categoryfilter)==0){
 			return false;
@@ -73,9 +73,9 @@ function EventList($categoryfilter, $userfilter){
 		if(!empty($userfilter)){
 			$query .= sprintf("AND user_id='%s'", mysql_adapt_real_escape_string($userfilter));
 		}
-		$query .= " ORDER BY time DESC";
+		$query .= sprintf(" ORDER BY time DESC LIMIT %d, %d", (int) $offset, (int) $limit);
 		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+		if (!$result) { die('Invalid query: ' . $query . "\n" . mysql_adapt_error()); }
 		return $result;
 	}
 }
