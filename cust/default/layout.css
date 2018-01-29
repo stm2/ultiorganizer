@@ -1,172 +1,182 @@
-.page{
-	width: 880px;
-	margin-left: auto;
-	margin-right: auto;
-	overflow: visible;
-	padding-top: 0px;
-	padding-bottom: 25px;
-	padding-right: 0px;
-	border:1px solid #333;
-	background-color: #ffffff;
+.page {
+  width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: visible;
+  padding: 8px;
+  border: 1px solid #333;
+  background-color: #ffffff;
 }
 
-.mobile_page{
-	width: 300px;
-	border:1px solid #333;
-	margin-left: auto;
-	margin-right: auto;
-	overflow: visible;
-	padding-right: 25px;
-	padding-left: 25px;
-	padding-top: 0px;
-	padding-bottom: 25px;
-	background-color: #FFFFFF;
-
+.mobile_page {
+  width: 300px;
+  border: 1px solid #333;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: visible;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 0px;
+  padding-bottom: 10px;
+  background-color: #FFFFFF;
 }
 
-.page_top{
-	width: 100%;
-	padding:0px;
-	padding-right: 0px;
-	height:50px;
-	border-bottom: 1px dashed #333;
-	/*background-color: #afafaf;*/
+.page_top {
+  width: 100%;
+  padding: 0px;
+  padding-right: 0px;
+  height: 50px;
+  border-bottom: 1px dashed #333;
+  /*background-color: #afafaf;*/
 }
 
-.top_banner_space{
-	height: 0px;
+.top_banner_space {
+  height: 0px;
 }
 
-.page_middle{
-	width: 100%;
-	clear: both;
-
+.page_middle {
+  width: 100%;
+  clear: both;
 }
 
-.page_bottom{
-	width: 100%;
+.page_bottom {
+  width: 100%;
 }
 
-.navigation_bar{
-	width: 95%;
-	height: 16px;
-	margin-top: 0px;
-	margin-left: 5px;
-	margin-right: 0px;
-	padding-top: 0px;
-	padding-bottom: 0px;
-	padding-right: 0px;
-	padding-left: 0px;
-	/*background-color: #E0E0E0;*/
-	/*border-top: solid #EEEEDD 1px; */
-	/*border-bottom: solid #000000 1px; */
-	/*border-left: solid #EEEEDD 1px; */
-	/*border-right: solid #000000 1px;*/
-	/*margin-bottom: 2px;*/
+.navigation_bar {
+  width: 95%;
+  height: 16px;
+  margin-top: 0px;
+  margin-left: 5px;
+  margin-right: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  /*background-color: #E0E0E0;*/
+  /*border-top: solid #EEEEDD 1px; */
+  /*border-bottom: solid #000000 1px; */
+  /*border-left: solid #EEEEDD 1px; */
+  /*border-right: solid #000000 1px;*/
+  /*margin-bottom: 2px;*/
 }
 
-.logo{
-	border: 0; 
-	vertical-align: middle;
-	text-align: center;
-	/*width:100px;*/ 
-	/*height:114px;*/
-	margin:5px;
+.logo {
+  border: 0;
+  vertical-align: middle;
+  text-align: center;
+  /*width:100px;*/
+  /*height:114px;*/
+  margin: 5px 0px 5px 0px;
 }
 
 .menu_left {
-	vertical-align: top;
-	/*background-color: #5E9DC8;*/
-	width: 175px;
+  vertical-align: top;
+  /*background-color: #5E9DC8;*/
+  width: 175px;
 }
 
 .leftmenulinks {
-	float:left;
-	text-align: left;
-	vertical-align: top;
-	background-color: #ACD1E9;
-	width: 175px;
-	border-top: solid #EEEEDD 1px; 
-	border-bottom: solid #464646 1px; 
-	border-left: solid #EEEEDD 1px; 
-	border-right: solid #464646 1px;
+  float: left;
+  text-align: left;
+  vertical-align: top;
+  background-color: #ACD1E9;
+  width: 175px;
+  border-top: solid #EEEEDD 1px;
+  border-bottom: solid #464646 1px;
+  border-left: solid #EEEEDD 1px;
+  border-right: solid #464646 1px;
 }
 
-.topheader_right{
-	/*background-image: url("header_right.jpg");*/
-	/*background-repeat:repeat-x;*/
-	vertical-align:top;
-	padding-top:0px;
-	padding-right:10px;
-	width: 200px;
+table.leftmenulinks+table.leftmenulinks {
+  margin-top: 8px;
 }
-.topheader_left{
-	/*width: 503px;*/
+
+.leftmenulinks th {
+  padding: 4px 3px 4px 3px;
 }
+
+.leftmenulinks tr+tr td {
+  padding: 1px 3px 3px 2px;
+}
+
+.topheader_right {
+  /*background-image: url("header_right.jpg");*/
+  /*background-repeat:repeat-x;*/
+  vertical-align: top;
+  padding-top: 0px;
+  padding-right: 10px;
+  width: 200px;
+}
+
+.topheader_left {
+  /*width: 503px;*/
+  
+}
+
 .seasondropdown {
-	width:175px;
-	background-color: #eeeeee;
-	color: #004466; 
-	font-size: 12px; 
-	border-top: solid #EEEEDD 1px; 
-	border-bottom: solid #464646 1px; 
-	border-left: solid #EEEEDD 1px; 
-	border-right: solid #464646 1px;
+  width: 175px;
+  background-color: #eeeeee;
+  color: #004466;
+  font-size: 12px;
+  border-top: solid #EEEEDD 1px;
+  border-bottom: solid #464646 1px;
+  border-left: solid #EEEEDD 1px;
+  border-right: solid #464646 1px;
 }
 
 .tdcontent {
-	/*border-left: solid #598788 4px;*/ 
+  /*border-left: solid #598788 4px;*/
+  padding-left: 1.5ex;
 }
 
 .content {
-	width: 635px;
-	height:100%;
-	margin: 0;
-	margin-left:0px;
-	margin-right:5px;
-	background-color: #ffffff;
-	padding-right: 0px;
-	padding-left: 0px;
-	padding-top: 5px;
-	/*border:1px solid #333;*/
+  width: 635px;
+  height: 100%;
+  margin: 0;
+  margin-left: 0px;
+  margin-right: 5px;
+  background-color: #ffffff;
+  padding-right: 0px;
+  padding-left: 0px;
 }
 
 .nomenu {
-        width: 860px;
+  width: 860px;
 }
 
-.menuseparator{	
-	border-bottom:1px dotted #333;
+.menuseparator {
+  border-bottom: 1px dotted #333;
 }
 
-.center{
-	text-align: center; 
-	vertical-align: middle;
+.center {
+  text-align: center;
+  vertical-align: middle;
 }
 
-.right{
-	text-align: right; 
-	vertical-align: middle;
+.right {
+  text-align: right;
+  vertical-align: middle;
 }
 
-.left{
-	text-align: left; 
-	vertical-align: middle;
+.left {
+  text-align: left;
+  vertical-align: middle;
 }
 
 .button {
-	cursor:pointer;
-	font-size: 10px; 
+  cursor: pointer;
+  font-size: 10px;
 }
 
 .input {
-	font-size: 10px; 
+  font-size: 10px;
 }
 
 .checkbox {
-	font-size: 10px;
-	padding: 1px;
-	margin: 1px;
+  font-size: 10px;
+  padding: 1px;
+  margin: 1px;
 }
 
 select {
@@ -174,100 +184,127 @@ select {
 }
 
 .fakeinput {
-	font-size: 10px;
-	color: #000000;
-	background-color: #ffffff;
-	border: 0;
+  font-size: 10px;
+  color: #000000;
+  background-color: #ffffff;
+  border: 0;
 }
 
 .helpbutton {
-	width: 20px;
-	height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 .deletebutton {
-	cursor:pointer;
-	padding: 0;
-	margin: 0;
-	border: 1px solid #ffffff;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ffffff;
 }
 
 .deletebutton:hover {
-	border: 1px solid #006;
+  border: 1px solid #006;
 }
 
 .dropdown {
-	font-size: 10px; 
+  font-size: 10px;
+  width: auto;
+}
+
+.admintable {
+  width: 100%;
+}
+
+.admintable + .admintable {
+  margin-top: 5px;
 }
 
 .infotable td {
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 .infotable th {
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	text-align: center;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-align: center;
 }
 
-form table td + td {
+.infotable td+td {
+  padding-left: 5px;
+}
+
+.infotable th+th {
+  padding-left: 5px;
+}
+
+.contenttable td+td {
+  padding-left: 5px;
+}
+
+.contenttable tr+tr {
+  padding-top: 5px;
+}
+
+
+
+form table td+td {
   padding-left: 3px;
 }
 
-form table td {
-  padding-top: 2px;
+form table th+th {
+  padding-left: 3px;
 }
 
 .posvalue td {
-	color: #2f5721;
+  color: #2f5721;
 }
+
 .negvalue td {
-	color: #6b1a1a;
+  color: #6b1a1a;
 }
 
 .localeselection {
-	border: 1px solid #000000;
-	height:10px;
+  border: 1px solid #000000;
+  height: 10px;
 }
 
 yuicalendar.table {
-	font-size:small;
+  font-size: small;
 }
 
-.calweekdaycell{
-	background-color: #FFFFFF;
+.calweekdaycell {
+  background-color: #FFFFFF;
 }
 
-.calheader{
-	color: #006699;
+.calheader {
+  color: #006699;
 }
 
 .twitter-list {
   margin: 0 0 15px 15px;
   padding: 0;
   list-style-type: none;
-} 
+}
 
-.twitter-list li{
+.twitter-list li {
   margin: 0 0 10px 0;
   padding: 0;
   list-style-type: none;
-} 
+}
 
-.twitter-list li a{
+.twitter-list li a {
   padding: 0 0 0 19px;
-  background: url("../../images/linkicons/twitter_14x14.png") no-repeat 0 50%;
-} 
+  background: url("../../images/linkicons/twitter_14x14.png") no-repeat 0
+    50%;
+}
+
 .feed {
   margin-left: 3px;
   padding: 0 0 0 19px;
   background: url("../../images/linkicons/feed_14x14.png") no-repeat 0 50%;
-} 
+}
 
 .feed-list {
   margin: 0 0 15px 15px;
@@ -285,43 +322,42 @@ yuicalendar.table {
   padding: 0 0 0 19px;
   background: url("../../images/linkicons/feed_14x14.png") no-repeat 0 50%;
   list-style-type: none;
-} 
+}
 
 .playedpool {
-  background-color: #d7c2ee; 
+  background-color: #d7c2ee;
 }
 
 .tablelowlight {
-	background-color: #E0E0E0;
+  background-color: #E0E0E0;
 }
 
-.flag{
-	border-collapse:collapse;
-	border:1px solid black;
+.flag {
+  border-collapse: collapse;
+  border: 1px solid black;
 }
 
 /* scheduling */
-
 table.scheduling {
-    margin: 0px;
+  margin: 0px;
 }
 
 div.workarea {
   padding: 0px;
   float: left;
-  min-width:180px;
-  /* min-width:150px; */ 
+  min-width: 180px;
+  /* min-width:150px; */
 }
 
 td.scheduling_column {
-   vertical-align:top;
-   padding:0px;
-   font-size:8px;
+  vertical-align: top;
+  padding: 0px;
+  font-size: 8px;
 }
 
 ul.draglist, ol.draglist, select.series_select {
   position: relative;
-  width: 200px; 
+  width: 200px;
   background: #f7f7f7;
   border: 1px solid gray;
   list-style: none;
@@ -340,19 +376,21 @@ ul.draglist li, ol.draglist li {
   text-align: center;
   vertical-align: middle;
   background-color: #D1E6EC;
-  border:1px solid #7EA6B2;
+  border: 1px solid #7EA6B2;
 }
 
 li.schedule_item {
   background-color: #aaaaaa;
   border: 1px solid #7EA6B2;
-  width:180px;
+  width: 180px;
 }
 
-th.scheduling { width:180px }
+th.scheduling {
+  width: 180px
+}
 
 td.timecolumn {
-  vertical-align:top;
+  vertical-align: top;
 }
 
 ul.timelist {
@@ -366,3 +404,18 @@ ul.timelist li {
   border: 1px solid #7EA6B2;
 }
 
+.radioselect * {
+  vertical-align: middle;
+}
+
+div.tabular {
+  display: table;
+}
+
+div.tabrow {
+  display: table-row;
+}
+
+div.tabcell {
+  display: table-cell;
+}
