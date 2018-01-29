@@ -12,7 +12,7 @@ $LAYOUT_ID = SEASONSTANDINGS;
 $season = $_GET["season"];
 $series_id = CurrentSeries($season);
 
-$title = utf8entities(SeasonName($season)).": "._("Pool standings");
+$title = utf8entities(SeasonName($season)).": "._("Pool Rankings");
 
 if ($series_id<=0) {
   showPage($title, "<p>"._("No divisions defined. Define at least one division first.")."</p>");
@@ -217,7 +217,7 @@ foreach ($pools as $spool) {
     
     $confirmtext = poolLink($poolId, sprintf(_("Confirm moves to pool %s."), PoolName($poolId)));
     
-    $html .= "<li>" . sprintf(_("Check standings of %s. Then: %s"), $deplist, $confirmtext) . "</li>\n"; 
+    $html .= "<li>" . sprintf(_("Check rankings of %s. Then: %s"), $deplist, $confirmtext) . "</li>\n"; 
   }
 }
 if ($firstTask) {

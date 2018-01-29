@@ -20,6 +20,6 @@ foreach ($series as $seriesStr) {
 	}
 }
 
-echo _("Standings saved");
+echo _("Rankings saved");
 
 ?>

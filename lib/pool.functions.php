@@ -2355,7 +2355,7 @@ function PoolsToCsv($season,$separator){
       $poolrow = array(
             "Division"=>$poolinfo['seriesname'],
             "Pool"=>$poolinfo['name'],
-            "Standing"=>$row['activerank'],
+            "Rank"=>$row['activerank'],
             "Team"=>$row['name'],
             "Games"=>$stats['games'],
             "Wins"=>$stats['wins'],

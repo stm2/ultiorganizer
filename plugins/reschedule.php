@@ -22,7 +22,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/standings.functions.php';
 
 $html = "";
-$title = ("Reschedule");
+$title = _("Reschedule");
 $seasonId = "";
 
 if(!empty($_POST['season'])){
@@ -81,7 +81,7 @@ if (isset($_POST['update'])) {
 $html .= "<form method='post' id='tables' action='?view=plugins/reschedule'>\n";
 
 
-$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 $seasons = Seasons();
 		
@@ -90,7 +90,7 @@ while($row = mysqli_fetch_assoc($seasons)){
 }
 
 $html .= "</select></p>\n";
-$html .= "<p><input class='button' type='submit' name='update' value='".("Update")."'/></p>";
+$html .= "<p><input class='button' type='submit' name='update' value='"._("Update")."'/></p>";
 
 $html .= "</form>";
 

@@ -27,7 +27,7 @@ $html .= "<a href='ext/gamescsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$se
 $html .= "<a href='ext/resultscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("All results")."</a><br/>";
 $html .= "<a href='ext/playerscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Player statistics")."</a><br/>";
 $html .= "<a href='ext/teamscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Team statistics")."</a><br/>";
-$html .= "<a href='ext/poolscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Pool standings")."</a><br/>";
+$html .= "<a href='ext/poolscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Pool rankings")."</a><br/>";
 $html .= "</p>";
 
 $html .= "<form method='post' action='?view=ext/export'>\n";
@@ -44,7 +44,7 @@ while($row = mysqli_fetch_assoc($seasons)){
 
 $html .= "</select></p>\n";
 
-$html .= "<p>".("Select encoding").": <select class='dropdown' name='encoding'>\n";
+$html .= "<p>"._("Select encoding").": <select class='dropdown' name='encoding'>\n";
 $encodings = array("UTF-8","ISO-8859-15","Windows-1251","Windows-1252");
 foreach ($encodings as $enc){
 	if($enc==$encoding){
@@ -54,8 +54,8 @@ foreach ($encodings as $enc){
 	}
 }
 $html .= "</select></p>\n";
-$html .= "<p>".("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value='$separator'/></p>\n";
-$html .= "<p><input class='button' type='submit' name='change' value='".("Change")."'/></p>";
+$html .= "<p>"._("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value='$separator'/></p>\n";
+$html .= "<p><input class='button' type='submit' name='change' value='"._("Change")."'/></p>";
 $html .= "</form>";
 
 showPage($title, $html);

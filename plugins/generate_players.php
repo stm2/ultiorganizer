@@ -21,7 +21,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 
 $html = "";
-$title = ("Player generator");
+$title = _("Player generator");
 $seasonId = "";
 
 if(!empty($_POST['season'])){
@@ -47,7 +47,7 @@ if (isset($_POST['generate'])) {
 $html .= "<form method='post' enctype='multipart/form-data' action='?view=plugins/generate_players'>\n";
 
 if(empty($seasonId)){
-	$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+	$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 	$seasons = Seasons();
 			
@@ -56,21 +56,21 @@ if(empty($seasonId)){
 	}
 
 	$html .= "</select></p>\n";
-	$html .= "<p><input class='button' type='submit' name='select' value='".("Select")."'/></p>";
+	$html .= "<p><input class='button' type='submit' name='select' value='"._("Select")."'/></p>";
 }else{
 
-	$html .= "<p>".("Select division").":	<select class='dropdown' name='seriesid'>\n";
+	$html .= "<p>"._("Select division").":	<select class='dropdown' name='seriesid'>\n";
 	$series = SeasonSeries($seasonId);
 	foreach($series as $row){
 		$html .= "<option class='dropdown' value='".utf8entities($row['series_id'])."'>". utf8entities($row['name']) ."</option>";
 	}
 	$html .= "</select></p>\n";
 
-	$html .= "<p>".("Number of players to generate for a team").": <input class='input' maxlength='2' size='2' name='amount' value='20'/></p>\n";
+	$html .= "<p>"._("Number of players to generate for a team").": <input class='input' maxlength='2' size='2' name='amount' value='20'/></p>\n";
 
 	$html .= "<p>";
-	$html .= "<input class='input' type='checkbox' name='accreditate' /> ".("Accreditate players")."</p>";
-	$html .= "<p><input class='button' type='submit' name='generate' value='".("Generate")."'/></p>";
+	$html .= "<input class='input' type='checkbox' name='accreditate' /> "._("Accreditate players")."</p>";
+	$html .= "<p><input class='button' type='submit' name='generate' value='"._("Generate")."'/></p>";
 	$html .= "<div>";
 	$html .= "<input type='hidden' name='season' value='$seasonId' />\n";
 	$html .= "</div>\n";

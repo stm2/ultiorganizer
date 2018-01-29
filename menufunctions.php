@@ -507,8 +507,6 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   //Create new event menu
   if (isSuperAdmin()) {
     echo "<table class='leftmenulinks'>\n";
-    //echo "<tr><td class='menuseasonlevel'>".utf8entities(_("New Event"))."</td></tr>";
-    //echo "</td></tr>\n";
     echo "<tr><td>\n";
     echo "<a class='subnav' href='?view=admin/addseasons'>&raquo; ".utf8entities(_("Create new event"))."</a>\n";
     echo "</td></tr>\n";
@@ -701,7 +699,7 @@ function getEditSeasonLinks() {
         $links['?view=admin/seasonpools&amp;season='.$season] = _("Pools");
         $links['?view=admin/reservations&amp;season='.$season] = _("Scheduling");
         $links['?view=admin/seasongames&amp;season='.$season] = _("Games");
-        $links['?view=admin/seasonstandings&amp;season='.$season] = _("Standings");
+        $links['?view=admin/seasonstandings&amp;season='.$season] = _("Rankings");
         $links['?view=admin/accreditation&amp;season='.$season] = _("Accreditation");
         $respgamesset[$season] = "set";
         $deleteset[$season] = "set";
@@ -717,7 +715,7 @@ function getEditSeasonLinks() {
           $seriesname = U_(getSeriesName($series));
           $links['?view=admin/seasonteams&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Teams");
           $links['?view=admin/seasongames&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Games");
-          $links['?view=admin/seasonstandings&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Pool standings");
+          $links['?view=admin/seasonstandings&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Pool rankings");
           $links['?view=admin/accreditation&amp;season='.$seriesseason] = _("Accreditation");
           $ret[$seriesseason] = $links;
           $respgamesset[$seriesseason] = "set";

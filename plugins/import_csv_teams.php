@@ -21,7 +21,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 
 $html = "";
-$title = ("Import Teams from CSV file");
+$title = _("Import Teams from CSV file");
 
 if (isset($_POST['import'])) {
 
@@ -79,7 +79,7 @@ if (isset($_POST['import'])) {
 
 //season selection
 $html .= "<form method='post' enctype='multipart/form-data' action='?view=plugins/import_csv_teams'>\n";
-$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 $seasons = Seasons();
 		
@@ -88,12 +88,12 @@ while($row = mysqli_fetch_assoc($seasons)){
 }
 
 $html .= "</select></p>\n";
-$html .= "<p>".("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
+$html .= "<p>"._("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
 
-$html .= "<p>".("Select file to import").":<br/>\n";
+$html .= "<p>"._("Select file to import").":<br/>\n";
 $html .= "<input class='input' type='file' size='100' name='file'/><br/>\n";
-$html .= "<input class='input' type='checkbox' name='utf8' /> ".("File in UTF-8 format")."</p>";
-$html .= "<p><input class='button' type='submit' name='import' value='".("Import")."'/></p>";
+$html .= "<input class='input' type='checkbox' name='utf8' /> "._("File in UTF-8 format")."</p>";
+$html .= "<p><input class='button' type='submit' name='import' value='"._("Import")."'/></p>";
 $html .= "<div><input type='hidden' name='MAX_FILE_SIZE' value='50000000' /></div>\n";
 $html .= "</form>";
 

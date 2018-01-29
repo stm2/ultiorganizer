@@ -21,7 +21,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 
 $html = "";
-$title = ("Import data from CSV file");
+$title = _("Import data from CSV file");
 
 if (isset($_POST['import'])) {
 
@@ -275,7 +275,7 @@ if (isset($_POST['import'])) {
 			  
 			}
 			fclose($handle);
-			$html .= "<p>". ("Data imported!"). "</p>";
+			$html .= "<p>". _("Data imported!"). "</p>";
 		}
 	}else{
 		$html .= "<p>". ("There was an error uploading the file, please try again!"). "</p>";
@@ -295,12 +295,12 @@ $html .= "<option class='dropdown' value='division'>Division</option>";
 $html .= "<option class='dropdown' value='played_player'>Played player</option>";
 $html .= "</select></p>\n";
 
-$html .= "<p>".("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
+$html .= "<p>"._("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
 
-$html .= "<p>".("Select file to import").":<br/>\n";
+$html .= "<p>"._("Select file to import").":<br/>\n";
 $html .= "<input class='input' type='file' size='50' name='file'/><br/>\n";
-$html .= "<input class='input' type='checkbox' name='utf8' /> ".("File in UTF-8 format")."</p>";
-$html .= "<p><input class='button' type='submit' name='import' value='".("Import")."'/></p>";
+$html .= "<input class='input' type='checkbox' name='utf8' /> "._("File in UTF-8 format")."</p>";
+$html .= "<p><input class='button' type='submit' name='import' value='"._("Import")."'/></p>";
 $html .= "<div>";
 $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='50000000' />\n";
 $html .= "</div>\n";

@@ -5,7 +5,7 @@ include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 include_once 'lib/timetable.functions.php';
 
-$title = _("Standings")." ";
+$title = _("Pool Ranking")." ";
 $seriesScoreboard = false;
 $print=0;
 $html = "";

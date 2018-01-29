@@ -22,7 +22,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/standings.functions.php';
 
 $html = "";
-$title = ("Reassign pla-yoff pools");
+$title = _("Reassign playoff pools");
 $seriesId = "";
 
 	
@@ -100,21 +100,21 @@ if (!empty($_POST['series'])) {
 	//pool selection
 	$html .= "<form method='post' id='tables' action='?view=plugins/reassign_playoffpools'>\n";
 	
-	$html .= "<p>".("Select first pool to swap").": <select class='dropdown' name='swap1'>\n";	
+	$html .= "<p>"._("Select first pool to swap").": <select class='dropdown' name='swap1'>\n";	
 	foreach($moveablepools as $pool){
 		debugvar($pool);
 		$html .= "<option class='dropdown' value='".utf8entities($pool['pool_id'])."'>". utf8entities($pool['name']) . "</option>\n";
 	}			
 	$html .= "</select>\n";
 	
-	$html .= "<p>".("Select neighboring pool to swap with").": <select class='dropdown' name='swap2'>\n";	
+	$html .= "<p>"._("Select neighboring pool to swap with").": <select class='dropdown' name='swap2'>\n";	
 	foreach($moveablepools as $pool){
 		debugvar($pool);
 		$html .= "<option class='dropdown' value='".utf8entities($pool['pool_id'])."'>". utf8entities($pool['name']) . "</option>\n";
 	}			
 	$html .= "</select></p>\n";
 	
-	$html .= "<p><input class='button' type='submit' name='swap' value='".("Swap Assignment of Play-off Pools")."'/>\n";
+	$html .= "<p><input class='button' type='submit' name='swap' value='"._("Swap Assignment of Play-off Pools")."'/>\n";
 	$html .= "<input class='button' type='button' name='back'  value='"._("Return")."' onclick=\"window.location.href='?view=plugins/reassign_playoffpools'\"/></p>";
 	
 	$html .= "</form>";					
@@ -240,7 +240,7 @@ else{
 	//series selection
 	$html .= "<form method='post' id='tables' action='?view=plugins/reassign_playoffpools'>\n";
 	
-	$html .= "<p>".("Select division").": <select class='dropdown' name='series'>\n";
+	$html .= "<p>"._("Select division").": <select class='dropdown' name='series'>\n";
 	
 	$series = Series();
 			
@@ -249,7 +249,7 @@ else{
 	}
 	
 	$html .= "</select></p>\n";
-	$html .= "<p><input class='button' type='submit' name='show' value='".("Show play-off pools")."'/></p>";
+	$html .= "<p><input class='button' type='submit' name='show' value='"._("Show play-off pools")."'/></p>";
 	
 	$html .= "</form>";
 }

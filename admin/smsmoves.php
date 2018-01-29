@@ -223,7 +223,7 @@ if (!empty($poolId)){
 		$single_value=implode(";",$sms);
 		echo "<p><input type='hidden' name='sms_$smscount' value='".htmlspecialchars($single_value,ENT_QUOTES)."'>";
 	}
-	echo "<p><input class='button' type='submit' name='sendsms' value='".("Send these SMS")."'/>";
+	echo "<p><input class='button' type='submit' name='sendsms' value='"._("Send these SMS")."'/>";
 	echo "<input class='button' type='button' name='back'  value='"._("Return without sending")."' onclick=\"window.location.href='?view=admin/smsmoves&amp;season=$season&amp;series=$seriesId'\"/></p>";
 	
 	echo "</form>";
@@ -258,14 +258,14 @@ if (!empty($poolId)){
 	
 	echo "<form method='post' action='?view=admin/smsmoves&amp;season=$season&amp;series=$seriesId'>";
 	
-	echo "<p>".("Select source pool").": <select class='dropdown' name='pool'>\n";
+	echo "<p>"._("Select source pool").": <select class='dropdown' name='pool'>\n";
 	
 	foreach($selectablepools as $pool){
 		echo "<option class='dropdown' value='".utf8entities($pool['pool_id'])."'>". utf8entities($pool['name']). " (" . utf8entities($pool['moves'])." moves)</option>";
 	}
 	
 	echo "</select></p>\n";
-	echo "<p><input class='button' type='submit' name='createsms' value='".("Create SMS")."'/></p>";
+	echo "<p><input class='button' type='submit' name='createsms' value='"._("Create SMS")."'/></p>";
 	
 	echo "</form>";
 }

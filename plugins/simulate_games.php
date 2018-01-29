@@ -24,7 +24,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/standings.functions.php';
 
 $html = "";
-$title = ("Game simulator");
+$title = _("Game simulator");
 $seasonId = "";
 
 if (! empty($_POST['season'])) {
@@ -162,7 +162,7 @@ if (isset($_POST['simulate']) && ! empty($_POST['pools'])) {
 $html .= "<form method='post' id='tables' action='?view=plugins/simulate_games'>\n";
 
 if (empty($seasonId)) {
-  $html .= "<p>" . ("Select event") . ": <select class='dropdown' name='season'>\n";
+  $html .= "<p>" . _("Select event") . ": <select class='dropdown' name='season'>\n";
   
   $seasons = Seasons();
   
@@ -171,14 +171,14 @@ if (empty($seasonId)) {
   }
   
   $html .= "</select></p>\n";
-  $html .= "<p><input class='button' type='submit' name='select' value='" . ("Select") . "'/></p>";
+  $html .= "<p><input class='button' type='submit' name='select' value='" . _("Select") . "'/></p>";
 } else {
   
-  $html .= "<p>" . ("Select pools to play or undo") . ":</p>\n";
+  $html .= "<p>" . _("Select pools to play or undo") . ":</p>\n";
   
   $html .= SeasonPoolGamesTable('tables', $seasonId, null);
   
-  $html .= "<p><input class='button' type='submit' name='simulate' value='" . ("Simulate") . "'/> <input class='button' type='submit' name='reset' value='" . ("Reset played games") . "'/></p>";
+  $html .= "<p><input class='button' type='submit' name='simulate' value='" . _("Simulate") . "'/> <input class='button' type='submit' name='reset' value='" . _("Reset played games") . "'/></p>";
   $html .= "<div>";
   $html .= "<input type='hidden' name='season' value='$seasonId' />\n";
   $html .= "</div>\n";

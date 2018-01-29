@@ -21,7 +21,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 
 $html = "";
-$title = ("Import Players from CSV file");
+$title = _("Import Players from CSV file");
 $seasonId = "";
 
 if(!empty($_POST['season'])){
@@ -67,7 +67,7 @@ if (isset($_POST['import'])) {
 $html .= "<form method='post' enctype='multipart/form-data' action='?view=plugins/import_csv_players'>\n";
 
 if(empty($seasonId)){
-	$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+	$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 	$seasons = Seasons();
 			
@@ -76,22 +76,22 @@ if(empty($seasonId)){
 	}
 
 	$html .= "</select></p>\n";
-	$html .= "<p><input class='button' type='submit' name='select' value='".("Select")."'/></p>";
+	$html .= "<p><input class='button' type='submit' name='select' value='"._("Select")."'/></p>";
 }else{
 
-	$html .= "<p>".("Select division").":	<select class='dropdown' name='seriesid'>\n";
+	$html .= "<p>"._("Select division").":	<select class='dropdown' name='seriesid'>\n";
 	$series = SeasonSeries($seasonId);
 	foreach($series as $row){
 		$html .= "<option class='dropdown' value='".utf8entities($row['series_id'])."'>". utf8entities($row['name']) ."</option>";
 	}
 	$html .= "</select></p>\n";
 
-	$html .= "<p>".("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
+	$html .= "<p>"._("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
 
-	$html .= "<p>".("Select file to import").":<br/>\n";
+	$html .= "<p>"._("Select file to import").":<br/>\n";
 	$html .= "<input class='input' type='file' size='100' name='file'/><br/>\n";
-	$html .= "<input class='input' type='checkbox' name='utf8' /> ".("File in UTF-8 format")."</p>";
-	$html .= "<p><input class='button' type='submit' name='import' value='".("Import")."'/></p>";
+	$html .= "<input class='input' type='checkbox' name='utf8' /> "._("File in UTF-8 format")."</p>";
+	$html .= "<p><input class='button' type='submit' name='import' value='"._("Import")."'/></p>";
 	$html .= "<div>";
 	$html .= "<input type='hidden' name='MAX_FILE_SIZE' value='50000000' />\n";
 	$html .= "<input type='hidden' name='season' value='$seasonId' />\n";

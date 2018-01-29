@@ -24,7 +24,7 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/teamplayers.functions.php')) {
 }
 
 $html = "";
-$title = ("Import WU23C2010 data from CSV file");
+$title = _("Import WU23C2010 data from CSV file");
 $seasonId = "";
 
 if (isset($_POST['import'])) {
@@ -175,7 +175,7 @@ if (isset($_POST['import'])) {
 				
 			}
 			fclose($handle);
-			$html .= "<p>". ("Data imported!"). "</p>";
+			$html .= "<p>". _("Data imported!"). "</p>";
 		}
 	}else{
 		$html .= "<p>". ("There was an error uploading the file, please try again!"). "</p>";
@@ -186,7 +186,7 @@ if (isset($_POST['import'])) {
 //season selection
 $html .= "<form method='post' enctype='multipart/form-data' action='?view=plugins/import_csv_wujc2012'>\n";
 
-$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 $seasons = Seasons();
 		
@@ -196,12 +196,12 @@ while($row = mysqli_fetch_assoc($seasons)){
 
 $html .= "</select></p>\n";
 
-$html .= "<p>".("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
+$html .= "<p>"._("CSV separator").": <input class='input' maxlength='1' size='1' name='separator' value=','/></p>\n";
 
-$html .= "<p>".("Select file to import").":<br/>\n";
+$html .= "<p>"._("Select file to import").":<br/>\n";
 $html .= "<input class='input' type='file' size='100' name='file'/><br/>\n";
-$html .= "<input class='input' type='checkbox' name='utf8' /> ".("File in UTF-8 format")."</p>";
-$html .= "<p><input class='button' type='submit' name='import' value='".("Import")."'/></p>";
+$html .= "<input class='input' type='checkbox' name='utf8' /> "._("File in UTF-8 format")."</p>";
+$html .= "<p><input class='button' type='submit' name='import' value='"._("Import")."'/></p>";
 $html .= "<div>";
 $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='50000000' />\n";
 $html .= "</div>\n";

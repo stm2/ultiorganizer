@@ -24,7 +24,7 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/teamplayers.functions.php')) {
 }
 $imported = false;
 $html = "";
-$title = ("Import FFindr data from XML-file");
+$title = _("Import FFindr data from XML-file");
 $seasonId = "";
 
 if (isset($_POST['add']) && isSuperAdmin()){

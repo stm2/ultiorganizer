@@ -17,7 +17,7 @@ ob_end_clean();
 if (!isSuperAdmin()){die('Insufficient user rights');}
 
 $html = "";
-$title = ("Licenses");
+$title = _("Licenses");
 $accId = isset($_GET["accid"]) ? intval($_GET["accid"]):0;
 
 if (isset($_POST['save'])){

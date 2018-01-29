@@ -236,7 +236,7 @@ if(!empty($seltournament)){
 }
 
 if(!empty($selpool)){
-	$html .= "<h2>"._("Selected pool standings and scoreboard")."</h2>";
+	$html .= "<h2>"._("Selected pool rankings and scoreboard")."</h2>";
 
 	$html .= "<p class='highlight' ><code>
 		&lt;object data='$baseurl/ext/poolstatus.php?Pool=$selpool&amp;season=$season&amp;Style=$selstyle' <br/>
@@ -253,7 +253,7 @@ if(!empty($selpool)){
 	$html .= "<p><object data='$baseurl/ext/poolscoreboard.php?Pool=$selpool&amp;season=$season&amp;Style=$selstyle' type='text/html' width='400px' height='200px'></object></p>\n";
 }
 if(!empty($selcountry)){
-$html .= "<h2>"._("Selected country's teams pool standings and game result")."</h2>\n";
+$html .= "<h2>"._("Selected country's teams pool rankings and game result")."</h2>\n";
 	$html .= "<p class='highlight' ><code>
 		&lt;object data='$baseurl/ext/countrystatus.php?Country=$selcountry&amp;season=$season&amp;Style=$selstyle' <br/>
 		type='text/html' width='500px' height='300px'&gt;&lt;/object&gt;

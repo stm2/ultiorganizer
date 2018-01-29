@@ -23,7 +23,7 @@ include_once 'lib/standings.functions.php';
 include_once 'lib/reservation.functions.php';
 
 $html = "";
-$title = ("Field users");
+$title = _("Field users");
 $season = "";
 
 
@@ -57,7 +57,7 @@ if(!empty($_POST['create'])){
 //season selection
 $html .= "<form method='post' id='tables' action='?view=plugins/add_field_accounts'>\n";
 
-$html .= "<p>".("Create field specific user accounts on select event").": <select class='dropdown' name='season'>\n";
+$html .= "<p>"._("Create field specific user accounts on select event").": <select class='dropdown' name='season'>\n";
 
 $seasons = Seasons();
 		
@@ -66,7 +66,7 @@ while($row = mysqli_fetch_assoc($seasons)){
 }
 
 $html .= "</select></p>\n";
-$html .= "<p><input class='button' type='submit' name='create' value='".("Create")."'/></p>";
+$html .= "<p><input class='button' type='submit' name='create' value='"._("Create")."'/></p>";
 
 $html .= "</form>";
 

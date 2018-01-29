@@ -6,7 +6,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/data.functions.php';
 
 $html = "";
-$title = ("Event data export");
+$title = _("Event data export");
 $seasonId = iget("season");
 
 if(empty($seasonId)){
@@ -55,7 +55,7 @@ $html .= "</select></td></tr>\n";
 $html .= "<tr><td class='infocell'>". _("Export as template, without results") . "</td>\n";
 $html .= "<td><input class='input' type='checkbox' id='template' name='template' /></td></tr>\n";
 
-$html .= "<tr><td><input class='button' type='submit' name='export' value='".("Export")."'/></td></tr>\n";
+$html .= "<tr><td><input class='button' type='submit' name='export' value='" . _("Export") . "'/></td></tr>\n";
 
 $html .= "</table></form>";
 

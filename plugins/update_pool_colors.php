@@ -22,7 +22,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/standings.functions.php';
 
 $html = "";
-$title = ("Pool color updater");
+$title = _("Pool color updater");
 $seasonId = "";
 $colors = array("F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
 			"7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF","00008B","008B8B","B8860B","A9A9A9","006400",
@@ -55,7 +55,7 @@ if (isset($_POST['simulate']) && !empty($_POST['pools'])) {
 $html .= "<form method='post' id='tables' action='?view=plugins/update_pool_colors'>\n";
 
 if(empty($seasonId)){
-	$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+	$html .= "<p>"._("Select event").": <select class='dropdown' name='season'>\n";
 
 	$seasons = Seasons();
 			
@@ -64,14 +64,14 @@ if(empty($seasonId)){
 	}
 
 	$html .= "</select></p>\n";
-	$html .= "<p><input class='button' type='submit' name='select' value='".("Select")."'/></p>";
+	$html .= "<p><input class='button' type='submit' name='select' value='"._("Select")."'/></p>";
 }else{
 	
-	$html .= "<p>".("Select pools to change color").":</p>\n";
+	$html .= "<p>"._("Select pools to change color").":</p>\n";
 	$html .= "<table>";
 	$html .= "<tr><th><input type='checkbox' onclick='checkAll(\"tables\");'/></th>";
-	$html .= "<th>".("Pool")."</th>";
-	$html .= "<th>".("Series")."</th>";
+	$html .= "<th>"._("Pool")."</th>";
+	$html .= "<th>"._("Series")."</th>";
 	$html .= "</tr>\n";
 	
 	$series = SeasonSeries($seasonId);
@@ -88,7 +88,7 @@ if(empty($seasonId)){
 		}
 	}
 	$html .= "</table>\n";
-	$html .= "<p><input class='button' type='submit' name='simulate' value='".("Update")."'/></p>";
+	$html .= "<p><input class='button' type='submit' name='simulate' value='"._("Update")."'/></p>";
 	$html .= "<div>";
 	$html .= "<input type='hidden' name='season' value='$seasonId' />\n";
 	$html .= "</div>\n";
