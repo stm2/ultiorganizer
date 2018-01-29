@@ -406,7 +406,7 @@ function navigationBar($title) {
 function seasonSelection(){
   $seasons = CurrentSeasons();
   if(mysqli_num_rows($seasons)>1){
-    echo "<table><tr><td>";
+    echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=index' method='get' id='seasonsels'>";
     echo "<div><select class='seasondropdown' name='selseason'
 			onchange='changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
@@ -432,6 +432,22 @@ function pageMainStart($printable=false) {
 
   echo "<table style='border:1px solid #fff;background-color: #ffffff;'><tr>\n";
 }
+
+function startTable(&$status) {
+  if (!$status) {
+    echo "<table class='leftmenulinks'>\n";
+    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Administration"))."</th></tr>\n";
+    echo "<tr><td>\n";
+  }
+  $status = true;
+}
+
+function endTable($status) {
+  if ($status)
+    echo "</td></tr></table>\n";
+  $status = false;
+}
+
 /**
  * Creates menus on left side of page.
  *
@@ -447,11 +463,10 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
 
   // Administration menu
   if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {
-    echo "<table class='leftmenulinks'>\n";
-    echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Administration"))."</td></tr>";
   }
+  $leftmenu=0;
   if (isSuperAdmin()) {
-    echo "<tr><td>\n";
+    startTable($leftmenu);
     echo "<a class='subnav' href='?view=admin/seasons'>&raquo; ".utf8entities(_("Events"))."</a>\n";
     echo "<a class='subnav' href='?view=admin/serieformats'>&raquo; ".utf8entities(_("Rule templates"))."</a>\n";
     echo "<a class='subnav' href='?view=admin/clubs'>&raquo; ".utf8entities(_("Clubs & Countries"))."</a>\n";
@@ -459,13 +474,16 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     echo "<a class='subnav' href='?view=admin/reservations'>&raquo; ".utf8entities(_("Field reservations"))."</a>\n";
   }
   if (hasScheduleRights()) {
-    echo "<tr><td><a class='subnav' href='?view=admin/schedule'>&raquo; ".utf8entities(_("Scheduling"))."</a>";
+    startTable($leftmenu);
+    echo "<a class='subnav' href='?view=admin/schedule'>&raquo; ".utf8entities(_("Scheduling"))."</a>";
   }
 
   if (hasTranslationRight()) {
+    startTable($leftmenu);
     echo "<a class='subnav' href='?view=admin/translations'>&raquo; ".utf8entities(_("Translations"))."</a>\n";
   }
   if (isSuperAdmin()) {
+    startTable($leftmenu);
     echo "<a class='subnav' href='?view=admin/users'>&raquo; ".utf8entities(_("Users"))."</a>\n";
     echo "<a class='subnav' href='?view=admin/eventviewer'>&raquo; ".utf8entities(_("Logs"))."</a>\n";
     //echo "<a class='subnav' href='?view=admin/sms'>&raquo; ".utf8entities(_("SMS"))."</a>\n";
@@ -473,10 +491,8 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     echo "<a class='subnav' href='?view=admin/serverconf'>&raquo; ".utf8entities(_("Settings"))."</a>\n";
   }
 
-  if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {
-    echo "</td></tr>\n";
-    echo "</table>\n";
-  }
+  endTable($leftmenu);
+
   if ($_SESSION['uid'] != 'anonymous') {
     echo "<table class='leftmenulinks'>\n";
     echo "<tr><td>\n";
@@ -490,9 +506,9 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   if (count($editlinks)) {
     foreach ($editlinks as $season => $links) {
       echo "<table class='leftmenulinks'>\n";
-      echo "<tr><td class='menuseasonlevel'>".utf8entities(SeasonName($season))." ".utf8entities(_("Administration"))."</td>";
+      echo "<tr><th class='menuseasonlevel'>".utf8entities(SeasonName($season))." ".utf8entities(_("Administration"))."</th>";
       echo "<td class='menuseasonlevel'><a style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
-      echo "</tr><tr><td>\n";
+      echo "</tr><tr><td colspan='2'>\n";
       foreach ($links as $href => $name) {
         if (empty($href))
           echo "<hr />";
@@ -518,7 +534,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     $enrollSeasons = EnrollSeasons();
     if (count($enrollSeasons) > 0) {
       echo "<table class='leftmenulinks'>\n";
-      echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Team registration"))."</td></tr>\n";
+      echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Team registration"))."</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($enrollSeasons as $seasonId => $seasonName) {
         echo "<a class='subnav' href='?view=user/enrollteam&amp;season=".$seasonId."'>&raquo; ".utf8entities(U_($seasonName))."</a>\n";
@@ -530,7 +546,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   // Player profiles
   if (hasPlayerAdminRights()) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Player profiles"))."</td></tr>\n";
+    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Player profiles"))."</th></tr>\n";
     echo "<tr><td>\n";
     foreach ($_SESSION['userproperties']['userrole']['playeradmin'] as $profile_id => $propid) {
       $playerInfo = PlayerProfile($profile_id);
@@ -557,9 +573,9 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
       }
       if ($lastseason != $season) {
         $lastseason = $season;
-        echo "<tr><td class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>";
-        echo utf8entities(U_($row['season_name']))."</a></td></tr>\n";
-        echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>".utf8entities(_("Final standings"))."</a></td></tr>\n";
+        echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>";
+        echo utf8entities(U_($row['season_name']))."</a></th></tr>\n";
+        echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>".utf8entities(_("Final ranking"))."</a></td></tr>\n";
         echo "<tr><td><a class='nav' href='?view=games&amp;season=".urlencode($season)."&amp;filter=tournaments&amp;group=all'>".utf8entities(_("Games"))."</a></td></tr>\n";
         //echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
         echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."&amp;list=allteams'>".utf8entities(_("Teams"))."</a></td></tr>\n";
@@ -579,8 +595,8 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     }
   }else{
     $season = CurrentSeason();
-    echo "<tr><td class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
-         urlencode($season) . "&amp;list=bystandings'>" . utf8entities(U_(CurrentSeasonName())) . "</a></td></tr>\n";
+    echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
+         urlencode($season) . "&amp;list=bystandings'>" . utf8entities(U_(CurrentSeasonName())) . "</a></th></tr>\n";
     echo "<tr><td><a class='nav' href='?view=timetables&amp;season=".urlencode($season)."&amp;filter=tournaments&amp;group=all'>".utf8entities(_("Games"))."</a></td></tr>\n";
     //  echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
     echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."'>".utf8entities(_("Teams"))."</a></td></tr>\n";
@@ -598,7 +614,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
 
   //event links
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Event Links"))."</td></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Event Links"))."</th></tr>\n";
   echo "<tr><td>";
 
   $urls = GetUrlListByTypeArray(array("menulink","menumail"),$curseason);
@@ -626,7 +642,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   //event history
   if(IsStatsDataAvailable()){
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Statistics"))."</td></tr>\n";
+    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Statistics"))."</th></tr>\n";
     echo "<tr><td>";
     echo "<a class='subnav' href=\"?view=seasonlist\">&raquo; ".utf8entities(_("Events"))."</a>\n";
     echo "<a class='subnav' href=\"?view=allplayers\">&raquo; ".utf8entities(_("Players"))."</a>\n";
@@ -642,7 +658,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
 
   //External access
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Client access"))."</td></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Client access"))."</th></tr>\n";
   echo "<tr><td>";
   echo "<a class='subnav' href='?view=ext/index'>&raquo; ".utf8entities(_("Ultiorganizer links"))."</a>\n";
   echo "<a class='subnav' href='?view=ext/export'>&raquo; ".utf8entities(_("Data export"))."</a>\n";
@@ -652,7 +668,7 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   echo "</table>";
 
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><td class='menuseasonlevel'>".utf8entities(_("Links"))."</td></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Links"))."</th></tr>\n";
   echo "<tr><td>";
   $urls = GetUrlListByTypeArray(array("menulink","menumail"),0);
   foreach($urls as $url){
@@ -790,12 +806,25 @@ function getEditSeasonLinks() {
       $links = $ret[$season];
       $links['?view=user/respgames&amp;season='.$season] = _("Game responsibilities");
       $links['?view=user/contacts&amp;season='.$season] = _("Contacts");
-      if (!empty($deleteset[$season])) {
-        $links[''] = "";
-        $links['?view=admin/delete&amp;season='.$season] = _("Delete");
+      $ret[$season] = $links;
+    }
+    
+    foreach ($ret as $season => $links) {
+      if (isSeasonAdmin($season)) {
+        $links['?view=admin/addseasonusers&season=' . $season] = _("Event users");
       }
       $ret[$season] = $links;
     }
+    
+    foreach ($respgamesset as $season => $set) {
+      $links = $ret[$season];
+      if (!empty($deleteset[$season])) {
+        $links[''] = "";
+        $links['?view=admin/delete&amp;season=' . $season] = _("Delete");
+        $ret[$season] = $links;
+      }
+    }
+    
   }
 
   foreach ($ret as $season => $links) {
