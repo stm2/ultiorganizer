@@ -1,4 +1,3 @@
-
 .page{
 	width: 880px;
 	margin-left: auto;
@@ -122,14 +121,18 @@
 .content {
 	width: 635px;
 	height:100%;
-	margin: 0px;
-	margin-left:5px;
+	margin: 0;
+	margin-left:0px;
 	margin-right:5px;
 	background-color: #ffffff;
 	padding-right: 0px;
-	padding-left: 5px;
+	padding-left: 0px;
 	padding-top: 5px;
 	/*border:1px solid #333;*/
+}
+
+.nomenu {
+        width: 860px;
 }
 
 .menuseparator{	
@@ -284,3 +287,62 @@ yuicalendar.table {
 	border-collapse:collapse;
 	border:1px solid black;
 }
+
+/* scheduling */
+
+table.scheduling {
+    margin: 0px;
+}
+
+div.workarea {
+  padding: 0px;
+  float: left;
+  min-width:180px;
+  /* min-width:150px; */ 
+}
+
+td.scheduling_column {
+   vertical-align:top;
+   padding:0px;
+   font-size:8px;
+}
+
+ul.draglist {
+  position: relative;
+  background: #f7f7f7;
+  border: 1px solid gray;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.draglist li {
+  margin: 0px;
+  cursor: move;
+  text-align: center;
+  vertical-align: center;
+}
+
+li.schedule_item {
+  background-color: #aaaaaa;
+  border: 1px solid #7EA6B2;
+  width:180px;
+}
+
+th.scheduling { width:180px }
+
+td.timecolumn {
+  vertical-align:top;
+}
+
+ul.timelist {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.timelist li {
+  border: 1px solid #7EA6B2;
+}
+

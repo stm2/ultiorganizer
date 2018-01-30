@@ -73,73 +73,6 @@ echo yuiLoad(array("utilities"));
 
 ?>
 
-<style type="text/css">
-body {
-  margin: 0;
-  padding: 0;
-}
-</style>
-
-
-<style type="text/css">
-div.workarea {
-  padding: 0px;
-  float: left;
-   min-width:150px;
-   /* min-width:150px; */ 
-}
-
-td.scheduling_column {
-   vertical-align:top;
-   /* padding:5px; */
-   font-size:8px;
-}
-
-ul.draglist {
-  position: relative;
-  background: #f7f7f7;
-  border: 1px solid gray;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-ul.draglist li {
-  margin: 0px;
-  cursor: move;
-  zoom: 1;
-  text-align: center;
-  vertical-align: center;
-}
-
-li.schedule_item {
-  background-color: #aaaaaa;
-  border: 1px solid #7EA6B2;
-  width:150px;
-}
-
-th.scheduling { width:150px }
-
-td.timecolumn {
-  vertical-align:top;
-}
-
-ul.timelist {
-  position: relative;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-ul.timelist li {
-  border: 1px solid #7EA6B2;
-}
-
-
-#user_actions {
-  float: right;
-}
-</style>
 <script type="text/javascript">
 <!--
 var with_ctrl_key=false;
@@ -241,11 +174,11 @@ function pauseHeight($duration) {
 $scrolling = "onkeydown='KeyDown(event);' onkeyup='KeyUp(event);'";
 pageTopHeadClose($title,false, $scrolling);
 pageMainStart();
-contentStart();
+contentStartWide();
 
 echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a>";
 
-echo "<table><tr><td class='scheduling_column'>";
+echo "<table class='scheduling'><tr><td class='scheduling_column'>";
 
 //$teams = UnscheduledTeams();
 //$unscheduledTeams = array_flip(UnscheduledTeams());
@@ -306,7 +239,7 @@ function getVName($gameInfo) {
 function getGameName($gameInfo, $short = false) {
   if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
     if ($short) {
-      $gametitle = substr(getHName($gameInfo), 0, 12) . " - " . substr(getVName($gameInfo), 0, 12);
+      $gametitle = substr(getHName($gameInfo), 0, 10) . " - " . substr(getVName($gameInfo), 0, 10);
     } else {
       $gametitle = $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
     }
@@ -321,7 +254,7 @@ function gamePoolName($gameInfo) {
 }
 
 function tableStart($dayArray, $skip, $max) {
-  echo "<table><tr>\n";
+  echo "<table class='scheduling'><tr>\n";
   $index = 0;
   foreach ($dayArray as $reservationId => $reservationArray) {
     if (++$index <= $skip)
@@ -349,7 +282,7 @@ function tableEnd($firstStart, $lastEnd) {
   echo "</tr>\n</table>\n";
 }
 
-echo "<table><tr><td class='scheduling_column'>\n";
+echo "<table class='scheduling'><tr><td class='scheduling_column'>\n";
 echo "<h3>"._("Unscheduled")."</h3>\n";
 echo "<form action='' method='get'>";
 echo "<p><select class='dropdown' style='width:100%' name='eventfilter' onchange='OnEventSelect(this);'>\n";
@@ -543,7 +476,7 @@ if(count($reservationData)>0){
 
 }
 echo "<table><tr>";
-echo "<td id='user_actions' style='float: left; padding: 20px'>";
+echo "<td id='user_actions' padding: 10px'>";
 echo "<input type='button' id='showButton' value='" . _("Save") . "' /></td>";
 echo "<td class='center'><div id='responseStatus'></div>";
 if (!empty($zeroGames)) {

@@ -191,6 +191,10 @@ function contentStart() {
   echo "\n<td align='left' valign='top' class='tdcontent'><div class='content'>\n";
 }
 
+function contentStartWide() {
+  echo "\n<td align='left' valign='top' class='tdcontent'><div class='content nomenu'>\n";
+}
+
 /**
  * End of page content.
  */
