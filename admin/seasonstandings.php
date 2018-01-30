@@ -200,7 +200,7 @@ foreach ($pools as $spool) {
   
   if (PoolIsMoveFromPoolsPlayed($poolId) && !PoolIsAllMoved($poolId)) {
     if (!$firstTask) {
-      $html .= "<ul>";
+      $html .= "<ul id='tasklist'>";
       $firstTask = true;
     }
     

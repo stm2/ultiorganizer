@@ -43,7 +43,7 @@ $series = SeasonSeries($season);
 $html .=  "<ul>";
 foreach($series as $row){
   $html .=  "<li><p><b>".utf8entities(U_($row['name']))."</b></p>";
-  $admins = SeriesAdmins($row['series_id'], true);
+  $admins = SeriesAdmins($row['series_id']);
   $html .=  "<ul>";
   $all = "";
   foreach($admins as $user){
@@ -52,9 +52,14 @@ foreach($series as $row){
       $html .=  " (".utf8entities($user['name']) . ")</li>\n";;
     }
   }
-  $html .= "<li><a href='mailto:" . $all . "'>" . _("All admins") . "</a></li>\n";
+  if (empty($all)) {
+    $html .= "<li>" . _("No admins known") . "</li>\n";
+  } else {
+    $html .= "<li><a href='mailto:" . $all . "'>" . _("All admins") . "</a></li>\n";
+  }
   $html .= "</ul></li>\n";
 }
+
 $admins = SeasonSeriesAdmins($season);
 $all = "";
 foreach($admins as $user){
@@ -63,9 +68,12 @@ foreach($admins as $user){
   }
 }
 
-$html .= "<li><a href='mailto:".$all."'>" . _("All season admins") ."</a></li>\n";
-$html .=  "</ul>\n";
-
+if (!empty($all)) {
+  $first = false;
+  $html .= "<li><a href='mailto:".$all."'>" . _("All season admins") ."</a></li>\n";
+}
+$html .= "</ul>";
+  
 $html .=  "<h3>"._("Mail to Teams")."</h3>";
 
 $series = SeasonSeries($season);

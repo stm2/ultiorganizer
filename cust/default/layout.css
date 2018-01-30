@@ -51,7 +51,7 @@
 	width: 95%;
 	height: 16px;
 	margin-top: 0px;
-	margin-left: 10px;
+	margin-left: 5px;
 	margin-right: 0px;
 	padding-top: 0px;
 	padding-bottom: 0px;
@@ -169,6 +169,10 @@
 	margin: 1px;
 }
 
+select {
+  width: 150px;
+}
+
 .fakeinput {
 	font-size: 10px;
 	color: #000000;
@@ -209,6 +213,14 @@
 	padding-top: 2px;
 	padding-bottom: 2px;
 	text-align: center;
+}
+
+table.results td td {
+  padding-right: 1em;
+}
+
+form table td {
+  padding-top: 2px;
 }
 
 .posvalue td {
@@ -307,8 +319,9 @@ td.scheduling_column {
    font-size:8px;
 }
 
-ul.draglist {
+ul.draglist, ol.draglist {
   position: relative;
+  width: 200px; 
   background: #f7f7f7;
   border: 1px solid gray;
   list-style: none;
@@ -316,11 +329,13 @@ ul.draglist {
   padding: 0;
 }
 
-ul.draglist li {
+ul.draglist li, ol.draglist li {
   margin: 0px;
   cursor: move;
   text-align: center;
   vertical-align: center;
+  background-color: #D1E6EC;
+  border:1px solid #7EA6B2;
 }
 
 li.schedule_item {

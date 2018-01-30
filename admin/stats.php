@@ -29,30 +29,7 @@ div.workarea {
 	padding-left:25px; 
 	float:left 
 	}
-
-ol.draglist { 
-    position: relative;
-    width: 100px; 
-    height: 600px;
-    background: #f7f7f7;
-    border: 1px solid gray;
-    margin:0;
-    padding:0;
-}
-
-ol.draglist li {
-    margin: 1px;
-    cursor: move;
-    zoom: 1;
-}
-
-li.list {
-    background-color: #D1E6EC;
-    border:1px solid #7EA6B2;
-}
-
 </style>
-
 
 <?php 
 include_once 'lib/yui.functions.php';

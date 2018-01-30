@@ -45,44 +45,6 @@ body {
 
 
 <style type="text/css">
-div.workarea { padding:0px; float:left }
-
-
-ul.draglist { 
-    position: relative;
-    width: 200px; 
-    background: #f7f7f7;
-    border: 1px solid gray;
-    list-style: none;
-    margin:0;
-    padding:0;
-}
-
-ul.draglist li {
-    margin: 0px;
-    cursor: move;
-    zoom: 1;
-    text-align: center;
-    vertical-align: center;
-}
-
-ol.draglist { 
-    position: relative;
-    width: 200px; 
-    background: #f7f7f7;
-    border: 1px solid gray;
-    margin:0;
-    padding:0;
-}
-
-ol.draglist li {
-    margin: 0px;
-    cursor: move;
-    zoom: 1;
-    text-align: left;
-    vertical-align: center;
-}
-
 li.list1 {
     background-color: #aaaaaa;
     border:1px solid #7EA6B2;
@@ -102,7 +64,7 @@ echo "<div class='workarea' >\n";
 echo "<ul id='unpooled' class='draglist' style='height:400px'>\n";
 foreach ($teamsNotInPool as $team) {
 	if (hasEditTeamsRight($seriesId)) {
-		teamEntry("ffffff", TEAM_HEIGHT, $team['team_id'], $team['name'], $team['rank']);
+		teamEntry(TEAM_HEIGHT, $team['team_id'], $team['name'], $team['rank']);
 	}
 }
 echo "</ul>\n";
@@ -385,9 +347,9 @@ Event.onDOMReady(YAHOO.example.ScheduleApp.init, YAHOO.example.ScheduleApp, true
 contentEnd();
 pageEnd();
 
-function teamEntry($color, $height, $teamId, $name, $seed, $editable=true) {
-	$textColor = textColor($color);
-	echo "<li class='list1' style='color:#".$textColor.";background-color:#".$color.";height:".$height."px' id='team".$teamId."'>".$name." (".$seed.")";
+function teamEntry($height, $teamId, $name, $seed, $editable=true) {
+	// $textColor = textColor($color);
+	echo "<li class='list1' style='height:".$height."px' id='team".$teamId."'>".$name." (".$seed.")";
 	if ($editable) {
 		echo "<span style='align:right;float:right'><a href='javascript:hide(\"team".$teamId."\");'>x</a></span>";
 	}

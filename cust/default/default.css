@@ -54,6 +54,8 @@ p{
 	font-size: 10px; 
 	text-align: left; 
 	text-decoration: none; 
+  margin-top: .3ex;
+  margin-bottom: .3ex;
 }
 
 table {
@@ -143,4 +145,8 @@ input {
 button {
 	cursor:pointer;
 	font-size: 10px; 
+}
+a.current {
+  font-weight: bold;
+  background-color: #d00000;
 }

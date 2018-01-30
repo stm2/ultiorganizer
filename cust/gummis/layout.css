@@ -277,6 +277,10 @@ yuicalendar.table {
   background-color: #E0E0E0;
 }
 
+.tablelowlight {
+	background-color: #E0E0E0;
+}
+
 .flag{
   border-collapse:collapse;
   border:1px solid black;
@@ -301,8 +305,9 @@ td.scheduling_column {
    font-size:8px;
 }
 
-ul.draglist {
+ul.draglist, ol.draglist {
   position: relative;
+  width: 180px; 
   background: #f7f7f7;
   border: 1px solid gray;
   list-style: none;
@@ -310,11 +315,13 @@ ul.draglist {
   padding: 0;
 }
 
-ul.draglist li {
+ul.draglist li, ol.draglist li {
   margin: 0px;
   cursor: move;
   text-align: center;
   vertical-align: center;
+  background-color: #D1E6EC;
+  border:1px solid #7EA6B2;
 }
 
 li.schedule_item {

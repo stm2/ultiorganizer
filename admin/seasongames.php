@@ -159,14 +159,15 @@ foreach ($pools as $pool) {
   while ($game = mysqli_fetch_assoc($games)) {
     $i = $game['game_id'];
 
+    $class2 = '';
     if (GameHasStarted($game)) {
       if ($_SESSION['hide_played_games']) {
         continue;
       }
-      // $html .= "<tr class='tablelowlight'>";
+      $class2 = ' tablelowlight';
     }
 
-    $html .= "<tr class='admintablerow'>";
+    $html .= "<tr class='admintablerow$class2'>";
 
     $html .= "<td style='width:15%'>" . ShortDate($game['starttime']) . " " . DefHourFormat($game['time']) . "<br/>";
     $html .= utf8entities($game['placename']) . " " . utf8entities($game['fieldname']) . "</td>";
