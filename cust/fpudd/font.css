@@ -27,7 +27,7 @@
 }
 .seasonnav:active, .seasonnav:hover, .seasonnav:focus {
 	text-decoration: none;
-	font-weight: none;
+	font-weight: normal;
 }
 
 .nav:link, .nav:visited {
