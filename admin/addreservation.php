@@ -217,7 +217,7 @@ $html .= "<tr><td>"._("Fields").":</td><td>";
 $html .= TranslatedField("fieldname", $res['fieldname']);
 
 if(!$addmore){
-  $html .= _("Enter separate field numbers (1,2,3) or multiple fields (1-30)");
+  $html .= "</td></tr><tr><td></td><td>". _("Enter separate field numbers (1,2,3) or multiple fields (1-30)");
 }
 $html .= "</td></tr>\n";
 
