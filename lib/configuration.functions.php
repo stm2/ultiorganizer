@@ -133,7 +133,7 @@ function GetSimpleServerConf() {
 	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
 	
 	$retarray = array();
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		$retarray[$row['name']] = $row['value'];
 	}
 	return $retarray;
@@ -146,7 +146,7 @@ function SetServerConf($settings) {
 				mysql_adapt_real_escape_string($setting['name']));
 			$result = mysql_adapt_query($query);
 			if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-			if ($row = mysql_fetch_row($result)) {
+			if ($row = mysqli_fetch_row($result)) {
 				$query = sprintf("UPDATE uo_setting SET value='%s' WHERE setting_id=%d",
 			 		mysql_adapt_real_escape_string($setting['value']),
 					(int)$row[0]);
@@ -173,7 +173,7 @@ function isRespTeamHomeTeam() {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	if (!$row = mysql_fetch_row($result)) {
+	if (!$row = mysqli_fetch_row($result)) {
 		return false;
 	} else {
 		return $row[0] == 'yes';

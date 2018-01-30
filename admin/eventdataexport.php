@@ -45,7 +45,7 @@ $html .= "<td><select multiple='multiple' name='searchseries[]' id='searchseries
 
 $series = SeasonSeriesMult(array($seasonId => 'selected'));
 
-while($seriesRow = mysql_fetch_assoc($series)){
+while($seriesRow = mysqli_fetch_assoc($series)){
   $html .= "<option value='" . urlencode($seriesRow['series']) . "' selected='selected' >";
   $html .= utf8entities($seriesRow['series_name']) . "</option>\n";
 }

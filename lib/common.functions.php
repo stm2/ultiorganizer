@@ -688,13 +688,13 @@ function ResultsetToCsv($result, $separator){
     $csv_enclosed = '"';
     $csv_escaped = "\\";
 	
-    $fields_cnt = mysql_num_fields($result);
+    $fields_cnt = mysqli_num_fields($result);
  
      $schema_insert = '';
  
     for ($i = 0; $i < $fields_cnt; $i++){
         $l = $csv_enclosed . str_replace($csv_enclosed, $csv_escaped . $csv_enclosed,
-            stripslashes(mysql_adapt_field_name($result, $i))) . $csv_enclosed;
+            stripslashes(mysqli_fetch_field_direct($result, $i)->name)) . $csv_enclosed;
         $schema_insert .= $l;
         $schema_insert .= $csv_separator;
     } // end for
@@ -703,7 +703,7 @@ function ResultsetToCsv($result, $separator){
     $out .= $csv_terminated;
  
     // Format the data
-    while ($row = mysql_fetch_array($result)){
+    while ($row = mysqli_fetch_array($result)){
         $schema_insert = '';
         for ($j = 0; $j < $fields_cnt; $j++){
             if ($row[$j] == '0' || $row[$j] != ''){
@@ -1101,9 +1101,9 @@ function GetTableColumns($table) {
 	$ret = array();
 	$result = DBQuery(sprintf("SELECT * FROM %s WHERE 1=0", 
 		mysql_adapt_real_escape_string($table)));
-	$fields = mysql_num_fields($result);
+	$fields = mysqli_num_fields($result);
 	for ($i=0; $i < $fields; $i++) {
-	    $name  = strtolower(mysql_adapt_field_name($result, $i));
+	    $name  = strtolower(mysqli_fetch_field_direct($result,  $i)->name);
 		$ret[$name] = mysql_adapt_field_type($result, $i);
 	}
 	return $ret;

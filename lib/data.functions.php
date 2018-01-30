@@ -83,7 +83,7 @@ class EventDataXMLHandler{
   
   function write_season($eventId, $template) {
     $seasons = DBQuery("SELECT * FROM uo_season WHERE season_id='".mysql_adapt_real_escape_string($eventId)."'");
-    $row = mysql_fetch_assoc($seasons);
+    $row = mysqli_fetch_assoc($seasons);
     
     if($template) {
       $row["iscurrent"] = 0;
@@ -95,12 +95,12 @@ class EventDataXMLHandler{
   function write_reservations($eventId, $template) {
     $ret = "";
     $reservations = DBQuery("SELECT * FROM uo_reservation WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
-    while($reservation = mysql_fetch_assoc($reservations)){
+    while($reservation = mysqli_fetch_assoc($reservations)){
       $ret .= $this->RowToXML("uo_reservation", $reservation);
     }
     
     $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
-    while($time = mysql_fetch_assoc($times)){
+    while($time = mysqli_fetch_assoc($times)){
       $ret .= $this->RowToXML("uo_movingtime", $time);
     }
     return $ret;
@@ -118,7 +118,7 @@ class EventDataXMLHandler{
     
     //uo_team
     $teams = DBQuery("SELECT * FROM uo_team WHERE series='$seriesId' ORDER BY rank");
-    while($team = mysql_fetch_assoc($teams)){
+    while($team = mysqli_fetch_assoc($teams)){
       if ($template) {
         $team['activerank'] = null;
       }
@@ -126,7 +126,7 @@ class EventDataXMLHandler{
       
       //uo_player
       $players = DBQuery("SELECT * FROM uo_player WHERE team='".mysql_adapt_real_escape_string($team['team_id'])."'");
-      while($player = mysql_fetch_assoc($players)){
+      while($player = mysqli_fetch_assoc($players)){
         $ret .= $this->RowToXML("uo_player", $player);
       }
       $ret .= "</uo_team>\n";
@@ -158,7 +158,7 @@ class EventDataXMLHandler{
                 ) as unioned
                 GROUP BY scheduling_id");
     
-    while ($row = mysql_fetch_assoc($schedulings)) {
+    while ($row = mysqli_fetch_assoc($schedulings)) {
       $ret .= $this->RowToXML("uo_scheduling_name", $row);
     }
     
@@ -177,7 +177,7 @@ class EventDataXMLHandler{
   function write_pools($seriesId, $template) {
     $ret = "";
     $pools = DBQuery("SELECT * FROM uo_pool WHERE series='$seriesId'");
-    while($poolRow = mysql_fetch_assoc($pools)){
+    while($poolRow = mysqli_fetch_assoc($pools)){
       if ($template) {
         $poolRow['played'] = 0;
       }
@@ -187,7 +187,7 @@ class EventDataXMLHandler{
       if (!$template || $poolRow['continuingpool'] == 0) {
         //uo_team_pool
         $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
-        while($teampool = mysql_fetch_assoc($teampools)){
+        while($teampool = mysqli_fetch_assoc($teampools)){
           $ret .= $this->RowToXML("uo_team_pool", $teampool);
         }
       }
@@ -202,7 +202,7 @@ class EventDataXMLHandler{
   function write_games($poolId, $template) {
     $ret = "";
     $games = DBQuery("SELECT * FROM uo_game WHERE pool='".mysql_adapt_real_escape_string($poolId)."'");
-    while($gameRow = mysql_fetch_assoc($games)){
+    while($gameRow = mysqli_fetch_assoc($games)){
       if($template) {
         $gameRow['hometeam'] = NULL;
         $gameRow['visitorteam'] = NULL;
@@ -220,17 +220,17 @@ class EventDataXMLHandler{
       if (!$template) {
         //uo_goal
         $goals = DBQuery("SELECT * FROM uo_goal WHERE game='". $gameId ."'");
-        while($goal = mysql_fetch_assoc($goals)){
+        while($goal = mysqli_fetch_assoc($goals)){
           $ret .= $this->RowToXML("uo_goal", $goal);
         }
         //uo_gameevent
         $gameevents = DBQuery("SELECT * FROM uo_gameevent WHERE game='".$gameId."'");
-        while($gameevent = mysql_fetch_assoc($gameevents)){
+        while($gameevent = mysqli_fetch_assoc($gameevents)){
           $ret .= $this->RowToXML("uo_gameevent", $gameevent);
         }
         //uo_played
         $playedplayers = DBQuery("SELECT * FROM uo_played WHERE game='".$gameId."'");
-        while($playedplayer = mysql_fetch_assoc($playedplayers)){
+        while($playedplayer = mysqli_fetch_assoc($playedplayers)){
           $ret .= $this->RowToXML("uo_played", $playedplayer);
         }
       }
@@ -244,7 +244,7 @@ class EventDataXMLHandler{
     $moveteams = DBQuery("SELECT m.* FROM uo_moveteams m
 				LEFT JOIN uo_pool p ON(m.frompool=p.pool_id)
 				WHERE p.series='$seriesId'");
-    while($moveteam = mysql_fetch_assoc($moveteams)) {
+    while($moveteam = mysqli_fetch_assoc($moveteams)) {
       if ($template) {
         $moveteam['ismoved'] = 0;
       }
@@ -258,7 +258,7 @@ class EventDataXMLHandler{
     $gamepools = DBQuery("SELECT g.* FROM uo_game_pool g
 				LEFT JOIN uo_pool p ON(g.pool=p.pool_id)
 				WHERE p.series='$seriesId'");
-    while($gamepool = mysql_fetch_assoc($gamepools)){
+    while($gamepool = mysqli_fetch_assoc($gamepools)){
       if (!$template || $gamepool['timetable'] == 1) {
         $ret .= $this->RowToXML("uo_game_pool", $gamepool);
       }
@@ -280,7 +280,7 @@ class EventDataXMLHandler{
 
       //uo_series
       $seriesResult = $this->selectSeries($eventId, $series);
-      while($ser = mysql_fetch_assoc($seriesResult)){
+      while($ser = mysqli_fetch_assoc($seriesResult)){
         $ret .= $this->write_series($ser, $template); 
       }
 

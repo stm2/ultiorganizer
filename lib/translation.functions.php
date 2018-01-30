@@ -12,7 +12,7 @@ function loadDBTranslations($locale) {
 	if (!$result) { die("Failed to load translations for locale ".$locale."\n". mysql_adapt_error()); }
 
 	$_SESSION['dbtranslations'] = array();
-	while ($translation = mysql_fetch_assoc($result)) {
+	while ($translation = mysqli_fetch_assoc($result)) {
 		$_SESSION['dbtranslations'][strtolower($translation['translation_key'])] = $translation['value'];
 	}
 }
@@ -65,7 +65,7 @@ function AllTranslations($search, $autocomplete = false) {
     $query .=")";
     $answer = mysql_adapt_query($query);
     $translations = array ();
-    while ($row = mysql_fetch_assoc($answer)) {
+    while ($row = mysqli_fetch_assoc($answer)) {
       $translations[$row['translation_key']] = $row['translation'];
     }
     $translation_arrays[$loc] = $translations;

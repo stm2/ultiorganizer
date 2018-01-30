@@ -154,7 +154,7 @@ function ReservationSeasons($reservationId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[] = $row[0];
 	}
 	return $ret;
@@ -230,7 +230,7 @@ function ReservationInfoArray($reservations) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		if (!isset($ret[$row[0]])) {
 			$ret[$row[0]] = array();
 		}
@@ -238,7 +238,7 @@ function ReservationInfoArray($reservations) {
 		$nextInfo = ReservationInfo($row[1]);
 		$nextGames = array();
 		$gameResults = ReservationGames($row[1]);
-		while ($gameRow = mysql_fetch_assoc($gameResults)) {
+		while ($gameRow = mysqli_fetch_assoc($gameResults)) {
 			$nextGames["".$gameRow['game_id']] = $gameRow;
 		}
 		$nextInfo['games'] = $nextGames; 
@@ -287,7 +287,7 @@ function UnscheduledTeams() {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[] = $row[0];
 	}
 	return  $ret;
@@ -298,7 +298,7 @@ function CanDeleteReservation($reservationId) {
 		(int)$poolId);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if (!$row = mysql_fetch_row($result)) return false;
+	if (!$row = mysqli_fetch_row($result)) return false;
 	return $row[0] == 0;
 }
 

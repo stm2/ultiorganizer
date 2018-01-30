@@ -20,7 +20,7 @@ function upgrade47() {
 			LEFT JOIN uo_series ser ON (ps.series=ser.series_id)
 			LEFT JOIN uo_location pl ON (pr.location=pl.id)");
 
-	while($row = mysql_fetch_assoc($results)){
+	while($row = mysqli_fetch_assoc($results)){
 		runQuery("UPDATE uo_reservation SET season='".$row['season']."'
 			WHERE id='".$row['id']."'");
 	}
@@ -130,7 +130,7 @@ function upgrade56() {
 		addColumn('uo_player_profile', 'email', "varchar(100) DEFAULT NULL");
 		
 		$results = runQuery("SELECT accreditation_id, email FROM uo_player WHERE email IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET email='%s' WHERE accreditation_id='%s'",
 			  $row['email'],
 			  $row['accreditation_id']);
@@ -162,7 +162,7 @@ function upgrade58() {
 		
 		//name from uo_player
 		$results = runQuery("SELECT accreditation_id, firstname FROM uo_player WHERE firstname IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET firstname='%s' WHERE accreditation_id='%s'",
 			  mysql_adapt_real_escape_string(trim($row['firstname'])),
 			  $row['accreditation_id']);
@@ -171,7 +171,7 @@ function upgrade58() {
 	    
 	    //if uo_license has name use the one from there.
 		$results = runQuery("SELECT accreditation_id, firstname FROM uo_license WHERE firstname IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET firstname='%s' WHERE accreditation_id='%s'",
 			  mysql_adapt_real_escape_string(trim($row['firstname'])),
 			  $row['accreditation_id']);
@@ -183,7 +183,7 @@ function upgrade58() {
 		
 		//name from uo_player
 		$results = runQuery("SELECT accreditation_id, lastname FROM uo_player WHERE lastname IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET lastname='%s' WHERE accreditation_id='%s'",
 			  mysql_adapt_real_escape_string(trim($row['lastname'])),
 			  $row['accreditation_id']);
@@ -192,7 +192,7 @@ function upgrade58() {
 	    
 	    //if uo_license has name use the one from there.
 		$results = runQuery("SELECT accreditation_id, lastname FROM uo_license WHERE lastname IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET lastname='%s' WHERE accreditation_id='%s'",
 			  mysql_adapt_real_escape_string(trim($row['lastname'])),
 			  $row['accreditation_id']);
@@ -204,7 +204,7 @@ function upgrade58() {
 		
 		//num from uo_player
 		$results = runQuery("SELECT accreditation_id, num FROM uo_player WHERE num IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET num='%s' WHERE accreditation_id='%s'",
 			  trim($row['num']),
 			  $row['accreditation_id']);
@@ -235,7 +235,7 @@ function upgrade59() {
     if(!hasColumn('uo_reservation', 'date')){
 		addColumn('uo_reservation', 'date', "datetime DEFAULT NULL");
         $results = runQuery("SELECT * FROM uo_reservation WHERE starttime IS NOT NULL");
-	    while($row = mysql_fetch_assoc($results)){
+	    while($row = mysqli_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_reservation SET date='%s' WHERE id='%s'",
 			  ToInternalTimeFormat(ShortDate($row['starttime'])),
 			  $row['id']);
@@ -247,16 +247,16 @@ function upgrade59() {
 function upgrade60() {
   
   $dprofiles = runQuery("SELECT * FROM uo_player_profile WHERE accreditation_id!=profile_id");
-  while($profile = mysql_fetch_assoc($dprofiles)){
+  while($profile = mysqli_fetch_assoc($dprofiles)){
     runQuery("DELETE FROM uo_player_profile WHERE accreditation_id='".$profile['accreditation_id']."'");
   }
   
   $licenses = runQuery("SELECT * FROM uo_license");
-  while($license = mysql_fetch_assoc($licenses)){
+  while($license = mysqli_fetch_assoc($licenses)){
     
     $hasprofile = runQuery("SELECT * FROM uo_player_profile WHERE accreditation_id='".$license['accreditation_id']."'");
     
-    if(mysql_num_rows($hasprofile)==0){
+    if(mysqli_num_rows($hasprofile)==0){
         $query = sprintf("INSERT INTO uo_player_profile (profile_id,firstname,lastname,birthdate,accreditation_id) VALUES
 				('%s','%s','%s','%s','%s')",
         mysql_adapt_real_escape_string($license['accreditation_id']),
@@ -269,11 +269,11 @@ function upgrade60() {
   }
   
   $players = runQuery("SELECT * FROM uo_player GROUP BY profile_id");
-  while($player = mysql_fetch_assoc($players)){
+  while($player = mysqli_fetch_assoc($players)){
     
     $hasprofile = runQuery("SELECT * FROM uo_player_profile WHERE profile_id='".$player['profile_id']."'");
    
-    if(mysql_num_rows($hasprofile)==0){
+    if(mysqli_num_rows($hasprofile)==0){
         $query = sprintf("INSERT INTO uo_player_profile (profile_id,firstname,lastname,num) VALUES
 				('%s','%s','%s','%s')",
         mysql_adapt_real_escape_string($player['profile_id']),
@@ -440,7 +440,7 @@ function upgrade71() {
   }
   
   $results = runQuery("SELECT * FROM uo_location");
-  while ($row = mysql_fetch_assoc($results)) {
+  while ($row = mysqli_fetch_assoc($results)) {
     foreach ($row as $key => $value) {
       if (substr($key, 0, 5) === "info_") {
         if (!empty($value)) {
@@ -575,7 +575,7 @@ function upgrade75() {
     // update WFDF scores
     $categoriesResult = runQuery("SELECT * FROM `uo_spirit_category` WHERE mode=1002");
     $categories = array();
-    while ($cat = mysql_fetch_assoc($categoriesResult)) {
+    while ($cat = mysqli_fetch_assoc($categoriesResult)) {
       $categories[$cat['index']] = $cat['category_id'];
     }
     
@@ -590,7 +590,7 @@ function upgrade75() {
        LEFT JOIN uo_season sn on (ss.season = sn.season_id)";
     $results = runQuery($query);
     
-    while ($row = mysql_fetch_assoc($results)) {
+    while ($row = mysqli_fetch_assoc($results)) {
       for ($i=1; $i<=5; ++$i) {
         runQuery(sprintf(
             "INSERT INTO `uo_spirit_score` (`game_id`, `team_id`, `category_id`, `value`)
@@ -609,7 +609,7 @@ function upgrade75() {
     // update remaining, simple scores
     $categoriesResult = runQuery("SELECT * FROM `uo_spirit_category` WHERE mode=1001");
     $categories = array();
-    while ($cat = mysql_fetch_assoc($categoriesResult)) {
+    while ($cat = mysqli_fetch_assoc($categoriesResult)) {
       $categories[$cat['index']] = $cat['category_id'];
     }
     
@@ -623,7 +623,7 @@ function upgrade75() {
     (g.homesotg IS NOT NULL OR g.visitorsotg IS NOT NULL)
     AND sn.spiritmode = 1001";
     $results = runQuery($query);
-    while ($row = mysql_fetch_assoc($results)) {
+    while ($row = mysqli_fetch_assoc($results)) {
       runQuery(sprintf(
           "INSERT INTO `uo_spirit_score` (game_id, team_id, category_id, value)
              VALUES (%d, %d, %d, %d)",
@@ -704,13 +704,13 @@ function hasColumn($table, $column) {
 function hasRow($table, $column, $value) {
 	$query = "SELECT * FROM $table WHERE $column='".$value."'";
 	$result = mysql_adapt_query($query);
-	return mysql_num_rows($result);
+	return mysqli_num_rows($result);
 }
 
 function hasTable($table) { 
 	$query = "SHOW TABLES FROM ".DB_DATABASE;
 	$tables = mysql_adapt_query($query); 
-	while (list($temp) = mysql_fetch_array($tables)) {
+	while (list($temp) = mysqli_fetch_array($tables)) {
 		if ($temp == $table) {
 			return TRUE;
 		}
@@ -745,7 +745,7 @@ function renameField($table, $oldfield, $newfield) {
 	}
 	$query = "SHOW COLUMNS FROM $table WHERE FIELD='".$oldfield."'";
 	$result = mysql_adapt_query($query);
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		$query = "ALTER TABLE $table CHANGE $oldfield $newfield ".$row['Type'];
 		if ($row['Null'] == "YES") {
 			$query .= " NULL ";		
@@ -760,7 +760,7 @@ function renameField($table, $oldfield, $newfield) {
 function changeToAutoIncrementField($table, $field) {
 	$query = "SHOW COLUMNS FROM $table WHERE FIELD='".$field."'";
 	$result = mysql_adapt_query($query);
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		$query = "ALTER TABLE $table CHANGE $field $field ".$row['Type']." NOT NULL auto_increment";
 		runQuery($query);
 	}
@@ -781,7 +781,7 @@ function copyProfileImages() {
 	
 	//club images
 	$results = runQuery("SELECT * FROM uo_club WHERE image IS NOT NULL");
-	while($row = mysql_fetch_assoc($results)){
+	while($row = mysqli_fetch_assoc($results)){
 		$image = GetImage($row['image']);
 		if($image){
 			$type = $image['image_type'];
@@ -825,7 +825,7 @@ function copyProfileImages() {
 	
 	//team images
 	$results = runQuery("SELECT * FROM uo_team_profile WHERE image IS NOT NULL");
-	while($row = mysql_fetch_assoc($results)){
+	while($row = mysqli_fetch_assoc($results)){
 		$image = GetImage($row['image']);
 		if($image){
 			$type = $image['image_type'];
@@ -869,7 +869,7 @@ function copyProfileImages() {
 	
 	//player images
 	$results = runQuery("SELECT * FROM uo_player_profile WHERE image IS NOT NULL");
-	while($row = mysql_fetch_assoc($results)){
+	while($row = mysqli_fetch_assoc($results)){
 		$image = GetImage($row['image']);
 		if($image){
 			$type = $image['image_type'];

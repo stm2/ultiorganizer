@@ -46,7 +46,7 @@ if(isSuperAdmin()){
 	$html .= "<th>"._("Auto Increment")."</th>";
 	$html .= "<th>"._("Updated")."</th>";
 	$html .= "</tr>\n";
-	while($row = mysql_fetch_assoc($result)){
+	while($row = mysqli_fetch_assoc($result)){
 	  if (substr($row['Name'],0,3) == 'uo_'){
     	    $sql = urlencode("SELECT * FROM ".$row['Name']);
     		$html .= "<tr>";
@@ -80,18 +80,18 @@ if(isSuperAdmin()){
 	$html .= "</p>\n";	
 	
 	$html .= "<p><span class='profileheader'>"._("Client Library version").": </span>".mysql_get_client_info()."<br/>\n";
-	$html .= "<span class='profileheader'>"._("Type of connection in use").": </span>".mysql_get_host_info()."<br/>\n";
-	$html .= "<span class='profileheader'>"._("Protocol version").": </span>".mysql_get_proto_info()."<br/>\n";
-	$html .= "<span class='profileheader'>"._("Server version").": </span>".mysql_get_server_info()."</p>\n";
+	$html .= "<span class='profileheader'>"._("Type of connection in use").": </span>".mysqli_get_host_info(DBLink())."<br/>\n";
+	$html .= "<span class='profileheader'>"._("Protocol version").": </span>".mysqli_get_proto_info(DBLink())."<br/>\n";
+	$html .= "<span class='profileheader'>"._("Server version").": </span>".mysqli_get_server_info(DBLink())."</p>\n";
 	
 	$html .= "<p><span class='profileheader'>"._("Character set and collation").": </span><br/>\n";
 	$result = mysql_adapt_query("SHOW VARIABLES LIKE 'character_set\_%';");
-	while($row = mysql_fetch_assoc($result)){
+	while($row = mysqli_fetch_assoc($result)){
 		$html .= "&nbsp;". $row['Variable_name'].": ".$row['Value']."<br/>\n";
 	
 	}
 	$result = mysql_adapt_query("SHOW VARIABLES LIKE 'collation\_%';");
-	while($row = mysql_fetch_assoc($result)){
+	while($row = mysqli_fetch_assoc($result)){
 		$html .= "&nbsp;". $row['Variable_name'].": ".$row['Value']."<br/>\n";
 	
 	}

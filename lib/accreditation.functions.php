@@ -56,7 +56,7 @@ function checkUserAdmin($playerInfo) {
 		mysql_adapt_real_escape_string($playerInfo['accreditation_id']));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($userid = mysql_fetch_row($result)) {
+	if ($userid = mysqli_fetch_row($result)) {
 		//Player already administered
 		return;
 	} else {
@@ -66,7 +66,7 @@ function checkUserAdmin($playerInfo) {
 				mysql_adapt_real_escape_string(strtolower($playerInfo['email'])));
 			$result = mysql_adapt_query($query);
 			if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-			if ($userId = mysql_fetch_row($result)) {
+			if ($userId = mysqli_fetch_row($result)) {
 				$id = $userId[0];
 				$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')", 
 					mysql_adapt_real_escape_string($id), 

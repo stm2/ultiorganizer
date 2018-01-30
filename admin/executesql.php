@@ -34,7 +34,7 @@ if(!empty($_POST['sql']) || !empty($_GET['sql']))
 
 	if ($isSelect || $isShow){
 		$i=0;
-		  while ($meta = mysql_fetch_field($result)) {
+		  while ($meta = mysqli_fetch_field($result)) {
 			$arraycolumnsname[$i] = $meta->name;
 			$arraycolumnstype[$i] = $meta->type;
 
@@ -97,12 +97,12 @@ $html .= "<form method='post' action='?view=admin/executesql'>";
 	  $html .= "</tr>\n";
 	  // Print contents of the query
 	  if ($isSelect || $isShow){
-		  while ($row = mysql_fetch_assoc($result))
+		  while ($row = mysqli_fetch_assoc($result))
 				{
 				$html .= "<tr>";
 				foreach ($arraycolumnsname as $i => $columnname)
 					{
-					if(mysql_adapt_field_type($result,$i)!='blob'){
+					if(mysql_adapt_is_blob($result, $i)){
 						$html .= "<td  class='dbrow'>" . utf8entities($row[$columnname]) . "</td>";
 					}else{
 						$html .= "<td  class='dbrow'>BINARY</td>";

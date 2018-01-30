@@ -55,7 +55,7 @@ function CountryDropList($id,$name){
 	$query = sprintf("SELECT country_id, name FROM uo_country WHERE valid=1 ORDER BY name");
 	$result =  DBQuery($query);
 	$html .= "<select class='dropdown' id='$id' name='$name'>\n";
-	while($row = mysql_fetch_assoc($result)){
+	while($row = mysqli_fetch_assoc($result)){
 		$html .= "<option value='".utf8entities($row['name'])."'>".utf8entities(_($row['name']))."</option>\n";
 	}
 	$html .= "</select>\n";
@@ -73,7 +73,7 @@ function CountryDropListWithValues($id, $name, $selectedId, $width=""){
 	$html .= "<select class='dropdown' $style id='$id' name='$name'>\n";
 	$html .= "<option value='-1'></option>\n";
 	
-	while($row = mysql_fetch_assoc($result)){
+	while($row = mysqli_fetch_assoc($result)){
 		if($row['country_id']==$selectedId){
 			$html .= "<option selected='selected' value='".utf8entities($row['country_id'])."'>".utf8entities(_($row['name']))."</option>\n";
 		}else{
@@ -142,7 +142,7 @@ function CanDeleteCountry($countryId) {
 		mysql_adapt_real_escape_string($countryId));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if (!$row = mysql_fetch_row($result)) return false;
+	if (!$row = mysqli_fetch_row($result)) return false;
 	return ($row[0] == 0);
 }
 

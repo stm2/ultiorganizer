@@ -11,7 +11,7 @@ function GameSetPools($games) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_assoc($result)){
+	while ($row = mysqli_fetch_assoc($result)){
 		$ret[$row['pool_id']] = $row;
 	}
 	return $ret;
@@ -55,7 +55,7 @@ function GameResult($gameId) {
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
   
-  return mysql_fetch_assoc($result);
+  return mysqli_fetch_assoc($result);
 }
 
 function GoalInfo($gameId, $num) {
@@ -70,7 +70,7 @@ function GoalInfo($gameId, $num) {
 		
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row;
 	} else return false;
 }
@@ -123,7 +123,7 @@ function GameNameFromId($gameId)
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 	return $row['hometeamname'] ." - ". $row['visitorteamname'];
 	}
 	
@@ -136,7 +136,7 @@ function GameSeries($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -150,7 +150,7 @@ function GameRespTeam($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -179,7 +179,7 @@ function GamePool($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -193,10 +193,10 @@ function GameIsFirstOffenceHome($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	if(!mysql_num_rows($result))
+	if(!mysqli_num_rows($result))
 		return -1;
 		
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -210,7 +210,7 @@ function GameReservation($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -224,7 +224,7 @@ function GameSeason($gameId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	return $row[0];
 }
@@ -295,10 +295,10 @@ function GamePlayerFromNumber($gameId, $teamId, $number)
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	if(!mysql_num_rows($result))
+	if(!mysqli_num_rows($result))
 		return -1;
 		
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	
 	if($row && $row[0])
 		return intval($row[0]);
@@ -533,7 +533,7 @@ function GameInfo($gameId) {
 		(int)$gameId);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	return mysql_fetch_assoc($result);
+	return mysqli_fetch_assoc($result);
 }
 
 
@@ -1336,7 +1336,7 @@ function UnscheduledGameInfo($teams=array()) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[$row[0]] = GameInfo($row[0]);	
 	}
 	return $ret;
@@ -1352,7 +1352,7 @@ function UnscheduledPoolGameInfo($poolId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[$row[0]] = GameInfo($row[0]);	
 	}
 	return $ret;
@@ -1369,7 +1369,7 @@ function UnscheduledSeriesGameInfo($seriesId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[$row[0]] = GameInfo($row[0]);	
 	}
 	return $ret;
@@ -1387,7 +1387,7 @@ function UnscheduledSeasonGameInfo($seasonId) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 		$ret[$row[0]] = GameInfo($row[0]);	
 	}
 	return $ret;
@@ -1413,7 +1413,7 @@ function UnScheduleGame($gameId) {
 
 function ClearReservation($reservationId) {
 	$result = ReservationGames($reservationId);
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		if (hasEditGamesRight(GameSeries($row['game_id']))) {
 			UnScheduleGame($row['game_id']);
 		} // else ignore games not managed by user
@@ -1425,25 +1425,25 @@ function CanDeleteGame($gameId) {
 		(int)$gameId);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if (!$row = mysql_fetch_row($result)) return false;
+	if (!$row = mysqli_fetch_row($result)) return false;
 	if ($row[0] == 0) {
 		$query = sprintf("SELECT count(*) FROM uo_played WHERE game=%d",
 			(int)$gameId);
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		if (!$row = mysql_fetch_row($result)) return false;
+		if (!$row = mysqli_fetch_row($result)) return false;
 		if ($row[0] == 0) {
 			$query = sprintf("SELECT count(*) FROM uo_gameevent WHERE game=%d",
 				(int)$gameId);
 			$result = mysql_adapt_query($query);
 			if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-			if (!$row = mysql_fetch_row($result)) return false;
+			if (!$row = mysqli_fetch_row($result)) return false;
 			if ($row[0] == 0) {
 				$query = sprintf("SELECT homescore,visitorscore FROM uo_game WHERE game_id=%d",
 					(int)$gameId);
 				$result = mysql_adapt_query($query);
 				if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-				if (!$row = mysql_fetch_row($result)) return false;
+				if (!$row = mysqli_fetch_row($result)) return false;
 				return (intval($row[0])+intval($row[1]))==0;
 			} else return false; // FIXME test hasstarted?
 		} else return false;

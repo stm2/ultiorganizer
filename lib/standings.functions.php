@@ -59,7 +59,7 @@ function ResolvePlayoffPoolStandings($poolId){
 		//check if teams can be moved to next round
 		$gamesleft1 = TeamPoolGamesLeft($teamId1, $poolId);
 		$gamesleft2 = TeamPoolGamesLeft($teamId2, $poolId);
-		if(mysql_num_rows($gamesleft1)+mysql_num_rows($gamesleft2)==0){
+		if(mysqli_num_rows($gamesleft1)+mysqli_num_rows($gamesleft2)==0){
 			TeamMove($teamId1, $poolId, true);
 			TeamMove($teamId2, $poolId, true);
 		}
@@ -139,7 +139,7 @@ function ResolveCrossMatchPoolStandings($poolId){
 		$gamesleft1 = TeamPoolGamesLeft($teamId1, $poolId);
 		$gamesleft2 = TeamPoolGamesLeft($teamId2, $poolId);
 
-		if(mysql_num_rows($gamesleft1)+mysql_num_rows($gamesleft2)==0){
+		if(mysqli_num_rows($gamesleft1)+mysqli_num_rows($gamesleft2)==0){
 			TeamMove($teamId1, $poolId);
 			TeamMove($teamId2, $poolId);
 		}
@@ -227,11 +227,11 @@ function ResolveSwissdrawPoolStandings($poolId)
 	$points=array();
 	$i=0;
 	
-	if(mysql_num_rows($standings)<=1){
+	if(mysqli_num_rows($standings)<=1){
 		return;
 	}
 	
-	while($row = mysql_fetch_assoc($standings))	{
+	while($row = mysqli_fetch_assoc($standings))	{
 		// retrieve nr of games, victory points, average opponent's victory points
 		$stats1=TeamVictoryPointsByPool($poolId,$row['team_id']);
 		
@@ -259,7 +259,7 @@ function ResolveSwissdrawPoolStandings($poolId)
 
 	
 	//update results
-	for ($i=0; $i < mysql_num_rows($standings) && !empty($points[$i]['team']); $i++) 
+	for ($i=0; $i < mysqli_num_rows($standings) && !empty($points[$i]['team']); $i++) 
 		{	
 		//echo "<p>win t".$points[$i]['team']." v".$points[$i]['wins']." s".$points[$i]['arank']."</p>";
 		$query = sprintf("UPDATE uo_team_pool 
@@ -290,11 +290,11 @@ function ResolveSeriesPoolStandings($poolId){
   $points=array();
   $i=0;
 
-  if(mysql_num_rows($standings)<=1){
+  if(mysqli_num_rows($standings)<=1){
     return;
   }
 
-  while($row = mysql_fetch_assoc($standings))	{
+  while($row = mysqli_fetch_assoc($standings))	{
     $points[$i]['team'] = $row['team_id'];
     $points[$i]['arank'] = 1;
     $i++;
@@ -384,7 +384,7 @@ function ResolveSeriesPoolStandings($poolId){
   }
 
   //update results
-  for ($i=0; $i < mysql_num_rows($standings) && !empty($points[$i]['team']); $i++)  {
+  for ($i=0; $i < mysqli_num_rows($standings) && !empty($points[$i]['team']); $i++)  {
     //echo "<p>win t".$points[$i]['team']." v".$points[$i]['wins']." s".$points[$i]['arank']."</p>";
     $query = sprintf("UPDATE uo_team_pool
 			SET activerank='%s' WHERE pool='%s' AND team='%s'",
@@ -561,7 +561,7 @@ function getMatchesWins($points, $poolId, $shared=false) {
 			$query .= sprintf(" AND hometeam IN (%s) AND visitorteam IN (%s)", $sameteams, $sameteams);
 
 		$result = mysql_adapt_query($query);
-		$stats1 = mysql_fetch_assoc($result);
+		$stats1 = mysqli_fetch_assoc($result);
 
 		$points[$i]['games'] = $stats1['games'];
 		$points[$i]['wins'] = $stats1['wins'];
@@ -597,7 +597,7 @@ function getMatchesGoals($points, $poolId, $shared=false) {
 			$query .= sprintf(" AND hometeam IN (%s) AND visitorteam IN (%s)", $sameteams, $sameteams);
 
 		$result = mysql_adapt_query($query);
-		while($stats = mysql_fetch_assoc($result))
+		while($stats = mysqli_fetch_assoc($result))
 		{
 			if($stats['hometeam']==$points[$i]['team'])
 			{

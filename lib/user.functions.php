@@ -47,11 +47,11 @@ function UserAuthenticate($user, $passwd, $failcallback) {
 		mysql_adapt_real_escape_string($passwd));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	$count=mysql_num_rows($result);
+	$count=mysqli_num_rows($result);
 	if($count==1) {
 		LogUserAuthentication($user,"success");
 		SetUserSessionData($user);
-		$row = mysql_fetch_assoc($result);
+		$row = mysqli_fetch_assoc($result);
 		mysql_adapt_query("UPDATE uo_users SET last_login=NOW() WHERE userid='".mysql_adapt_real_escape_string($user)."'");
 		
 		//first logging
@@ -96,7 +96,7 @@ function UserExtraEmails($user_id) {
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 		$ret = array();
-		while ($row = mysql_fetch_row($result)) {
+		while ($row = mysqli_fetch_row($result)) {
 			$ret[] = $row[0];
 		}
 		if (count($ret) > 0) {
@@ -112,14 +112,14 @@ function IsRegistered($user_id) {
 		mysql_adapt_real_escape_string($user_id));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return true;
 	} else {
 		$query = sprintf("SELECT userid FROM uo_registerrequest WHERE userid='%s'",
 			mysql_adapt_real_escape_string($user_id));
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		if ($row = mysql_fetch_assoc($result)) {
+		if ($row = mysqli_fetch_assoc($result)) {
 			return true;
 		}
 		return false;
@@ -177,7 +177,7 @@ function SetUserSessionData($user_id) {
 		$_SESSION['userproperties'] = array();
 	}
 	
-	while ($property = mysql_fetch_assoc($result)) {
+	while ($property = mysqli_fetch_assoc($result)) {
 		$propname = $property['name'];
 		$propvalue = explode(":", $property['value']);
 		$propid = $property['prop_id'];
@@ -221,7 +221,7 @@ function SortEditSeasons($editSeasons) {
 		
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 		$ret = array();
-		while ($row = mysql_fetch_row($result)) {
+		while ($row = mysqli_fetch_row($result)) {
 			$ret[$row[0]] = $editSeasons[$row[0]];
 		}
 		return $ret;
@@ -280,7 +280,7 @@ function getPropId($userid, $name, $value) {
 		
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 		
-		$row = mysql_fetch_row($result);
+		$row = mysqli_fetch_row($result);
 		return $row[0];
 		
 	} else { die('Insufficient rights to get user info'); }
@@ -295,7 +295,7 @@ function getUserpropertyArray($userid, $propertyname) {
 		
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 		$ret = array();
-		while ($property = mysql_fetch_assoc($result)) {
+		while ($property = mysqli_fetch_assoc($result)) {
 			$propvalue = explode(":", $property['value']);
 			$propid = $property['prop_id'];
 			if (count($propvalue) == 1) {
@@ -419,7 +419,7 @@ function isSuperAdminByUserid($userid) {
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-		if ($row = mysql_fetch_assoc($result)) {
+		if ($row = mysqli_fetch_assoc($result)) {
 			return true;
 		} else {
 			return false;
@@ -434,7 +434,7 @@ function isTranslationAdminByUserid($userid) {
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-		if ($row = mysql_fetch_assoc($result)) {
+		if ($row = mysqli_fetch_assoc($result)) {
 			return true;
 		} else {
 			return false;
@@ -579,7 +579,7 @@ function getSeriesSeason($series) {
 	LEFT JOIN uo_series ser ON (pool.series=ser.series_id) WHERE ser.series_id=%d", (int)$series);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_row($result)) {
+	if ($row = mysqli_fetch_row($result)) {
 		return $row[0];
 	} else return "";
 }
@@ -588,7 +588,7 @@ function UserListRightsHtml($userId) {
 	$query = sprintf("SELECT value FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userId));
 	$result = DBQuery($query);
 	$rights = "";
-	while ($row = mysql_fetch_row($result)) {
+	while ($row = mysqli_fetch_row($result)) {
 	  $value = preg_split('/:/',$row[0]);
 	  switch($value[0]){
 	    case "superadmin":
@@ -616,7 +616,7 @@ function getSeriesName($series) {
 	$query = sprintf("SELECT name FROM uo_series WHERE series_id=%d", (int)$series);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row['name'];
 	} else return "";
 }
@@ -625,7 +625,7 @@ function getTeamSeries($team) {
 	$query = sprintf("SELECT series FROM uo_team WHERE team_id=%d", (int)$team);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row['series'];
 	} else return "";
 }
@@ -634,7 +634,7 @@ function getTeamSeason($team) {
 	$query = sprintf("SELECT ser.season as season FROM uo_team as team left join uo_series as ser on (team.series = ser.series_id)  WHERE team_id=%d", (int)$team);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row['season'];
 	} else return "";
 }
@@ -643,7 +643,7 @@ function getTeamName($team) {
 	$query = sprintf("SELECT name FROM uo_team WHERE team_id=%d", (int)$team);
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row['name'];
 	} else return "";
 }
@@ -680,7 +680,7 @@ function ToPrimaryEmail($userid, $extraEmail) {
 			mysql_adapt_real_escape_string($extraEmail));
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		if ($row = mysql_fetch_row($result)) {
+		if ($row = mysqli_fetch_row($result)) {
 			$userInfo = UserInfo($userid);
 			$oldPrimary = $userInfo['email'];
 			if ($oldPrimary != $extraEmail) {
@@ -896,7 +896,7 @@ function emailUsed($email) {
 			mysql_adapt_real_escape_string(strtolower($email)));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_row($result)) {
+	if ($row = mysqli_fetch_row($result)) {
 		return true;
 	} else {
 		return false;
@@ -944,7 +944,7 @@ function RegisterUIDByToken($token) {
 		mysql_adapt_real_escape_string($token));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		return $row['userid'];
 	} return false; 
 }
@@ -954,7 +954,7 @@ function ConfirmRegister($token) {
 		mysql_adapt_real_escape_string($token));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		$query = sprintf("INSERT INTO uo_users (name, userid, password, email) VALUES ('%s', '%s', '%s', '%s')",
 			mysql_adapt_real_escape_string($row['name']),
 			mysql_adapt_real_escape_string($row['userid']),
@@ -979,7 +979,7 @@ function ConfirmRegisterUID($userid) {
     		mysql_adapt_real_escape_string($userid));
     	$result = mysql_adapt_query($query);
     	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    	if ($row = mysql_fetch_assoc($result)) {
+    	if ($row = mysqli_fetch_assoc($result)) {
     		$query = sprintf("INSERT INTO uo_users (name, userid, password, email) VALUES ('%s', '%s', '%s', '%s')",
     			mysql_adapt_real_escape_string($row['name']),
     			mysql_adapt_real_escape_string($row['userid']),
@@ -1010,7 +1010,7 @@ function FinalizeNewUser($userid, $email) {
 		mysql_adapt_real_escape_string(strtolower($email)));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	while ($accreditation = mysql_fetch_row($result)) {
+	while ($accreditation = mysqli_fetch_row($result)) {
 		$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')",
 			mysql_adapt_real_escape_string($userid),
 			mysql_adapt_real_escape_string($accreditation[0]) );
@@ -1024,7 +1024,7 @@ function ConfirmEmail($token) {
 		mysql_adapt_real_escape_string($token));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if ($row = mysql_fetch_assoc($result)) {
+	if ($row = mysqli_fetch_assoc($result)) {
 		$query = sprintf("INSERT INTO uo_extraemail (userid, email) VALUES ('%s', '%s')",
 			mysql_adapt_real_escape_string($row['userid']),
 			mysql_adapt_real_escape_string($row['email']));
@@ -1039,7 +1039,7 @@ function ConfirmEmail($token) {
 			mysql_adapt_real_escape_string(strtolower($row['email'])));
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		while ($accreditation = mysql_fetch_row($result)) {
+		while ($accreditation = mysqli_fetch_row($result)) {
 			$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')",
 				mysql_adapt_real_escape_string($row['userid']),
 				mysql_adapt_real_escape_string($accreditation[0]) );
@@ -1185,7 +1185,7 @@ function GameResponsibilities($season) {
 		$query .= $criteria;
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		while ($row = mysql_fetch_row($result)) {
+		while ($row = mysqli_fetch_row($result)) {
 			$ret[] = $row[0];
 		}
 		return $ret;
@@ -1221,7 +1221,7 @@ function GameResponsibilityArray($season, $series=null) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
-	while ($row = mysql_fetch_assoc($result)) {
+	while ($row = mysqli_fetch_assoc($result)) {
 		if (!isset($ret[$row['reservationgroup']])) {
 			$ret[$row['reservationgroup']] = array();
 		}
@@ -1244,7 +1244,7 @@ function UserResetPassword($userId) {
 			mysql_adapt_real_escape_string($userId));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 	
 	$email = $row['email'];
 	if(!empty($email)){

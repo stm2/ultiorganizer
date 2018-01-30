@@ -6,7 +6,7 @@ function ClubName($clubId)
 		mysql_adapt_real_escape_string($clubId));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	$row = mysql_fetch_assoc($result);
+	$row = mysqli_fetch_assoc($result);
 	$name = $row["name"]; 
 	mysql_adapt_free_result($result);
 	
@@ -26,7 +26,7 @@ function ClubInfo($clubId)
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	return  mysql_fetch_assoc($result);
+	return  mysqli_fetch_assoc($result);
 	}
 
 function ClubList($onlyvalid=false, $namefilter=""){
@@ -111,10 +111,10 @@ function ClubNumOfTeams($clubId)
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
-	if(!mysql_num_rows($result))
+	if(!mysqli_num_rows($result))
 		return 0;
 		
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 	}
 	
@@ -125,10 +125,10 @@ function ClubId($name)
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 
-	if(!mysql_num_rows($result))
+	if(!mysqli_num_rows($result))
 		return -1;
 		
-	$row = mysql_fetch_row($result);
+	$row = mysqli_fetch_row($result);
 	return $row[0];
 	}
 
@@ -161,7 +161,7 @@ function CanDeleteClub($clubId) {
 		mysql_adapt_real_escape_string($clubId));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	if (!$row = mysql_fetch_row($result)) return false;
+	if (!$row = mysqli_fetch_row($result)) return false;
 	return ($row[0] == 0);
 }
 

@@ -233,7 +233,7 @@ function EnrollSeasons() {
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
   $ret = array();
-  while ($row = mysql_fetch_assoc($result)) {
+  while ($row = mysqli_fetch_assoc($result)) {
     $ret[$row['season_id']] = $row['name'];
   }
   return $ret;
@@ -656,13 +656,13 @@ function CanDeleteSeason($seasonId) {
   mysql_adapt_real_escape_string($seasonId));
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-  if (!$row = mysql_fetch_row($result)) return false;
+  if (!$row = mysqli_fetch_row($result)) return false;
   if ($row[0] == 0) {
     $query = sprintf("SELECT season_id FROM uo_season WHERE iscurrent=1 AND season_id='%s'",
     mysql_adapt_real_escape_string($seasonId));
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    if (!$row = mysql_fetch_row($result)) return true;
+    if (!$row = mysqli_fetch_row($result)) return true;
     return !($row[0] == $seasonId);
   } else return false;
 }

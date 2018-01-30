@@ -377,7 +377,7 @@ function SeriesSpiritBoard($seriesId) {
   $last_category=null;
   $averages = array();
   $total = 0;
-  while($row = mysql_fetch_assoc($scores)) {
+  while($row = mysqli_fetch_assoc($scores)) {
     if ($last_team != $row['team_id'] || $last_category != $row['category_id']) {
       if (!is_null($last_category)) {
         if (!isset($factor[$last_category])){
@@ -736,13 +736,13 @@ function CanDeleteSeries($seriesId) {
   mysql_adapt_real_escape_string($seriesId));
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-  if (!$row = mysql_fetch_row($result)) return false;
+  if (!$row = mysqli_fetch_row($result)) return false;
   if ($row[0] == 0) {
     $query = sprintf("SELECT count(*) FROM uo_team WHERE series='%s'",
     mysql_adapt_real_escape_string($seriesId));
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    if (!$row = mysql_fetch_row($result)) return false;
+    if (!$row = mysqli_fetch_row($result)) return false;
     return $row[0] == 0;
   } else return false;
 }

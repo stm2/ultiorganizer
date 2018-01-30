@@ -176,7 +176,7 @@ function GetLastGameUpdateEntry($gameId, $source) {
 		(int)$gameId, mysql_adapt_real_escape_string($source));	
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	return mysql_fetch_assoc($result);
+	return mysqli_fetch_assoc($result);
 }
 
 function LogPoolUpdate($poolId, $details, $source=""){
