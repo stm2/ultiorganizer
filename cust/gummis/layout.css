@@ -155,6 +155,10 @@
   margin: 1px;
 }
 
+select {
+  width: 150px;
+}
+
 .fakeinput {
   font-size: 10px;
   color: #000000;
@@ -199,6 +203,10 @@
 
 table.results td td {
   padding-right: 1em;
+}
+
+form table td {
+  padding-top: 2px;
 }
 
 .posvalue td {
