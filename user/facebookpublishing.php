@@ -61,7 +61,7 @@ $help = "<p>"._("Facebook feed messages").":</p>
 		</ul></li>
 	</ol>";
 
-onPageHelpAvailable($help);
+echo onPageHelpAvailable($help);
 
 echo "<h2>"._("Facebook publishing options")."</h2>\n";
 echo "<form method='post' action='?view=user/facebookpublishing&amp;player=$playerid'>\n";

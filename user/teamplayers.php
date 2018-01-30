@@ -140,7 +140,7 @@ $help = "<p>"._("Add players to team's roster:")."</p>
 		<li> "._("New players: Enter jersey number, first and last name. Press add-button.")."</li>
 	</ul>";
 
-onPageHelpAvailable($help);
+echo onPageHelpAvailable($help);
 
 //content
 echo "<h2>". utf8entities($teaminfo['name']) ." (". utf8entities($teaminfo['seriesname']) .")</h2>\n";
