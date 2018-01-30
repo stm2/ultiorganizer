@@ -1,4 +1,7 @@
 <?php
+
+include_once $include_prefix.'lib/debug.functions.php';
+
 /**
  * @file
  * This file contains all event handling functions. For historical reasons event (tournament/season) is referred as a season.
@@ -24,6 +27,28 @@ function SeasonSeries($seasonId, $onlyvalid=false){
   
   $query .= " ORDER BY ser.ordering ASC, ser.series_id ASC";
   return DBQueryToArray($query);
+}
+
+function SeasonSeriesMult($selected, $seriesname=null) {
+  $query = "SELECT seas.name as season_name, ser.series_id as series, ser.name as series_name ";
+  $query .= "FROM uo_series as ser LEFT JOIN uo_season as seas on (ser.season = seas.season_id) ";
+  $query .= "WHERE ser.season IN (";
+  foreach ($selected as $seasonid => $value) {
+    $query .= "'".mysql_real_escape_string($seasonid)."', ";
+  }
+  $query = substr($query, 0, strlen($query) - 2);
+  $query .= ")";
+  global $DEBUG;
+  $DEBUG = true;
+  
+  debugMsg($query);
+  $DEBUG = false;
+  
+  if (!empty($seriesname) && !empty(trim($seriesname))) {
+    $query .= " AND ser.name like '%" . mysql_real_escape_string(trim($seriesname)) . "%'";
+  }
+  
+  return DBQuery($query);
 }
 
 /**

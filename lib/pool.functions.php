@@ -1819,7 +1819,7 @@ function PoolConfirmMoves($toPoolId, $visible = null) {
 
 /**
  * Set team's scheduling name in pool.
- * Enter description here ...
+ * 
  * @param int $scheduling_id
  * @param string $name
  * @param string $season

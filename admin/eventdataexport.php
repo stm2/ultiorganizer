@@ -1,12 +1,19 @@
 <?php
 
+include_once 'lib/search.functions.php';
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/data.functions.php';
 
 $html = "";
 $title = ("Event data export");
-$seasonId = "";
+$seasonId = iget("season");
+
+if(empty($seasonId)){
+  $seasonId = CurrentSeason();
+}
+
+$data = "";
 
 if(!empty($_POST['season'])){
 	$seasonId = $_POST['season'];
@@ -21,29 +28,38 @@ if(!empty($_POST['season'])){
 	header("Content-Transfer-Encoding: binary");
 	
 	$eventdatahandler = new EventDataXMLHandler();
-	$data = $eventdatahandler->EventToXML($seasonId);
+	$data = $eventdatahandler->EventToXML($seasonId, $_POST["searchseries"], $_POST["template"] === "on");
 	header("Content-Length: ".strlen($data));
 	echo $data;
 }
 
+$html .= "<h2>" . sprintf(_("Export season %s."),  utf8entities(SeasonName($seasonId))) . "</h2>\n";
 
-//season selection
-$html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataexport'>\n";
+$html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataexport&amp;season=" . utf8entities($seasonId) ."'>\n";
 
-$html .= "<p>".("Select event").": <select class='dropdown' name='season'>\n";
+$html .= "<input type='hidden' name='season' value='" .utf8entities($seasonId). "'/>\n";
 
-$seasons = Seasons();
-		
-while($row = mysql_fetch_assoc($seasons)){
-	$html .= "<option class='dropdown' value='".utf8entities($row['season_id'])."'>". utf8entities($row['name']) ."</option>";
+$html .= "<table cellpadding='2'><tr><td class='infocell' style='vertical-align:top'>" . _("Exported series:") . "</td>\n";
+
+$html .= "<td><select multiple='multiple' name='searchseries[]' id='searchseries' style='height:200px'>\n";
+
+$series = SeasonSeriesMult(array($seasonId => 'selected'));
+
+while($seriesRow = mysql_fetch_assoc($series)){
+  $html .= "<option value='" . urlencode($seriesRow['series']) . "' selected='selected' >";
+  $html .= utf8entities($seriesRow['series_name']) . "</option>\n";
 }
+$html .= "</select></td></tr>\n";
 
-$html .= "</select></p>\n";
-$html .= "<p><input class='button' type='submit' name='select' value='".("Select")."'/></p>";
 
-$html .= "</form>";
+$html .= "<tr><td class='infocell'>". _("Export as template, without results") . "</td>\n";
+$html .= "<td><input class='input' type='checkbox' id='template' name='template' /></td></tr>\n";
 
-if(empty($seasonId))
-showPage($title, $html);
+$html .= "<tr><td><input class='button' type='submit' name='export' value='".("Export")."'/></td></tr>\n";
+
+$html .= "</table></form>";
+
+if(empty($data))
+  showPage($title, $html);
 
 ?>
