@@ -27,30 +27,28 @@ if(!empty($_POST['sql']) || !empty($_GET['sql']))
 	$isDelete = (strpos(strtolower($query), "delete") === 0);
 	$arraycolumnsname = array();
 	if(isSuperAdmin()){
-		$result = mysql_query($query);
+		$result = mysql_adapt_query($query);
 		}
 
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 
 	if ($isSelect || $isShow){
 		$i=0;
-		while ($i < mysql_num_fields($result)) 
-			{
-			$meta = mysql_fetch_field($result, $i);
+		  while ($meta = mysql_fetch_field($result)) {
 			$arraycolumnsname[$i] = $meta->name;
 			$arraycolumnstype[$i] = $meta->type;
 
 			$arraycolumnstable[$i] = $meta->table;
 			$arraycolumnsdefault[$i] = $meta->def;
 			$arraycolumnsmaxlength[$i] = $meta->max_length;
-			$arraycolumnsnotnull[$i] = $meta->not_null;
-			$arraycolumnsprimarykey[$i] = $meta->primary_key;
-			$arraycolumnsmultiplekey[$i] = $meta->multiple_key;
-			$arraycolumnsuniquekey[$i] = $meta->unique_key;
-			$arraycolumnsnumeric[$i] = $meta->numeric;
-			$arraycolumnsblob[$i] = $meta->blob;
-			$arraycolumnsunsigned[$i] = $meta->unsigned;
-			$arraycolumnszerofill[$i] = $meta->zerofill;
+			// $arraycolumnsnotnull[$i] = $meta->not_null;
+			// $arraycolumnsprimarykey[$i] = $meta->primary_key;
+			// $arraycolumnsmultiplekey[$i] = $meta->multiple_key;
+			// $arraycolumnsuniquekey[$i] = $meta->unique_key;
+			// $arraycolumnsnumeric[$i] = $meta->numeric;
+			// $arraycolumnsblob[$i] = $meta->blob;
+			// $arraycolumnsunsigned[$i] = $meta->unsigned;
+			// $arraycolumnszerofill[$i] = $meta->zerofill;
 
 			$i++;
 			}
@@ -85,14 +83,14 @@ $html .= "<form method='post' action='?view=admin/executesql'>";
 			$html .= "<tr><td>type</td><td>" . $arraycolumnstype[$i] . "</td></tr>";
 			$html .= "<tr><td>default</td><td>" . $arraycolumnsdefault[$i] . "</td></tr>";
 			$html .= "<tr><td>maxlen</td><td>" . $arraycolumnsmaxlength[$i] . "</td></tr>";
-			$html .= "<tr><td>notnull</td><td>" . $arraycolumnsnotnull[$i] . "</td></tr>";
-			$html .= "<tr><td>pk</td><td>" . $arraycolumnsprimarykey[$i] . "</td></tr>";
-			$html .= "<tr><td>mk</td><td>" . $arraycolumnsmultiplekey[$i] . "</td></tr>";
-			$html .= "<tr><td>uk</td><td>" . $arraycolumnsuniquekey[$i] . "</td></tr>";
-			$html .= "<tr><td>num</td><td>" . $arraycolumnsnumeric[$i] . "</td></tr>";
-			$html .= "<tr><td>blob</td><td>" . $arraycolumnsblob[$i] . "</td></tr>";
-			$html .= "<tr><td>unsig</td><td>" . $arraycolumnsunsigned[$i] . "</td></tr>";
-			$html .= "<tr><td>zerofill</td><td>" . $arraycolumnszerofill[$i] . "</td></tr>";
+			// $html .= "<tr><td>notnull</td><td>" . $arraycolumnsnotnull[$i] . "</td></tr>";
+			// $html .= "<tr><td>pk</td><td>" . $arraycolumnsprimarykey[$i] . "</td></tr>";
+			// $html .= "<tr><td>mk</td><td>" . $arraycolumnsmultiplekey[$i] . "</td></tr>";
+			// $html .= "<tr><td>uk</td><td>" . $arraycolumnsuniquekey[$i] . "</td></tr>";
+			// $html .= "<tr><td>num</td><td>" . $arraycolumnsnumeric[$i] . "</td></tr>";
+			// $html .= "<tr><td>blob</td><td>" . $arraycolumnsblob[$i] . "</td></tr>";
+			// $html .= "<tr><td>unsig</td><td>" . $arraycolumnsunsigned[$i] . "</td></tr>";
+			// $html .= "<tr><td>zerofill</td><td>" . $arraycolumnszerofill[$i] . "</td></tr>";
 			$html .= "</table></td>\n";
 			}
 		  }
@@ -104,7 +102,7 @@ $html .= "<form method='post' action='?view=admin/executesql'>";
 				$html .= "<tr>";
 				foreach ($arraycolumnsname as $i => $columnname)
 					{
-					if(mysql_field_type($result,$i)!='blob'){
+					if(mysql_adapt_field_type($result,$i)!='blob'){
 						$html .= "<td  class='dbrow'>" . utf8entities($row[$columnname]) . "</td>";
 					}else{
 						$html .= "<td  class='dbrow'>BINARY</td>";

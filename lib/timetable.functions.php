@@ -614,7 +614,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
   switch($gamefilter)
   {
     case "season":
-      $query .= " WHERE pp.valid=true AND ps.season='".mysql_real_escape_string($id)."'";
+      $query .= " WHERE pp.valid=true AND ps.season='".mysql_adapt_real_escape_string($id)."'";
       break;
 
     case "series":
@@ -628,7 +628,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
     case "poolgroup":
       //keep pool filter as it is to give better performance for single pool query
       //extra explode needed to make parameters safe
-      $pools = explode(",", mysql_real_escape_string($id));
+      $pools = explode(",", mysql_adapt_real_escape_string($id));
       $query .= " WHERE pp.valid=true AND pp.pool IN(".implode(",",$pools).")";
       break;
       	
@@ -683,7 +683,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
       break;
       	
     default:
-      $query .= " AND DATE_FORMAT(pp.time,'%Y-%m-%d') = '".mysql_real_escape_string($timefilter)."'";
+      $query .= " AND DATE_FORMAT(pp.time,'%Y-%m-%d') = '".mysql_adapt_real_escape_string($timefilter)."'";
       break;
   }
   
@@ -691,7 +691,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
     if ($groupfilter == "none") {
       $query .= "AND pr.reservationgroup IS NULL";
     } else if ($groupfilter != "all") {
-      $query .= "AND pr.reservationgroup='" . mysql_real_escape_string($groupfilter) . "'";
+      $query .= "AND pr.reservationgroup='" . mysql_adapt_real_escape_string($groupfilter) . "'";
     }
   }
 
@@ -734,8 +734,8 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
       break;
   }
 
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ' . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 
   return $result;
 }
@@ -759,7 +759,7 @@ function TimetableGrouping($id, $gamefilter, $timefilter)
   switch($gamefilter)
   {
     case "season":
-      $query .= " WHERE pp.valid=true AND ps.season='".mysql_real_escape_string($id)."'";
+      $query .= " WHERE pp.valid=true AND ps.season='".mysql_adapt_real_escape_string($id)."'";
       break;
 
     case "series":
@@ -773,7 +773,7 @@ function TimetableGrouping($id, $gamefilter, $timefilter)
     case "poolgroup":
       //keep pool filter as it is to give better performance for single pool query
       //extra explode needed to make parameters safe
-      $pools = explode(",", mysql_real_escape_string($id));
+      $pools = explode(",", mysql_adapt_real_escape_string($id));
       $query .= " WHERE pp.valid=true AND pp.pool IN(".implode(",",$pools).")";
       break;
       	
@@ -824,7 +824,7 @@ function TimetableGrouping($id, $gamefilter, $timefilter)
       break;
       	
     default:
-      $query .= " AND DATE_FORMAT(pp.time,'%Y-%m-%d') = '".mysql_real_escape_string($timefilter)."'";
+      $query .= " AND DATE_FORMAT(pp.time,'%Y-%m-%d') = '".mysql_adapt_real_escape_string($timefilter)."'";
       break;
   }
   $query .= " GROUP BY pr.reservationgroup ORDER BY pp.time ASC, ps.ordering, pr.reservationgroup";
@@ -840,7 +840,7 @@ function TimetableFields($reservationgroup, $season){
 			LEFT JOIN uo_series ps ON (pool.series=ps.series_id)
 			LEFT JOIN uo_reservation pr ON (pp.reservation=pr.id)";
 
-  $query .= " WHERE pp.valid=true AND ps.season='".mysql_real_escape_string($season)."' AND pr.reservationgroup='".mysql_real_escape_string($reservationgroup)."'";
+  $query .= " WHERE pp.valid=true AND ps.season='".mysql_adapt_real_escape_string($season)."' AND pr.reservationgroup='".mysql_adapt_real_escape_string($reservationgroup)."'";
   $query .= " GROUP BY pr.location, pr.fieldname";
   $result = DBQuery($query);
   return mysql_num_rows($result);
@@ -853,7 +853,7 @@ function TimetableTimeslots($reservationgroup, $season){
 			LEFT JOIN uo_series ps ON (pool.series=ps.series_id)
 			LEFT JOIN uo_reservation pr ON (pp.reservation=pr.id)";
 
-  $query .= " WHERE pp.valid=true AND ps.season='".mysql_real_escape_string($season)."' AND pr.reservationgroup='".mysql_real_escape_string($reservationgroup)."'";
+  $query .= " WHERE pp.valid=true AND ps.season='".mysql_adapt_real_escape_string($season)."' AND pr.reservationgroup='".mysql_adapt_real_escape_string($reservationgroup)."'";
   $query .= " GROUP BY pp.time";
   return DBQueryToArray($query);
 }
@@ -879,7 +879,7 @@ function TimetableIntraPoolConflicts($season, $series=null) {
       (($series != null) ? " AND ser1.series_id = %d AND ser2.series_id = %d " : "") .
       " AND g1.time <= g2.time
       ORDER BY time2 ASC, time1 ASC",
-      mysql_real_escape_string($season), mysql_real_escape_string($season),
+      mysql_adapt_real_escape_string($season), mysql_adapt_real_escape_string($season),
       (int) $series, (int) $series);
   return DBQueryToArray($query);
 }
@@ -906,7 +906,7 @@ function TimetableInterPoolConflicts($season, $series=null) {
       " AND (g1.hometeam IS NULL OR g1.visitorteam IS NULL OR g2.hometeam IS NULL OR g2.visitorteam IS NULL OR
           (g1.hometeam=g2.hometeam OR g1.visitorteam = g2.visitorteam OR g1.hometeam=g2.visitorteam OR g1.visitorteam = g2.hometeam))
       ORDER BY time2 ASC, time1 ASC",
-      mysql_real_escape_string($season), mysql_real_escape_string($season),
+      mysql_adapt_real_escape_string($season), mysql_adapt_real_escape_string($season),
       (int) $series, (int) $series);
   return DBQueryToArray($query);
 }
@@ -916,8 +916,8 @@ function TimeTableMoveTimes($season) {
             WHERE season = '%s'
             ORDER BY fromlocation, fromfield+0, tolocation, tofield+0", $season);
   
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
 	while ($row = mysql_fetch_assoc($result)){
 		$ret[$row['fromlocation']][$row['fromfield']][$row['tolocation']][$row['tofield']] = $row['time'];
@@ -943,7 +943,7 @@ function TimeTableSetMoveTimes($season, $times) {
           INSERT INTO uo_movingtime
           (season, fromlocation, fromfield, tolocation, tofield, time) 
           VALUES ('%s', '%d', '%d', '%d', '%d', '%d') ON DUPLICATE KEY UPDATE time='%d'", 
-            mysql_real_escape_string($season), 
+            mysql_adapt_real_escape_string($season), 
             (int) $times[$from]['location'], 
             (int) $times[$from]['field'],
             (int) $times[$to]['location'], 
@@ -985,7 +985,7 @@ function TimetableToCsv($season,$separator){
 			LEFT JOIN uo_scheduling_name AS pvisitor ON (pp.scheduling_name_visitor=pvisitor.scheduling_id)
 			WHERE pp.valid=true AND ps.season='%s'
 			ORDER BY pr.starttime, pr.reservationgroup, pl.id, pr.fieldname +0, pp.time ASC, pp.game_id ASC",
-  mysql_real_escape_string($season));
+  mysql_adapt_real_escape_string($season));
 
   // Gets the data from the database
   $result = DBQuery($query);

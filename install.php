@@ -216,7 +216,7 @@
       $mysqlconnectionref = mysql_connect($db_hostname, $db_username, $db_password);
 
       if(!$mysqlconnectionref) {
-        $html .= "<span style='color:red'>Failed to connect to server: " . mysql_error()."</span></p>";
+        $html .= "<span style='color:red'>Failed to connect to server: " . mysql_adapt_error()."</span></p>";
         $db_pass = false;
       }else{
         $html .= "<span style='color:green'>ok</span></p>";
@@ -235,7 +235,7 @@
 
       $html .= "<p>Reading Ultiorganizer tables from given database: ";
       $tables = array();
-      $ret = mysql_query("SHOW TABLES FROM $db_database");
+      $ret = mysql_adapt_query("SHOW TABLES FROM $db_database");
       while ($row = mysql_fetch_row($ret)) {
         $tables[] = $row[0];
         //echo "\"",$row[0]."\",";
@@ -322,8 +322,8 @@
         $line = trim($line);
 
         if (!empty($line)) {
-          if (!mysql_query($line)) {
-            $html .=  "<p style='color:red'>Problem with DB creation: " . mysql_error() . "</p>\n";
+          if (!mysql_adapt_query($line)) {
+            $html .=  "<p style='color:red'>Problem with DB creation: " . mysql_adapt_error() . "</p>\n";
           }
         }
       }
@@ -455,8 +455,8 @@
         $mysqlconnectionref = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
         $db = mysql_select_db(DB_DATABASE);
         mysql_set_charset('utf8');
-        $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='admin'",mysql_real_escape_string($passwd1));
-        $result = mysql_query($query);
+        $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='admin'",mysql_adapt_real_escape_string($passwd1));
+        $result = mysql_adapt_query($query);
         mysql_close($mysqlconnectionref);
         $html .= "<p>Password changed.</p>";
       }

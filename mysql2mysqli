@@ -2,31 +2,29 @@ mysql_connect -> ...
 mysql_select_db -> mysql_query("USE ..."
 mysql_close -> ...
 
-mysql_fetch_assoc -> mysqli
-mysql_fetch_row -> mysqli
-mysql_fetch_array -> mysqli
-mysql_num_rows -> mysqli
-mysql_data_seek -> mysqli
-mysql_affected_rows -> mysqli ($db
-mysql_query -> mysqli(global $db : except database.php
+-mysql_fetch_assoc -> mysqli
+-mysql_fetch_row -> mysqli
+-mysql_fetch_array -> mysqli
+-mysql_num_rows -> mysqli
+-mysql_data_seek -> mysqli
++mysql_affected_rows -> mysqli ($db
++mysql_query -> mysqli(global $db : except database.php
 
 
-mysql_stat -> mysqli global $db
-mysql_insert_id -> mysqli($db : return value
++mysql_stat -> mysqli global $db
++mysql_insert_id -> mysqli($db : return value
 
-mysql_free_result -> mysqli : return value
++mysql_free_result -> mysqli : return value
 
-mysql_real_escape_string -> ?
++mysql_real_escape_string -> ?
 
-mysql_get_host/proto/server_info -> ? global?
+-mysql_get_host/proto/server_info -> ? global?
 mysql_num_fields -> ?
 mysql_field_type -> ??
 mysql_field_name -> ??
 
-mysql_error -> ??
-mysql_fetch_field(s) -> ??
-
-
++mysql_error -> ??
+!mysql_fetch_field(s) -> mysqli !(edited)
 
 gettext_reader -> ?? __construct
 StringReader -> ?? __construct
@@ -35,4 +33,10 @@ CachedFileReader
 HSVClass
 
 # mysql_escape dnw
-find scores.org -name "*.php" -exec sed -i -e "s/mysql_fetch_assoc/mysqli_fetch_assoc/g;s/mysql_fetch_row/mysqli_fetch_row/g;s/mysql_fetch_array/mysqli_fetch_array/g;s/mysql_num_rows/mysqli_num_rows/g;s/mysql_query(/mysqli_query(\$GLOBALS[\"___mysqli_ston\"], /g;s/mysql_stat()/mysqli_stat(\$GLOBALS[\"___mysqli_ston\"])/g;s/mysql_real_escape_string(\([^)]*\))/((isset(\$GLOBALS[\"___mysqli_ston\"]) \&\& is_object(\$GLOBALS[\"___mysqli_ston\"])) ? mysqli_real_escape_string(\$GLOBALS[\"___mysqli_ston\"], \1) : ((trigger_error(\"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.\", E_USER_ERROR)) ? \"\" : \"\"))/g;s/mysql_error()/((is_object(\$GLOBALS[\"___mysqli_ston\"])) ? mysqli_error(\$GLOBALS[\"___mysqli_ston\"]) : ((\$___mysqli_res = mysqli_connect_error()) ? \$___mysqli_res : false))/g" {} \;
+find ultiorganizerdir -name "*.php" -exec sed -i -e "s/mysql_fetch_assoc/mysqli_fetch_assoc/g;s/mysql_fetch_row/mysqli_fetch_row/g;s/mysql_fetch_array/mysqli_fetch_array/g;s/mysql_num_rows/mysqli_num_rows/g" {} \;
+find ultiorganizerdir -name "*.php" -exec sed -i -e "s/mysql_query(/mysqli_query(\$GLOBALS[\"___mysqli_ston\"], /g;s/mysql_stat()/mysqli_stat(\$GLOBALS[\"___mysqli_ston\"])/g;s/mysql_real_escape_string(\([^)]*\))/((isset(\$GLOBALS[\"___mysqli_ston\"]) \&\& is_object(\$GLOBALS[\"___mysqli_ston\"])) ? mysqli_real_escape_string(\$GLOBALS[\"___mysqli_ston\"], \1) : ((trigger_error(\"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work.\", E_USER_ERROR)) ? \"\" : \"\"))/g;s/mysql_error()/((is_object(\$GLOBALS[\"___mysqli_ston\"])) ? mysqli_error(\$GLOBALS[\"___mysqli_ston\"]) : ((\$___mysqli_res = mysqli_connect_error()) ? \$___mysqli_res : false))/g" {} \;
+
+
+## test
+# executesql
+# dbbackup

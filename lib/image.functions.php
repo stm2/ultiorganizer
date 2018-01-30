@@ -5,10 +5,10 @@ function GetImage($imageId){
 		SELECT image, image_type
 		FROM uo_image 
 		WHERE image_id='%s'",
-		mysql_real_escape_string($imageId));
+		mysql_adapt_real_escape_string($imageId));
 		
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	return mysql_fetch_assoc($result);
 }	
@@ -18,10 +18,10 @@ function GetThumb($imageId){
 		SELECT thumb
 		FROM uo_image 
 		WHERE image_id='%s'",
-		mysql_real_escape_string($imageId));
+		mysql_adapt_real_escape_string($imageId));
 		
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	return mysql_fetch_assoc($result);
 }
@@ -31,10 +31,10 @@ function ImageInfo($imageId){
 		SELECT image_type, image_width, image_height, thumb_height, thumb_width, image_size
 		FROM uo_image 
 		WHERE image_id='%s'",
-		mysql_real_escape_string($imageId));
+		mysql_adapt_real_escape_string($imageId));
 		
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	return mysql_fetch_assoc($result);
 }
@@ -42,9 +42,9 @@ function ImageInfo($imageId){
 function RemoveImage($imageId){
 	if (isSuperAdmin()) {
 		$query = sprintf("DELETE FROM uo_image WHERE image_id='%s'",
-					mysql_real_escape_string($profile['image_id']));
+					mysql_adapt_real_escape_string($profile['image_id']));
 					
-		$result = mysql_query($query);
+		$result = mysql_adapt_query($query);
 		return $result;
 	} else { die('Insufficient rights to remove image'); }	
 }

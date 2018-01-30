@@ -65,7 +65,7 @@ class EventDataXMLHandler{
 
   function selectSeries($eventId, $series) {
     $query = sprintf("SELECT * FROM uo_series WHERE season='%s'",
-      mysql_real_escape_string($eventId));
+      mysql_adapt_real_escape_string($eventId));
     if (!empty($series)) {
       $query .= "AND series_id IN (";
       $num = 0;
@@ -82,7 +82,7 @@ class EventDataXMLHandler{
   
   
   function write_season($eventId, $template) {
-    $seasons = DBQuery("SELECT * FROM uo_season WHERE season_id='".mysql_real_escape_string($eventId)."'");
+    $seasons = DBQuery("SELECT * FROM uo_season WHERE season_id='".mysql_adapt_real_escape_string($eventId)."'");
     $row = mysql_fetch_assoc($seasons);
     
     if($template) {
@@ -94,12 +94,12 @@ class EventDataXMLHandler{
   
   function write_reservations($eventId, $template) {
     $ret = "";
-    $reservations = DBQuery("SELECT * FROM uo_reservation WHERE season='".mysql_real_escape_string($eventId)."'");
+    $reservations = DBQuery("SELECT * FROM uo_reservation WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
     while($reservation = mysql_fetch_assoc($reservations)){
       $ret .= $this->RowToXML("uo_reservation", $reservation);
     }
     
-    $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='".mysql_real_escape_string($eventId)."'");
+    $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='".mysql_adapt_real_escape_string($eventId)."'");
     while($time = mysql_fetch_assoc($times)){
       $ret .= $this->RowToXML("uo_movingtime", $time);
     }
@@ -125,7 +125,7 @@ class EventDataXMLHandler{
       $ret .= $this->RowToXML("uo_team", $team, false);
       
       //uo_player
-      $players = DBQuery("SELECT * FROM uo_player WHERE team='".mysql_real_escape_string($team['team_id'])."'");
+      $players = DBQuery("SELECT * FROM uo_player WHERE team='".mysql_adapt_real_escape_string($team['team_id'])."'");
       while($player = mysql_fetch_assoc($players)){
         $ret .= $this->RowToXML("uo_player", $player);
       }
@@ -186,7 +186,7 @@ class EventDataXMLHandler{
 
       if (!$template || $poolRow['continuingpool'] == 0) {
         //uo_team_pool
-        $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_real_escape_string($poolRow['pool_id'])."'");
+        $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
         while($teampool = mysql_fetch_assoc($teampools)){
           $ret .= $this->RowToXML("uo_team_pool", $teampool);
         }
@@ -201,7 +201,7 @@ class EventDataXMLHandler{
 
   function write_games($poolId, $template) {
     $ret = "";
-    $games = DBQuery("SELECT * FROM uo_game WHERE pool='".mysql_real_escape_string($poolId)."'");
+    $games = DBQuery("SELECT * FROM uo_game WHERE pool='".mysql_adapt_real_escape_string($poolId)."'");
     while($gameRow = mysql_fetch_assoc($games)){
       if($template) {
         $gameRow['hometeam'] = NULL;
@@ -215,7 +215,7 @@ class EventDataXMLHandler{
       }
       
       $ret .= $this->RowToXML("uo_game", $gameRow, false);
-      $gameId = mysql_real_escape_string($gameRow['game_id']);
+      $gameId = mysql_adapt_real_escape_string($gameRow['game_id']);
 
       if (!$template) {
         //uo_goal
@@ -592,11 +592,11 @@ class EventDataXMLHandler{
         $values = "'".implode("','",array_values($row))."'";
         $fields = implode(",",array_keys($row));
 
-        $query = "INSERT INTO ".mysql_real_escape_string($tagName)." (";
+        $query = "INSERT INTO ".mysql_adapt_real_escape_string($tagName)." (";
         $query .= "season_id,";
-        $query .= mysql_real_escape_string($fields);
+        $query .= mysql_adapt_real_escape_string($fields);
         $query .= ") VALUES (";
-        $query .= "'".mysql_real_escape_string($newId)."',";
+        $query .= "'".mysql_adapt_real_escape_string($newId)."',";
         $query .= $values;
         $query .= ")";
         if ($this->mock) {
@@ -775,18 +775,18 @@ class EventDataXMLHandler{
         if (is_null($value)){
           $values .= "NULL,";
         } elseif (is_numeric($value))
-          $values .= "'".mysql_real_escape_string($value)."',";
+          $values .= "'".mysql_adapt_real_escape_string($value)."',";
         else
           die("Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
       } else {
-        $values .= "'".mysql_real_escape_string($value)."',";
+        $values .= "'".mysql_adapt_real_escape_string($value)."',";
       }
     }
     
     $values = substr($values, 0, -1);
 
-    $query = "INSERT INTO ".mysql_real_escape_string($name)." (";
-    $query .= mysql_real_escape_string($fields);
+    $query = "INSERT INTO ".mysql_adapt_real_escape_string($name)." (";
+    $query .= mysql_adapt_real_escape_string($fields);
     $query .= ") VALUES (";
     $query .= $values;
     $query .= ")";
@@ -1114,10 +1114,10 @@ class EventDataXMLHandler{
     $values = array_values($row);
     $fields = array_keys($row);
 
-    $query = "UPDATE ".mysql_real_escape_string($name)." SET ";
+    $query = "UPDATE ".mysql_adapt_real_escape_string($name)." SET ";
     
     for($i=0;$i<count($fields);$i++){
-      $query .= mysql_real_escape_string($fields[$i]) ."='". mysql_real_escape_string($values[$i])."', ";
+      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='". mysql_adapt_real_escape_string($values[$i])."', ";
     }
     $query = rtrim($query,', ');
     $query .= " WHERE ";

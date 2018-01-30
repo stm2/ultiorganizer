@@ -164,7 +164,7 @@ function upgrade58() {
 		$results = runQuery("SELECT accreditation_id, firstname FROM uo_player WHERE firstname IS NOT NULL");
 	    while($row = mysql_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET firstname='%s' WHERE accreditation_id='%s'",
-			  mysql_real_escape_string(trim($row['firstname'])),
+			  mysql_adapt_real_escape_string(trim($row['firstname'])),
 			  $row['accreditation_id']);
             runQuery($query);			  
 	    }
@@ -173,7 +173,7 @@ function upgrade58() {
 		$results = runQuery("SELECT accreditation_id, firstname FROM uo_license WHERE firstname IS NOT NULL");
 	    while($row = mysql_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET firstname='%s' WHERE accreditation_id='%s'",
-			  mysql_real_escape_string(trim($row['firstname'])),
+			  mysql_adapt_real_escape_string(trim($row['firstname'])),
 			  $row['accreditation_id']);
             runQuery($query);			  
 	    }
@@ -185,7 +185,7 @@ function upgrade58() {
 		$results = runQuery("SELECT accreditation_id, lastname FROM uo_player WHERE lastname IS NOT NULL");
 	    while($row = mysql_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET lastname='%s' WHERE accreditation_id='%s'",
-			  mysql_real_escape_string(trim($row['lastname'])),
+			  mysql_adapt_real_escape_string(trim($row['lastname'])),
 			  $row['accreditation_id']);
             runQuery($query);			  
 	    }
@@ -194,7 +194,7 @@ function upgrade58() {
 		$results = runQuery("SELECT accreditation_id, lastname FROM uo_license WHERE lastname IS NOT NULL");
 	    while($row = mysql_fetch_assoc($results)){
 	        $query = sprintf("UPDATE uo_player_profile SET lastname='%s' WHERE accreditation_id='%s'",
-			  mysql_real_escape_string(trim($row['lastname'])),
+			  mysql_adapt_real_escape_string(trim($row['lastname'])),
 			  $row['accreditation_id']);
             runQuery($query);			  
 	    }
@@ -259,11 +259,11 @@ function upgrade60() {
     if(mysql_num_rows($hasprofile)==0){
         $query = sprintf("INSERT INTO uo_player_profile (profile_id,firstname,lastname,birthdate,accreditation_id) VALUES
 				('%s','%s','%s','%s','%s')",
-        mysql_real_escape_string($license['accreditation_id']),
-        mysql_real_escape_string($license['firstname']),
-        mysql_real_escape_string($license['lastname']),
-        mysql_real_escape_string($license['birthdate']),
-        mysql_real_escape_string($license['accreditation_id']));
+        mysql_adapt_real_escape_string($license['accreditation_id']),
+        mysql_adapt_real_escape_string($license['firstname']),
+        mysql_adapt_real_escape_string($license['lastname']),
+        mysql_adapt_real_escape_string($license['birthdate']),
+        mysql_adapt_real_escape_string($license['accreditation_id']));
       $profileId = DBQueryInsert($query);
     }
   }
@@ -276,10 +276,10 @@ function upgrade60() {
     if(mysql_num_rows($hasprofile)==0){
         $query = sprintf("INSERT INTO uo_player_profile (profile_id,firstname,lastname,num) VALUES
 				('%s','%s','%s','%s')",
-        mysql_real_escape_string($player['profile_id']),
-        mysql_real_escape_string($player['firstname']),
-        mysql_real_escape_string($player['lastname']),
-        mysql_real_escape_string($player['num']));
+        mysql_adapt_real_escape_string($player['profile_id']),
+        mysql_adapt_real_escape_string($player['firstname']),
+        mysql_adapt_real_escape_string($player['lastname']),
+        mysql_adapt_real_escape_string($player['num']));
       $profileId = DBQueryInsert($query);
     }
   }
@@ -449,7 +449,7 @@ function upgrade71() {
               sprintf(
                   'INSERT INTO `uo_location_info` (`location_id`, `locale`, `info`)
             VALUES ("%d", "%s", "%s")', 
-                  $row['id'], mysql_real_escape_string($locale), mysql_real_escape_string($value)));
+                  $row['id'], mysql_adapt_real_escape_string($locale), mysql_adapt_real_escape_string($value)));
         }
       }
     }
@@ -657,7 +657,7 @@ function upgrade76() {
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
     
     foreach ($locales as $localestr => $localename) {
-      $loc = mysql_real_escape_string(str_replace(".", "_", $localestr));
+      $loc = mysql_adapt_real_escape_string(str_replace(".", "_", $localestr));
       runQuery(sprintf("INSERT INTO uo_translation 
           (SELECT translation_key, '%s' AS locale, `%s` AS translation 
            FROM uo_dbtranslations
@@ -683,8 +683,8 @@ function upgrade78() {
 }
 
 function runQuery($query) {
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
 	return $result;
 }
 
@@ -697,20 +697,20 @@ function addColumn($table, $column, $type) {
 }
 function hasColumn($table, $column) {
 	$query = "SELECT max(".$column.") FROM ".$table;
-	$result = mysql_query($query);
+	$result = mysql_adapt_query($query);
 	if (!$result) { return false; } else return true;
 }
 
 function hasRow($table, $column, $value) {
 	$query = "SELECT * FROM $table WHERE $column='".$value."'";
-	$result = mysql_query($query);
+	$result = mysql_adapt_query($query);
 	return mysql_num_rows($result);
 }
 
 function hasTable($table) { 
 	$query = "SHOW TABLES FROM ".DB_DATABASE;
-	$tables = mysql_query($query); 
-	while (list ($temp) = mysql_fetch_array ($tables)) {
+	$tables = mysql_adapt_query($query); 
+	while (list($temp) = mysql_fetch_array($tables)) {
 		if ($temp == $table) {
 			return TRUE;
 		}
@@ -732,7 +732,7 @@ function getPositions($pos) {
 
 function renameTable($oldtable, $newtable) {
 	$query = "SHOW COLUMNS FROM $newtable";
-	$result = mysql_query($query);
+	$result = mysql_adapt_query($query);
 	if ($result) return true;
 	$query = "RENAME TABLE $oldtable TO $newtable";
 	runQuery($query);
@@ -744,7 +744,7 @@ function renameField($table, $oldfield, $newfield) {
 		return true;
 	}
 	$query = "SHOW COLUMNS FROM $table WHERE FIELD='".$oldfield."'";
-	$result = mysql_query($query);
+	$result = mysql_adapt_query($query);
 	if ($row = mysql_fetch_assoc($result)) {
 		$query = "ALTER TABLE $table CHANGE $oldfield $newfield ".$row['Type'];
 		if ($row['Null'] == "YES") {
@@ -759,7 +759,7 @@ function renameField($table, $oldfield, $newfield) {
 
 function changeToAutoIncrementField($table, $field) {
 	$query = "SHOW COLUMNS FROM $table WHERE FIELD='".$field."'";
-	$result = mysql_query($query);
+	$result = mysql_adapt_query($query);
 	if ($row = mysql_fetch_assoc($result)) {
 		$query = "ALTER TABLE $table CHANGE $field $field ".$row['Type']." NOT NULL auto_increment";
 		runQuery($query);
@@ -770,7 +770,7 @@ function changeToAutoIncrementField($table, $field) {
 function dropField($table, $field) {
 	if (hasColumn($table, $field)) {
 		$query = "ALTER TABLE $table DROP $field";
-		$result = mysql_query($query);
+		$result = mysql_adapt_query($query);
 		if ($result) return true;
 		else return false;
 	}
@@ -816,8 +816,8 @@ function copyProfileImages() {
 			ConvertToJpeg($target, $basedir.$imgname);
 			CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 160, 120);
 			$query = sprintf("UPDATE uo_club SET profile_image='%s' WHERE club_id='%s'",
-					mysql_real_escape_string($imgname),
-					mysql_real_escape_string($row['club_id']));
+					mysql_adapt_real_escape_string($imgname),
+					mysql_adapt_real_escape_string($row['club_id']));
 			runQuery($query);	
 			unlink($target);
 		}
@@ -860,8 +860,8 @@ function copyProfileImages() {
 			ConvertToJpeg($target, $basedir.$imgname);
 			CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 320, 240);
 			$query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id='%s'",
-					mysql_real_escape_string($imgname),
-					mysql_real_escape_string($row['team_id']));
+					mysql_adapt_real_escape_string($imgname),
+					mysql_adapt_real_escape_string($row['team_id']));
 			runQuery($query);	
 			unlink($target);
 		}
@@ -904,8 +904,8 @@ function copyProfileImages() {
 			ConvertToJpeg($target, $basedir.$imgname);
 			CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 120, 160);
 			$query = sprintf("UPDATE uo_player_profile SET profile_image='%s' WHERE accreditation_id='%s'",
-					mysql_real_escape_string($imgname),
-					mysql_real_escape_string($row['accreditation_id']));
+					mysql_adapt_real_escape_string($imgname),
+					mysql_adapt_real_escape_string($row['accreditation_id']));
 			runQuery($query);	
 			unlink($target);
 		}

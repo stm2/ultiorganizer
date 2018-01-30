@@ -51,7 +51,7 @@ function OpenConnection() {
   //connect to database
   $mysqlconnectionref = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
   if(!$mysqlconnectionref) {
-    die('Failed to connect to server: ' . mysql_error());
+    die('Failed to connect to server: ' . mysql_adapt_error());
   }
 
   //select schema
@@ -100,10 +100,10 @@ function CheckDB() {
  */
 function getDBVersion() {
   $query = "SELECT max(version) as version FROM uo_database";
-  $result = mysql_query($query);
+  $result = mysql_adapt_query($query);
   if (!$result) {
     $query = "SELECT max(version) as version FROM pelik_database";
-    $result = mysql_query($query);
+    $result = mysql_adapt_query($query);
   }
   if (!$result) return 0;
   if (!$row = mysql_fetch_assoc($result)) {
@@ -118,8 +118,8 @@ function getDBVersion() {
  * @return Array of rows
  */
 function DBQuery($query) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
   return $result;
 }
 
@@ -130,9 +130,9 @@ function DBQuery($query) {
  * @return id
  */
 function DBQueryInsert($query) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
-  return mysql_insert_id();
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  return mysql_adapt_insert_id();
 }
 
 /**
@@ -142,8 +142,8 @@ function DBQueryInsert($query) {
  * @return Value of first cell on first row
  */
 function DBQueryToValue($query, $docasting=false) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
 
   if(mysql_num_rows($result)){
     $row = mysql_fetch_row($result);
@@ -163,8 +163,8 @@ function DBQueryToValue($query, $docasting=false) {
  * @return number of rows
  */
 function DBQueryRowCount($query) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
 
   return mysql_num_rows($result);
 }
@@ -175,8 +175,8 @@ function DBQueryRowCount($query) {
  * @return Array of rows
  */
 function DBQueryToArray($query, $docasting=false) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
   return DBResourceToArray($result,$docasting);
 }
 
@@ -203,8 +203,8 @@ function DBResourceToArray($result, $docasting=false) {
  * @return first row in array
  */
 function DBQueryToRow($query, $docasting=false) {
-  $result = mysql_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_error()); }
+  $result = mysql_adapt_query($query);
+  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
   $ret = mysql_fetch_assoc($result);
   if ($docasting && $ret) {$ret = DBCastArray($result, $ret);}
   return $ret;
@@ -220,10 +220,10 @@ function DBQueryToRow($query, $docasting=false) {
     $values = array_values($data);
     $fields = array_keys($data);
 
-    $query = "UPDATE ".mysql_real_escape_string($name)." SET ";
+    $query = "UPDATE ".mysql_adapt_real_escape_string($name)." SET ";
 
     for($i=0;$i<count($fields);$i++){
-      $query .= mysql_real_escape_string($fields[$i]) ."='".$values[$i]."', ";
+      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='".$values[$i]."', ";
     }
     $query = rtrim($query,', ');
     $query .= " WHERE ";
@@ -242,7 +242,7 @@ function DBCastArray($result, $row) {
   $ret = array();
   $i=0;
   foreach ($row as $key => $value) {
-    if (mysql_field_type($result, $i) == "int") {
+    if (mysql_adapt_field_type($result, $i) == "int") {
       $ret[$key] = (int)$value;
     } else {
       $ret[$key] = $value;
@@ -265,10 +265,93 @@ if (function_exists('mysql_set_charset') === false) {
    */
   function mysql_set_charset($charset, $link_identifier = null){
     if ($link_identifier == null) {
-      return mysql_query('SET CHARACTER SET "'.$charset.'"');
+      return mysql_adapt_query('SET CHARACTER SET "'.$charset.'"');
     } else {
-      return mysql_query('SET CHARACTER SET "'.$charset.'"', $link_identifier);
+      return mysql_adapt_query('SET CHARACTER SET "'.$charset.'"', $link_identifier);
     }
   }
+}
+
+/***********************************************************/
+/* mysql to mysqli conversion */
+
+function DBLink() {
+  return $mysqlconnectionref;
+}
+
+function mysql_adapt_real_escape_string($string) {
+  return mysql_real_escape_string($string);
+}
+
+function mysql_adapt_error($link) {
+  return mysql_error($link);
+}
+
+function mysql_adapt_query ($query, $link_identifier = NULL) {
+  return mysql_query($query, $link_identifier);
+}
+
+function mysql_adapt_free_result($result) {
+  return mysql_free_result($result);
+}
+
+function mysql_adapt_affected_rows($link_identifier = NULL) {
+  return mysql_affected_rows($link_identifier);
+}
+
+function mysql_adapt_stat($link_identifier = NULL) {
+  return mysql_stat($link_identifier);
+}
+
+function mysql_adapt_insert_id($link_identifier = NULL) {
+  return mysql_insert_id($link_identifier);
+}
+
+function mysql_adapt_field_name($result, $index) {
+  return mysql_field_name($result, $index);
+}
+
+function mysql_adapt_field_type($result, $index) {
+  return mysql_field_type($result, $index);
+}
+
+function mysql_adapt_is_blob($result, $index) {
+  return ((is_object($___mysqli_tmp = mysqli_fetch_field_direct($result, $index)) && ! is_null($___mysqli_tmp = $___mysqli_tmp->type)) ? ((($___mysqli_tmp = (string) (substr(((($___mysqli_tmp == MYSQLI_TYPE_STRING) || ($___mysqli_tmp == MYSQLI_TYPE_VAR_STRING)) ? "string " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_TINY,
+    MYSQLI_TYPE_SHORT,
+    MYSQLI_TYPE_LONG,
+    MYSQLI_TYPE_LONGLONG,
+    MYSQLI_TYPE_INT24
+  ))) ? "int " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_FLOAT,
+    MYSQLI_TYPE_DOUBLE,
+    MYSQLI_TYPE_DECIMAL,
+    ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : - 1)
+  ))) ? "real " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIMESTAMP) ? "timestamp " : "") . (($___mysqli_tmp == MYSQLI_TYPE_YEAR) ? "year " : "") . ((($___mysqli_tmp == MYSQLI_TYPE_DATE) || ($___mysqli_tmp == MYSQLI_TYPE_NEWDATE)) ? "date " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIME) ? "time " : "") . (($___mysqli_tmp == MYSQLI_TYPE_SET) ? "set " : "") . (($___mysqli_tmp == MYSQLI_TYPE_ENUM) ? "enum " : "") . (($___mysqli_tmp == MYSQLI_TYPE_GEOMETRY) ? "geometry " : "") . (($___mysqli_tmp == MYSQLI_TYPE_DATETIME) ? "datetime " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_TINY_BLOB,
+    MYSQLI_TYPE_BLOB,
+    MYSQLI_TYPE_MEDIUM_BLOB,
+    MYSQLI_TYPE_LONG_BLOB
+  ))) ? "blob " : "") . (($___mysqli_tmp == MYSQLI_TYPE_NULL) ? "null " : ""), 0, - 1))) == "") ? "unknown" : $___mysqli_tmp) : false) == 'blob';
+}
+
+function mysql_adapt_is_int($result, $index) {
+  return ((is_object($___mysqli_tmp = mysqli_fetch_field_direct($result, $index)) && ! is_null($___mysqli_tmp = $___mysqli_tmp->type)) ? ((($___mysqli_tmp = (string) (substr(((($___mysqli_tmp == MYSQLI_TYPE_STRING) || ($___mysqli_tmp == MYSQLI_TYPE_VAR_STRING)) ? "string " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_TINY,
+    MYSQLI_TYPE_SHORT,
+    MYSQLI_TYPE_LONG,
+    MYSQLI_TYPE_LONGLONG,
+    MYSQLI_TYPE_INT24
+  ))) ? "int " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_FLOAT,
+    MYSQLI_TYPE_DOUBLE,
+    MYSQLI_TYPE_DECIMAL,
+    ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : - 1)
+  ))) ? "real " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIMESTAMP) ? "timestamp " : "") . (($___mysqli_tmp == MYSQLI_TYPE_YEAR) ? "year " : "") . ((($___mysqli_tmp == MYSQLI_TYPE_DATE) || ($___mysqli_tmp == MYSQLI_TYPE_NEWDATE)) ? "date " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIME) ? "time " : "") . (($___mysqli_tmp == MYSQLI_TYPE_SET) ? "set " : "") . (($___mysqli_tmp == MYSQLI_TYPE_ENUM) ? "enum " : "") . (($___mysqli_tmp == MYSQLI_TYPE_GEOMETRY) ? "geometry " : "") . (($___mysqli_tmp == MYSQLI_TYPE_DATETIME) ? "datetime " : "") . ((in_array($___mysqli_tmp, array(
+    MYSQLI_TYPE_TINY_BLOB,
+    MYSQLI_TYPE_BLOB,
+    MYSQLI_TYPE_MEDIUM_BLOB,
+    MYSQLI_TYPE_LONG_BLOB
+  ))) ? "blob " : "") . (($___mysqli_tmp == MYSQLI_TYPE_NULL) ? "null " : ""), 0, - 1))) == "") ? "unknown" : $___mysqli_tmp) : false) == 'int';
 }
 ?>

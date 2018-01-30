@@ -35,7 +35,7 @@ if(isSuperAdmin()){
 	}
 	
 	$total_size = 0;
-	$result = mysql_query("SHOW TABLE STATUS");
+	$result = mysql_adapt_query("SHOW TABLE STATUS");
 	$html .= "<p><span class='profileheader'>"._("Tables").": </span></p>\n";
 	$html .= "<table>";
 	$html .= "<tr><th>"._("Name")."</th>";
@@ -68,7 +68,7 @@ if(isSuperAdmin()){
 	$html .= "<p>"._("Database size").": ".$total_size." "._("bytes")."</p>\n";
 	
 	$html .= "<p><span class='profileheader'>"._("Statistics").": </span><br/>\n";
-	$mysql_stat = mysql_stat();
+	$mysql_stat = mysql_adapt_stat();
 	$tot_count=preg_match_all('/([a-z ]+):\s*([0-9.]+)/i', $mysql_stat, $matches);
 	for ($i=0; $i<$tot_count; $i++) {
 		$info1=trim($matches[1][$i]);
@@ -85,12 +85,12 @@ if(isSuperAdmin()){
 	$html .= "<span class='profileheader'>"._("Server version").": </span>".mysql_get_server_info()."</p>\n";
 	
 	$html .= "<p><span class='profileheader'>"._("Character set and collation").": </span><br/>\n";
-	$result = mysql_query("SHOW VARIABLES LIKE 'character_set\_%';");
+	$result = mysql_adapt_query("SHOW VARIABLES LIKE 'character_set\_%';");
 	while($row = mysql_fetch_assoc($result)){
 		$html .= "&nbsp;". $row['Variable_name'].": ".$row['Value']."<br/>\n";
 	
 	}
-	$result = mysql_query("SHOW VARIABLES LIKE 'collation\_%';");
+	$result = mysql_adapt_query("SHOW VARIABLES LIKE 'collation\_%';");
 	while($row = mysql_fetch_assoc($result)){
 		$html .= "&nbsp;". $row['Variable_name'].": ".$row['Value']."<br/>\n";
 	

@@ -17,10 +17,10 @@ function PlayerInfod($playerId) {
 		LEFT JOIN uo_series ser ON (ser.series_id=t.series)
 		LEFT JOIN uo_player_profile pp ON (p.accreditation_id=pp.accreditation_id)
 		WHERE player_id='%s'",
-		mysql_real_escape_string($playerId));
+		mysql_adapt_real_escape_string($playerId));
 		
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	return mysql_fetch_assoc($result);
 }
@@ -47,10 +47,10 @@ function PlayerprofileInfod($accreditation_id) {
 		FROM uo_player_profile pp 
 		LEFT JOIN uo_player p ON pp.accreditation_id=p.accreditation_id
 		WHERE pp.accreditation_id='%s'",
-		mysql_real_escape_string($accreditation_id));
+		mysql_adapt_real_escape_string($accreditation_id));
 	
-	$result = mysql_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_error()); }
+	$result = mysql_adapt_query($query);
+	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	if (hasEditPlayerProfileRight($accreditation_id)) {
 		return mysql_fetch_assoc($result);
 	} else {
