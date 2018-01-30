@@ -1,5 +1,6 @@
 <?php
-include_once '../lib/database.php';
+include_once '../lib/bootstrap.php';
+include_once $include_prefix.'lib/database.php';
 
 OpenConnection();
 global $include_prefix;

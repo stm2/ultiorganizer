@@ -1,8 +1,23 @@
 <?php
-$include_prefix = "../";
-
 //Open database connection
-include_once '../lib/database.php';
+$bootstrapfile = '../lib/bootstrap.php';
+if (is_file($bootstrapfile))
+  include_once $bootstrapfile;
+else
+  die("$bootstrapfile not found.");
+
+include_once $bootstrapfile;
+
+$view = iget("view");
+if (!$view) {
+  header("location:?view=login");
+  exit();
+} else if (!include_exists($view . ".php")) {
+  header("location:?view=login");
+  exit();
+}
+
+include_once $include_prefix.'lib/database.php';
 OpenConnection();
 
 include_once $include_prefix.'lib/common.functions.php';
@@ -32,13 +47,11 @@ session_name("UO_SESSID");
 session_start();
 
 
-
 if (!isset($_SESSION['uid']) && iget('view')!="result") {
 	$_SESSION['uid'] = "anonymous";
 	SetUserSessionData("anonymous");
 	header("location:?view=login");
 }
-
 
 if (isset($_POST['myusername'])) {
 	UserAuthenticate($_POST['myusername'], $_POST['mypassword'], "");
@@ -55,18 +68,7 @@ setSessionLocale();
 setSelectedSeason();
 $_SESSION['userproperties']['selseason'] = CurrentSeason();
 
-if (!iget('view')) {
-  header("location:?view=login");
-  exit();
-}else{
-  LogPageLoad(iget('view'));
-}
-
-if(!iget("view")){
-  $view = "login";
-}else{
-  $view = iget("view");
-}
+LogPageLoad($view);
 
 ob_start();
 echo "<!DOCTYPE html>\n"; 

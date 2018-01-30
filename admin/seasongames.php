@@ -1,5 +1,4 @@
 <?php
-include_once 'lib/database.php';
 include_once 'lib/season.functions.php';
 include_once 'lib/reservation.functions.php';
 include_once 'lib/location.functions.php';

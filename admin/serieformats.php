@@ -1,5 +1,4 @@
 <?php
-include_once 'lib/database.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 

@@ -8,7 +8,8 @@
 //Start session and load libs
 session_name("UO_SESSID");
 session_start();
-require_once '../lib/database.php';
+include_once '../lib/bootstrap.php';
+include_once $include_prefix.'lib/database.php';
 //open database connection
 OpenConnection();
 require_once('../lib/twitteroauth/twitteroauth.php');

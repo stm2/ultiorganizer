@@ -1,5 +1,6 @@
 <?php 
-include '../lib/database.php';
+include_once '../lib/bootstrap.php';
+include_once $include_prefix.'lib/database.php';
 include $include_prefix.'ext/localization.php';
 include $include_prefix.'lib/restful.functions.php';
 include $include_prefix.'lib/yui.functions.php';

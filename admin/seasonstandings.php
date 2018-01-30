@@ -1,5 +1,4 @@
 <?php
-include_once 'lib/database.php';
 include_once 'lib/season.functions.php';
 include_once 'lib/common.functions.php';
 include_once 'lib/team.functions.php';

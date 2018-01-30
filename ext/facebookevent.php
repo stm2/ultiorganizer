@@ -11,7 +11,8 @@ header("Content-Length: $size");
 ob_end_flush();
 flush();
 
-include '../lib/database.php';
+include_once '../lib/bootstrap.php';
+include_once $include_prefix.'lib/database.php';
 
 OpenConnection();
 

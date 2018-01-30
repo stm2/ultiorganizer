@@ -301,6 +301,16 @@ function GetPageURL() {
  return $pageURL;
 }
 
+function include_exists($view) {
+  if (preg_match(";^[a-z][A-Za-z0-9_./-]{0,99}$;", $view) !== 1)
+    return false;
+  
+  if (function_exists('stream_resolve_include_path') === true) {
+    return stream_resolve_include_path($view);
+  }
+  return is_file($view);
+}
+
 function getSessionLocale() {
   if(isset($_SESSION['userproperties']['locale']) && is_array($_SESSION['userproperties']['locale'])){
     $tmparr = array_keys($_SESSION['userproperties']['locale']);

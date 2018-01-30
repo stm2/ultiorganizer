@@ -1,7 +1,8 @@
 <?php
 
-include_once '../lib/database.php';
-include_once '../lib/image.functions.php';
+include_once '../lib/bootstrap.php';
+include_once $include_prefix.'lib/database.php';
+include_once $include_prefix."lib/image.functions.php";
 
 OpenConnection();
 $resize = false;
