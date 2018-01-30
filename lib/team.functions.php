@@ -967,7 +967,7 @@ function TeamScoreBoardWithDefenses($teamId, $pools, $sorting, $limit)
  * @param string $team2 second team name
  * @param string $seriestype type of series
  * @param string $sorting return value sorting: team, result, series
- * @return mysql array of players
+ * @return array mysql array of players
  */
 function GetAllPlayedGames($team1, $team2, $seriestype, $sorting) {
   $query = sprintf("

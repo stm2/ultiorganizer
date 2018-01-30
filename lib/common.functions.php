@@ -1210,7 +1210,7 @@ function strEndsWith($whole, $end){
 /**
  * 
  * Returns string from $_GET by ignoring case. 
- * @param text $string
+ * @param $string string tag
  */
 function iget($string){
 

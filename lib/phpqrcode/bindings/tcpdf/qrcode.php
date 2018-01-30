@@ -268,7 +268,7 @@ if (!class_exists('QRcode', false)) {
     	 * Convert a string to an array (needed for PHP4 compatibility)
     	 * @param string $string The input string.
     	 * @param int $split_length Maximum length of the chunk.
-    	 * @return  If the optional split_length  parameter is specified, the returned array will be broken down into chunks with each being split_length  in length, otherwise each chunk will be one character in length. FALSE is returned if split_length is less than 1. If the split_length length exceeds the length of string , the entire string is returned as the first (and only) array element.
+    	 * @return array If the optional split_length  parameter is specified, the returned array will be broken down into chunks with each being split_length  in length, otherwise each chunk will be one character in length. FALSE is returned if split_length is less than 1. If the split_length length exceeds the length of string , the entire string is returned as the first (and only) array element.
     	 */
 		function str_split($string, $split_length=1) {
 			if ((strlen($string) > $split_length) OR (!$split_length)) {
@@ -308,43 +308,43 @@ if (!class_exists('QRcode', false)) {
 	class QRcode {
 
 		/**
-		 * @var barcode array to be returned which is readable by TCPDF
+		 * @var array barcode array to be returned which is readable by TCPDF
 		 * @access protected
 		 */
 		protected $barcode_array = array();
 
 		/**
-		 * @var QR code version. Size of QRcode is defined as version. Version is from 1 to 40. Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases. So version 40 is 177*177 matrix.
+		 * @var int QR code version. Size of QRcode is defined as version. Version is from 1 to 40. Version 1 is 21*21 matrix. And 4 modules increases whenever 1 version increases. So version 40 is 177*177 matrix.
 		 * @access protected
 		 */
 		protected $version = 0;
 
 		/**
-		 * @var Levels of error correction. See definitions for possible values.
+		 * @var int Levels of error correction. See definitions for possible values.
 		 * @access protected
 		 */
 		protected $level = QR_ECLEVEL_L;
 
 		/**
-		 * @var Encoding mode
+		 * @var int Encoding mode
 		 * @access protected
 		 */
 		protected $hint = QR_MODE_8B;
 
 		/**
-		 * @var if true the input string will be converted to uppercase
+		 * @var bool if true the input string will be converted to uppercase
 		 * @access protected
 		 */
 		protected $casesensitive = true;
 
 		/**
-		 * @var structured QR code (not supported yet)
+		 * @var mixed structured QR code (not supported yet)
 		 * @access protected
 		 */
 		protected $structured = 0;
 
 		/**
-		 * @var mask data
+		 * @var array mask data
 		 * @access protected
 		 */
 		protected $data;
@@ -352,37 +352,37 @@ if (!class_exists('QRcode', false)) {
 		// FrameFiller
 
 		/**
-		 * @var width
+		 * @var int width
 		 * @access protected
 		 */
 		protected $width;
 
 		/**
-		 * @var frame
+		 * @var array frame
 		 * @access protected
 		 */
 		protected $frame;
 
 		/**
-		 * @var X position of bit
+		 * @var int X position of bit
 		 * @access protected
 		 */
 		protected $x;
 
 		/**
-		 * @var Y position of bit
+		 * @var int Y position of bit
 		 * @access protected
 		 */
 		protected $y;
 
 		/**
-		 * @var direction
+		 * @var int direction
 		 * @access protected
 		 */
 		protected $dir;
 
 		/**
-		 * @var single bit
+		 * @var mixed single bit
 		 * @access protected
 		 */
 		protected $bit;
@@ -390,19 +390,19 @@ if (!class_exists('QRcode', false)) {
 		// ---- QRrawcode ----
 
 		/**
-		 * @var data code
+		 * @var array data code
 		 * @access protected
 		 */
 		protected $datacode = array();
 
 		/**
-		 * @var error correction code
+		 * @var array error correction code
 		 * @access protected
 		 */
 		protected $ecccode = array();
 
 		/**
-		 * @var blocks
+		 * @var int blocks
 		 * @access protected
 		 */
 		protected $blocks;
@@ -414,25 +414,25 @@ if (!class_exists('QRcode', false)) {
 		protected $rsblocks = array(); //of RSblock
 
 		/**
-		 * @var counter
+		 * @var int counter
 		 * @access protected
 		 */
 		protected $count;
 
 		/**
-		 * @var data length
+		 * @var int data length
 		 * @access protected
 		 */
 		protected $dataLength;
 
 		/**
-		 * @var error correction length
+		 * @var int error correction length
 		 * @access protected
 		 */
 		protected $eccLength;
 
 		/**
-		 * @var b1
+		 * @var int b1
 		 * @access protected
 		 */
 		protected $b1;
@@ -440,7 +440,7 @@ if (!class_exists('QRcode', false)) {
 		// ---- QRmask ----
 
 		/**
-		 * @var run length
+		 * @var array run length
 		 * @access protected
 		 */
 		protected $runLength = array();
@@ -448,13 +448,13 @@ if (!class_exists('QRcode', false)) {
 		// ---- QRsplit ----
 
 		/**
-		 * @var input data string
+		 * @var string input data string
 		 * @access protected
 		 */
 		protected $dataStr = '';
 
 		/**
-		 * @var input items
+		 * @var array input items
 		 * @access protected
 		 */
 		protected $items;
@@ -803,7 +803,7 @@ if (!class_exists('QRcode', false)) {
 		/**
 		 * Get frame value at specified position
 		 * @param array $at x,y position
-		 * @return value at specified position
+		 * @return int value at specified position
 		 */
 		protected function getFrameAt($at) {
 			return ord($this->frame[$at['y']][$at['x']]);
@@ -867,7 +867,7 @@ if (!class_exists('QRcode', false)) {
 		/**
 		 * Initialize code.
 		 * @param array $spec array of ECC specification
-		 * @return 0 in case of success, -1 in case of error
+		 * @return int 0 in case of success, -1 in case of error
 		 */
 		protected function init($spec) {
 			$dl = $this->rsDataCodes1($spec);
@@ -1704,7 +1704,7 @@ if (!class_exists('QRcode', false)) {
 		 * @param int $mode encoding mode.
 		 * @param int $size size of data (byte).
 		 * @param array $data array of input data.
-		 * @return items
+		 * @return array items
 		 *
 		 */
 		protected function appendNewInputItem($items, $mode, $size, $data) {
@@ -1792,7 +1792,7 @@ if (!class_exists('QRcode', false)) {
 		/**
 		 * Look up the alphabet-numeric convesion table (see JIS X0510:2004, pp.19).
 		 * @param int $c character value
-		 * @return value
+		 * @return int value
 		 */
 		protected function lookAnTable($c) {
 			return (($c > 127)?-1:$this->anTable[$c]);
@@ -2480,7 +2480,7 @@ if (!class_exists('QRcode', false)) {
 		/**
 		 * Return BCH encoded version information pattern that is used for the symbol of version 7 or greater. Use lower 18 bits.
 		 * @param int $version version
-		 * @return BCH encoded version information pattern
+		 * @return int BCH encoded version information pattern
 		 */
 		protected function getVersionPattern($version) {
 			if (($version < 7) OR ($version > QRSPEC_VERSION_MAX)) {
@@ -2493,7 +2493,7 @@ if (!class_exists('QRcode', false)) {
 		 * Return BCH encoded format information pattern.
 		 * @param array $mask
 		 * @param int $level error correction level
-		 * @return BCH encoded format information pattern
+		 * @return int BCH encoded format information pattern
 		 */
 		protected function getFormatInfo($mask, $level) {
 			if (($mask < 0) OR ($mask > 7)) {
@@ -2832,7 +2832,7 @@ if (!class_exists('QRcode', false)) {
 		 * @param array $rs RS values
 		 * @param array $data data
 		 * @param array $parity parity
-		 * @return parity array
+		 * @return array parity array
 		 */
 		 protected function encode_rs_char($rs, $data, $parity) {
 			$MM       =& $rs['mm']; // bits per symbol

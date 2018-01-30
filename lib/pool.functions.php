@@ -27,7 +27,7 @@ function Pools($filter=null, $ordering=null) {
  * Information of given pool.
  *
  * @param int $poolId uo_pool.pool_id
- * @return php array of pool information.
+ * @return array php array of pool information.
  */
 function PoolInfo($poolId) {
   $query = sprintf("SELECT pool.*, ser.name AS seriesname, ser.season FROM uo_pool pool
@@ -40,7 +40,7 @@ function PoolInfo($poolId) {
 /**
  * Get followers for given pool based on moves (uo_moveteams.frompool).
  * @param int $poolId uo_pool.pool_id
- * @return php array of pool followers.
+ * @return array php array of pool followers.
  */
 function PoolFollowersArray($poolId) {
   $ids = array();
@@ -58,7 +58,7 @@ function PoolFollowersArray($poolId) {
 /**
  * Get followers for given pool based on follower id (uo_pool.follower).
  * @param int $poolId uo_pool.pool_id
- * @return php array of pool followers.
+ * @return array php array of pool followers.
  */
 function PoolPlayoffFollowersArray($poolId) {
   $ids = array();
@@ -77,11 +77,9 @@ function PoolPlayoffFollowersArray($poolId) {
 /**
  * Get playoff 1st round pool for given pool based on follower id (uo_pool.follower).
  * @param int $poolId uo_pool.pool_id
- * @return root pool id.
+ * @return int root pool id.
  */
 function PoolPlayoffRoot($poolId) {
-  $ids = array();
-
   $query = sprintf("SELECT pool_id FROM uo_pool WHERE follower=%d",
   (int)$poolId);
   $root = DBQueryToValue($query);
@@ -97,7 +95,7 @@ function PoolPlayoffRoot($poolId) {
  * Information of given pool template.
  *
  * @param int $poolId uo_pooltemplate.template_id
- * @return php array of pool template information.
+ * @return array php array of pool template information.
  */
 function PoolTemplateInfo($poolId) {
   $query = sprintf("SELECT * FROM uo_pooltemplate WHERE template_id=%d",
@@ -108,7 +106,7 @@ function PoolTemplateInfo($poolId) {
 /**
  * Get all pool templates.
  *
- * @return php array of pool template information.
+ * @return array php array of pool template information.
  */
 function PoolTemplates() {
   $query = "SELECT * FROM uo_pooltemplate ORDER BY name ASC";
@@ -118,7 +116,7 @@ function PoolTemplates() {
 /**
  * Gives shorter name for given pool.
  * @param int $poolId uo_pool.pool_id
- * @return short name.
+ * @return string short name.
  */
 function PoolShortName($poolId) {
   $poolname=PoolName($poolId);
@@ -135,7 +133,7 @@ function PoolShortName($poolId) {
 /**
  * Get name for given pool.
  * @param int $poolId uo_pool.pool_id
- * @return Pool name.
+ * @return string Pool name.
  */
 function PoolName($poolId){
   $query = sprintf("SELECT pool.name FROM uo_pool pool
@@ -148,7 +146,7 @@ function PoolName($poolId){
 /**
  * Get division name for given pool.
  * @param int $poolId uo_pool.pool_id
- * @return Division name.
+ * @return string Division name.
  */
 function PoolSeriesName($poolId){
   $query = sprintf("SELECT ser.name FROM uo_pool pool
@@ -162,7 +160,7 @@ function PoolSeriesName($poolId){
 /**
  * Get all pools in database.
  *
- * @return mysql array of pools
+ * @return array mysql array of pools
  */
 function PoolListAll() {
   $query = sprintf("SELECT pool.pool_id, pool.name, ser.name AS seriesname, season.name AS seasonname
@@ -175,7 +173,7 @@ function PoolListAll() {
 
 /**
  * Get list of pool types.
- * @return Hardcoded PHP array of pool types.
+ * @return array Hardcoded PHP array of pool types.
  */
 function PoolTypes() {
   return array(
@@ -190,7 +188,7 @@ function PoolTypes() {
  *
  * @param int $poolId uo_pool.pool_id
  * @param string $order Order by "seed", "name", "rank". Default is "rank".
- * @return php array of teams
+ * @return array php array of teams
  */
 function PoolTeams($poolId, $order="rank"){
   $query = sprintf("SELECT uo_team.team_id, uo_team.name, uo_team.club, club.name AS clubname,
@@ -227,7 +225,7 @@ function PoolTeams($poolId, $order="rank"){
  * @param int $poolId uo_pool.pool_id
  * @param int $pos position to get name
  * @param boolean $ordinal TRUE if ordinal string
- * @return name of position
+ * @return string name of position
  */
 function PoolPlacementString($poolId, $pos, $ordinal=true){
   $ret = _("Unknown");
@@ -276,7 +274,7 @@ function PoolPlacementString($poolId, $pos, $ordinal=true){
  * Get all scheduling teams in given pool. Scheduling teams are real team replacements for scheduling purpose.
  *
  * @param int $poolId uo_pool.pool_id
- * @return php array of scheduling teams
+ * @return array php array of scheduling teams
  */
 function PoolSchedulingTeams($poolId){
   $query = sprintf("SELECT s.name, s.scheduling_id
@@ -295,7 +293,7 @@ function PoolSchedulingTeams($poolId){
  * @param int $poolId uo_pool.pool_id
  * @param string $sorting one of: "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function PoolScoreBoard($poolId, $sorting, $limit){
   $query = sprintf("
@@ -376,7 +374,7 @@ function PoolScoreBoard($poolId, $sorting, $limit){
  * @param string $pools comma separated list of pools
  * @param string $sorting one of: "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function PoolsScoreBoard($pools, $sorting, $limit){
 
@@ -452,7 +450,7 @@ function PoolsScoreBoard($pools, $sorting, $limit){
  * @param string $pools comma separated list of pools
  * @param string $sorting one of: "deftotal", "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function PoolsScoreBoardWithDefenses($pools, $sorting, $limit){
   $poolIds = mysql_adapt_real_escape_string(implode(",",$pools));
@@ -537,7 +535,7 @@ function PoolsScoreBoardWithDefenses($pools, $sorting, $limit){
  * @param int $poolId uo_pool.pool_id
  * @param string $sorting one of: "deftotal", "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function PoolScoreBoardWithDefenses($poolId, $sorting, $limit){
 
@@ -635,7 +633,7 @@ function PoolDependsOn($topool) {
  * Get all movings to given pool.
  *
  * @param int $toPool uo_pool.pool_id
- * @return PHP array of moves
+ * @return array PHP array of moves
  */
 function PoolMovingsToPool($toPool){
   $query = sprintf("SELECT pmt.*, ps.name, sn.name AS sname
@@ -661,7 +659,7 @@ function PoolGetMoveByTeam($toPool, $team) {
  * Get all movings from given pool.
  *
  * @param int $poolId uo_pool.pool_id
- * @return PHP array of moves
+ * @return array PHP array of moves
  */
 function PoolMovingsFromPool($poolId){
   $query = sprintf("SELECT pmt.*, ps.name, sn.name AS sname
@@ -679,7 +677,7 @@ function PoolMovingsFromPool($poolId){
  * Get all movings from given pool with team associated.
  *
  * @param int $poolId uo_pool.pool_id
- * @return PHP array of teams
+ * @return array PHP array of teams
  */
 function PoolMovingsFromPoolWithTeams($poolId){
   $query = sprintf("SELECT pmt.*,tp.team as team_id,t.name as teamname
@@ -698,7 +696,7 @@ function PoolMovingsFromPoolWithTeams($poolId){
  *
  * @param int $poolId uo_pool.pool_id
  * @param int $fromrank position to move
- * @return PHP array row
+ * @return array PHP array row
  */
 function PoolGetMoveToPool($poolId, $fromrank){
   $query = sprintf("SELECT m.topool, m.torank, m.ismoved, m.scheduling_id, pool.name, pool.color, pool.visible
@@ -716,7 +714,7 @@ function PoolGetMoveToPool($poolId, $fromrank){
  *
  * @param int $topool uo_pool.pool_id
  * @param int $topos move to position
- * @return PHP array row
+ * @return array PHP array row
  */
 function PoolGetMoveFrom($topool, $torank){
   $query = sprintf("SELECT m.frompool, m.fromplacing, m.scheduling_id
@@ -732,7 +730,7 @@ function PoolGetMoveFrom($topool, $torank){
  * Get pool where team is moved by scheduling id.
  *
  * @param int $schedulingId
- * @return uo_moveteams.frompool
+ * @return int uo_moveteams.frompool
  */
 function PoolGetFromPoolBySchedulingId($schedulingId){
   $query = sprintf("SELECT m.frompool
@@ -748,7 +746,7 @@ function PoolGetFromPoolBySchedulingId($schedulingId){
  *
  * @param int $poolId
  * @param int $teamId
- * @return uo_moveteams.frompool
+ * @return int uo_moveteams.frompool
  */
 function PoolGetFromPoolByTeamId($poolId,$teamId){
   $query = sprintf("SELECT m.frompool
@@ -769,7 +767,7 @@ function PoolGetFromPoolByTeamId($poolId,$teamId){
  * @param int $poolId
  * @param int $activerank
  * @param boolean $countbye
- * @return PHP array row
+ * @return array PHP array row
  */
 function PoolTeamFromStandings($poolId, $activerank, $countbye=true) {
   if($countbye) {
@@ -806,7 +804,7 @@ function PoolTeamFromStandings($poolId, $activerank, $countbye=true) {
  * @param int $poolId
  * @param int $activerank
  * @param boolean $countbye
- * @return PHP array row
+ * @return array PHP array row
  */
 function PoolTeamFromInitialRank($poolId, $rank,$countbye=true){
   if($countbye) {
@@ -843,7 +841,7 @@ function PoolTeamFromInitialRank($poolId, $rank,$countbye=true){
  *
  * @param int $frompool
  * @param int $fromplacing
- * @return 1 if exist, 0 otherwise
+ * @return int 1 if exist, 0 otherwise
  */
 function PoolIsMoved($frompool, $fromplacing){
   $query = sprintf("SELECT frompool
@@ -876,7 +874,7 @@ function PoolIsMoveFromPoolsPlayed($topool){
  *
  * @param int $frompool
  * @param int $fromplacing
- * @return 0 if move doesn't exist. 1 if exist.
+ * @return int 0 if move doesn't exist. 1 if exist.
  */
 function PoolMoveExist($frompool, $fromplacing){
   $query = sprintf("SELECT frompool
@@ -908,7 +906,7 @@ function PoolIsAllMoved($topool){
  *
  * @param int $poolId
  * @param int $mvgames: 0 - all, 1 - nothing, 2 - mutual
- * @return PHP array of game ids to move
+ * @return array PHP array of game ids to move
  */
 function PoolGetGamesToMove($toPoolId, $mvgames){
   $games = array();
@@ -970,7 +968,7 @@ function PoolCountGames($poolId) {
  *
  * @param int $poolId
  * @param int $fieldId - limits games to given field
- * @return PHP array of games
+ * @return array PHP array of games
  */
 function PoolGames($poolId, $fieldId=null) {
 
@@ -1000,7 +998,7 @@ function PoolGames($poolId, $fieldId=null) {
  * Get all (not moved) games from given pools which have no schedule.
  *
  * @param int $poolId
- * @return PHP array of games
+ * @return array PHP array of games
  */
 function PoolGamesNotScheduled($poolId){
   $query = sprintf("SELECT home.name AS hometeamname, visitor.name AS visitorteamname, p.hometeam, p.visitorteam,
@@ -1025,7 +1023,7 @@ function PoolGamesNotScheduled($poolId){
  * Get all moved games in given pool.
  *
  * @param int $poolId
- * @return PHP array of games
+ * @return array PHP array of games
  */
 function PoolMovedGames($poolId){
   $query = sprintf("SELECT pp.game_id, pp.time, pp.hometeam, pp.visitorteam, pp.homescore,
@@ -1121,7 +1119,8 @@ function IsPoolLocked($poolId) {
 /**
  * Adds pool template.
  *
- * @param uo_pooltemplate $params
+ * @param array uo_pooltemplate $params
+ * @resturn int insert id
  */
 function AddPoolTemplate($params) {
   if (hasCurrentSeasonsEditRight()) {
@@ -1161,7 +1160,7 @@ function AddPoolTemplate($params) {
  * Updates pool template.
  *
  * @param int $poolId
- * @param uo_pooltemplate $params
+ * @param array uo_pooltemplate $params
  */
 function SetPoolTemplate($poolId, $params) {
   if (hasCurrentSeasonsEditRight()) {
@@ -1242,7 +1241,7 @@ function DeletePoolTemplate($poolId) {
  * @param string $name - Pool name
  * @param string $ordering - Pool order
  * @param int $poolTemplateId - Pool template
- * @return id to created pool.
+ * @return int id to created pool.
  */
 function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
   $seriesinfo = SeriesInfo($seriesId);
@@ -1338,7 +1337,7 @@ function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=fal
  * Update all pool parameters.
  *
  * @param int $poolId
- * @param uo_pool $params
+ * @param array uo_pool $params
  */
 function SetPoolDetails($poolId, $params, $comment=null) {
   $poolinfo = PoolInfo($poolId);
@@ -1354,7 +1353,7 @@ function SetPoolDetails($poolId, $params, $comment=null) {
  * Update pool key parameters.
  *
  * @param int $poolId
- * @param uo_pool $params
+ * @param array uo_pool $params
  */
 function SetPool($poolId, $params) {
   $poolinfo = PoolInfo($poolId);

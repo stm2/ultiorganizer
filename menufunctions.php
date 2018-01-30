@@ -554,6 +554,9 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     while ($row = mysqli_fetch_assoc($pools)) {
       $season = $row['season'];
       $series = $row['series'];
+      if (SeriesInfo($series)['valid'] == 0 && !hasEditSeriesRight($series)) {
+        continue;
+      }
       if ($lastseason != $season) {
         $lastseason = $season;
         echo "<tr><td class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>";
@@ -811,7 +814,7 @@ function getEditSeasonLinks() {
  * @param array $menuitems - key is link name, value is url.
  * @param string $current - links to this url obtain the class 'current'
  * @param boolean $echoed if true (the default), the menu is echoed 
- * @return the menu
+ * @return string the menu (html)
  *
  */
 function pageMenu($menuitems, $current="", $echoed=true) {

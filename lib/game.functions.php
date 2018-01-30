@@ -159,12 +159,12 @@ function GameRespTeam($gameId) {
  * Returns game admins (scorekeepers) for given game.
  *
  * @param int $gameId uo_game.game_id
- * @return php array of users
+ * @return array php array of users
  */
 function GameAdmins($gameId) {
    $query = sprintf("SELECT u.userid, u.name FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
-  			WHERE SUBSTRING_INDEX(up.value, ':', -1)='%d'
+  			WHERE SUBSTRING_INDEX(up.value, ':', -1)=%d
 			ORDER BY u.name",
       (int)$gameId);
     return DBQueryToArray($query);
@@ -1031,7 +1031,7 @@ function GameSetStartingTeam($gameId, $home) {
 		return $result;
 	   } else {
 		$query = sprintf("INSERT INTO uo_gameevent (game, num, time, type, ishome) VALUES (%d, 0, 0, 'offence', %d)
-			ON DUPLICATE KEY UPDATE ishome='%d'",
+			ON DUPLICATE KEY UPDATE ishome=%d",
 			(int)$gameId,
 			(int)$home,
 			(int)$home);
@@ -1248,7 +1248,7 @@ function DeleteGame($gameId) {
   if (hasEditGamesRight($series)) {
     Log2("game", "delete", GameNameFromId($gameId));
     $query = sprintf("DELETE FROM uo_game 
-        WHERE game_id='%d'",
+        WHERE game_id=%d",
         (int) $gameId);
     
     $result = mysql_adapt_query($query);
@@ -1257,7 +1257,7 @@ function DeleteGame($gameId) {
     }
     
     $query = sprintf("DELETE FROM uo_game_pool
-        WHERE game='%d' AND timetable=1",
+        WHERE game=%d AND timetable=1",
         (int) $gameId);
     
     $result = mysql_adapt_query($query);
@@ -1276,7 +1276,7 @@ function DeleteMovedGame($gameId, $poolId) {
   if (hasEditGamesRight($series)) {
     Log1("game", "delete", $gameId, $poolId, "Delete moved game");
     $query = sprintf("DELETE FROM uo_game_pool 
-		WHERE (game='%d' AND pool='%d' AND timetable='0')",
+		WHERE (game=%d AND pool=%d AND timetable='0')",
         (int) $gameId, (int) $poolId);
     
     $result = mysql_adapt_query($query);
@@ -1318,7 +1318,7 @@ function PoolDeleteAllGames($poolId) {
 function PoolSeries($poolId) {
   $query = sprintf("SELECT series
 		FROM uo_pool
-		WHERE pool_id='%d'", (int) $poolId);
+		WHERE pool_id=%d", (int) $poolId);
   return DBQueryToValue($query);
 }
 

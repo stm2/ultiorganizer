@@ -80,7 +80,7 @@ class phpSVNclient
      *  Respository Version.
      *
      *  @access private
-     *  @var interger
+     *  @var int
      */
     var $_repVersion;
     /**

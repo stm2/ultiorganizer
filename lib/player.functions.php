@@ -34,7 +34,7 @@ function SetPlayer($playerId, $number, $fname, $lname, $accrId, $profileId) {
 /**
  * Create profile for player.
  *
- * @param unknown_type $playerId
+ * @param int $playerId
  */
 function CreatePlayerProfile($playerId) {
   $playerInfo = PlayerInfo($playerId);
@@ -59,8 +59,8 @@ function CreatePlayerProfile($playerId) {
 /**
  * Gets players.
  *
- * @param unknown_type $filter
- * @param unknown_type $ordering
+ * @param array $filter
+ * @param mixed $ordering
  */
 function Players($filter=null, $ordering=null) {
   if (!isset($ordering)) {

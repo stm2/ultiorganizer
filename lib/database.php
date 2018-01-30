@@ -114,8 +114,8 @@ function getDBVersion() {
 /**
  * Executes sql query and  returns result as an mysql array.
  *
- * @param srting $query database query
- * @return Array of rows
+ * @param string $query database query
+ * @return mixed Array of rows
  */
 function DBQuery($query) {
   $result = mysql_adapt_query($query);
@@ -126,8 +126,8 @@ function DBQuery($query) {
 /**
  * Executes sql query and returns the ID generated the query.
  *
- * @param srting $query database query
- * @return id
+ * @param string $query database query
+ * @return int id
  */
 function DBQueryInsert($query) {
   $result = mysql_adapt_query($query);
@@ -138,8 +138,8 @@ function DBQueryInsert($query) {
 /**
  * Executes sql query and  returns result as an value.
  *
- * @param srting $query database query
- * @return Value of first cell on first row
+ * @param string $query database query
+ * @return mixed Value of first cell on first row
  */
 function DBQueryToValue($query, $docasting=false) {
   $result = mysql_adapt_query($query);
@@ -159,8 +159,8 @@ function DBQueryToValue($query, $docasting=false) {
 /**
  * Executes sql query and returns number of rows in resultset
  *
- * @param srting $query database query
- * @return number of rows
+ * @param string $query database query
+ * @return int number of rows
  */
 function DBQueryRowCount($query) {
   $result = mysql_adapt_query($query);
@@ -171,7 +171,7 @@ function DBQueryRowCount($query) {
 /**
  * Executes sql query and copy returns to php array.
  *
- * @param srting $query database query
+ * @param string $query database query
  * @return Array of rows
  */
 function DBQueryToArray($query, $docasting=false) {
@@ -184,7 +184,7 @@ function DBQueryToArray($query, $docasting=false) {
 /**
  * Converts a db resource to an array
  *
- * @param $result The database resource returned from mysql_query
+ * @param $result mixed The database resource returned from mysql_query
  * @return array of rows
  */
 function DBResourceToArray($result, $docasting=false) {
@@ -199,8 +199,8 @@ function DBResourceToArray($result, $docasting=false) {
 /**
  * Executes sql query and copy returns to php array of first row.
  *
- * @param srting $query database query
- * @return first row in array
+ * @param string $query database query
+ * @return array first row in array
  */
 function DBQueryToRow($query, $docasting=false) {
   $result = mysql_adapt_query($query);
@@ -234,9 +234,9 @@ function DBQueryToRow($query, $docasting=false) {
 /**
  * Copy mysql_associative array row to regular php array.
  *
- * @param $result return value of mysql_query
- * @param $row mysql_associative array row
- * @return php array of $row
+ * @param $result array return value of mysql_query
+ * @param $row array mysql_associative array row
+ * @return array php array of $row
  */
 function DBCastArray($result, $row) {
   $ret = array();

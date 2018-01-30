@@ -1402,7 +1402,7 @@ class YAHOO_util_Loader {
     * Retrieve the contents of a remote resource
     * @method getRemoteContent
     * @param {string} url URL to fetch data from
-    * @return raw source
+    * @return string raw source
     */
     function getRemoteContent($url) {
         $remote_content = null;
@@ -1426,6 +1426,9 @@ class YAHOO_util_Loader {
                 // curl_setopt($ch, CURLOPT_TIMEOUT, 3); // times out after 4s
 
                 $remote_content = curl_exec($ch);
+                if ($remote_content === false) {
+                  $remote_content = "<!-- // cURL error -->";
+                }
 
                 // save the contents of the remote url for 30 minutes
                 if ($this->apcAvail === true) {

@@ -293,7 +293,7 @@ class EventDataXMLHandler{
   /**
    * Converts database row to xml.
    * @param string $elementName - name of xml-element (table name)
-   * @param assoc_array $row - element attributes (table row)
+   * @param array $row - element attributes (table row) 
    * @param boolean $endtag - true if element closed
    *
    * @return string XML-data

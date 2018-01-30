@@ -41,7 +41,7 @@ function CurrentSeries($season){
  * @param boolean $onlyvisible set TRUE if only visible pools are returned.
  * @param boolean $nocontinuingpools set TRUE if continuation pools are exluded. 
  * @param boolean $noplacementpools set TRUE if placement pools are exluded.
- * @return PHP array of pools
+ * @return array PHP array of pools
  */
 function SeriesPools($seriesId, $onlyvisible=false, $nocontinuingpools=false, $noplacementpools=false) {
 
@@ -65,7 +65,7 @@ function SeriesPools($seriesId, $onlyvisible=false, $nocontinuingpools=false, $n
 /**
  * Get all placement pools in given division.
  * @param int $seriesId uo_series.series_id
- * @return PHP array of pools
+ * @return array PHP array of pools
  */
 function SeriesPlacementPoolIds($seriesId) {
 
@@ -77,7 +77,7 @@ function SeriesPlacementPoolIds($seriesId) {
 
 /**
  * Get list of division types.
- * @return Hardcoded PHP array of division types.
+ * @return array Hardcoded PHP array of division types.
  */
 function SeriesTypes() {
   return array(
@@ -102,7 +102,7 @@ function SeriesTypes() {
  * Get all teams playing in given division.
  * @param int $seriesId uo_series.series_id
  * @param boolean $orderbyseeding TRUE if order by seeding otherwise order by name.
- * @return PHP array of teams.
+ * @return array PHP array of teams.
  */
 function SeriesTeams($seriesId, $orderbyseeding=false){
   $query = sprintf("SELECT t.team_id, t.name, t.abbreviation, t.club, cl.name AS clubname,
@@ -127,7 +127,7 @@ function SeriesTeams($seriesId, $orderbyseeding=false){
 /**
  * Get all teams in given division without pool.
  * @param int $seriesId uo_series.series_id
- * @return PHP array of teams.
+ * @return array PHP array of teams.
  */
 function SeriesTeamsWithoutPool($seriesId){
   $query = sprintf("SELECT pj.team_id, pj.name, pj.club, club.name as clubname, pj.rank 
@@ -156,7 +156,7 @@ function Series($filter=null, $ordering=null) {
 /**
  * Get all player playing in given division.
  * @param int $seriesId uo_series.series_id
- * @return PHP array of players.
+ * @return array PHP array of players.
  */
 function SeriesAllPlayers($seriesId) {
   $query = sprintf("SELECT p.player_id, p.accreditation_id, p.profile_id FROM uo_player p
@@ -212,7 +212,7 @@ function SeriesSeasonId($serieId){
  * @param int $seriesId uo_series.series_id
  * @param string $sorting one of: "total", "goal", "pass", "games", "team", "name", "callahan"  
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function SeriesScoreBoard($seriesId, $sorting, $limit) {
   $query = sprintf("
@@ -294,7 +294,7 @@ function SeriesScoreBoard($seriesId, $sorting, $limit) {
  * @param int $seriesId uo_series.series_id
  * @param string $sorting one of: "total", "games", "team", "name", "callahan"  
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return mysql array of players.
+ * @return array mysql array of players.
  */
 function SeriesDefenseBoard($seriesId, $sorting, $limit) {
   $query = sprintf("
@@ -354,7 +354,7 @@ function SeriesDefenseBoard($seriesId, $sorting, $limit) {
 /**
  * Get division spirit score per category.
  * @param int $seriesId uo_series.series_id
- * @return mysql array of spirit scores per team.
+ * @return array mysql array of spirit scores per team.
 
  */
 function SeriesSpiritBoard($seriesId) {
@@ -413,7 +413,7 @@ function SeriesSpiritBoard($seriesId) {
 /**
  * Get all games in given division.
  * @param int $seriesId uo_series.series_id
- * @return PHP array of games.
+ * @return array PHP array of games.
  */
 function SeriesAllGames($seriesId){
   $query = sprintf("
@@ -431,7 +431,7 @@ function SeriesAllGames($seriesId){
 /**
  * Get all information (uo_series.*) for given division.
  * @param int $seriesId uo_series.series_id
- * @return PHP array of information. 
+ * @return array PHP array of information. 
  */
 function SeriesInfo($seriesId) {
   $query = sprintf("SELECT * FROM uo_series WHERE series_id=%d",
@@ -445,7 +445,7 @@ function SeriesInfo($seriesId) {
  * Access level: Division admin
  * 
  * @param int $seriesId uo_series.series_id
- * @return mysql array of information. 
+ * @return array mysql array of information. 
  */
 function SeriesEnrolledTeams($seriesId) {
   if (hasEditTeamsRight($seriesId)) {
@@ -463,7 +463,7 @@ function SeriesEnrolledTeams($seriesId) {
  * Access level: Division admin
  * 
  * @param int $seriesId uo_series.series_id
- * @return mysql array of information. 
+ * @return array mysql array of information. 
  */
 function DeleteSeries($seriesId) {
   $seriesInfo = SeriesInfo($seriesId);
@@ -482,7 +482,7 @@ function DeleteSeries($seriesId) {
  * Access level: Event admin
  * 
  * @param int $params array of uo_series.* data
- * @return new uo_series.series_id. 
+ * @return int new uo_series.series_id. 
  */
 function AddSeries($params) {
   if (hasEditSeasonSeriesRight($params['season'])) {
@@ -555,7 +555,7 @@ function SetSeriesName($seriesId, $name) {
  *  
  * @param int $seriesId uo_series.series_id
  * @param int $id uo_enrolledteam.id
- * @return php array of uo_enrolledteam.*
+ * @return array php array of uo_enrolledteam.*
  */
 function SeriesEnrolledTeamById($seriesId, $id) {
   if (hasEditTeamsRight($seriesId)) {
@@ -572,7 +572,7 @@ function SeriesEnrolledTeamById($seriesId, $id) {
  *  
  * @param int $seriesId uo_series.series_id
  * @param int $userid uo_user.userid
- * @return mysqul array of teams.
+ * @return array mysqul array of teams.
  */
 function SeriesEnrolledTeamsByUser($seriesId, $userid) {
   if ($userid == 'anonymous') die("Can not enroll for anonymous");
@@ -751,7 +751,7 @@ function CanDeleteSeries($seriesId) {
  * Access level: Team admin
  *
  * @param int $seriesId uo_series.series_id
- * @return PHP array of users
+ * @return array PHP array of users
  */
 function SeriesTeamResponsibles($seriesId) {
   $seasonrights = getEditSeasons($_SESSION['uid']);
