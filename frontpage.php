@@ -18,7 +18,7 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/'.$htmlfile)) {
 }
 
 $html .= "<p>";
-$html .= "<a href='?view=user_guide'>"._("User Guide")."</a>\n";
+$html .= "<a href='?view=user_guide'>"._("User Guide Ultiorganizer")."</a>\n";
 $html .= "</p>";
 
 $urls = GetUrlListByTypeArray(array("admin"),0);
