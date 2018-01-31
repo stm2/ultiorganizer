@@ -6,13 +6,17 @@ function toggleField(checkbox, fieldid) {
   input.disabled = !checkbox.checked;
 }
 
-function checkAll(field) {
-  var form = document.getElementById(field);
-
-  for (var i = 1; i < form.elements.length; i++) {
-    form.elements[i].checked = !form.elements[i].checked;
+function checkAll(name) {
+  var elements = document.getElementsByName(name);
+  if (elements.length == 0)
+    elements = document.getElementsByName(name + "[]");
+  
+  for (var i = 0; i < elements.length; i++) {
+    if (elements[i].nodeName != "form")
+      elements[i].checked = !elements[i].checked;
   }
 }
+
 
 function clearAll(field) {
   var form = document.getElementById(field);

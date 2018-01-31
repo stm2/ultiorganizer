@@ -603,9 +603,12 @@ function PlayerResults() {
   if (empty($_POST['searchplayer'])) {
     return "";
   } else {
-    $query = "SELECT DISTINCT MAX(player_id) as player_id, CONCAT(firstname, ' ', lastname) as user_name, ";
-    $query .= "GROUP_CONCAT(DISTINCT email SEPARATOR ', ') as email, accreditation_id, GROUP_CONCAT(DISTINCT t.name ORDER BY t.team_id DESC SEPARATOR ', ') as teamname ";
-    $query .= "FROM uo_player p join uo_team t ON (p.team = t.team_id) ";
+    $query = "SELECT MAX(player_id) as player_id, pp.profile_id, CONCAT(pp.firstname, ' ', pp.lastname) as user_name, 
+                pp.accreditation_id, GROUP_CONCAT(DISTINCT email SEPARATOR ', ') as email,
+                GROUP_CONCAT(DISTINCT t.name ORDER BY t.team_id DESC SEPARATOR ', ') as teamname
+              FROM uo_player p 
+              JOIN uo_player_profile pp ON (pp.profile_id = p.profile_id)
+              JOIN uo_team t ON (p.team = t.team_id)";
     
     if (!empty($_POST['searchseasons'])) {
       $selected = array_flip($_POST['searchseasons']);
@@ -617,10 +620,10 @@ function PlayerResults() {
     $criteria = "";
     if (!empty($_POST['useseasons'])) {
       $criteria = "(team in ";
-      $criteria .= "(select team_id from uo_team where series in ";
-      $criteria .= "(select series_id from uo_series where season in (";
+      $criteria .= "(SELECT team_id FROM uo_team WHERE series in ";
+      $criteria .= "(SELECT series_id FROM uo_series WHERE season in (";
       foreach ($selected as $seasonid => $prop) {
-        $criteria .= "'".mysql_adapt_real_escape_string($seasonid)."', ";
+        $criteria .= "'" . mysql_adapt_real_escape_string($seasonid) . "', ";
       }
       $criteria = substr($criteria, 0, strlen($criteria) - 2);
       $criteria .= "))))";
@@ -628,46 +631,47 @@ function PlayerResults() {
     
     if (!empty($_POST['teamname'])) {
       if (strlen($criteria) > 0) {
-        $criteria .= " and ";
+        $criteria .= " AND ";
       }
       $criteria .= "(team in ";
-      $criteria .= "(select team_id from uo_team where series in ";
-      $criteria .= "(select series_id from uo_series where season in ("; 
+      $criteria .= "(SELECT team_id FROM uo_team WHERE series in ";
+      $criteria .= "(SELECT series_id FROM uo_series WHERE season in ("; 
       foreach ($selected as $seasonid => $value) {
         $criteria .= "'".mysql_adapt_real_escape_string($seasonid)."', ";
       }
       $criteria = substr($criteria, 0, strlen($criteria) - 2);
-      $criteria .= ")) and name like '%".mysql_adapt_real_escape_string($_POST['teamname'])."%'))";
+      $criteria .= ")) AND name LIKE '%".mysql_adapt_real_escape_string($_POST['teamname'])."%'))";
     }
     if (!empty($_POST['username'])) {
       if (strlen($criteria) > 0) {
-        $criteria .= " and ";
+        $criteria .= " AND ";
       }
-      $criteria .= "(firstname like '%".mysql_adapt_real_escape_string($_POST['username'])."%'";
-      $criteria .= " or lastname like '%".mysql_adapt_real_escape_string($_POST['username'])."%'";
-      $criteria .= " or CONCAT(firstname, ' ', lastname) like '%".mysql_adapt_real_escape_string($_POST['username'])."%')";
+      $criteria .= "(p.firstname LIKE '%".mysql_adapt_real_escape_string($_POST['username'])."%'";
+      $criteria .= " OR p.lastname LIKE '%".mysql_adapt_real_escape_string($_POST['username'])."%'";
+      $criteria .= " OR CONCAT(p.firstname, ' ', p.lastname) LIKE '%".mysql_adapt_real_escape_string($_POST['username'])."%')";
     }
     
     if (!empty($_POST['email'])) {
       if (strlen($criteria) > 0) {
-        $criteria .= " and ";
+        $criteria .= " AND ";
       }
-      $criteria .= "(email like '%".mysql_adapt_real_escape_string($_POST['email'])."%')";
+      $criteria .= "(pp.email like '%".mysql_adapt_real_escape_string($_POST['email'])."%')";
     }
     
     if (strlen($criteria) > 0) {
       $query .= " WHERE ".$criteria;  
     }
-    $query .= " GROUP BY CONCAT(firstname, ' ', lastname), accreditation_id";
-    $query .= " ORDER BY lastname, firstname, t.name";
+    $query .= " GROUP BY profile_id, accreditation_id";
+    $query .= " ORDER BY CONCAT(pp.firstname,pp.lastname), teamname";
     $result = mysql_adapt_query($query);
-    if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+    if (!$result) { die("Invalid query: " . mysql_adapt_error()); }
     
-    $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"players[]\");'/></th>";
+    
+    $ret = "<table class='infotable widetable'><tr><th><input type='checkbox' onclick='checkAll(\"players\");'/></th>";
     $ret .= "<th>"._("Name")."</th><th>"._("Team")."</th><th>"._("Email")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td>";
-      $ret .= "<input type='checkbox' name='players[]' value='".urlencode($row['accreditation_id'])."'/>";
+      $ret .= "<input type='checkbox' name='players[]' value='".urlencode($row['profile_id'])."'/>";
       $ret .= "</td>";
       $ret .= "<td><a href='?view=playercard&amp;player=".urlencode($row['player_id'])."'>".utf8entities($row['user_name'])."</a></td>";
       $ret .= "<td>".utf8entities($row['teamname'])."</td>";

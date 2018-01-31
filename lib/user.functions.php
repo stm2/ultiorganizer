@@ -1010,10 +1010,10 @@ function FinalizeNewUser($userid, $email) {
 		mysql_adapt_real_escape_string(strtolower($email)));
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	while ($accreditation = mysqli_fetch_row($result)) {
-		$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')",
+	while ($profile = mysqli_fetch_row($result)) {
+		$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%d')",
 			mysql_adapt_real_escape_string($userid),
-			mysql_adapt_real_escape_string($accreditation[0]) );
+			intval($profile[0]) );
 		$result1 = mysql_adapt_query($query);
 		if (!$result1) { die('Invalid query: ' . mysql_adapt_error()); }
 	}
@@ -1039,10 +1039,10 @@ function ConfirmEmail($token) {
 			mysql_adapt_real_escape_string(strtolower($row['email'])));
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		while ($accreditation = mysqli_fetch_row($result)) {
+		while ($profile = mysqli_fetch_row($result)) {
 			$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')",
 				mysql_adapt_real_escape_string($row['userid']),
-				mysql_adapt_real_escape_string($accreditation[0]) );
+				intval($profile[0]) );
 			$result1 = mysql_adapt_query($query);
 			if (!$result1) { die('Invalid query: ' . mysql_adapt_error()); }
 		}
