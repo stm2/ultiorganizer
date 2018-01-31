@@ -4264,7 +4264,7 @@ msgstr "Vorname"
 #: cust/slkl/teamplayers.functions.php:94 user/playerprofile.php:213
 #: user/teamplayers.php:157
 msgid "Last name"
-msgstr "Nachmane"
+msgstr "Nachname"
 
 #: cust/default/teamplayers.functions.php:106
 #: cust/slkl/teamplayers.functions.php:97 playercard.php:59

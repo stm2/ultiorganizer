@@ -215,11 +215,19 @@ select {
   width: auto;
 }
 
+.widetable {
+  width: 100%;
+}
+
 .admintable {
   width: 100%;
 }
 
 .admintable + .admintable {
+  margin-top: 5px;
+}
+
+.infotable + .infotable {
   margin-top: 5px;
 }
 
