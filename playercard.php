@@ -40,7 +40,7 @@ $html .= "<p>"._("Team").": <a class='headerlink' href='?view=teamcard&amp;team=
 
 if($profile){
   $publicfields = explode("|", $profile['public']);
-  $html .= "<table style='width:100%'>";
+  $html .= "<table class='infotable'>";
 
   if(!empty($profile['profile_image']) && in_array("profile_image",$publicfields)){
     $html .= "<tr><td style='width:125px'><a href='".UPLOAD_DIR."players/".$player['profile_id']."/".$profile['profile_image']."'>";
@@ -49,7 +49,7 @@ if($profile){
     $html .= "<tr><td></td>";
   }
    
-  $html .= "<td style='vertical-align:top;text-align:left'><table>";
+  $html .= "<td style='vertical-align:top;text-align:left'><table class='infotable'>";
   $html .= "<tr><td></td></tr>";
   if(!empty($profile['nickname']) && in_array("nickname",$publicfields)){
     $html .= "<tr><td class='profileheader'>"._("Nickname").":</td>";
@@ -102,7 +102,7 @@ if($profile){
 
 $urls = GetUrlList("player", $player['profile_id']);
 if(count($urls)){
-  $html .= "<table style='width:600px'>";
+  $html .= "<table class='infotable'>";
   $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Player pages").":</td></tr>";
   foreach($urls as $url){
     $html .= "<tr>";
@@ -121,7 +121,7 @@ if(count($urls)){
 
 $urls = GetMediaUrlList("player", $player['profile_id']);
 if(count($urls)){
-  $html .= "<table style='width:100%'>";
+  $html .= "<table class='infotable'>";
   $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Photos and Videos").":</td></tr>";
   foreach($urls as $url){
     $html .= "<tr>";
@@ -152,7 +152,7 @@ if($games){
   }
 
   $html .= "<h2>".U_(CurrentSeasonName()).":</h2>\n";
-  $html .= "<table border='1' width='100%'><tr>";
+  $html .= "<table class='infotable widetable'><tr>";
   $html .= "<th>"._("Games")."</th><th>"._("Passes")."</th><th>"._("Goals")."</th><th>"._("Tot.")."</th>";
   if(ShowDefenseStats()) {
     $html .= "<th>"._("Defenses")."</th>";
@@ -205,7 +205,7 @@ if(ShowDefenseStats()){
       $html .= "<h2>"._("History").":</h2>\n";
 
 
-      $html_tmp .= "<table style='white-space: nowrap;' border='1' cellspacing='0' width='100%'>\n
+      $html_tmp .= "<table class='infotable  widetable'>\n
 			<tr><th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Team")."</th><th>"._("Games")."</th><th>"._("Passes")."</th><th>"._("Goals")."</th><th>"._("Cal.")."</th><th>"._("Tot.")."</th>";
       $html_tmp .= "<th>"._("Defenses.")."</th>";
       $html_tmp .= "<th>"._("Pass avg.")."</th><th>"._("Goal avg.")."</th><th>"._("Point avg.")."</th>";
@@ -250,9 +250,9 @@ if(ShowDefenseStats()){
         $dblDefAvg = SafeDivide($pp['defenses'], $pp['games']);
 
         if($seasoncounter%2){
-          $html_tmp .= "<tr class='highlight'>";
+          $html_tmp .= "<tr class='highlight' style='white-space: nowrap;' >";
         }else{
-          $html_tmp .= "<tr>";
+          $html_tmp .= "<tr style='white-space: nowrap;'>";
         }
         $html_tmp .= "<td>". utf8entities(U_($season['seasonname'])) ."</td>
 						<td>". utf8entities(U_($season['seriesname'])) ."</td>
@@ -282,7 +282,7 @@ if(ShowDefenseStats()){
     array_multisort($s, SORT_DESC, $p, SORT_DESC, $stats);
 
     //seasons total
-    $html .= "<table border='1' width='100%'><tr>
+    $html .= "<table class='infotable widetable'><tr>
 		<th>"._("Event type")."</th><th>"._("Division")."</th><th>"._("Games")."</th><th>"._("Passes")."</th><th>"._("Goals")."</th><th>"._("Cal.")."</th><th>"._("Tot.")."</th>";
     $html .= "<th>"._("Defenses.")."</th><th>"._("Pass avg.")."</th>
 		<th>"._("Goal avg.")."</th><th>"._("Point avg.")."</th>";
@@ -380,7 +380,7 @@ if(ShowDefenseStats()){
       $html .= "<h2>"._("History").":</h2>\n";
 
 
-      $html_tmp .= "<table style='white-space: nowrap;' border='1' cellspacing='0' width='100%'>\n
+      $html_tmp .= "<table class='infotable widetable'>\n
 			<tr><th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Team")."</th><th>"._("Games")."</th><th>"._("Passes")."</th><th>"._("Goals")."</th>
 			<th>"._("Cal.")."</th><th>"._("Tot.")."</th><th>"._("Pass avg.")."</th><th>"._("Goal avg.")."</th><th>"._("Point avg.")."</th><th>"._("Wins")."</th><th>"._("Win-%")."</th></tr>\n";
 
@@ -419,9 +419,9 @@ if(ShowDefenseStats()){
         $dblWinAvg = SafeDivide($pp['wins'], $pp['games']);
 
         if($seasoncounter%2){
-          $html_tmp .= "<tr class='highlight'>";
+          $html_tmp .= "<tr class='highlight' style='white-space: nowrap;' >";
         }else{
-          $html_tmp .= "<tr>";
+          $html_tmp .= "<tr style='white-space: nowrap;' >";
         }
         $html_tmp .= "<td>". utf8entities(U_($season['seasonname'])) ."</td>
 						<td>". utf8entities(U_($season['seriesname'])) ."</td>
@@ -449,7 +449,7 @@ if(ShowDefenseStats()){
     array_multisort($s, SORT_DESC, $p, SORT_DESC, $stats);
 
     //seasons total
-    $html .= "<table border='1' width='100%'><tr>
+    $html .= "<table class='infotable widetable'><tr>
 		<th>"._("Event type")."</th><th>"._("Division")."</th><th>"._("Games")."</th><th>"._("Passes")."</th><th>"._("Goals")."</th><th>"._("Cal.")."</th><th>"._("Tot.")."</th><th>"._("Pass avg.")."</th>
 		<th>"._("Goal avg.")."</th><th>"._("Point avg.")."</th><th>"._("Wins")."</th><th>"._("Win-%")."</th></tr>\n";
 
@@ -539,7 +539,7 @@ if(count($games)){
 
     $result = GameResult($game['game_id']);
 
-    $html .= "<table border='1' style='width:75%'>";
+    $html .= "<table class='infotable widetable'>";
     $html .= "<tr><th colspan='4'><b>". ShortDate($result['time']) ."&nbsp;&nbsp;". utf8entities($result['hometeamname']) ." - ". utf8entities($result['visitorteamname']) ."&nbsp;
 			&nbsp;".$result['homescore']. " - ".$result['visitorscore']."</b></th></tr>\n";
      

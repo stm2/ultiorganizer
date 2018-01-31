@@ -150,7 +150,7 @@ $pp = array(
 	  $pp['profile_image'] = $profile['profile_image'];
 	  $pp['public'] = $profile['public'];
 	}
-
+	
 	$publicfields = explode("|", $profile['public']);
 
 	//common page
@@ -165,7 +165,7 @@ $pp = array(
 	//content
 	$html .= "<form method='post' enctype='multipart/form-data' action='?view=user/playerprofile&amp;player=$playerId'>\n";
 
-	$html .= "<table>";
+	$html .= "<table class='formtable'>";
 	$html .= "<tr><td colspan='2'>"._("Player details")."</td><td class='center'>"._("Show in public profile")."</td></tr>";
 
 	if(CUSTOMIZATIONS=="slkl"){
@@ -235,7 +235,7 @@ $pp = array(
 
 
     $html .= "<option class='dropdown' value=''></option>";
-    if($pp['gender']!="F"){
+    if($pp['gender']=="F"){
       $html .= "<option class='dropdown' selected='selected' value='F'>"._("Female")."</option>";
     } else {
       $html .= "<option class='dropdown' value='F'>"._("Female")."</option>";
