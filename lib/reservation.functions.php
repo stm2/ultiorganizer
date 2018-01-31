@@ -66,7 +66,7 @@ function ReservationGetGame($reservationId, $time="") {
 	return  DBQueryToArray($query);
 }
 
-function ReservationGamesByField($fieldname, $seasonId="") {
+function ReservationGamesByField($locId, $fieldname, $seasonId="") {
 	$query = sprintf("
 		SELECT game_id, hometeam, kj.name as hometeamname, visitorteam, vj.name as visitorteamname, pp.pool as pool,
 			time, homescore, visitorscore, pool.timecap, pool.timeslot, pool.series, pool.color, 
@@ -81,7 +81,7 @@ function ReservationGamesByField($fieldname, $seasonId="") {
 			left join uo_team vj on (pp.visitorteam=vj.team_id)
 			LEFT JOIN uo_scheduling_name AS phome ON (pp.scheduling_name_home=phome.scheduling_id)
 			LEFT JOIN uo_scheduling_name AS pvisitor ON (pp.scheduling_name_visitor=pvisitor.scheduling_id)
-		WHERE res.fieldname='%s'",mysql_adapt_real_escape_string($fieldname));
+		WHERE res.fieldname='%s' AND loc.id=%d",mysql_adapt_real_escape_string($fieldname), intval($locId));
 	
 	if(!empty($seasonId))
 		$query .= sprintf("	AND ser.season='%s'",mysql_adapt_real_escape_string($seasonId));
@@ -96,7 +96,7 @@ function ReservationGamesByField($fieldname, $seasonId="") {
 
 function ReservationFields($seasonId) {
 	$query = sprintf("
-		SELECT loc.name, res.fieldname
+		SELECT loc.id, res.fieldname
 			FROM uo_game pp left join uo_reservation res on (pp.reservation=res.id) 
 			left join uo_pool pool on (pp.pool=pool.pool_id)
 			left join uo_series ser on (pool.series=ser.series_id)
@@ -106,7 +106,7 @@ function ReservationFields($seasonId) {
 			LEFT JOIN uo_scheduling_name AS phome ON (pp.scheduling_name_home=phome.scheduling_id)
 			LEFT JOIN uo_scheduling_name AS pvisitor ON (pp.scheduling_name_visitor=pvisitor.scheduling_id)
 		WHERE ser.season='%s'
-		GROUP BY res.fieldname",
+		GROUP BY loc.id, res.fieldname",
 			mysql_adapt_real_escape_string($seasonId));
 	
 	$result = mysql_adapt_query($query);

@@ -107,8 +107,6 @@ function PlayerInfo($playerId){
 function PlayerLatestId($profileId){
   if(!empty($profileId)){
     $query = sprintf("SELECT MAX(p.player_id) FROM uo_player p
-			LEFT JOIN uo_team t ON (p.team=t.team_id) 
-			LEFT JOIN uo_series ser ON (ser.series_id=t.series)
 			WHERE p.profile_id=%d",
     (int)$profileId);
     	
@@ -117,16 +115,22 @@ function PlayerLatestId($profileId){
   return -1;
 }
 
-function PlayerListAll($lastname=""){
-  $query = "SELECT MAX(player_id) AS player_id, firstname, lastname, num, accreditation_id, profile_id, team, uo_team.name AS teamname
-		FROM uo_player p 
-		LEFT JOIN uo_team ON p.team=team_id
-		WHERE accredited=1";
-  if(!empty($lastname) && $lastname!="ALL"){
-    $query .= " AND UPPER(lastname) LIKE '". mysql_adapt_real_escape_string($lastname)."%'";
-  }
 
-  $query .= " GROUP BY profile_id ORDER BY lastname, firstname";
+function PlayerListAll($lastname=""){
+  $subclause = "";
+  $whereclause = "";
+  if(!empty($lastname) && $lastname!="ALL"){
+    $subclause = " AND UPPER(lastname) LIKE '". mysql_adapt_real_escape_string($lastname)."%'";
+    $whereclause = "WHERE UPPER(lastname) LIKE '". mysql_adapt_real_escape_string($lastname)."%'";
+  }
+  $query = "SELECT player_id, firstname, lastname, num, accreditation_id, profile_id, team, uo_team.name AS teamname
+		FROM uo_player p
+		INNER JOIN (SELECT MAX(player_id) AS last_id
+		  FROM uo_player pp
+		  WHERE accredited=1 $subclause
+		  GROUP BY profile_id) AS p2 ON (last_id = p.player_id)
+		LEFT JOIN uo_team ON p.team=team_id
+		ORDER BY lastname, firstname";
 
   return DBQuery($query);
 }
