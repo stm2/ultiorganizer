@@ -53,12 +53,15 @@ foreach ($teams as $team) {
 }
 
 $rankedteams  = SeriesRanking($seriesinfo['series_id']);
+
 $rank = 0;
 foreach($rankedteams as $rteam) {
-  $rank++;
-  foreach ($allteams as &$ateam) {
-    if ($ateam['team_id'] == $rteam['team_id'])
-      $ateam['ranking'] = $rank;
+  if ($rteam) {
+    $rank++;
+    foreach ($allteams as &$ateam) {
+      if ($ateam['team_id'] == $rteam['team_id'])
+        $ateam['ranking'] = $rank;
+    }
   }
 }
 
@@ -73,7 +76,7 @@ $html .= "<tr>";
 
 if($sort == "ranking") {
   mergesort($allteams, create_function('$a,$b','$va=$a[\''.$sort.'\']; $vb=$b[\''.$sort.'\'];
-    return $va==$vb?0:($va==null?1:($vb=null?-1:($a[\''.$sort.'\']<$b[\''.$sort.'\']?-1:1)));'));
+    return $va==$vb?0:($va==null?1:($vb==null?-1:($a[\''.$sort.'\']<$b[\''.$sort.'\']?-1:1)));'));
   
 } else if($sort == "name" || $sort == "pool" || $sort == "against" || $sort == "seed") {
   mergesort($allteams, create_function('$a,$b','return $a[\''.$sort.'\']==$b[\''.$sort.'\']?0:($a[\''.$sort.'\']<$b[\''.$sort.'\']?-1:1);'));

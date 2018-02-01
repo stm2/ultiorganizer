@@ -168,7 +168,7 @@ function DBResourceToArray($result, $docasting=false) {
  * Executes sql query and copy returns to php array of first row.
  *
  * @param string $query database query
- * @return array first row in array
+ * @return array first row in array or null if the result was empty
  */
 function DBQueryToRow($query, $docasting=false) {
   $result = mysql_adapt_query($query);

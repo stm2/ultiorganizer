@@ -2388,16 +2388,21 @@ function SeriesRanking($series_id) {
       $moved = PoolMoveExist($ppool['pool_id'], $i);
       if (!$moved) {
         $team = PoolTeamFromStandings($ppool['pool_id'], $i);
-        $gamesleft = TeamPoolGamesLeft($team['team_id'], $ppool['pool_id']);
-        if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0)) {
-          $team['placement'] = $i;
-          $ranking[] = $team;
-        } else {
+        if ($team == null) {
           $ranking[] = null;
+        } else {
+          $gamesleft = TeamPoolGamesLeft($team['team_id'], $ppool['pool_id']);
+          if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0)) {
+            $team['placement'] = $i;
+            $ranking[] = $team;
+          } else {
+            $ranking[] = null;
+          }
         }
       }
     }
   }
+  
   return $ranking;
 }
 
