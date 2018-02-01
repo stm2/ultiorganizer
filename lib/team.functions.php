@@ -87,53 +87,33 @@ function Teams($filter=null, $ordering=null) {
 		return DBQuery(trim($query));
 }
 
-function TeamListAll($grouped=false, $onlyold=false, $namefilter="")
-{
-  if($grouped){
-    $query = sprintf("SELECT MAX(team.team_id) AS team_id, team.name, team.club, club.name AS clubname, team.pool, pool.name AS poolname, ser.name AS seriesname,
-			COUNT(ser.season) AS seasons, team.series, ser.type, ser.season, season.name AS seasonname, team.country, c.flagfile
-			FROM uo_team team 
-			LEFT JOIN uo_pool pool ON (team.pool=pool.pool_id) 
-			LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
-			LEFT JOIN uo_club club ON (team.club=club.club_id)
-			LEFT JOIN uo_country c ON (team.country=c.country_id)
-			LEFT JOIN uo_season season ON (ser.season=season.season_id)");
-    if($onlyold){
-      $query .= sprintf("RIGHT JOIN uo_season_stats ss ON(ser.season=ss.season)");
+function TeamListAll($grouped = false, $onlyold = false, $namefilter = "") {
+  $groupclause = $grouped ? "GROUP BY team.team_id" : "";
+  $oldclause = $onlyold ? "RIGHT JOIN uo_season_stats ss ON(ser.season=ss.season)" : "";
+  $whereclause = "";
+  if (!empty($namefilter) && $namefilter != "ALL") {
+    if ($namefilter == "#") {
+      $whereclause = " WHERE UPPER(team.name) REGEXP '^[0-9]'";
+    } else {
+      $whereclause = " WHERE UPPER(team.name) LIKE '" . mysql_adapt_real_escape_string($namefilter) . "%'";
     }
-    if(!empty($namefilter) && $namefilter!="ALL"){
-      if($namefilter=="#"){
-        $query .= " WHERE UPPER(team.name) REGEXP '^[0-9]'";
-      }else{
-        $query .= " WHERE UPPER(team.name) LIKE '". mysql_adapt_real_escape_string($namefilter)."%'";
-      }
-    }
-
-    $query .= sprintf(" GROUP BY team.name, ser.name
-			ORDER BY team.name, ser.name, season.name, club.name");
-  }else{
-    $query = sprintf("SELECT team.team_id, team.name, team.club, club.name AS clubname, team.pool, pool.name AS poolname, ser.name AS seriesname,
-			team.series, ser.type, ser.season, season.name AS seasonname, team.country, c.flagfile
-			FROM uo_team team 
-			LEFT JOIN uo_pool pool ON (team.pool=pool.pool_id) 
-			LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
-			LEFT JOIN uo_club club ON (team.club=club.club_id)
-			LEFT JOIN uo_country c ON (team.country=c.country_id)
-			LEFT JOIN uo_season season ON (ser.season=season.season_id)");
-    if($onlyold){
-      $query .= sprintf("RIGHT JOIN uo_season_stats ss ON(ser.season=ss.season)");
-    }
-    if(!empty($namefilter) && $namefilter!="ALL"){
-      if($namefilter=="#"){
-        $query .= " WHERE UPPER(team.name) REGEXP '^[0-9]'";
-      }else{
-        $query .= " WHERE UPPER(team.name) LIKE '". mysql_adapt_real_escape_string($namefilter)."%'";
-      }
-    }
-
-    $query .= sprintf(" ORDER BY team.name, ser.name, club.name, pool.name");
   }
-  return  DBQuery($query);
+  
+  /* name, country, flagfile, team_id, seriesname ; name, seriesname, team_id, clubname, seasonname */
+  $query = "SELECT team.team_id AS team_id, team.name, team.club, club.name AS clubname, ser.name AS seriesname,
+              ser.season, season.name AS seasonname, team.country, c.flagfile
+            FROM uo_team team 
+            LEFT JOIN uo_club club ON (team.club=club.club_id)
+            LEFT JOIN uo_country c ON (team.country=c.country_id)
+            LEFT JOIN uo_pool pool ON (team.pool=pool.pool_id) 
+            LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
+            LEFT JOIN uo_season season ON (ser.season=season.season_id)
+            $oldclause
+            $whereclause
+            $groupclause
+            ORDER BY team.name, ser.name, club.name, pool.name";
+  
+  return DBQuery($query);
 }
 
 function TeamProfile($teamId)
@@ -629,42 +609,42 @@ function TeamStats($teamId)
 function TeamVictoryPointsByPool($poolId,$teamId)
 {
   $query = sprintf("
-SELECT tot.pool,tot.team_id,count(tot.game_id) as games,sum(tot.diff) as margin,
+    SELECT tot.pool,tot.team_id,count(tot.game_id) as games,sum(tot.diff) as margin,
 	   sum(tot.victorypoints) as victorypoints,sum(swiss.victorypoints) as oppvp,
 	   sum(tot.score) as score
-FROM 
-(SELECT gp.pool,hometeam as team_id, visitorteam as opp_id,game.game_id,homescore-visitorscore as diff, vp.victorypoints,homescore as score
-FROM uo_game game
-LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
-LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-WHERE isongoing=0 AND hasstarted>0
-UNION
-SELECT gp.pool,visitorteam as team_id, hometeam as opp_id,game.game_id,visitorscore-homescore as diff, vp.victorypoints,visitorscore as score
-FROM uo_game game
-LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
-LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-WHERE isongoing=0 AND hasstarted>0) tot
+    FROM 
+    (SELECT gp.pool,hometeam as team_id, visitorteam as opp_id,game.game_id,homescore-visitorscore as diff, vp.victorypoints,homescore as score
+    FROM uo_game game
+    LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
+    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
+    WHERE isongoing=0 AND hasstarted>0
+    UNION
+    SELECT gp.pool,visitorteam as team_id, hometeam as opp_id,game.game_id,visitorscore-homescore as diff, vp.victorypoints,visitorscore as score
+    FROM uo_game game
+    LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
+    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
+    WHERE isongoing=0 AND hasstarted>0) tot
 
-LEFT JOIN
+    LEFT JOIN
 
-(SELECT un.pool,un.team_id,count(un.game_id) as games,sum(victorypoints) as victorypoints FROM
-(SELECT gp.pool,hometeam as team_id, game.game_id,vp.victorypoints
-FROM uo_game game
-LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
-LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-WHERE isongoing=0 AND hasstarted>0
-UNION
-SELECT gp.pool,visitorteam as team_id, game.game_id,vp.victorypoints
-FROM uo_game game
-LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
-LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-WHERE isongoing=0 AND hasstarted>0) un
-GROUP BY pool,team_id) swiss
+    (SELECT un.pool,un.team_id,count(un.game_id) as games,sum(victorypoints) as victorypoints FROM
+    (SELECT gp.pool,hometeam as team_id, game.game_id,vp.victorypoints
+    FROM uo_game game
+    LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
+    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
+    WHERE isongoing=0 AND hasstarted>0
+    UNION
+    SELECT gp.pool,visitorteam as team_id, game.game_id,vp.victorypoints
+    FROM uo_game game
+    LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
+    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
+    WHERE isongoing=0 AND hasstarted>0) un
+    GROUP BY pool,team_id) swiss
 
-ON swiss.pool=tot.pool AND tot.opp_id=swiss.team_id		
+    ON swiss.pool=tot.pool AND tot.opp_id=swiss.team_id		
 		
-WHERE tot.team_id=%d AND tot.pool=%d
-GROUP BY tot.pool,tot.team_id",
+    WHERE tot.team_id=%d AND tot.pool=%d
+    GROUP BY tot.pool,tot.team_id",
   intval($teamId),
   intval($poolId));
   	
@@ -1010,25 +990,6 @@ function GetAllPlayedGames($team1, $team2, $seriestype, $sorting) {
   return DBQuery($query);
 }
 
-function TeamResponsibleGames($teamId, $placeId)
-{
-  $query = sprintf("
-		SELECT Kj.name As hometeamname, Vj.name As visitorteamname, p.time, p.game_id, p.homescore,
-  			p.visitorscore, pp.hasstarted, COALESCE(m.goals,0) As goals 
-		FROM uo_game AS p 
-		LEFT JOIN (SELECT COUNT(*) AS goals, game 
-			FROM uo_goal GROUP BY game) AS m ON (p.game_id=m.game), uo_team As Kj, uo_team As Vj  
-			WHERE p.visitorteam=Vj.team_id AND p.hometeam=Kj.team_id 
-			AND (p.reservation=%d AND p.RespTeam=%d))
-		GROUP BY Kj.name, Vj.name, p.time, p.game_id, p.homescore, p.visitorscore, pp.hasstarted",
-  (int)$placeId,
-  (int)$teamId);
-
-  $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-
-  return $result;
-}
 
 function TeamGetTeamsByName($teamname){
   
@@ -1041,6 +1002,7 @@ function TeamGetTeamsByName($teamname){
     
     return $teams;
 }
+
 function TeamCopyRoster($copyfrom, $copyto){
   if (hasEditPlayersRight($copyto)) {
     $team_players = TeamPlayerList($copyfrom);
@@ -1488,7 +1450,7 @@ function RemoveTeamProfileUrl($teamId, $urlId) {
 }
 
 function TeamsToCsv($season,$separator){ // SELECT ssc.*, SUM(value*factor) FROM uo_spirit_score ssc   LEFT JOIN uo_spirit_category sct ON (ssc.category_id = sct.category_id) WHERE team_id=1398
-
+/* FIXME this is broken because of spirit scores and because of GROUP BY issues */
   $query = sprintf("SELECT j.name AS Team, j.abbreviation AS ShortName, club.name AS Club,
 		c.name AS Country, ser.name AS Division, ps.name AS Pool,	
 		COALESCE(k.games,0) + COALESCE(v.games,0) AS Games,

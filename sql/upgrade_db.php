@@ -268,7 +268,10 @@ function upgrade60() {
     }
   }
   
-  $players = runQuery("SELECT * FROM uo_player GROUP BY profile_id");
+  $players = runQuery(
+    "SELECT p.* FROM uo_player p
+     JOIN (SELECT MAX(player_id) as player_id, profile_id FROM uo_player GROUP BY profile_id) AS pp ON (pp.player_id = p.player_id)");
+
   while($player = mysqli_fetch_assoc($players)){
     
     $hasprofile = runQuery("SELECT * FROM uo_player_profile WHERE profile_id='".$player['profile_id']."'");

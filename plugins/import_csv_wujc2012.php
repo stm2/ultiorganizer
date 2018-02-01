@@ -119,8 +119,7 @@ if (isset($_POST['import'])) {
 					
 					if($playerId==-1){
 						$playerId = AddPlayer($teamId,$first,$last,"",$jersey,"");
-						$query = sprintf("SELECT p1.accreditation_id, p2.firstname, p2.lastname, pp.birthdate, pp.gender, 
-								p2.num, p2.teamname, p2.seasoname, p1.profile_id
+						$query = sprintf("SELECT p1.accreditation_id, p1.profile_id
 								FROM uo_player p1
 								LEFT JOIN(SELECT p.accreditation_id, p.firstname, p.lastname, 
 								p.num, t.name AS teamname, sea.name AS seasoname FROM uo_player p
@@ -130,7 +129,7 @@ if (isset($_POST['import'])) {
 								ORDER BY p.player_id DESC) AS p2 ON (p1.accreditation_id=p2.accreditation_id)
 								LEFT JOIN uo_player_profile AS pp ON (p1.accreditation_id=pp.accreditation_id)
 								WHERE p1.accreditation_id > 0 AND UPPER(p1.firstname) like '%%%s%%' and UPPER(p1.lastname) like '%%%s%%'
-								GROUP BY p1.accreditation_id",
+								GROUP BY p1.accreditation_id, p1.profile_id", /* this might not work as intended any more */
 								mysql_adapt_real_escape_string(strtoupper($first)), mysql_adapt_real_escape_string(strtoupper($last)));
 						$players = DBQueryToArray($query);
 						if(count($players)==0){

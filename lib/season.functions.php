@@ -429,17 +429,19 @@ function SeasonAccreditationAdmins($seasonId, $group=false) {
   if (isset($seasonrights[$seasonId])) {
     if($group){
       $namefield = "GROUP_CONCAT(j.name SEPARATOR ',')";
-      $groupclause = " GROUP BY u.email ";
+      $groupclause = " GROUP BY u.userid ";
+      $orderclause = "";
     }else{
-      $namefield = "j.name";
+      $namefield = "j.team_id, j.name as teamname";
       $groupclause = "";
+      $orderclause = "ORDER BY j.series, j.name";
     }
-    $query = sprintf("SELECT u.userid, u.name, u.email, j.team_id, $namefield as teamname FROM uo_users u
+    $query = sprintf("SELECT u.userid, u.name, u.email, $namefield FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
   			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
   			WHERE j.series IN (SELECT series_id FROM uo_series WHERE season='%s') AND up.value LIKE 'accradmin:%%'
   			$groupclause
-  			ORDER BY j.series, j.name",
+  			$orderclause",
       mysql_adapt_real_escape_string($seasonId));
 
     return DBQueryToArray($query);
@@ -483,18 +485,17 @@ function SeasonSeriesAdmins($seasonId, $group=false) {
   $seasonrights = getEditSeasons($_SESSION['uid']);
   if (isset($seasonrights[$seasonId])) {
     if($group){
-      $namefield = "GROUP_CONCAT(sr.name SEPARATOR ',')";
-      $groupclause = " GROUP BY u.userid  ";
+      $namefield = "GROUP_CONCAT(sr.series_id SEPARATOR ',') AS series_ids, GROUP_CONCAT(sr.name SEPARATOR ',') as seriesnames";
+      $groupclause = "GROUP BY u.userid";
     }else{
-      $namefield = "sr.name";
+      $namefield = "sr.series_id, sr.name";
       $groupclause = "";
     }
-    $query = sprintf("SELECT u.userid, u.name, u.email, sr.series_id, $namefield as seriesname FROM uo_users u
+    $query = sprintf("SELECT u.userid, u.name, u.email, $namefield as seriesname FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
   			LEFT JOIN uo_series sr ON (SUBSTRING_INDEX(up.value, ':', -1)=sr.series_id)
   			WHERE sr.season = '%s' AND up.value LIKE 'seriesadmin:%%'
-  			$groupclause
-  			ORDER BY sr.series_id",
+  			$groupclause",
       mysql_adapt_real_escape_string($seasonId));
     
     return DBQueryToArray($query);

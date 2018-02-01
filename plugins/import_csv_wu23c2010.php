@@ -108,10 +108,9 @@ if (isset($_POST['import'])) {
 					
 					if($playerId==-1){
 						$playerId = AddPlayer($teamId,$first,$last,"",$jersey,"");
-						$query = sprintf("SELECT p1.accreditation_id, p2.firstname, p2.lastname, pp.birthdate, pp.gender, p2.email,
-								p2.num, p2.teamname, p2.seasoname
+						$query = sprintf("SELECT p1.accreditation_id
 								FROM uo_player p1
-								LEFT JOIN(SELECT p.accreditation_id, p.firstname, p.lastname, p.email,
+								LEFT JOIN(SELECT p.accreditation_id, p.firstname, p.lastname, 
 								p.num, t.name AS teamname, sea.name AS seasoname FROM uo_player p
 								LEFT JOIN uo_team t ON (p.team=t.team_id)
 								LEFT JOIN uo_series ser ON (ser.series_id=t.series)

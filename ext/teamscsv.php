@@ -12,7 +12,7 @@ if(iget('enc')){
 if(iget('sep')){
 	$separator = iget('sep');
 }
-
+/* FIXME: broken */
 $data = TeamsToCsv($season,$separator);
 $data = mb_convert_encoding($data, $encoding, 'UTF-8'); 
 CloseConnection();

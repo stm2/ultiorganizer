@@ -53,7 +53,7 @@ function LicenseData($accreditation_id) {
 function checkUserAdmin($playerInfo) {
 	// Check for existing user for player
 	$query = sprintf("SELECT userid FROM uo_userproperties WHERE name='userrole' AND value='playeradmin:%s'",
-		mysql_adapt_real_escape_string($playerInfo['accreditation_id']));
+		mysql_adapt_real_escape_string($playerInfo['accreditation_id'])); /* FIXME playeradmin is associated with profile_id and acc_id */
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	if ($userid = mysqli_fetch_row($result)) {
@@ -70,7 +70,7 @@ function checkUserAdmin($playerInfo) {
 				$id = $userId[0];
 				$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'playeradmin:%s')", 
 					mysql_adapt_real_escape_string($id), 
-					mysql_adapt_real_escape_string($playerInfo['profile_id']) );
+					mysql_adapt_real_escape_string($playerInfo['profile_id']) ); /* FIXME */
 				$result = mysql_adapt_query($query);
 				if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 				return true;				

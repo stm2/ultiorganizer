@@ -149,14 +149,12 @@ function AlltimeScoreboard($season, $seriestype) {
 }
 
 function ScoreboardAllTime($limit, $seasontype="", $seriestype="") {
-
-	$query = "SELECT ps.*, ser.name AS seriesname, t.name AS teamname,
+	$query = "SELECT MAX(ps.player_id) as player_id, ps.profile_id, 
 			SUM(ps.goals) as goalstotal, SUM(passes) as passestotal,
 			SUM(ps.games) as gamestotal, MAX(ser.series_id) as last_series,
 			 MAX(t.team_id) as last_team,
 			SUM(COALESCE(ps.goals,0) + COALESCE(ps.passes,0)) AS total,
-			pp.firstname, pp.lastname,
-			s.name AS seasonname, s.type AS seasontype, ser.type AS seriestype
+			pp.firstname, pp.lastname
 			FROM uo_player_stats ps 
 			LEFT JOIN uo_series ser ON(ser.series_id=ps.series)
 			LEFT JOIN uo_season s ON(s.season_id=ps.season)
@@ -177,7 +175,7 @@ function ScoreboardAllTime($limit, $seasontype="", $seriestype="") {
 	}
 	
 	$query .= sprintf("GROUP BY ps.profile_id 
-			ORDER BY total DESC, ps.games ASC, lastname ASC 
+			ORDER BY total DESC, gamestotal ASC, lastname ASC 
 			LIMIT %d",
 			(int)$limit);
 			

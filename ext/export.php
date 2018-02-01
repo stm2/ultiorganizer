@@ -26,7 +26,9 @@ $html .= "<p>". SeasonName($season)."<br/>";
 $html .= "<a href='ext/gamescsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("All scheduled games")."</a><br/>";
 $html .= "<a href='ext/resultscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("All results")."</a><br/>";
 $html .= "<a href='ext/playerscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Player statistics")."</a><br/>";
+/* FIXME: TeamsToCsv is broken 
 $html .= "<a href='ext/teamscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Team statistics")."</a><br/>";
+*/
 $html .= "<a href='ext/poolscsv.php?Season=$season&amp;Enc=$encoding&amp;Sep=$separator'>&raquo; "._("Pool rankings")."</a><br/>";
 $html .= "</p>";
 

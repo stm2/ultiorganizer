@@ -11,26 +11,26 @@ if(iget("list")) {
 }
 
 $validletters = array("#","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z");
-$maxcols = 3;
+$maxcols = 2;
 
 $html .= "<h1>".$title."</h1>\n";
 
-$html .= "<table style='white-space: nowrap;'><tr>\n";
+$html .= "<p>\n";
 foreach($validletters as $let){
   if($let==$filter){
-    $html .= "<td class='selgroupinglink'>&nbsp;".utf8entities($let)."&nbsp;</td>";
+    $html .= "&nbsp;<span class='selgroupinglink let'>".utf8entities($let)."</span> ";
   }else{
-    $html .= "<td>&nbsp;<a class='groupinglink' href='?view=allteams&amp;list=".urlencode($let)."'>".utf8entities($let)."</a>&nbsp;</td>";
+    $html .= "&nbsp;<span class='groupinglink let'><a href='?view=allteams&amp;list=".urlencode($let)."'>".utf8entities($let)."</a></span> ";
   }
 }
 if($filter=="ALL"){
-  $html .= "<td class='selgroupinglink'>&nbsp;"._("ALL")."</td>";
+  $html .= "&nbsp;<span class='selgroupinglink let'>"._("ALL")."</span>";
 }else{
-  $html .= "<td>&nbsp;<a class='groupinglink' href='?view=allteams&amp;list=all'>"._("ALL")."</a></td>";
+  $html .= "&nbsp;<span class='groupinglink let' ><a href='?view=allteams&amp;list=all'>"._("ALL")."</a></span>";
 }
-$html .= "</tr></table>\n";
+$html .= "</p>\n";
 
-$html .= "<table style='white-space: nowrap;width:100%;'>\n";$teams = TeamListAll(true,true, $filter);
+$html .= "<table style='white-space: nowrap;' class='infotable'>\n";$teams = TeamListAll(true,true, $filter);
 
 $firstchar = " ";
 $listletter = " ";
