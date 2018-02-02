@@ -166,15 +166,6 @@ echo yuiLoad(array(
 ));
 
 ?>
-<style type="text/css">
-#colorcontainer {
-  position: relative;
-  padding: 6px;
-  background-color: #eeeeee;
-  width: 300px;
-  height: 180px;
-}
-</style>
 <script type="text/javascript">
 
 (function() {
@@ -188,8 +179,8 @@ echo yuiLoad(array(
                     showrgbcontrols: false,
                     showwebsafe: false,
           images: {
-            PICKER_THUMB: "styles/yui/colorpicker/assets/picker_thumb.png",
-            HUE_THUMB: "styles/yui/colorpicker/assets/hue_thumb.png"
+            PICKER_THUMB: "script/yui/colorpicker/assets/picker_thumb.png",
+            HUE_THUMB: "script/yui/colorpicker/assets/hue_thumb.png"
             }
                 });
             picker.setValue([<?php
@@ -390,7 +381,7 @@ if (! $poolId || $addmore) {
     <td><textarea class='input' rows='10' cols='70' id='comment' name='comment'>" . htmlentities($comment) . "</textarea></td></tr>";
   
   echo "</table>";
-  echo "<div class='yui-skin-sam' id='colorcontainer' style='display:none'></div>";
+  echo "<div class='yui-skin-sam colorcontainer' id='colorcontainer' style='display:none'></div>";
   
   echo "<h2>" . _("Teams") . ":</h2>";
   

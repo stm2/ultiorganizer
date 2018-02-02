@@ -43,7 +43,7 @@
   width: 100%;
 }
 
-.navigation_bar {
+.breadcrumbs {
   width: 95%;
   height: 16px;
   margin-top: 0px;
@@ -61,11 +61,15 @@
   /*margin-bottom: 2px;*/
 }
 
+.header_logo {
+  height:45px;
+}
+
 .logo {
   border: 0;
   vertical-align: middle;
   text-align: center;
-  /*width:100px;*/
+  width: 175px;
   /*height:114px;*/
   margin: 5px 0px 5px 0px;
 }
@@ -211,11 +215,19 @@ select {
   width: auto;
 }
 
+.widetable {
+  width: 100%;
+}
+
 .admintable {
   width: 100%;
 }
 
 .admintable + .admintable {
+  margin-top: 5px;
+}
+
+.infotable + .infotable {
   margin-top: 5px;
 }
 
@@ -246,8 +258,6 @@ select {
 .contenttable tr+tr {
   padding-top: 5px;
 }
-
-
 
 form table td+td {
   padding-left: 3px;

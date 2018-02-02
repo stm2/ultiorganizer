@@ -64,9 +64,18 @@ function styles() {
   global $include_prefix;
   if (!isset($styles_prefix)) {
     $styles_prefix = $include_prefix;
-    //		$styles_prefix = "../";
   }
   $ret = "";
+  if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/colors.css')) {
+    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/colors.css\" type=\"text/css\" />\n";
+  } else {
+    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/colors.css\" type=\"text/css\" />\n";
+  }
+  if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/default.css')) {
+    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/default.css\" type=\"text/css\" />\n";
+  } else {
+    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/default.css\" type=\"text/css\" />\n";
+  }
   if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/layout.css')) {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/layout.css\" type=\"text/css\" />\n";
   } else {
@@ -76,11 +85,6 @@ function styles() {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/font.css\" type=\"text/css\" />\n";
   } else {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/font.css\" type=\"text/css\" />\n";
-  }
-  if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/default.css')) {
-    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/default.css\" type=\"text/css\" />\n";
-  } else {
-    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/default.css\" type=\"text/css\" />\n";
   }
   return $ret;
 }

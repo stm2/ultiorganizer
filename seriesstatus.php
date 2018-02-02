@@ -87,7 +87,7 @@ if($sort == "ranking") {
 if($sort == "name") {
   $html .= "<th style='width:180px'>"._("Team")."</th>";
 }else{
-  $html .= "<th style='width:180px'><a class='thsort' href='".$viewUrl."&amp;Sort=name'>"._("Team")."</a></th>";
+  $html .= "<th style='width:180px'><a class='thlink' href='".$viewUrl."&amp;Sort=name'>"._("Team")."</a></th>";
 }
 
 /*
@@ -101,61 +101,61 @@ if($sort == "name") {
 if($sort == "seed") {
   $html .= "<th class='center'>"._("Seeding")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=seed'>"._("Seeding")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=seed'>"._("Seeding")."</a></th>";
 }
 
 if($sort == "ranking") {
   $html .= "<th class='center'>"._("Ranking")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=ranking'>"._("Ranking")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=ranking'>"._("Ranking")."</a></th>";
 }
 
 if($sort == "games") {
   $html .= "<th class='center'>"._("Games")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=games'>"._("Games")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=games'>"._("Games")."</a></th>";
 }
 
 if($sort == "wins") {
   $html .= "<th class='center'>"._("Wins")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=wins'>"._("Wins")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=wins'>"._("Wins")."</a></th>";
 }
 
 if($sort == "losses") {
   $html .= "<th class='center'>"._("Losses")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=losses'>"._("Losses")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=losses'>"._("Losses")."</a></th>";
 }
 
 if($sort == "for") {
   $html .= "<th class='center'>"._("Goals for")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=for'>"._("Goals for")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=for'>"._("Goals for")."</a></th>";
 }
 
 if($sort == "against") {
   $html .= "<th class='center'>"._("Goals against")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=against'>"._("Goals against")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=against'>"._("Goals against")."</a></th>";
 }
 
 if($sort == "diff") {
   $html .= "<th class='center'>"._("Goals diff")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=diff'>"._("Goals diff")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=diff'>"._("Goals diff")."</a></th>";
 }
 
 if($sort == "winavg") {
   $html .= "<th class='center'>"._("Win-%")."</th>";
 }else{
-  $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=winavg'>"._("Win-%")."</a></th>";
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=winavg'>"._("Win-%")."</a></th>";
 }
 if($seasoninfo['spiritmode']>0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))){
   if($sort == "spirit") {
     $html .= "<th class='center'>"._("Spirit points")."</th>";
   }else{
-    $html .= "<th class='center'><a class='thsort' href='".$viewUrl."&amp;Sort=spirit'>"._("Spirit points")."</a></th>";
+    $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=spirit'>"._("Spirit points")."</a></th>";
   }
 }
 

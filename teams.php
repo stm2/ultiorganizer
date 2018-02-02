@@ -224,9 +224,9 @@ if($list=="allteams" || $list=="byseeding"){
     for($pos=0; $pos<$maxplacements; $pos++){
       
       if($pos<3){
-        $html .= "<tr style='font-weight:bold;border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
+        $html .= "<tr class='rankingtop'>";
       }else{
-        $html .= "<tr style='border-bottom-style:dashed;border-bottom-width:1px;border-bottom-color:#E0E0E0;'>";
+        $html .= "<tr class='ranking'>";
       }
       if($pos==0){
         $html .= "<td>"._("Gold")."</td>";

@@ -48,22 +48,22 @@ $html .= "<th style='width:5%'>#</th>";
 if($sort == "name")
 $html .= "<th style='width:30%'>"._("Player")."</th>";
 else
-$html .= "<th style='width:30%'><a class='thsort' href='".$viewUrl."Sort=name'>"._("Player")."</a></th>";
+$html .= "<th style='width:30%'><a class='thlink' href='".$viewUrl."Sort=name'>"._("Player")."</a></th>";
 
 if($sort == "team")
 $html .= "<th style='width:25%'><b>"._("Team")."</b></th>";
 else
-$html .= "<th style='width:25%'><a class='thsort' href='".$viewUrl."Sort=team'>"._("Team")."</a></th>";
+$html .= "<th style='width:25%'><a class='thlink' href='".$viewUrl."Sort=team'>"._("Team")."</a></th>";
 
 if($sort == "games")
 $html .= "<th class='center' style='width:8%'><b>"._("Games")."</b></th>";
 else
-$html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."Sort=games'>"._("Games")."</a></th>";
+$html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."Sort=games'>"._("Games")."</a></th>";
 
 if($sort == "deftotal")
 $html .= "<th class='center' style='width:8%'><b>"._("Defenses")."</b></th>";
 else
-$html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."Sort=deftotal'>"._("Defenses")."</a></th>";
+$html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."Sort=deftotal'>"._("Defenses")."</a></th>";
 
 $html .= "</tr>";
 

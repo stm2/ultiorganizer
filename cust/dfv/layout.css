@@ -4,13 +4,13 @@
   margin-right: auto;
   overflow: visible;
   padding: 8px;
-  border: 1px solid #333;
-  background-color: #ffffff;
+  border: 1px solid var(--hardbordercolor, #333);
+  background-color: var(--bgcolor, #ffffff);
 }
 
 .mobile_page {
   width: 300px;
-  border: 1px solid #333;
+  border: 1px solid var(--hardbordercolor, #333);
   margin-left: auto;
   margin-right: auto;
   overflow: visible;
@@ -18,7 +18,16 @@
   padding-left: 10px;
   padding-top: 0px;
   padding-bottom: 10px;
-  background-color: #FFFFFF;
+  background-color: var(--bgcolor, #ffffff);
+}
+
+.main_page_print {
+  width: 100%;
+}
+
+.main_page {
+  border: 1px solid var(--bgcolor, #ffffff);
+  background-color: var(--bgcolor, #ffffff);
 }
 
 .page_top {
@@ -26,8 +35,8 @@
   padding: 0px;
   padding-right: 0px;
   height: 50px;
-  border-bottom: 1px dashed #333;
-  /*background-color: #afafaf;*/
+  border-bottom: 1px dashed var(--hardbordercolor, #333);
+  background-color: var(--topshadecolor, inherit);
 }
 
 .top_banner_space {
@@ -43,7 +52,7 @@
   width: 100%;
 }
 
-.navigation_bar {
+.breadcrumbs {
   width: 95%;
   height: 16px;
   margin-top: 0px;
@@ -53,16 +62,11 @@
   padding-bottom: 0px;
   padding-right: 0px;
   padding-left: 0px;
-  /*background-color: #E0E0E0;*/
-  /*border-top: solid #EEEEDD 1px; */
-  /*border-bottom: solid #000000 1px; */
-  /*border-left: solid #EEEEDD 1px; */
-  /*border-right: solid #000000 1px;*/
-  /*margin-bottom: 2px;*/
+  background-color: var(--breadcrumbsbgcolor, inherit);
 }
 
 .header_logo {
-  height: 300px;
+  height: 45px;
 }
 
 .logo {
@@ -76,7 +80,6 @@
 
 .menu_left {
   vertical-align: top;
-  /*background-color: #5E9DC8;*/
   width: 175px;
 }
 
@@ -84,12 +87,12 @@
   float: left;
   text-align: left;
   vertical-align: top;
-  background-color: #ACD1E9;
+  background-color: var(--shadecolor, #acd1e9);
   width: 175px;
-  border-top: solid #EEEEDD 1px;
-  border-bottom: solid #464646 1px;
-  border-left: solid #EEEEDD 1px;
-  border-right: solid #464646 1px;
+  border-top: solid var(--lightbordercolor, #eeeedd) 1px;
+  border-bottom: solid var(--softbordercolor, #464646) 1px;
+  border-left: solid var(--lightbordercolor, #eeeedd) 1px;
+  border-right: solid var(--softbordercolor, #464646) 1px;
 }
 
 table.leftmenulinks+table.leftmenulinks {
@@ -120,17 +123,16 @@ table.leftmenulinks+table.leftmenulinks {
 
 .seasondropdown {
   width: 175px;
-  background-color: #eeeeff;
-  color: #004466;
-  font-size: 12px;
-  border-top: solid #EEEEDD 1px;
-  border-bottom: solid #464646 1px;
-  border-left: solid #EEEEDD 1px;
-  border-right: solid #464646 1px;
+  color: var(--fgcolor, #004466);
+  background-color: var(--hishadecolor, #eeeeee);
+  font-size : 12px;
+  border-top: solid var(--lightbordercolor, #eeeedd) 1px;
+  border-bottom: solid var(--softbordercolor, #464646) 1px;
+  border-left: solid var(--lightbordercolor, #eeeedd) 1px;
+  border-right: solid var(--softbordercolor, #464646) 1px;
 }
 
 .tdcontent {
-  /*border-left: solid #598788 4px;*/
   padding-left: 1.5ex;
 }
 
@@ -140,9 +142,9 @@ table.leftmenulinks+table.leftmenulinks {
   margin: 0;
   margin-left: 0px;
   margin-right: 5px;
-  background-color: #ffffff;
   padding-right: 0px;
   padding-left: 0px;
+  background-color: var(--bgcolor, #ffffff);
 }
 
 .nomenu {
@@ -150,7 +152,7 @@ table.leftmenulinks+table.leftmenulinks {
 }
 
 .menuseparator {
-  border-bottom: 1px dotted #094aa0;
+  border-bottom: 1px dotted var(--headercolor, #333);
 }
 
 .center {
@@ -187,10 +189,28 @@ select {
   width: 150px;
 }
 
+td.scoreinput {
+  width: 50px;
+  border: 1px solid var(--fgcolor, #000000);
+  background-color: var(--hishadecolor, #acd1e9);
+}
+
+td.scoreinput.bleft {
+  border-right: 1px dashed var(--lightbordercolor, #e0e0e0);
+}
+
+td.scoreinput.bmid {
+  border-left: 1px dashed var(--lightbordercolor, #e0e0e0);
+  border-right: 1px dashed var(--lightbordercolor, #e0e0e0);
+}
+
+td.scoreinput.bright {
+  border-left: 1px dashed var(--lightbordercolor, #e0e0e0);
+}
+
 .fakeinput {
-  font-size: 10px;
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--fadedfgcolor, #000000);
+  background-color: var(--bgcolor, #ffffff);
   border: 0;
 }
 
@@ -203,11 +223,11 @@ select {
   cursor: pointer;
   padding: 0;
   margin: 0;
-  border: 1px solid #ffffff;
+  border: 1px solid var(--bgcolor, #ffffff);
 }
 
 .deletebutton:hover {
-  border: 1px solid #006;
+  border: 1px solid var(--headercolor, #006);
 }
 
 .dropdown {
@@ -223,11 +243,11 @@ select {
   width: 100%;
 }
 
-.admintable + .admintable {
+.admintable+.admintable {
   margin-top: 5px;
 }
 
-.infotable + .infotable {
+.infotable+.infotable {
   margin-top: 5px;
 }
 
@@ -259,8 +279,6 @@ select {
   padding-top: 5px;
 }
 
-
-
 form table td+td {
   padding-left: 3px;
 }
@@ -270,15 +288,28 @@ form table th+th {
 }
 
 .posvalue td {
-  color: #2f5721;
+  color: var(--posvaluecolor, #2f5721);
 }
 
 .negvalue td {
-  color: #6b1a1a;
+  color: var(--negvaluecolor, #6b1a1a);
+}
+
+tr.rankingtop {
+  font-weight: bold;
+  border-bottom-style: dashed;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--lightbordercolor, #e0e0e0);
+}
+
+tr.ranking {
+  border-bottom-style: dashed;
+  border-bottom-width: 1px;
+  border-bottom-color: var(--lightbordercolor, #e0e0e0)
 }
 
 .localeselection {
-  border: 1px solid #000000;
+  border: 1px solid var(--fgcolor, #000);
   height: 10px;
 }
 
@@ -287,11 +318,11 @@ yuicalendar.table {
 }
 
 .calweekdaycell {
-  background-color: #FFFFFF;
+  background-color: var(--bgcolor, #ffffff);
 }
 
 .calheader {
-  color: #094aa0;
+  color: var(--calheadercolor, #006699);
 }
 
 .twitter-list {
@@ -336,17 +367,13 @@ yuicalendar.table {
   list-style-type: none;
 }
 
-.playedpool {
-  background-color: #E0E0E0;
-}
-
 .tablelowlight {
-  background-color: #E0E0f0;
+  background-color: var(--tablelowlightcolor, #e0e0f0);
 }
 
 .flag {
   border-collapse: collapse;
-  border: 1px solid black;
+  border: 1px solid var(--fgcolor, #fff);
 }
 
 /* scheduling */
@@ -369,9 +396,9 @@ td.scheduling_column {
 
 ul.draglist, ol.draglist, select.series_select {
   position: relative;
-  width: 200px;
-  background: #f7f7f7;
-  border: 1px solid gray;
+  width: 180px;
+  background-color: var(--draglistcolor, #f7f7f7);
+  border: 1px solid var(--softbordercolor, #464646);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -387,14 +414,13 @@ ul.draglist li, ol.draglist li {
   cursor: move;
   text-align: center;
   vertical-align: middle;
-  background-color: #D1E6EC;
-  border: 1px solid #7EA6B2;
+  background-color: var(--draglistitemcolor, #d1e6ec);
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
 li.schedule_item {
-  background-color: #aaaaaa;
-  border: 1px solid #7EA6B2;
-  width: 180px;
+  background-color: var(--scheduleitemcolor, #aaaaaa);
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
 th.scheduling {
@@ -413,7 +439,7 @@ ul.timelist {
 }
 
 ul.timelist li {
-  border: 1px solid #7EA6B2;
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
 .radioselect * {
@@ -431,3 +457,36 @@ div.tabrow {
 div.tabcell {
   display: table-cell;
 }
+
+.colorcontainer {
+  background-color: var(--hishadecolor, #eeeeee);
+  position: relative;
+  padding: 6px;
+  width: 300px;
+  height: 180px;
+}
+
+.map_container { 
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  border: 1px solid var(--hardbordercolor, black);
+}
+
+.map_container td.sidebar {
+  vertical-align: top;
+}
+
+.map_container td.sidebar div.sidebar {
+  overflow: auto;
+  width:200px; 
+  height: 400px;
+  font-size: 11px;
+  color: var(--fgcolor, #000);
+}
+
+.map_container div.map {
+  overflow: hidden; 
+  width:500px; 
+  height:500px;
+}
+

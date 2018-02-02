@@ -46,39 +46,39 @@ $html .= "<th style='width:5%'>#</th>";
 if($sort == "name"){
   $html .= "<th style='width:30%'>"._("Player")."</th>";
 }else{
-  $html .= "<th style='width:30%'><a class='thsort' href='".$viewUrl."sort=name'>"._("Player")."</a></th>";
+  $html .= "<th style='width:30%'><a class='thlink' href='".$viewUrl."sort=name'>"._("Player")."</a></th>";
 }
 if($sort == "team"){
   $html .= "<th style='width:25%'><b>"._("Team")."</b></th>";
 }else{
-  $html .= "<th style='width:25%'><a class='thsort' href='".$viewUrl."sort=team'>"._("Team")."</a></th>";
+  $html .= "<th style='width:25%'><a class='thlink' href='".$viewUrl."sort=team'>"._("Team")."</a></th>";
 }
 if($sort == "games"){
   $html .= "<th class='center' style='width:8%'><b>"._("Games")."</b></th>";
 }else{
-  $html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."sort=games'>"._("Games")."</a></th>";
+  $html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."sort=games'>"._("Games")."</a></th>";
 }
 if($sort == "pass"){
   $html .= "<th class='center' style='width:8%'><b>"._("Assists")."</b></th>";
 }else{
-  $html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."sort=pass'>"._("Assists")."</a></th>";
+  $html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."sort=pass'>"._("Assists")."</a></th>";
 }
 if($sort == "goal") {
   $html .= "<th class='center' style='width:8%'><b>"._("Goals")."</b></th>";
 }else{
-  $html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."sort=goal'>"._("Goals")."</a></th>";
+  $html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."sort=goal'>"._("Goals")."</a></th>";
 }
 
 if($sort == "callahan") {
   $html .= "<th class='center' style='width:8%'><b>"._("Cal.")."</b></th>";
 }else{
-  $html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."sort=callahan'>"._("Cal.")."</a></th>";
+  $html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."sort=callahan'>"._("Cal.")."</a></th>";
 }
 
 if($sort == "total") {
   $html .= "<th class='center' style='width:8%'><b>"._("Tot.")."</b></th>";
 }else{
-  $html .= "<th class='center' style='width:8%'><a class='thsort' href='".$viewUrl."sort=total'>"._("Tot.")."</a></th>";
+  $html .= "<th class='center' style='width:8%'><a class='thlink' href='".$viewUrl."sort=total'>"._("Tot.")."</a></th>";
 }
 $html .= "</tr>";
 

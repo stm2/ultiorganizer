@@ -187,7 +187,7 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     echo "</div><!--page_top-->\n";
     
     // navigation bar
-    echo "<div class='navigation_bar'><p class='navigation_bar_text'>";
+    echo "<div class='breadcrumbs'><p class='breadcrumbs_text'>";
     echo navigationBar($title) . "</p></div>";
   }
   
@@ -441,11 +441,11 @@ function seasonSelection() {
 
 function pageMainStart($printable = false) {
   if ($printable) {
-    echo "<table style='width:100%;'><tr>";
+    echo "<table class='main_page_print'><tr>\n";
     return;
   }
   
-  echo "<table style='border:1px solid #fff;background-color: #ffffff;'><tr>\n";
+  echo "<table class='main_page'><tr>\n";
 }
 
 function startTable(&$status) {
@@ -579,7 +579,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   $curseason = CurrentSeason();
   
   echo "<table class='leftmenulinks'>\n";
-  if ($curseason <= 0) {
+  if ($curseason < 0) {
     echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("No seasons created")) . "</th></tr>\n";
   } else {
     $pools = getViewPools($curseason);

@@ -240,7 +240,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
   $style = "class='admintable";
 
   if($poolinfo['played']){
-    $style = "class='admintable playedpool'";
+    $style = "class='admintable tablelowlight'";
   }
   $ret .= "<table $style >\n";
   $ret .= "<tr><th>#</th><th style='width:200px'>"._("Team")."</th>";

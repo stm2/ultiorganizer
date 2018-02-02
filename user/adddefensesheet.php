@@ -359,30 +359,15 @@ echo "<tr><td colspan='2'><p><a href='?view=user/respgames'>"._("Back to game re
 echo "</table>\n";
 
 //scores
-$style_left = "border-left-style:solid;border-left-width:1px;border-left-color:#000000;";
-$style_left .= "border-right-style:dashed;border-right-width:1px;border-right-color:#E0E0E0;";
-$style_left .= "border-top-style:solid;border-top-width:1px;border-top-color:#000000;";
-$style_left .= "border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#000000;";
-
-$style_mid = "border-top-style:solid;border-top-width:1px;border-top-color:#000000;";
-$style_mid .= "border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#000000;";
-$style_mid .= "border-left-style:dashed;border-left-width:1px;border-left-color:#E0E0E0;";
-$style_mid .= "border-right-style:dashed;border-right-width:1px;border-right-color:#E0E0E0;";
-
-$style_right = "border-right-style:solid;border-right-width:1px;border-right-color:#000000;";
-$style_right .= "border-top-style:solid;border-top-width:1px;border-top-color:#000000;";
-$style_right .= "border-bottom-style:solid;border-bottom-width:1px;border-bottom-color:#000000;";
-$style_right .= "border-left-style:dashed;border-left-width:1px;border-left-color:#E0E0E0;";
 
 echo "</td><td>";
 echo "<table style='border-collapse:collapse' cellspacing='0' cellpadding='2' border='0'>\n";
-echo "<tr><th style='background-color:#FFFFFF;border-style:none;border-width:0;border-color:#FFFFFF'></th>";
+echo "<tr><td></td>";
 
-echo "<th style='$style_left'>"._("Home")."</th><th style='$style_mid'>"._("Away")."</th>";
-echo "<th style='$style_mid'>"._("Player")."</th><th style='$style_mid'>"._("Caught")."</th>";
-echo "<th style='$style_mid'>"._("Touched")."</th><th style='$style_mid'>"._("Callahan")."</th>";
-echo "<th style='$style_mid'>"._("Not callahan")."</th><th style='$style_right'>"._("Time")."</th>";
-//echo "<th style='$style_right'>"._("Score")."</th></tr>\n";
+echo "<th class='scoreinput bleft'>"._("Home")."</th><th class='scoreinput bmid'>"._("Away")."</th>";
+echo "<th class='scoreinput bmid'>"._("Player")."</th><th class='scoreinput bmid'>"._("Caught")."</th>";
+echo "<th class='scoreinput bmid'>"._("Touched")."</th><th class='scoreinput bmid'>"._("Callahan")."</th>";
+echo "<th class='scoreinput bmid'>"._("Not callahan")."</th><th class='scoreinput'>"._("Time")."</th>";
 
 $scores = GameDefenses($gameId);
 
@@ -391,46 +376,46 @@ while($row = mysqli_fetch_assoc($scores))
 	{
 	
 	echo "<tr>"; 
-	echo "<td class='center' style='width: 25px;color:#B0B0B0;'>",$i+1,"</td>\n";
+	echo "<td class='center lowlight'>",$i+1,"</td>\n";
 	
 	if (intval($row['ishomedefense']))
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='hteam$i' name='team$i' type='radio' checked='checked' value='H' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='ateam$i' name='team$i' type='radio' value='A' /></td>";			
+		echo "<td class='scoreinput bleft center'><input id='hteam$i' name='team$i' type='radio' checked='checked' value='H' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='ateam$i' name='team$i' type='radio' value='A' /></td>";			
 		}
 	else
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='hteam$i' name='team$i' type='radio' value='H' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='ateam$i' name='team$i' type='radio' checked='checked' value='A' /></td>";			
+		echo "<td class='scoreinput bleft center'><input id='hteam$i' name='team$i' type='radio' value='H' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='ateam$i' name='team$i' type='radio' checked='checked' value='A' /></td>";			
 		}
 	$n = PlayerNumber($row['author'],$gameId);
 	if($n < 0)
 		$n="";
 		
-	echo "<td class='center' style='width:50px;$style_mid'><input class='input' onkeyup=\"validNumber(this);\" id='defense$i' name='defense$i' maxlength='3' size='3' value='$n'/></td>";
+	echo "<td class='scoreinput bmid center'><input class='input' onkeyup=\"validNumber(this);\" id='defense$i' name='defense$i' maxlength='3' size='3' value='$n'/></td>";
 	if (intval($row['iscaught']))
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='caught$i' name='caught$i' type='radio' checked='checked' value='C' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='touched$i' name='caught$i' type='radio' value='T' /></td>";			
+		echo "<td class='scoreinput bleft center'><input id='caught$i' name='caught$i' type='radio' checked='checked' value='C' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='touched$i' name='caught$i' type='radio' value='T' /></td>";			
 		}
 	else
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='caught$i' name='caught$i' type='radio' value='C' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='touched$i' name='caught$i' type='radio' checked='checked' value='T' /></td>";			
+		echo "<td class='scoreinput bleft center'><input id='caught$i' name='caught$i' type='radio' value='C' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='touched$i' name='caught$i' type='radio' checked='checked' value='T' /></td>";			
 		}
 	if (intval($row['iscallahan']))
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='callahan$i' name='callahan$i' type='radio' checked='checked' value='L' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='notCallahan$i' name='callahan$i' type='radio' value='N' /></td>";
+		echo "<td class='scoreinput bleft center'><input id='callahan$i' name='callahan$i' type='radio' checked='checked' value='L' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='notCallahan$i' name='callahan$i' type='radio' value='N' /></td>";
 		}
 	else
 		{
-		echo "<td style='width:40px;$style_left' class='center'><input id='callahan$i' name='callahan$i' type='radio' value='L' /></td>";
-		echo "<td style='width:40px;$style_mid' class='center'><input id='notCallahan$i' name='callahan$i' type='radio' checked='checked' value='N' /></td>";
+		echo "<td class='scoreinput bleft center'><input id='callahan$i' name='callahan$i' type='radio' value='L' /></td>";
+		echo "<td class='scoreinput bmid center'><input id='notCallahan$i' name='callahan$i' type='radio' checked='checked' value='N' /></td>";
 		}
 	
 	
-	echo "<td style='width:60px;$style_mid'><input class='input' onkeyup=\"validTime(this);\" id='time$i' name='time$i' maxlength='8' size='8' value='". SecToMin($row['time']) ."'/></td>";
+	echo "<td class='scoreinput bmid'><input class='input' onkeyup=\"validTime(this);\" id='time$i' name='time$i' maxlength='8' size='5' value='". SecToMin($row['time']) ."'/></td>";
 	
 	echo "</tr>\n";
 	$i++;	
@@ -440,15 +425,15 @@ while($row = mysqli_fetch_assoc($scores))
 for($i;$i<$maxdefenses; $i++)
 	{
 	echo "<tr>"; 
-	echo "<td class='center' style='width:25px;color:#B0B0B0;'>",$i+1,"</td>\n";
-	echo "<td class='center' style='width:40px;$style_left'><input id='hteam$i' name='team$i' type='radio' value='H' /></td>";
-	echo "<td class='center' style='width:40px;$style_mid'><input id='ateam$i' name='team$i' type='radio' value='A' /></td>";			
-	echo "<td  class='center' style='width:50px;$style_mid'><input class='input' onkeyup=\"validNumber(this);\" id='defense$i' name='defense$i' size='3' maxlength='3'/></td>";
-	echo "<td style='width:40px;$style_left' class='center'><input id='caught$i' name='caught$i' type='radio' value='C' /></td>";
-	echo "<td style='width:40px;$style_mid' class='center'><input id='touched$i' name='caught$i' type='radio' value='T' /></td>";
-	echo "<td style='width:40px;$style_left' class='center'><input id='callahan$i' name='callahan$i' type='radio'  value='L' /></td>";
-	echo "<td style='width:40px;$style_mid' class='center'><input id='notCallahan$i' name='callahan$i' type='radio' value='N' /></td>";
-	echo "<td style='width:60px;$style_mid'><input class='input' onkeyup=\"validTime(this);\" id='time$i' name='time$i' maxlength='8' size='8'/></td>";
+	echo "<td class='center lowlight'>",$i+1,"</td>\n";
+	echo "<td class='scoreinput bleft center'><input id='hteam$i' name='team$i' type='radio' value='H' /></td>";
+	echo "<td class='scoreinput bmid center'><input id='ateam$i' name='team$i' type='radio' value='A' /></td>";			
+	echo "<td  class='scoreinput bmid center'><input class='input' onkeyup=\"validNumber(this);\" id='defense$i' name='defense$i' size='3' maxlength='3'/></td>";
+	echo "<td class='scoreinput bleft center'><input id='caught$i' name='caught$i' type='radio' value='C' /></td>";
+	echo "<td class='scoreinput bmid center'><input id='touched$i' name='caught$i' type='radio' value='T' /></td>";
+	echo "<td class='scoreinput bleft center'><input id='callahan$i' name='callahan$i' type='radio'  value='L' /></td>";
+	echo "<td class='scoreinput bmid center'><input id='notCallahan$i' name='callahan$i' type='radio' value='N' /></td>";
+	echo "<td class='scoreinput bmid'><input class='input' onkeyup=\"validTime(this);\" id='time$i' name='time$i' maxlength='8' size='5'/></td>";
 	
 	echo "</tr>\n";
 	}

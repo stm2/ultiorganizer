@@ -23,7 +23,7 @@ $goals = GameGoals($gameId);
 $gameevents = GameEvents($gameId);
 $mediaevents = GameMediaEvents($gameId);
 
-if(GameHasStarted($game_result) > 0){
+if(GameHasStarted($game_result)){
   $html .= "<h1>". utf8entities($game_result['hometeamname']);
   $html .= " - ";
   $html .= utf8entities($game_result['visitorteamname']);
@@ -142,7 +142,8 @@ if(GameHasStarted($game_result) > 0){
     }
 
     $html .= "<table border='1' style='height: 15px; color: white; border-width: 1; border-color: white; width: 100%;'><tr>\n";
-
+    
+    $columns = count($gameevents)||count($mediaevents)?6:5;
     $maxlength = 600;
     $latestHomeGoalTime = 0;
     $latestGuestGoalTime = 0;
@@ -175,7 +176,7 @@ if(GameHasStarted($game_result) > 0){
 
     $html .= "<table border='1' cellpadding='2' width='100%'>\n";
     $html .= "<tr><th>"._("Scores")."</th><th>"._("Assist")."</th><th>"._("Goal")."</th><th>"._("Time")."</th><th>"._("Dur.")."</th>";
-    if(count($gameevents)||count($mediaevents)){
+    if($columns > 5){
       $html .= "<th>"._("Game events ")."</th>";
     }
     $html .= "</tr>\n";
@@ -186,7 +187,7 @@ if(GameHasStarted($game_result) > 0){
     mysqli_data_seek($goals, 0);
     while($goal = mysqli_fetch_assoc($goals)){
       if (!$bHt && $game_result['halftime']>0 && $goal['time'] > $game_result['halftime']){
-        $html .= "<tr><td colspan='6' class='halftime'>"._("Half-time")."</td></tr>";
+        $html .= "<tr><td colspan='$columns' class='halftime'>"._("Half-time")."</td></tr>";
         $bHt = 1;
         $prevgoal = intval($game_result['halftime']);
       }
@@ -210,7 +211,7 @@ if(GameHasStarted($game_result) > 0){
 
       $html .= "<td>". SecToMin($duration) ."</td>";
 
-      if(count($gameevents) || count($mediaevents)){
+      if($columns>5){
         $html .= "<td>";
         //gameevents
         foreach($gameevents as $event){
@@ -252,15 +253,8 @@ if(GameHasStarted($game_result) > 0){
       $prevgoal = intval($goal['time']);
     }
     if(intval($game_result['isongoing'])){
-      $html .= "<tr style='border-style:dashed;border-width:1px;'>";
-      $html .= "<td>&nbsp;</td>";
-      $html .= "<td>&nbsp;</td>";
-      $html .= "<td>&nbsp;</td>";
-      $html .= "<td>&nbsp;</td>";
-      $html .= "<td>&nbsp;</td>";
-      if(count($gameevents) || count($mediaevents)){
-        $html .= "<td>&nbsp;</td>";
-      }
+      $html .= "<tr >";
+      $html .= "<td class='halftime' colspan='$columns'>" . _("ongoing") . "</td>";
       $html .= "</tr>";
     }
     $html .= "</table>\n";

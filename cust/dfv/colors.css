@@ -1,0 +1,59 @@
+:root {
+  --fgcolor: #000000;
+  --bgcolor: #ffffff;
+  
+  --headercolor: #094aa0;
+  --shadecolor: #acd1e9;
+  --hishadecolor: #eeeeff;
+  --attentioncolor: #ffb6c1;
+  
+  --lowlightcolor: #a0a0a0;
+  --warningcolor: #ff0000;
+
+  --hardbordercolor : #333;
+  --softbordercolor: #464646;
+  --lightbordercolor : #eeeedd;
+
+  --breadcrumbscolor: var(--fgcolor);
+  --breadcrumbsbgcolor: var(--bgcolor);
+
+  --fadedfgcolor: #666;
+
+  --thfgcolor: #ffffff;
+
+  --posvaluecolor: #2f5721;
+  --negvaluecolor: #6b1a1a;
+
+  --calheadercolor: var(--headercolor);
+  
+  --tablelowlightcolor: #e0e0f0;
+  
+  --draglistcolor: #f7f7f7;
+  --draglistitemcolor: #d1e6ec;
+  --draglistbordercolor: #7ea6b2;
+  --scheduleitemcolor: #aaaaaa;
+  
+  --homecolor: #ffffff;
+  --homebgcolor: #008888;
+  --guestcolor: #ffffff;
+  --guestbgcolor: #00aaaa;
+  
+  --linkcolor: #004466;
+  --vlinkcolor: #004466;
+  --hlinkcolor: #004466;
+  
+  --thlinkcolor: var(--hishadecolor);
+  --thvlinkcolor: var(--hishadecolor);
+  --thhlinkcolor: var(--shadecolor);
+  
+  --currentlinkcolor: #986598;
+  
+  --navlinkcolor: #2d2d2d;
+  --navlinkbgcolor: inherit;
+  --navhlinkcolor: #2d2d2d;
+  --navhlinkbgcolor: var(--hishadecolor);
+  
+  --thcolor: var(--bgcolor);
+  --thbgcolor: var(--headercolor);
+  --tableheadhicolor: var(--shadecolor);
+}

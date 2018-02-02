@@ -122,9 +122,9 @@ if($nGames){
 
   $viewUrl="?view=gamecard&amp;team1=$teamId1&amp;team2=$teamId2&amp;";
 
-  $html .= "<th><a class='thsort' href='".$viewUrl."sort=team'>"._("Game")."</a></th>";
-  $html .= "<th><a class='thsort' href='".$viewUrl."sort=result'>"._("Result")."</a></th>";
-  $html .= "<th><a class='thsort' href='".$viewUrl."sort=series'>"._("Division")."</a></th></tr>";
+  $html .= "<th><a class='thlink' href='".$viewUrl."sort=team'>"._("Game")."</a></th>";
+  $html .= "<th><a class='thlink' href='".$viewUrl."sort=result'>"._("Result")."</a></th>";
+  $html .= "<th><a class='thlink' href='".$viewUrl."sort=series'>"._("Division")."</a></th></tr>";
 
   $points=array(array());
   mysqli_data_seek($games, 0);
@@ -192,7 +192,7 @@ if($nGames){
     mergesort($points, create_function('$b,$a','return strcmp($b[1],$a[1]);'));
     $sorted = true;
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=pname'>"._("Player")."</a></th>";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=pname'>"._("Player")."</a></th>";
   }
 
   if($sorting == "pteam"){
@@ -200,7 +200,7 @@ if($nGames){
     mergesort($points, create_function('$b,$a','return strcmp($b[2],$a[2]);'));
     $sorted = true;
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=pteam'>"._("Team")."</a></th>";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=pteam'>"._("Team")."</a></th>";
   }
 
   if($sorting == "pgames"){
@@ -208,7 +208,7 @@ if($nGames){
     mergesort($points, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);'));
     $sorted = true;
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=pgames'>"._("Games")."</a></th>";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=pgames'>"._("Games")."</a></th>";
   }
 
   if($sorting == "ppasses"){
@@ -216,7 +216,7 @@ if($nGames){
     mergesort($points, create_function('$a,$b','return $a[4]==$b[4]?0:($a[4]>$b[4]?-1:1);'));
     $sorted = true;
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=ppasses'>"._("Assists")."</a></th>";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=ppasses'>"._("Assists")."</a></th>";
   }
 
   if($sorting == "pgoals"){
@@ -224,14 +224,14 @@ if($nGames){
     mergesort($points, create_function('$a,$b','return $a[5]==$b[5]?0:($a[5]>$b[5]?-1:1);'));
     $sorted = true;
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=pgoals'>"._("Goals")."</a></th>";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=pgoals'>"._("Goals")."</a></th>";
   }
    
   if(($sorting == "ptotal")||(!$sorted)){
     $html .= "<th><b>"._("Tot.")."</b></th></tr>\n";
     mergesort($points, create_function('$a,$b','return $a[6]==$b[6]?0:($a[6]>$b[6]?-1:1);'));
   }else{
-    $html .= "<th><a class='thsort' href='".$viewUrl."sort=ptotal'>"._("Tot.")."</a></th></tr>\n";
+    $html .= "<th><a class='thlink' href='".$viewUrl."sort=ptotal'>"._("Tot.")."</a></th></tr>\n";
   }
    
 

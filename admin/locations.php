@@ -352,16 +352,14 @@ contentStart();
     <input type="button" onclick="addLocation()" value="<?php echo _("Add"); ?>"/>
     <br/>    
     <br/>
-<div style="width:600px; font-family:Arial, 
-sans-serif; font-size:11px; border:1px solid black">
+<div class='map_container'>
   <table> 
     <tbody> 
-      <tr id="cm_mapTR">
-
-        <td style="width:200px; valign:top"> <div id="sidebar" style="overflow: auto; height: 400px; font-size: 11px; color: #000"></div>
+      <tr id='cm_mapTR'>
+        <td class='sidebar'> <div class='sidebar' id='sidebar'></div>
 
         </td>
-        <td> <div id="map" style="overflow: hidden; width:400px; height:400px"></div> </td>
+        <td class='map'> <div class='map' id="map"></div> </td>
 
       </tr> 
     </tbody>

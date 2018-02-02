@@ -24,11 +24,6 @@ body {
   line-height: 1;
 }
 
-ol, ul {
-  /*list-style: none;*/
-  
-}
-
 li {
   margin-left: 1ex;
   list-style-position: inside;
@@ -48,13 +43,14 @@ table {
   border-spacing: 0;
 }
 /* end reset */
+
 body {
-  background-color: #e8f0f8;
+  background-color: var(--hishadecolor, #e8e8e8);
   font-family: Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
 
 p {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 10px;
   text-align: left;
   text-decoration: none;
@@ -68,37 +64,33 @@ table {
 }
 
 th {
-  color: #ffffff;
+  color: var(--thcolor, #ffffff);
+  background-color: var(--thbgcolor, #006699);
   font-size: 10px;
   text-align: left;
   text-decoration: none;
-  background-color: #094aa0;
   padding: 1px;
 }
 
 th a:link, th a:visited {
-  color: #ffffff;
+  color: var(--thlinkcolor, #ffffff);
   font-size: 10px;
   text-align: left;
   text-decoration: underline;
 }
 
-td {
-  color: #000000;
-  font-size: 10px;
-  text-align: left;
-  text-decoration: none;
+th a:visited {
+  color: var(--thvlinkcolor, #ffffff);
 }
 
-p {
-  color: #000000;
+td {
   font-size: 10px;
   text-align: left;
   text-decoration: none;
 }
 
 h1 {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 10pt;
   line-height: 12pt;
   font-weight: bold;
@@ -106,7 +98,7 @@ h1 {
 }
 
 h2 {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 9pt;
   line-height: 12pt;
   font-weight: bold;
@@ -117,7 +109,7 @@ h2 ~ h2 {
 }
 
 h3 {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 8pt;
   line-height: 10pt;
   font-weight: bold;
@@ -128,7 +120,7 @@ h3 ~ h3 {
 }
 
 h4 {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 8pt;
   text-align: left;
   text-decoration: none;
@@ -142,13 +134,18 @@ h4 ~ h4 {
 }
 
 a:link, a:visited {
-  color: #004466;
+  color: var(--linkcolor, #004466);
   font-size: 10px;
   text-align: left;
   text-decoration: none;
 }
 
+a:visited {
+  color: var(--vlinkcolor, #004466);
+}
+
 a:hover, a:focus {
+  color: var(--hlinkcolor, #inherit);
   text-decoration: underline;
 }
 
@@ -163,5 +160,5 @@ button {
 
 a.current {
   font-weight: bold;
-  background-color: #d00000;
+  background-color: var(--currentlinkcolor, #d00000);
 }

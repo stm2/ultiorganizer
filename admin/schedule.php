@@ -353,7 +353,7 @@ echo "</tr>\n</table>\n";
 echo "<p>&nbsp;</p>";
 echo "<input type='button' id='pauseButton' value='"._("Add pause")."'/>";
 echo "<div style='white-space:nowrap'><input type='text' id='pauseLen' value='$maxtimeslot' size='3'/>&thinsp;". _("minutes")."</div>\n";
-echo "</td><td style='vertical-align:top'>\n";
+echo "</td><td class='tdcontent' style='vertical-align:top'>\n";
 $reservedPauses = array();
 
 $MINTOP = 30;

@@ -248,7 +248,7 @@ foreach ($pools as $spool) {
   $style = "class='admintable'";
   
   if ($poolinfo['played']) {
-    $style = "class='playedpool admintable'";
+    $style = "class='admintable tablelowlight'";
   }
   
   if ($poolinfo['type'] == 3) { // Swissdraw

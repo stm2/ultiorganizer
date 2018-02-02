@@ -538,9 +538,9 @@ if(mysqli_num_rows($played)){
 
   $html .= "<table border='1' cellspacing='2' width='100%'><tr>";
 
-  $html .= "<th><a class='thsort' href=\"".$viewUrl."sort=team\">"._("Team")."</a></th>";
-  $html .= "<th><a class='thsort' href=\"".$viewUrl."sort=result\">"._("Result")."</a></th>";
-  $html .= "<th><a class='thsort' href=\"".$viewUrl."sort=serie\">"._("Division")."</a></th></tr>";
+  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=team\">"._("Team")."</a></th>";
+  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=result\">"._("Result")."</a></th>";
+  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=serie\">"._("Division")."</a></th></tr>";
   $curSeason = Currentseason();
 
   while($row = mysqli_fetch_assoc($played))
