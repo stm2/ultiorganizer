@@ -50,6 +50,9 @@ function CloseConnection() {
  * Checks if there is need to update database and execute upgrade functions.
  */
 function CheckDB() {
+  global $include_prefix;
+  require_once $include_prefix . 'lib/configuration.functions.php';
+  
   $installedDb = getDBVersion();
   for ($i = $installedDb; $i <= DB_VERSION; $i++) {
     $upgradeFunc = 'upgrade'.$i;

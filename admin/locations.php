@@ -3,6 +3,7 @@ include_once 'menufunctions.php';
 include_once 'lib/location.functions.php';
 include_once 'lib/configuration.functions.php';
 
+$season = -1;
 if(!empty($_GET["season"])) {
 	$season = $_GET["season"];
 }

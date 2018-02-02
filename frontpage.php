@@ -13,8 +13,10 @@ $htmlfile = 'locale/'.getSessionLocale().'/LC_MESSAGES/welcome.html';
 
 if (is_file('cust/'.CUSTOMIZATIONS.'/'.$htmlfile)) {
   $html .= file_get_contents('cust/'.CUSTOMIZATIONS.'/'. $htmlfile);
-}else{
+}else if (is_file($htmlfile)) {
   $html .= file_get_contents($htmlfile);
+} else {
+  $html .= "<h2>" . _("Welcome to Ultiorganizer") ."</h2>\n";
 }
 
 $html .= "<p>";

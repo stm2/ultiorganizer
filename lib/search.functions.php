@@ -522,15 +522,16 @@ function UserResults() {
       $query = "SELECT name as user_name, userid, last_login, email FROM uo_users ";
     }
     
+    $selected = array();
     if (!empty($_POST['searchseasons'])) {
       $selected = array_flip($_POST['searchseasons']);
     } elseif (!empty($GET['Season'])) {
       $selected = array($GET['Season'] => 'selected');
-    } else {
+    } else if (isset($_SESSION['userproperties']['editseason'])){
       $selected = $_SESSION['userproperties']['editseason'];
     }
     $criteria = "";
-    if (!empty($_POST['useseasons'])) {
+    if (!empty($_POST['useseasons']) && !empty($selected)) {
       $criteria = "(userid in (select userid from uo_userproperties where name='editseason' and value in (";
       foreach ($selected as $seasonid => $prop) {
         $criteria .= "'".mysql_adapt_real_escape_string($seasonid)."', ";
@@ -546,10 +547,16 @@ function UserResults() {
       $criteria .= "(userid in (select userid from uo_userproperties where name='userrole' ";
       $criteria .= "and value like 'teamadmin:%' and substring_index(value, ':', -1) in ";
       $criteria .= "(select team_id from uo_team where series in ";
-      $criteria .= "(select series_id from uo_series where season in ("; 
-      foreach ($selected as $seasonid => $value) {
-        $criteria .= "'".mysql_adapt_real_escape_string($seasonid)."', ";
+      
+      $seasonclause = "";
+      if (!empty($selected)) {
+        $seasonclause = " season in (";
+        foreach ($selected as $seasonid => $value) {
+          $seasonclause .= "'" . mysql_adapt_real_escape_string($seasonid) . "', ";
+        }
       }
+      $criteria .= "(select series_id from uo_series $seasonclause where ";
+      
       $criteria = substr($criteria, 0, strlen($criteria) - 2);
       $criteria .= ")) and name like '%".mysql_adapt_real_escape_string($_POST['teamname'])."%')))";
     }

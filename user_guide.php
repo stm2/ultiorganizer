@@ -8,8 +8,10 @@ $htmlfile = 'locale/'.getSessionLocale().'/LC_MESSAGES/user_guide.html';
 
 if (is_file('cust/'.CUSTOMIZATIONS.'/'.$htmlfile)) {
   $html .= file_get_contents('cust/'.CUSTOMIZATIONS.'/'. $htmlfile);
-}else{
+}else if (is_file($htmlfile)){
   $html .= file_get_contents($htmlfile);
+} else {
+  $html .= "<p>" . _("Sorry, userguide not available for your language.") . "</p>";
 }
 
 $querystring = $_SERVER['QUERY_STRING'];

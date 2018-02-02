@@ -1,5 +1,6 @@
 <?php
 $serverConf = GetSimpleServerConf();
+global $locales;
 $locales = getAvailableLocalizations();
 
 $twitterConfKeys = array("TwitterConsumerKey", "TwitterConsumerSecret", "TwitterOAuthCallback");

@@ -1,10 +1,10 @@
 <?php
-include_once $include_prefix.'lib/season.functions.php';
-include_once $include_prefix.'lib/game.functions.php';
-include_once $include_prefix.'lib/statistical.functions.php';
+include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/game.functions.php';
+include_once $include_prefix . 'lib/statistical.functions.php';
 
-if (is_file('cust/'.CUSTOMIZATIONS.'/head.php')) {
-  include_once 'cust/'.CUSTOMIZATIONS.'/head.php';
+if (is_file('cust/' . CUSTOMIZATIONS . '/head.php')) {
+  include_once 'cust/' . CUSTOMIZATIONS . '/head.php';
 } else {
   include_once 'cust/default/head.php';
 }
@@ -12,8 +12,10 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/head.php')) {
 /**
  * Shows html content with ultiorganizer menus and layout.
  *
- * @param string $title page's title
- * @param string $html page's content
+ * @param string $title
+ *          page's title
+ * @param string $html
+ *          page's content
  */
 function showPage($title, $html, $mobile = false) {
   if ($mobile) {
@@ -33,12 +35,14 @@ function showPage($title, $html, $mobile = false) {
 /**
  * Shows html content without ultiorganizer menus and layout.
  *
- * @param string $title page's title
- * @param string $html page's content
+ * @param string $title
+ *          page's title
+ * @param string $html
+ *          page's content
  */
 function showPrintablePage($title, $html) {
-  pageTop($title,true);
-  leftMenu(0,true,true);
+  pageTop($title, true);
+  leftMenu(0, true, true);
   contentStart();
   echo $html;
   contentEnd();
@@ -48,140 +52,146 @@ function showPrintablePage($title, $html) {
 /**
  * Produce html code for page top.
  *
- * @param string $title - title of the page
- * @param boolean $printable - if true then no header produced.
+ * @param string $title
+ *          - title of the page
+ * @param boolean $printable
+ *          - if true then no header produced.
  */
-function pageTop($title, $printable=false) {
+function pageTop($title, $printable = false) {
   pageTopHeadOpen($title);
   pageTopHeadClose($title, $printable);
 }
 
 /**
- * HTML code with page meta information. Leaves <head> tag open.
+ * HTML code with page meta information.
+ * Leaves <head> tag open.
  *
- * @param string $title - the page title
+ * @param string $title
+ *          - the page title
  */
 function pageTopHeadOpen($title) {
   global $include_prefix;
   $lang = explode("_", getSessionLocale());
   $lang = $lang[0];
-  $icon = $include_prefix."cust/".CUSTOMIZATIONS."/favicon.png";
-   
+  $icon = $include_prefix . "cust/" . CUSTOMIZATIONS . "/favicon.png";
+  
   echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
-		<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='".$lang."' lang='".$lang."'";
+		<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='" . $lang . "' lang='" . $lang . "'";
   global $serverConf;
   if (IsFacebookEnabled()) {
     echo "\n		xmlns:fb=\"http://www.facebook.com/2008/fbml\"";
-
   }
   echo ">\n<head>
 		<meta http-equiv=\"Content-Style-Type\" content=\"text/css\"/>
 		<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\"/>";
-  //no cache
+  // no cache
   echo "<meta http-equiv=\"Pragma\" content=\"no-cache\"/>";
   echo "<meta http-equiv=\"Expires\" content=\"-1\"/>";
-
-  echo	"<link rel='icon' type='image/png' href='$icon' />
-		<title>". GetPageTitle(). "" .$title."</title>\n";
-  echo styles();
-  include $include_prefix.'script/common.js.inc';
-  global $include_prefix;
-  include_once $include_prefix.'script/help.js.inc';
   
+  echo "<link rel='icon' type='image/png' href='$icon' />
+		<title>" . GetPageTitle() . "" . $title . "</title>\n";
+  echo styles();
+  include $include_prefix . 'script/common.js.inc';
+  global $include_prefix;
+  include_once $include_prefix . 'script/help.js.inc';
 }
-
 
 /**
  * HTML code for header and navigation bar.
  *
- * @param string $title - title of the page
- * @param boolean $printable - if true then no header produced.
- * @param string $bodyfunctions - insert additional attributes/functions in body tag
+ * @param string $title
+ *          - title of the page
+ * @param boolean $printable
+ *          - if true then no header produced.
+ * @param string $bodyfunctions
+ *          - insert additional attributes/functions in body tag
  */
-function pageTopHeadClose($title, $printable=false, $bodyfunctions=""){
-
-  if(isset($_SESSION['uid'])) {
+function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
+  if (isset($_SESSION['uid'])) {
     $user = $_SESSION['uid'];
   } else {
     $user = "anonymous";
   }
-
+  
   if ((!empty($_GET['view']) && $_GET['view'] == 'logout') || !isset($_SERVER['QUERY_STRING'])) {
     $query_string = "view=frontpage";
   } else {
     $query_string = $_SERVER['QUERY_STRING'];
   }
-
+  
   global $serverConf;
   global $styles_prefix;
   global $include_prefix;
-
+  
   if (!isset($styles_prefix)) {
     $styles_prefix = $include_prefix;
   }
-
-  echo "</head><body style='overflow-y:scroll;' ".$bodyfunctions.">\n";
+  
+  echo "</head><body style='overflow-y:scroll;' " . $bodyfunctions . ">\n";
   echo "<div class='page'>\n";
-
-  if(!$printable)	{
+  
+  if (!$printable) {
     echo "<div class='page_top'>\n";
-
+    
     echo "<div class='top_banner_space'></div>\n";
-    echo "<form action='?".utf8entities($query_string)."' method='post'>\n";
+    echo "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
     echo "<table border='0' cellpadding='0' cellspacing='0' style='width:100%;white-space: nowrap;'><tr>\n";
-
-    //top header left part can be customized
+    
+    // top header left part can be customized
     echo "<td class='topheader_left'>\n";
     echo pageHeader();
     echo "</td><!--topheader_left-->";
-
-    //top header right part contains common elements
+    
+    // top header right part contains common elements
     echo "<td class='topheader_right'>";
     echo "<table border='0' cellpadding='0' cellspacing='0' style='width:95%;white-space: nowrap;'>\n";
-
-    //1st row: Locale selection
+    
+    // 1st row: Locale selection
     echo "<tr>";
-    echo "<td class='right' style='vertical-align:top;'>".localeSelection()."</td>";
+    echo "<td class='right' style='vertical-align:top;'>" . localeSelection() . "</td>";
     echo "</tr>";
-
-    //2nd row: User Log in
+    
+    // 2nd row: User Log in
     echo "<tr>\n";
     echo "<td class='right' style='padding-top:5px'>";
-
+    
     if (IsFacebookEnabled() && $user == 'anonymous') {
       echo "<div id='fb-root'></div>\n";
       echo "<fb:login-button perms='email,publish_stream,offline_access'/>\n";
     }
-
+    
     if ($user == 'anonymous') {
       echo "<input class='input' type='text' id='myusername' name='myusername' size='10' style='border:1px solid #555555'/>&nbsp;";
       echo "<input class='input' type='password' id='mypassword' name='mypassword' size='10' style='border:1px solid #555555'/>&nbsp;";
-      echo "<input class='button' type='submit' name='login' value='".utf8entities(_("Login"))."' style='border:1px solid #000000'/>";
+      echo "<input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
+         "' style='border:1px solid #000000'/>";
     } else {
       $userinfo = UserInfo($user);
-      echo "<span class='topheadertext'>".utf8entities(_("User")).": <a class='topheaderlink' href='?view=user/userinfo'>".utf8entities($userinfo['name'])."</a></span>";
+      echo "<span class='topheadertext'>" . utf8entities(_("User")) .
+         ": <a class='topheaderlink' href='?view=user/userinfo'>" . utf8entities($userinfo['name']) . "</a></span>";
     }
-
+    
     echo "&nbsp;";
-
+    
     if ($user == 'anonymous') {
-      echo "<span class='topheadertext'><a class='topheaderlink' href='?view=register'>".utf8entities(_("New user?"))."</a></span>";
-    }else{
-      echo "<span class='topheadertext'><a class='topheaderlink' href='?view=logout'>&raquo; ".utf8entities(_("Logout"))."</a></span>";
+      echo "<span class='topheadertext'><a class='topheaderlink' href='?view=register'>" . utf8entities(_("New user?")) .
+         "</a></span>";
+    } else {
+      echo "<span class='topheadertext'><a class='topheaderlink' href='?view=logout'>&raquo; " .
+         utf8entities(_("Logout")) . "</a></span>";
     }
     echo "</td></tr>\n";
     echo "</table>";
     echo "</td></tr></table>";
     echo "</form>\n";
     echo "</div><!--page_top-->\n";
-
-    //navigation bar
+    
+    // navigation bar
     echo "<div class='navigation_bar'><p class='navigation_bar_text'>";
-    echo navigationBar($title)."</p></div>";
+    echo navigationBar($title) . "</p></div>";
   }
-
+  
   echo "<div class='page_middle'>\n";
-
 }
 
 /**
@@ -217,17 +227,17 @@ function pageEnd() {
       FB.Event.subscribe('auth.login', function(response) {
         window.location.reload();
       });
-    </script>";	
+    </script>";
   }
   echo "<div class='page_bottom'></div>";
   echo "</div></body></html>";
 }
 
-
 /**
  * Adds on page help.
  *
- * @param string $html - html-text shown when help button pressed.
+ * @param string $html
+ *          - html-text shown when help button pressed.
  */
 function onPageHelpAvailable($html) {
   return "<div style='float:right;'>
@@ -235,22 +245,22 @@ function onPageHelpAvailable($html) {
 	<div id='helptext' class='yui-pe-content'>$html<hr/></div>";
 }
 
-
 /**
  * Top of Mobile page.
  *
- * @param String $title - page title
+ * @param String $title
+ *          - page title
  */
 function mobilePageTop($title) {
   pageTopHeadOpen($title);
-
+  
   echo "</head><body style='overflow-y:scroll;'>\n";
   echo "<div class='mobile_page'>\n";
 }
 
-function mobilePageEnd($query="") {
-  if ($query=="")
-    $query=$_SERVER['QUERY_STRING'];
+function mobilePageEnd($query = "") {
+  if ($query == "")
+    $query = $_SERVER['QUERY_STRING'];
   if (!isset($_SESSION['uid']) || $_SESSION['uid'] == "anonymous") {
     
     $html = "<form action='?" . utf8entities($query) . "' method='post'>\n";
@@ -272,7 +282,7 @@ function mobilePageEnd($query="") {
     $html .= "</td></tr>\n";
     $html .= "</table>\n";
     $html .= "</form>";
-  }else {
+  } else {
     if ($query != "") {
       header($query);
     }
@@ -309,38 +319,40 @@ function mobilePageEnd($query="") {
  */
 function localeSelection() {
   global $locales;
-
+  
   $ret = "";
-
+  
   foreach ($locales as $localestr => $localename) {
     $query_string = StripFromQueryString($_SERVER['QUERY_STRING'], "locale");
     $query_string = StripFromQueryString($query_string, "goindex");
-    $ret .= "<a href='?".utf8entities($query_string)."&amp;";
-    $ret .= "locale=".$localestr."'><img class='localeselection' src='locale/".$localestr."/flag.png' alt='".utf8entities($localename)."'/></a>\n";
+    $ret .= "<a href='?" . utf8entities($query_string) . "&amp;";
+    $ret .= "locale=" . $localestr . "'><img class='localeselection' src='locale/" . $localestr . "/flag.png' alt='" .
+       utf8entities($localename) . "'/></a>\n";
   }
-
+  
   return $ret;
 }
 
 /**
  * Navigation bar functionality and html-code.
  *
- * @param string $title - page title
+ * @param string $title
+ *          - page title
  */
 function navigationBar($title) {
   $ret = "";
   $ptitle = "";
-  if(isset($_SERVER['QUERY_STRING']))
-  $query_string = $_SERVER['QUERY_STRING'];
+  if (isset($_SERVER['QUERY_STRING']))
+    $query_string = $_SERVER['QUERY_STRING'];
   else
-  $query_string = "";
-
+    $query_string = "";
+  
   if (isset($_GET['goindex']) && $_GET['goindex'] > 1 && isset($_SESSION['navigation'])) {
     $goindex = $_GET['goindex'];
     $count = count($_SESSION['navigation']);
     $i = 0;
     foreach ($_SESSION['navigation'] as $pview => $ptitle) {
-
+      
       if ($i >= $goindex) {
         unset($_SESSION['navigation'][$pview]);
       }
@@ -352,19 +364,19 @@ function navigationBar($title) {
     if (!isset($_SESSION['navigation'])) {
       if (strlen($query_string) == 0 || (isset($_GET['view']) && $_GET['view'] == 'logout')) {
         $_SESSION['navigation'] = array("view=frontpage" => _("Homepage"));
-      } elseif(!empty($title)){
+      } elseif (!empty($title)) {
         $_SESSION['navigation'] = array($query_string => $title);
       }
     } else {
       if (strlen($query_string) == 0) {
         $_SESSION['navigation']["view=frontpage"] = _("Homepage");
-      } elseif(!empty($title)){
+      } elseif (!empty($title)) {
         unset($_SESSION['navigation'][$query_string]);
-
-        //if previous view was having same title, remove it. e.g. when navigating back and forth in profiles or in case of sorting pages trough url parameter
+        
+        // if previous view was having same title, remove it. e.g. when navigating back and forth in profiles or in case of sorting pages trough url parameter
         $lastvalue = end($_SESSION['navigation']);
-        if($lastvalue){
-          if($lastvalue == $title){
+        if ($lastvalue) {
+          if ($lastvalue == $title) {
             $tmp_keys = array_keys($_SESSION['navigation']);
             $lastkey = end($tmp_keys);
             unset($_SESSION['navigation'][$lastkey]);
@@ -374,13 +386,13 @@ function navigationBar($title) {
       }
     }
   }
-
-  $i=1;
+  
+  $i = 1;
   $needsdots = false;
   if (isset($_SESSION['navigation'])) {
-
+    
     foreach ($_SESSION['navigation'] as $view => $ptitle) {
-
+      
       if ($i < count($_SESSION['navigation'])) {
         if ($i > 1 && $i < (count($_SESSION['navigation']) - 3)) {
           $needsdots = true;
@@ -389,54 +401,57 @@ function navigationBar($title) {
             $ret .= "... &raquo; ";
             $needsdots = false;
           }
-          $ret .= "<a href='?".utf8entities($view)."&amp;goindex=".$i."'>".$ptitle."</a> &raquo; ";
+          $ret .= "<a href='?" . utf8entities($view) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; ";
         }
       }
       $i++;
     }
   }
-  $ret = $ret." ".$ptitle;
-
+  $ret = $ret . " " . $ptitle;
+  
   return $ret;
 }
 
 /**
  * Season selection html-code.
  */
-function seasonSelection(){
+function seasonSelection() {
   $seasons = CurrentSeasons();
-  if(mysqli_num_rows($seasons)>1){
+  if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=index' method='get' id='seasonsels'>";
     echo "<div><select class='seasondropdown' name='selseason'
 			onchange='changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
-    while($row = mysqli_fetch_assoc($seasons)){
+    while ($row = mysqli_fetch_assoc($seasons)) {
       $selected = "";
-      if (isset($_SESSION['userproperties']['selseason']) && $_SESSION['userproperties']['selseason']==$row['season_id']) {
+      if (isset($_SESSION['userproperties']['selseason']) && $_SESSION['userproperties']['selseason'] ==
+         $row['season_id']) {
         $selected = "selected='selected'";
       }
-      echo  "<option class='dropdown' $selected value='".utf8entities($row['season_id'])."'>". SeasonName($row['season_id']) ."</option>";
+      echo "<option class='dropdown' $selected value='" . utf8entities($row['season_id']) . "'>" .
+         SeasonName($row['season_id']) . "</option>";
     }
     echo "</select>";
-    echo "<noscript><div><input type='submit' value='".utf8entities(_("Go"))."' name='selectseason'/></div></noscript>";
+    echo "<noscript><div><input type='submit' value='" . utf8entities(_("Go")) .
+       "' name='selectseason'/></div></noscript>";
     echo "</div></form>";
     echo "</td></tr></table>";
   }
 }
 
-function pageMainStart($printable=false) {
-  if($printable) {
+function pageMainStart($printable = false) {
+  if ($printable) {
     echo "<table style='width:100%;'><tr>";
     return;
   }
-
+  
   echo "<table style='border:1px solid #fff;background-color: #ffffff;'><tr>\n";
 }
 
 function startTable(&$status) {
   if (!$status) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Administration"))."</th></tr>\n";
+    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Administration")) . "</th></tr>\n";
     echo "<tr><td>\n";
   }
   $status = true;
@@ -451,48 +466,48 @@ function endTable($status) {
 /**
  * Creates menus on left side of page.
  *
- * @param int $id - page id (not used now days)
- * @param boolean $printable - if true, menu is not drawn.
+ * @param int $id
+ *          - page id (not used now days)
+ * @param boolean $printable
+ *          - if true, menu is not drawn.
  */
-function leftMenu($id=0, $pagestart=true, $printable=false) {
-
+function leftMenu($id = 0, $pagestart = true, $printable = false) {
   if ($pagestart) {
     pageMainStart($printable);
   }
   echo "<td class='menu_left'>";
-
+  
   // Administration menu
-  if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {
-  }
-  $leftmenu=0;
+  if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {}
+  $leftmenu = 0;
   if (isSuperAdmin()) {
     startTable($leftmenu);
-    echo "<a class='subnav' href='?view=admin/seasons'>&raquo; ".utf8entities(_("Events"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/serieformats'>&raquo; ".utf8entities(_("Rule templates"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/clubs'>&raquo; ".utf8entities(_("Clubs & Countries"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/locations'>&raquo; ".utf8entities(_("Field locations"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/reservations'>&raquo; ".utf8entities(_("Field reservations"))."</a>\n";
+    echo "<a class='subnav' href='?view=admin/seasons'>&raquo; " . utf8entities(_("Events")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/serieformats'>&raquo; " . utf8entities(_("Rule templates")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/clubs'>&raquo; " . utf8entities(_("Clubs & Countries")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/locations'>&raquo; " . utf8entities(_("Field locations")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/reservations'>&raquo; " . utf8entities(_("Field reservations")) . "</a>\n";
   }
   if (hasScheduleRights()) {
     startTable($leftmenu);
-    echo "<a class='subnav' href='?view=admin/schedule'>&raquo; ".utf8entities(_("Scheduling"))."</a>";
+    echo "<a class='subnav' href='?view=admin/schedule'>&raquo; " . utf8entities(_("Scheduling")) . "</a>";
   }
-
+  
   if (hasTranslationRight()) {
     startTable($leftmenu);
-    echo "<a class='subnav' href='?view=admin/translations'>&raquo; ".utf8entities(_("Translations"))."</a>\n";
+    echo "<a class='subnav' href='?view=admin/translations'>&raquo; " . utf8entities(_("Translations")) . "</a>\n";
   }
   if (isSuperAdmin()) {
     startTable($leftmenu);
-    echo "<a class='subnav' href='?view=admin/users'>&raquo; ".utf8entities(_("Users"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/eventviewer'>&raquo; ".utf8entities(_("Logs"))."</a>\n";
-    //echo "<a class='subnav' href='?view=admin/sms'>&raquo; ".utf8entities(_("SMS"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/dbadmin'>&raquo; ".utf8entities(_("Database"))."</a>\n";
-    echo "<a class='subnav' href='?view=admin/serverconf'>&raquo; ".utf8entities(_("Settings"))."</a>\n";
+    echo "<a class='subnav' href='?view=admin/users'>&raquo; " . utf8entities(_("Users")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/eventviewer'>&raquo; " . utf8entities(_("Logs")) . "</a>\n";
+    // echo "<a class='subnav' href='?view=admin/sms'>&raquo; ".utf8entities(_("SMS"))."</a>\n";
+    echo "<a class='subnav' href='?view=admin/dbadmin'>&raquo; " . utf8entities(_("Database")) . "</a>\n";
+    echo "<a class='subnav' href='?view=admin/serverconf'>&raquo; " . utf8entities(_("Settings")) . "</a>\n";
   }
-
+  
   endTable($leftmenu);
-
+  
   if ($_SESSION['uid'] != 'anonymous') {
     echo "<table class='leftmenulinks'>\n";
     echo "<tr><td>\n";
@@ -501,43 +516,45 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
     echo "</table>\n";
   }
   
-  //Event administration menu
+  // Event administration menu
   $editlinks = getEditSeasonLinks();
   if (count($editlinks)) {
     foreach ($editlinks as $season => $links) {
       echo "<table class='leftmenulinks'>\n";
-      echo "<tr><th class='menuseasonlevel'>".utf8entities(SeasonName($season))." ".utf8entities(_("Administration"))."</th>";
+      echo "<tr><th class='menuseasonlevel'>" . utf8entities(SeasonName($season)) . " " .
+         utf8entities(_("Administration")) . "</th>";
       echo "<td class='menuseasonlevel'><a style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
       echo "</tr><tr><td colspan='2'>\n";
       foreach ($links as $href => $name) {
         if (empty($href))
           echo "<hr />";
         else
-          echo "<a class='subnav' href='".$href."'>&raquo; ".utf8entities($name)."</a>\n";
+          echo "<a class='subnav' href='" . $href . "'>&raquo; " . utf8entities($name) . "</a>\n";
       }
       echo "</td></tr>\n";
       echo "</table>\n";
     }
   }
-
-  //Create new event menu
+  
+  // Create new event menu
   if (isSuperAdmin()) {
     echo "<table class='leftmenulinks'>\n";
     echo "<tr><td>\n";
-    echo "<a class='subnav' href='?view=admin/addseasons'>&raquo; ".utf8entities(_("Create new event"))."</a>\n";
+    echo "<a class='subnav' href='?view=admin/addseasons'>&raquo; " . utf8entities(_("Create new event")) . "</a>\n";
     echo "</td></tr>\n";
     echo "</table>\n";
   }
-
-  //Team registration
+  
+  // Team registration
   if ($_SESSION['uid'] != 'anonymous') {
     $enrollSeasons = EnrollSeasons();
     if (count($enrollSeasons) > 0) {
       echo "<table class='leftmenulinks'>\n";
-      echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Team registration"))."</th></tr>\n";
+      echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Team registration")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($enrollSeasons as $seasonId => $seasonName) {
-        echo "<a class='subnav' href='?view=user/enrollteam&amp;season=".$seasonId."'>&raquo; ".utf8entities(U_($seasonName))."</a>\n";
+        echo "<a class='subnav' href='?view=user/enrollteam&amp;season=" . $seasonId . "'>&raquo; " .
+           utf8entities(U_($seasonName)) . "</a>\n";
       }
       echo "</td></tr>\n";
       echo "</table>\n";
@@ -546,152 +563,169 @@ function leftMenu($id=0, $pagestart=true, $printable=false) {
   // Player profiles
   if (hasPlayerAdminRights()) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Player profiles"))."</th></tr>\n";
+    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Player profiles")) . "</th></tr>\n";
     echo "<tr><td>\n";
     foreach ($_SESSION['userproperties']['userrole']['playeradmin'] as $profile_id => $propid) {
       $playerInfo = PlayerProfile($profile_id);
-      echo "<a class='subnav' href='?view=user/playerprofile&amp;profile=".$playerInfo['profile_id']."'>&raquo; ".$playerInfo['firstname']." ".$playerInfo['lastname']."</a>\n";
+      echo "<a class='subnav' href='?view=user/playerprofile&amp;profile=" . $playerInfo['profile_id'] . "'>&raquo; " .
+         $playerInfo['firstname'] . " " . $playerInfo['lastname'] . "</a>\n";
     }
     echo "</td></tr>";
     echo "</table>\n";
   }
-
-  //event public part: schedule, played games, teams, divisions, pools...
+  
+  // event public part: schedule, played games, teams, divisions, pools...
   seasonSelection();
   $curseason = CurrentSeason();
-
+  
   echo "<table class='leftmenulinks'>\n";
-  $pools = getViewPools($curseason);
-  if ($pools && mysqli_num_rows($pools)) {
-    $lastseason = "";
-    $lastseries = "";
-    while ($row = mysqli_fetch_assoc($pools)) {
-      $season = $row['season'];
-      $series = $row['series'];
-      if (SeriesInfo($series)['valid'] == 0 && !hasEditSeriesRight($series)) {
-        continue;
+  if ($curseason <= 0) {
+    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("No seasons created")) . "</th></tr>\n";
+  } else {
+    $pools = getViewPools($curseason);
+    if ($pools && mysqli_num_rows($pools)) {
+      $lastseason = "";
+      $lastseries = "";
+      while ($row = mysqli_fetch_assoc($pools)) {
+        $season = $row['season'];
+        $series = $row['series'];
+        if (SeriesInfo($series)['valid'] == 0 && !hasEditSeriesRight($series)) {
+          continue;
+        }
+        if ($lastseason != $season) {
+          $lastseason = $season;
+          echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
+             urlencode($season) . "&amp;list=bystandings'>";
+          echo utf8entities(U_($row['season_name'])) . "</a></th></tr>\n";
+          echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=bystandings'>" .
+             utf8entities(_("Final ranking")) . "</a></td></tr>\n";
+          echo "<tr><td><a class='nav' href='?view=games&amp;season=" . urlencode($season) .
+             "&amp;filter=tournaments&amp;group=all'>" . utf8entities(_("Games")) . "</a></td></tr>\n";
+          // echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
+          echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=allteams'>" .
+             utf8entities(_("Teams")) . "</a></td></tr>\n";
+          echo "<tr><td class='menuseparator'></td></tr>\n";
+        }
+        
+        if ($lastseries != $series) {
+          $lastseries = $series;
+          echo "<tr><td class='menuserieslevel'>";
+          echo "<a class='subnav' href='?view=seriesstatus&amp;series=" . $series . "'>" .
+             utf8entities(U_($row['series_name'])) . "</a></td></tr>\n";
+          echo "<tr><td class='navpoollink'>\n";
+          echo "<a class='subnav' href='?view=poolstatus&amp;series=" . $series . "'>&raquo; " .
+             utf8entities(_("Show all pools")) . "</a></td></tr>\n";
+        }
+        echo "<tr><td class='menupoollevel'>\n";
+        echo "<a class='navpoollink' href='?view=poolstatus&amp;pool=" . $row['pool'] . "'>&raquo; " .
+           utf8entities(U_($row['pool_name'])) . "</a>\n";
+        echo "</td></tr>\n";
       }
-      if ($lastseason != $season) {
-        $lastseason = $season;
-        echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>";
-        echo utf8entities(U_($row['season_name']))."</a></th></tr>\n";
-        echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."&amp;list=bystandings'>".utf8entities(_("Final ranking"))."</a></td></tr>\n";
-        echo "<tr><td><a class='nav' href='?view=games&amp;season=".urlencode($season)."&amp;filter=tournaments&amp;group=all'>".utf8entities(_("Games"))."</a></td></tr>\n";
-        //echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
-        echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."&amp;list=allteams'>".utf8entities(_("Teams"))."</a></td></tr>\n";
-        echo "<tr><td class='menuseparator'></td></tr>\n";
-      }
-
-      if ($lastseries != $series) {
-        $lastseries = $series;
-        echo "<tr><td class='menuserieslevel'>";
-        echo "<a class='subnav' href='?view=seriesstatus&amp;series=".$series."'>". utf8entities(U_($row['series_name'])) ."</a></td></tr>\n";
-        echo "<tr><td class='navpoollink'>\n";
-        echo "<a class='subnav' href='?view=poolstatus&amp;series=".$series."'>&raquo; ". utf8entities(_("Show all pools")) ."</a></td></tr>\n";
-      }
-      echo "<tr><td class='menupoollevel'>\n";
-      echo "<a class='navpoollink' href='?view=poolstatus&amp;pool=".$row['pool']."'>&raquo; ".utf8entities(U_($row['pool_name']))."</a>\n";
-      echo "</td></tr>\n";
-    }
-  }else{
-    $season = CurrentSeason();
-    echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
+    } else {
+      $season = CurrentSeason();
+      echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
          urlencode($season) . "&amp;list=bystandings'>" . utf8entities(U_(CurrentSeasonName())) . "</a></th></tr>\n";
-    echo "<tr><td><a class='nav' href='?view=timetables&amp;season=".urlencode($season)."&amp;filter=tournaments&amp;group=all'>".utf8entities(_("Games"))."</a></td></tr>\n";
-    //  echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
-    echo "<tr><td><a class='nav' href='?view=teams&amp;season=".urlencode($season)."'>".utf8entities(_("Teams"))."</a></td></tr>\n";
-    echo "<tr><td class='menuseparator'></td></tr>\n";
-
-    $tmpseries = SeasonSeries($season,true);
-    foreach($tmpseries as $row) {
-      echo "<tr><td class='menuserieslevel'>".utf8entities(U_($row['name']))."</td></tr>\n";
-      echo "<tr><td class='menupoollevel'>\n";
-      echo utf8entities(_("Pools not yet created"));
-      echo "</td></tr>\n";
+      echo "<tr><td><a class='nav' href='?view=timetables&amp;season=" . urlencode($season) .
+         "&amp;filter=tournaments&amp;group=all'>" . utf8entities(_("Games")) . "</a></td></tr>\n";
+      // echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
+      echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "'>" . utf8entities(_("Teams")) .
+         "</a></td></tr>\n";
+      echo "<tr><td class='menuseparator'></td></tr>\n";
+      
+      $tmpseries = SeasonSeries($season, true);
+      foreach ($tmpseries as $row) {
+        echo "<tr><td class='menuserieslevel'>" . utf8entities(U_($row['name'])) . "</td></tr>\n";
+        echo "<tr><td class='menupoollevel'>\n";
+        echo utf8entities(_("Pools not yet created"));
+        echo "</td></tr>\n";
+      }
     }
   }
   echo "</table>\n";
-
-  //event links
+  
+  // event links
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Event Links"))."</th></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Event Links")) . "</th></tr>\n";
   echo "<tr><td>";
-
-  $urls = GetUrlListByTypeArray(array("menulink","menumail"),$curseason);
-  foreach($urls as $url){
-    if($url['type']=="menulink"){
-      echo "<a class='subnav' href='".$url['url']."'>&raquo; ".U_($url['name'])."</a>\n";
-    }elseif($url['type']=="menumail"){
-      echo "<a class='subnav' href='mailto:".$url['url']."'>@ ".U_($url['name'])."</a>\n";
+  
+  $urls = GetUrlListByTypeArray(array("menulink", "menumail"), $curseason);
+  foreach ($urls as $url) {
+    if ($url['type'] == "menulink") {
+      echo "<a class='subnav' href='" . $url['url'] . "'>&raquo; " . U_($url['name']) . "</a>\n";
+    } elseif ($url['type'] == "menumail") {
+      echo "<a class='subnav' href='mailto:" . $url['url'] . "'>@ " . U_($url['name']) . "</a>\n";
     }
   }
   echo "</td></tr>\n";
   echo "<tr><td>";
-  echo "<a class='subnav' style='background: url(./images/linkicons/feed_14x14.png) no-repeat 0 50%; padding: 0 0 0 19px;' href='./ext/rss.php?feed=all'>".utf8entities(_("Result Feed"))."</a>\n";
+  echo "<a class='subnav' style='background: url(./images/linkicons/feed_14x14.png) no-repeat 0 50%; padding: 0 0 0 19px;' href='./ext/rss.php?feed=all'>" .
+     utf8entities(_("Result Feed")) . "</a>\n";
   echo "</td></tr>\n";
-  if(IsTwitterEnabled()){
-    $savedurl = GetUrl("season",$season,"result_twitter");
-    if(!empty($savedurl['url'])){
+  if (IsTwitterEnabled()) {
+    $savedurl = GetUrl("season", $season, "result_twitter");
+    if (!empty($savedurl['url'])) {
       echo "<tr><td>";
-      echo "<a class='subnav' style='background: url(./images/linkicons/twitter_14x14.png) no-repeat 0 50%; padding: 0 0 0 19px;' href='".$savedurl['url']."'>".utf8entities(_("Result Twitter"))."</a>\n";
+      echo "<a class='subnav' style='background: url(./images/linkicons/twitter_14x14.png) no-repeat 0 50%; padding: 0 0 0 19px;' href='" .
+         $savedurl['url'] . "'>" . utf8entities(_("Result Twitter")) . "</a>\n";
       echo "</td></tr>\n";
     }
   }
   echo "</table>\n";
-
-  //event history
-  if(IsStatsDataAvailable()){
+  
+  // event history
+  if (IsStatsDataAvailable()) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Statistics"))."</th></tr>\n";
+    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Statistics")) . "</th></tr>\n";
     echo "<tr><td>";
-    echo "<a class='subnav' href=\"?view=seasonlist\">&raquo; ".utf8entities(_("Events"))."</a>\n";
-    echo "<a class='subnav' href=\"?view=allplayers\">&raquo; ".utf8entities(_("Players"))."</a>\n";
-    echo "<a class='subnav' href=\"?view=allteams\">&raquo; ".utf8entities(_("Teams"))."</a>\n";
-    echo "<a class='subnav' href=\"?view=allclubs\">&raquo; ".utf8entities(_("Clubs"))."</a>\n";
-    $countries = CountryList(true,true);
-    if(count($countries)){
-      echo "<a class='subnav' href=\"?view=allcountries\">&raquo; ".utf8entities(_("Countries"))."</a>\n";
+    echo "<a class='subnav' href=\"?view=seasonlist\">&raquo; " . utf8entities(_("Events")) . "</a>\n";
+    echo "<a class='subnav' href=\"?view=allplayers\">&raquo; " . utf8entities(_("Players")) . "</a>\n";
+    echo "<a class='subnav' href=\"?view=allteams\">&raquo; " . utf8entities(_("Teams")) . "</a>\n";
+    echo "<a class='subnav' href=\"?view=allclubs\">&raquo; " . utf8entities(_("Clubs")) . "</a>\n";
+    $countries = CountryList(true, true);
+    if (count($countries)) {
+      echo "<a class='subnav' href=\"?view=allcountries\">&raquo; " . utf8entities(_("Countries")) . "</a>\n";
     }
-    echo "<a class='subnav' href=\"?view=statistics&amp;list=teamstandings\">&raquo; ".utf8entities(_("All time"))."</a></td></tr>\n";
+    echo "<a class='subnav' href=\"?view=statistics&amp;list=teamstandings\">&raquo; " . utf8entities(_("All time")) .
+       "</a></td></tr>\n";
     echo "</table>";
   }
-
-  //External access
+  
+  // External access
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Client access"))."</th></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Client access")) . "</th></tr>\n";
   echo "<tr><td>";
-  echo "<a class='subnav' href='?view=ext/index'>&raquo; ".utf8entities(_("Ultiorganizer links"))."</a>\n";
-  echo "<a class='subnav' href='?view=ext/export'>&raquo; ".utf8entities(_("Data export"))."</a>\n";
-  echo "<a class='subnav' href='?view=mobile/index'>&raquo; ".utf8entities(_("Mobile Administration"))."</a>\n";
-  echo "<a class='subnav' href='./scorekeeper/'>&raquo; ".utf8entities(_("Scorekeeper"))."</a>\n";
+  echo "<a class='subnav' href='?view=ext/index'>&raquo; " . utf8entities(_("Ultiorganizer links")) . "</a>\n";
+  echo "<a class='subnav' href='?view=ext/export'>&raquo; " . utf8entities(_("Data export")) . "</a>\n";
+  echo "<a class='subnav' href='?view=mobile/index'>&raquo; " . utf8entities(_("Mobile Administration")) . "</a>\n";
+  echo "<a class='subnav' href='./scorekeeper/'>&raquo; " . utf8entities(_("Scorekeeper")) . "</a>\n";
   echo "</td></tr>\n";
   echo "</table>";
-
+  
   echo "<table class='leftmenulinks'>\n";
-  echo "<tr><th class='menuseasonlevel'>".utf8entities(_("Links"))."</th></tr>\n";
+  echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Links")) . "</th></tr>\n";
   echo "<tr><td>";
-  $urls = GetUrlListByTypeArray(array("menulink","menumail"),0);
-  foreach($urls as $url){
-    if($url['type']=="menulink"){
-      echo "<a class='subnav' href='".$url['url']."'>&raquo; ".U_($url['name'])."</a>\n";
-    }elseif($url['type']=="menumail"){
-      echo "<a class='subnav' href='mailto:".$url['url']."'>@ ".U_($url['name'])."</a>\n";
+  $urls = GetUrlListByTypeArray(array("menulink", "menumail"), 0);
+  foreach ($urls as $url) {
+    if ($url['type'] == "menulink") {
+      echo "<a class='subnav' href='" . $url['url'] . "'>&raquo; " . U_($url['name']) . "</a>\n";
+    } elseif ($url['type'] == "menumail") {
+      echo "<a class='subnav' href='mailto:" . $url['url'] . "'>@ " . U_($url['name']) . "</a>\n";
     }
   }
   echo "</td></tr>\n";
   echo "</table>";
-
-  //draw customizable logo if any
+  
+  // draw customizable logo if any
   echo logo();
-
+  
   echo "<table style='width:90%'>\n";
   echo "<tr><td class='guides'>";
-  echo "<a href='?view=user_guide'>".utf8entities(_("User Guide"))."</a> | \n";
-  echo "<a href='?view=admin/help'>".utf8entities(_("Admin Help"))."</a> | \n";
-  echo "<a href='?view=privacy'>".utf8entities(_("Privacy Policy"))."</a>\n";
+  echo "<a href='?view=user_guide'>" . utf8entities(_("User Guide")) . "</a> | \n";
+  echo "<a href='?view=admin/help'>" . utf8entities(_("Admin Help")) . "</a> | \n";
+  echo "<a href='?view=privacy'>" . utf8entities(_("Privacy Policy")) . "</a>\n";
   echo "</td></tr>";
   echo "</table>";
-
+  
   echo "</td>\n";
 }
 
@@ -709,14 +743,14 @@ function getEditSeasonLinks() {
     $deleteset = array();
     foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
-        $links['?view=admin/seasonadmin&amp;season='.$season] = _("Event");
-        $links['?view=admin/seasonseries&amp;season='.$season] = _("Divisions");
-        $links['?view=admin/seasonteams&amp;season='.$season] = _("Teams");
-        $links['?view=admin/seasonpools&amp;season='.$season] = _("Pools");
-        $links['?view=admin/reservations&amp;season='.$season] = _("Scheduling");
-        $links['?view=admin/seasongames&amp;season='.$season] = _("Games");
-        $links['?view=admin/seasonstandings&amp;season='.$season] = _("Rankings");
-        $links['?view=admin/accreditation&amp;season='.$season] = _("Accreditation");
+        $links['?view=admin/seasonadmin&amp;season=' . $season] = _("Event");
+        $links['?view=admin/seasonseries&amp;season=' . $season] = _("Divisions");
+        $links['?view=admin/seasonteams&amp;season=' . $season] = _("Teams");
+        $links['?view=admin/seasonpools&amp;season=' . $season] = _("Pools");
+        $links['?view=admin/reservations&amp;season=' . $season] = _("Scheduling");
+        $links['?view=admin/seasongames&amp;season=' . $season] = _("Games");
+        $links['?view=admin/seasonstandings&amp;season=' . $season] = _("Rankings");
+        $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
         $respgamesset[$season] = "set";
         $deleteset[$season] = "set";
       }
@@ -729,34 +763,37 @@ function getEditSeasonLinks() {
         if (isset($ret[$seriesseason]) && !isSeasonAdmin($seriesseason)) {
           $links = $ret[$seriesseason];
           $seriesname = U_(getSeriesName($series));
-          $links['?view=admin/seasonteams&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Teams");
-          $links['?view=admin/seasongames&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Games");
-          $links['?view=admin/seasonstandings&amp;season='.$season.'&amp;series='.$series] = $seriesname." "._("Pool rankings");
-          $links['?view=admin/accreditation&amp;season='.$seriesseason] = _("Accreditation");
+          $links['?view=admin/seasonteams&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
+             _("Teams");
+          $links['?view=admin/seasongames&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
+             _("Games");
+          $links['?view=admin/seasonstandings&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
+             _("Pool rankings");
+          $links['?view=admin/accreditation&amp;season=' . $seriesseason] = _("Accreditation");
           $ret[$seriesseason] = $links;
           $respgamesset[$seriesseason] = "set";
           $deleteset[$season] = "set";
         }
       }
     }
-
+    
     $teamPlayersSet = array();
     if (isset($_SESSION['userproperties']['userrole']['teamadmin'])) {
-
+      
       foreach ($_SESSION['userproperties']['userrole']['teamadmin'] as $team => $param) {
         $teamseason = getTeamSeason($team);
-        $teamresps = TeamResponsibilities($_SESSION['uid'],$teamseason);
+        $teamresps = TeamResponsibilities($_SESSION['uid'], $teamseason);
         if (isset($ret[$teamseason])) {
-          if(count($teamresps)<2){
+          if (count($teamresps) < 2) {
             $teamname = getTeamName($team);
             $links = $ret[$teamseason];
-            $links['?view=user/teamplayers&amp;team='.$team] = _("Team").": ".$teamname;
+            $links['?view=user/teamplayers&amp;team=' . $team] = _("Team") . ": " . $teamname;
             $respgamesset[$teamseason] = "set";
-            $teamPlayersSet["".$team] = "set";
+            $teamPlayersSet["" . $team] = "set";
             $ret[$teamseason] = $links;
-          }else{
+          } else {
             $links = $ret[$teamseason];
-            $links['?view=user/respteams&amp;season='.$teamseason] = _("Team responsibilities");
+            $links['?view=user/respteams&amp;season=' . $teamseason] = _("Team responsibilities");
             $respgamesset[$teamseason] = "set";
             $ret[$teamseason] = $links;
           }
@@ -764,24 +801,24 @@ function getEditSeasonLinks() {
       }
     }
     if (isset($_SESSION['userproperties']['userrole']['accradmin'])) {
-      if(count($_SESSION['userproperties']['userrole']['teamadmin'])<=4){
+      if (count($_SESSION['userproperties']['userrole']['teamadmin']) <= 4) {
         foreach ($_SESSION['userproperties']['userrole']['accradmin'] as $team => $param) {
           if (!isset($teamPlayersSet[$team])) {
             $teamseason = getTeamSeason($team);
             if (isset($ret[$teamseason])) {
               $teamname = getTeamName($team);
               $links = $ret[$teamseason];
-              $links['?view=user/teamplayers&amp;team='.$team] = _("Team").": ".$teamname;
-              $links['?view=admin/accreditation&amp;season='.$teamseason] = _("Accreditation");
-              $teamPlayersSet["".$team] = "set";
+              $links['?view=user/teamplayers&amp;team=' . $team] = _("Team") . ": " . $teamname;
+              $links['?view=admin/accreditation&amp;season=' . $teamseason] = _("Accreditation");
+              $teamPlayersSet["" . $team] = "set";
               $ret[$teamseason] = $links;
             }
           }
         }
-      }else{
+      } else {
         $links = $ret[$season];
-        $links['?view=user/respteams&amp;season='.$season] = _("Team responsibilities");
-        $links['?view=admin/accreditation&amp;season='.$season] = _("Accreditation");
+        $links['?view=user/respteams&amp;season=' . $season] = _("Team responsibilities");
+        $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
         $ret[$season] = $links;
       }
     }
@@ -795,7 +832,7 @@ function getEditSeasonLinks() {
     }
     if (isset($_SESSION['userproperties']['userrole']['resgameadmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['resgameadmin'] as $resId => $param) {
-        foreach(ReservationSeasons($resId) as $resSeason) {
+        foreach (ReservationSeasons($resId) as $resSeason) {
           if (isset($ret[$resSeason])) {
             $respgamesset[$resSeason] = "set";
           }
@@ -804,8 +841,8 @@ function getEditSeasonLinks() {
     }
     foreach ($respgamesset as $season => $set) {
       $links = $ret[$season];
-      $links['?view=user/respgames&amp;season='.$season] = _("Game responsibilities");
-      $links['?view=user/contacts&amp;season='.$season] = _("Contacts");
+      $links['?view=user/respgames&amp;season=' . $season] = _("Game responsibilities");
+      $links['?view=user/contacts&amp;season=' . $season] = _("Contacts");
       $ret[$season] = $links;
     }
     
@@ -824,9 +861,8 @@ function getEditSeasonLinks() {
         $ret[$season] = $links;
       }
     }
-    
   }
-
+  
   foreach ($ret as $season => $links) {
     if (!isset($links) || empty($links) || count($links) == 0) {
       unset($ret[$season]);
@@ -836,16 +872,19 @@ function getEditSeasonLinks() {
 }
 
 /**
- * Creates on page menu. Typically top of the page.
+ * Creates on page menu.
+ * Typically top of the page.
  *
- * @param array $menuitems - key is link name, value is url.
- * @param string $current - links to this url obtain the class 'current'
- * @param boolean $echoed if true (the default), the menu is echoed 
+ * @param array $menuitems
+ *          - key is link name, value is url.
+ * @param string $current
+ *          - links to this url obtain the class 'current'
+ * @param boolean $echoed
+ *          if true (the default), the menu is echoed
  * @return string the menu (html)
- *
+ *        
  */
-function pageMenu($menuitems, $current="", $echoed=true) {
-
+function pageMenu($menuitems, $current = "", $echoed = true) {
   $html = "\n<!-- on page menu -->\n";
   $html .= "<div class='pagemenu_container'>\n";
   $line = "";
@@ -860,32 +899,32 @@ function pageMenu($menuitems, $current="", $echoed=true) {
       if (!$first)
         $html .= "<td> - </td>";
       $first = false;
-      if($url==$current || strrpos($_SERVER["REQUEST_URI"],$url)) {
-        $html .= "<th><a class='current' href='".htmlentities($url)."'>".utf8entities($name)."</a></th>\n";
+      if ($url == $current || strrpos($_SERVER["REQUEST_URI"], $url)) {
+        $html .= "<th><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></th>\n";
       } else {
-        $html .= "<th><a href='".htmlentities($url)."'>".utf8entities($name)."</a></th>\n";
+        $html .= "<th><a href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></th>\n";
       }
     }
     $html .= "</tr></table>";
   } else {
     $html .= "<ul id='pagemenu'>\n";
-
+    
     foreach ($menuitems as $name => $url) {
-
-      if($url==$current){
-        $html .= "<li><a class='current' href='".htmlentities($url)."'>".utf8entities($name)."</a></li>\n";
-      } elseif(strrpos($_SERVER["REQUEST_URI"],$url)) {
-        $html .= "<li><a class='current' href='".htmlentities($url)."'>".utf8entities($name)."</a></li>\n";
+      
+      if ($url == $current) {
+        $html .= "<li><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
+      } elseif (strrpos($_SERVER["REQUEST_URI"], $url)) {
+        $html .= "<li><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
       } else {
-        $html .= "<li><a href='".htmlentities($url)."'>".utf8entities($name)."</a></li>\n";
+        $html .= "<li><a href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
       }
     }
     $html .= "</ul>\n";
   }
   $html .= "</div>\n";
   $html .= "<p style='clear:both'></p>\n";
-
-  if($echoed){
+  
+  if ($echoed) {
     echo $html;
   }
   return $html;
