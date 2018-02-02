@@ -431,6 +431,40 @@ function upgrade70() {
   }
 }
 
+function migrateLocationInfo() {
+  $query = "SHOW COLUMNS FROM uo_location LIKE 'info_%'";
+  $columns = DBQuery($query);
+  $cinfos = array();
+  while ($column = mysqli_fetch_assoc($columns)) {
+    $cinfos[] = $column['Field'];
+  }
+  if (!empty($cinfos)) {
+    $query = "SELECT id, " . implode($cinfos, ",") . " FROM uo_location WHERE ";
+    $whereclause = "";
+    foreach ($cinfos as $column) {
+      if (!empty($whereclause))
+        $whereclause .= " OR ";
+        $whereclause .= "(`$column` IS NOT NULL AND `$column` != '')";
+    }
+    $query .= $whereclause;
+    
+    $infos = runQuery($query);
+    while ($info = mysqli_fetch_assoc($infos)) {
+      foreach ($cinfos as $column) {
+        $locale = substr($column, 5);
+        if (!empty($info[$column])) {
+          $query = sprintf(
+            'INSERT INTO `uo_location_info` (`location_id`, `locale`, `info`)
+            VALUES ("%d", "%s", "%s")', $info['id'], mysql_adapt_real_escape_string($locale),
+            mysql_adapt_real_escape_string($info[$column]));
+          DBQuery($query);
+        }
+      }
+    }
+  }
+  return $cinfos;
+}
+
 function upgrade71() {
   if (!hasTable("uo_location_info")) {
     runQuery(
@@ -442,21 +476,7 @@ function upgrade71() {
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
   }
   
-  $results = runQuery("SELECT * FROM uo_location");
-  while ($row = mysqli_fetch_assoc($results)) {
-    foreach ($row as $key => $value) {
-      if (substr($key, 0, 5) === "info_") {
-        if (!empty($value)) {
-          $locale = substr($key, 5);
-          runQuery(
-              sprintf(
-                  'INSERT INTO `uo_location_info` (`location_id`, `locale`, `info`)
-            VALUES ("%d", "%s", "%s")', 
-                  $row['id'], mysql_adapt_real_escape_string($locale), mysql_adapt_real_escape_string($value)));
-        }
-      }
-    }
-  }
+  migrateLocationInfo();
 }
 
 function upgrade72() {
@@ -683,6 +703,17 @@ function upgrade78() {
 	if(hasTable("uo_urls")){
 	  runQuery("ALTER TABLE uo_urls MODIFY ordering varchar(5)");
     }
+}
+
+function upgrade79() {
+  // dummy version
+}
+
+function upgrade80() {
+  // clean up leftovers from upgrade71
+  foreach (migrateLocationInfo() as $column) {
+    dropField("uo_location", $column);
+  }
 }
 
 function runQuery($query) {
