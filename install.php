@@ -360,13 +360,7 @@ function configurations() {
   $passed = false;
   
   $upload_dir = isset($_POST['upload_dir']) ? safe_string($_POST['upload_dir']) : "images/uploads/";
-  $timezone = isset($_POST['timezone']) ? safe_string($_POST['timezone']) : "Europe/Helsinki";
-  $locale = isset($_POST['locale']) ? safe_string($_POST['locale']) : "en_GB.utf8";
   $customization = isset($_POST['customization']) ? safe_string($_POST['customization']) : "default";
-  $title = isset($_POST['title']) ? safe_string($_POST['title']) : "Ultiorganizer - ";
-  $maps = isset($_POST['maps']) ? safe_string($_POST['maps']) : "";
-  $admin = isset($_POST['admin']) ? safe_string($_POST['admin']) : "ultiorganizer_admin@example.com";
-  $mail = isset($_POST['mail']) ? safe_string($_POST['mail']) : "ultiorganizer@example.com";
   $baseurl = isset($_POST['baseurl']) ? safe_string($_POST['baseurl']) : GetURLBase();
   
   $html = "";
@@ -395,8 +389,6 @@ function configurations() {
       $html .= "<option class='dropdown' value='" . utf8entities($cust) . "'>" . utf8entities($cust) . "</option>";
     }
   }
-  
-  $html .= "</select></td></tr>";
   $html .= "</table>";
   
   // write configuration file
@@ -435,6 +427,7 @@ function configurations() {
       fwrite($fh, "?>");
       fclose($fh);
       $html .= "<p>Configuration saved.</p>";
+      $html .= "<p>Make sure to log in as administrator and visit the server settings page as soon as you can.</p>";
     }
   }
   

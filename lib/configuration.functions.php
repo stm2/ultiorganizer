@@ -1,4 +1,5 @@
 <?php
+global $serverConf;
 $serverConf = GetSimpleServerConf();
 global $locales;
 $locales = getAvailableLocalizations();

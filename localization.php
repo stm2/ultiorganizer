@@ -14,28 +14,26 @@ $localeMap = array("en" => "en_GB.utf8",
 
 function setSessionLocale() {
   global $include_prefix;
-
+  
+  $oldlocale = null;
   if (isset($_SESSION['userproperties']['locale'])) {
     $tmparr = array_keys($_SESSION['userproperties']['locale']);
     $oldlocale = $tmparr[0];
-  } else {
-    $oldlocale = "not_set";
   }
 
   if (iget("locale")) {
-    $_SESSION['userproperties']['locale'] = array($_GET['locale'] => 0);
+    $locale = iget("locale");
   }
 
-  if (!isset($_SESSION['userproperties']['locale'])) {
-    $_SESSION['userproperties']['locale'] = array(PreferredLocale() => 0);
+  if (empty($locale)) {
+    $locale = GetDefaultLocale();
   }
-
-  if(is_array($_SESSION['userproperties']['locale'])){
-    $tmparr = array_keys($_SESSION['userproperties']['locale']);
-    $locale = $tmparr[0];
-  }else{
-    $locale = $_SESSION['userproperties']['locale'];
-  }
+  
+  if (empty($locale))
+    die("No locale.");
+    
+  $_SESSION['userproperties']['locale'] = array($locale => 0);
+  
   $encoding = 'UTF-8';
 
   putenv("LC_MESSAGES=$locale");
