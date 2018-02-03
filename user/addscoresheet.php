@@ -164,9 +164,11 @@ document.onkeypress = keyfilter;
 $season = GameSeason($gameId);
 $seasoninfo = SeasonInfo($season);
 $scrolling = "onkeypress='chgFocus(event);'";
+
 pageTopHeadClose($title,false, $scrolling);
-leftMenu($LAYOUT_ID);
-contentStart();
+pageMainStart();
+contentStartWide();
+
 //content
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";

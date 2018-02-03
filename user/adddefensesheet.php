@@ -48,8 +48,8 @@ function highlightError(id)
 <?php
 $scrolling = "onkeypress='chgFocus(event);'";
 pageTopHeadClose($title,false, $scrolling);
-leftMenu($LAYOUT_ID);
-contentStart();
+pageMainStart();
+contentStartWide();
 
 //echo "First line"
 $gameId = intval($_GET["game"]);

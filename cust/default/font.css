@@ -1,17 +1,17 @@
 .header_text:link, .header_text:visited, .header_text:active,
   .header_text:hover, .header_text:focus, div.header_text {
-  color: #006699;
+  color: var(--headercolor, #006699);
   font-size: 18pt;
-  /*padding-left:10px;*/
   margin-left: 8px;
   font-weight: normal;
+  font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
   text-decoration: none;
   text-transform: uppercase;
 }
 
 .header_text_small:link, .header_text_small:visited, .header_text_small:active,
   .header_text_small:hover, .header_text_small:focus {
-  color: #006699;
+  color: var(--headercolor, #006699);
   font-size: 12pt;
   padding-left: 10px;
   font-weight: normal;
@@ -21,9 +21,8 @@
 .seasonnav:link, .seasonnav:visited {
   font-weight: bold;
   text-align: center;
-  color: #ffffff;
+  color: var(--bgcolor, #ffffff);
   text-decoration: underline;
-  /*background-color: #fe7f02;*/
   text-transform: uppercase;
   display: block;
 }
@@ -33,52 +32,60 @@
   font-weight: normal;
 }
 
+.seasondropdown {
+  font-size: 12px;
+}
+
 .nav:link, .nav:visited {
   font-size: 8pt;
   font-weight: bold;
   padding: 2px;
-  color: #2d2d2d;
+  color: var(--navlinkcolor, #2d2d2d);
+  background-color: var(--navlinkbgcolor, inherit);
   text-decoration: none;
   text-transform: uppercase;
   display: block;
 }
 
 .nav:active, .nav:hover, .nav:focus {
-  color: #000000;
   text-decoration: none;
-  background-color: #d3d3d3;
+  color: var(--hnavlinkcolor, #000000);
+  background-color: var(--hnavlinkbgcolor, #d3d3d3);
 }
 
 .subnav, .subnav:link, .subnav:visited {
   font-size: 8pt;
   padding-top: 2px;
   padding-left: 2px;
-  color: #2d2d2d;
+  color: var(--navlinkcolor, #2d2d2d);
+  background-color: var(--navlinkbgcolor, inherit);
   text-decoration: none;
   display: block;
 }
 
 .subnav:active, .subnav:hover, .subnav:focus {
-  color: #000000;
   text-decoration: underline;
-  background-color: #d3d3d3;
+  color: var(--hnavlinkcolor, #000000);
+  background-color: var(--hnavlinkbgcolor, #d3d3d3);
 }
 
 .navpoollink, .navpoollink:link, .navpoollink:visited {
   font-size: 8pt;
   padding-left: 1ex;
-  color: #2d2d2d;
+  color: var(--navlinkcolor, #2d2d2d);
+  background-color: var(--navlinkbgcolor, inherit);
   text-decoration: none;
   display: block;
 }
 
 .navpoollink:active, .navpoollink:hover, .navpoollink:focus {
-  color: #000000;;
   text-decoration: underline;
-  background-color: #d3d3d3;
+  color: var(--hnavlinkcolor, #000000);
+  background-color: var(--hnavlinkbgcolor, #d3d3d3);
 }
 
 .breadcrumbs_text {
+  color: var(--breadcrumbscolor, #000000);
   padding: 0px;
   margin: 0px;
   margin-top: 2px;
@@ -86,17 +93,15 @@
   margin-left: 5px;
   margin-right: 5px;
   font-size: 10px;
-  /*vertical-align: center;*/
 }
 
 .menuseasonlevel {
   font-size: 10px;
-  color: #ffffff;;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
-  /*background-color: #fe7f02;*/
-  background-color: #006699;
+  color: var(--thcolor, #ffffff);
+  background-color: var(--thbgcolor, #006699);
 }
 
 .menuserieslevel {
@@ -106,7 +111,6 @@
 
 .menupoollevel {
   font-size: 10px;
-  /*padding-left:10px*/;
 }
 
 .pagemenu_container {
@@ -141,14 +145,14 @@ ul#pagemenu li.left {
 }
 
 table#pagemenu th {
-  background: #ffffff;
+  background: var(--bgcolor, #ffffff);
 }
 
 ul#pagemenu li a, table#pagemenu a {
   display: block;
   float: left;
-  color: #2d2d2d;
-  background: #acd1e9;
+  color: var(--navlinkcolor, #2d2d2d);
+  background-color: var(--navlinkbgcolor, acd1e9);
   text-decoration: none;
   padding: 3px 17px 0 18px;
 }
@@ -159,69 +163,59 @@ ul#pagemenu li a.right {
 
 ul#pagemenu li a:hover, table#pagemenu a:hover {
   text-decoration: underline;
-  background-color: #d3d3d3;
-  border-left: 1px solid #333;
-  border-right: 1px solid #333;
-  border-top: 1px solid #333;
+  color: var(--hnavlinkcolor, #000000);
+  background-color: var(--hnavlinkbgcolor, #d3d3d3);
+  border-left: 1px solid var(--hardbordercolor, #333);
+  border-right: 1px solid var(--hardbordercolor, #333);
+  border-top: 1px solid var(--hardbordercolor, #333);
 }
 
 ul#pagemenu li a.current, table#pagemenu a.current {
-  color: #2d2d2d;
+  color: var(--navcurrentlinkcolor, #2d2d2d);
+  background-color: var(--navcurrentbgcolor, #fff);
   text-decoration: underline;
-  background: #fff;
-  border-left: 1px solid #333;
-  border-right: 1px solid #333;
-  border-top: 1px solid #333;
-}
-
-.thsort, .thsort:link, .thsort:visited {
-  font-size: 10px;
-  color: #ffffff;
-  text-decoration: underline;
-}
-
-.thsort:active, .thsort:hover, .thsort:focus {
-  color: #996699;
-  text-decoration: none;
+  border-left: 1px solid var(--hardbordercolor, #333);
+  border-right: 1px solid var(--hardbordercolor, #333);
+  border-top: 1px solid var(--hardbordercolor, #333);
 }
 
 .thlink, .thlink:link, .thlink:visited {
   font-size: 10px;
-  color: #ffffff;
+  color: var(--thlinkcolor, #ffffff);
   text-decoration: underline;
 }
 
 .thlink:active, .thlink:hover, .thlink:focus {
-  color: #0bc5e0;
+  color: var(--thhlinkcolor, #996699);
   text-decoration: none;
 }
 
 .topheadertext {
-  color: #000000;
-  background-color: #ffffff;
+  color: var(--headercolor, #000000);
+  background-color: var(--bgcolor, #ffffff);
   padding: 1px;
 }
 
 .topheaderlink, .topheaderlink:link, .topheaderlink:visited {
-  color: #000000;
+  color: var(--linkcolor, #000000);
   text-decoration: underline;
 }
 
 .topheaderlink:active, .topheaderlink:hover, .topheaderlink:focus {
-  color: #986598;
+  color: var(--hlinkcolor, #986598);
   text-decoration: none;
 }
 
 .highlight {
-  background-color: #d7c2ee;
+  background-color: var(--shadecolor, #d7c2ee);
 }
 
 .attention {
-  background-color: #FFB6C1;
+  background-color: var(--attentioncolor, #ffb6c1);
 }
 
 .lowlight {
-  color: #a0a0a0;
+  color: var(--lowlightcolor, #a0a0a0);
 }
 
 .schedulingname {
@@ -229,7 +223,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .list_letter {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 10pt;
   line-height: 12pt;
   font-weight: bold;
@@ -243,22 +237,21 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .callahan {
-  background-color: #e0e0e0;
-  color: #a0a0a0;
+  color: var(--fadecolor, #e0e0e0);
 }
 
 .warning {
-  color: #FF0000;
+  color: var(--warning, #ff0000);
 }
 
 .home {
-  background-color: #986598;
-  color: white;
+  color: var(--homecolor, #ffffff);
+  background-color: var(--homebgcolor, #986598);
 }
 
 .guest {
-  background-color: #339798;
-  color: white;
+  color: var(--guestcolor, #ffffff);
+  background-color: var(--guestbgcolor, #00aaaa);
 }
 
 .mediaevent {
@@ -270,22 +263,22 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .homefontcolor {
-  color: #99ccff;
+  color: var(--homebgcolor, #99ccff);
 }
 
 .guestfontcolor {
-  color: #ef7a7a;
+  color: var(--guestbgcolor, #ef7a7a);
 }
 
 .halftime {
-  background-color: #cccccc;
-  color: black;
+  background-color: var(--tablelowlightcolor, #cccccc);
+  color: var(--fgcolor, #000000);
   font-weight: bold;
   text-align: center
 }
 
 .infocell {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 8pt;
   text-align: left;
   text-decoration: none;
@@ -295,7 +288,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .headerlink {
-  color: #000000;
+  color: var(--fgcolor, #000000);
   font-size: 12pt;
   text-align: left;
   text-decoration: none;
@@ -305,7 +298,8 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .groupinglink:link, .groupinglink:visited {
-  color: #2d2d2d;
+  color: var(--navlinkcolor, #2d2d2d);
+  background-color: var(--navlinkbgcolor, inherit);
   text-align: left;
   text-decoration: underline;
   font-weight: bold;
@@ -317,13 +311,14 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .groupinglink:hover, .groupinglink:focus {
-  color: #986598;
+  color: var(--navhlinkcolor, #986598);
+  background-color: var(--navhlinkbgcolor, inherit);
   text-decoration: none;
   font-weight: bold;
 }
 
 .selgroupinglink {
-  color: #986598;
+  color: var(--currentgroupinglinkcolor, #986598);
   text-decoration: none;
   font-weight: bold;
   vertical-align: bottom;
@@ -339,7 +334,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .timezone {
-  color: #a0a0a0;
+  color: var(--fadedfgcolor, #a0a0a0);
   font-style: italic;
 }
 

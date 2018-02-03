@@ -65,6 +65,109 @@ foreach($pools as $tmppool){
   $poolfilter[] = array('id'=>$tmppool['pool_id'],'name'=>U_($tmppool['name']));
 }
 
+function gameDuration($gameInfo) {
+  return empty($gameInfo['gametimeslot'])?$gameInfo['timeslot']:$gameInfo['gametimeslot'];
+}
+
+function gameHeight($duration) {
+  return max(intval($duration * MIN_HEIGHT), intval(15 * MIN_HEIGHT)) -2;
+}
+
+function pauseHeight($duration) {
+  // echo "<!--".EpocToMysql($gameStart)." ".EpocToMysql($nextStart)."-->\n";
+  return ($duration * MIN_HEIGHT) - 2;
+}
+
+function jsSecure($string) {
+  return str_replace(array('"', "\n"), array('\"', ''), $string);
+}
+
+function pauseEntry($height, $duration, $gameId) {
+  $html = "<li class='schedule_item' id='pause" . $gameId . "' style='min-height:" . $height . "px'>";
+  $html .= "<input type='hidden' id='ptime" . $gameId . "' name='ptimes[]' value='" . $duration . "'/>";
+  $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
+  $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"pause" . $gameId . "\");'>x</a></span></li>\n";
+  return $html;
+}
+
+function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
+  $color = $gameInfo['color'];
+  $textColor = textColor($color);
+  $gameId = $gameInfo['game_id'];
+  $gamename = utf8entities(getGameName($gameInfo, true));
+  $tooltip = utf8entities(getGameName($gameInfo));
+  if ($tooltip == $gamename)
+    $tooltip = "";
+    else
+      $tooltip = " title='" . $tooltip . "'";
+      $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" . $height .
+      "px' id='game" . $gameId . "'" . $tooltip . ">";
+      $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
+      $html .= $poolname;
+      if ($editable) {
+        $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
+      } else {
+        $html .= "<span style='align:right;float:right;'>#</span>";
+      }
+      $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%d&thinsp;min."), $duration);
+      $html .= "</li>\n";
+      return $html;
+}
+
+function getHName($gameInfo) {
+  return empty($gameInfo['hometeamshortname'])?$gameInfo['hometeamname']:$gameInfo['hometeamshortname'];
+}
+
+function getVName($gameInfo) {
+  return empty($gameInfo['visitorteamshortname'])?$gameInfo['visitorteamname']:$gameInfo['visitorteamshortname'];
+}
+
+function getGameName($gameInfo, $short = false) {
+  if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
+    if ($short) {
+      $gametitle = substr(getHName($gameInfo), 0, 10) . " - " . substr(getVName($gameInfo), 0, 10);
+    } else {
+      $gametitle = $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
+    }
+  } else {
+    $gametitle = $gameInfo['phometeamname'] . " - " . $gameInfo['pvisitorteamname'];
+  }
+  return $gametitle;
+}
+
+function gamePoolName($gameInfo) {
+  return U_($gameInfo['seriesname']).", ". U_($gameInfo['poolname']);
+}
+
+function tableStart($dayArray, $skip, $max) {
+  echo "<table class='scheduling'><tr>\n";
+  $index = 0;
+  foreach ($dayArray as $reservationId => $reservationArray) {
+    if (++$index <= $skip)
+      continue;
+      if ($index > $skip + $max)
+        break;
+        $startTime = strtotime($reservationArray['starttime']);
+        echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field ") . " " . $reservationArray['fieldname'] .
+        " " . date("H:i", $startTime) . "</th>\n";
+  }
+  echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";
+  return $startTime;
+}
+
+function tableEnd($firstStart, $lastEnd) {
+  echo "<td class='timecolumn'>";
+  if (isset($firstStart)) {
+    echo "<ul class='timelist'>\n";
+    for($t=$firstStart;$t<$lastEnd;$t+=60*60) {
+      echo "<li style='min-height:".(max(10, min(60, ($lastEnd-$t)/60)*MIN_HEIGHT-2))."px'>".date("H:i", $t)."</li>\n";
+    }
+    echo "</ul>";
+  }
+  echo "</td>\n";
+  echo "</tr>\n</table>\n";
+}
+
 //common page
 pageTopHeadOpen($title);
 
@@ -158,19 +261,6 @@ function KeyUp(event){
 
 <?php
 
-function gameDuration($gameInfo) {
-  return empty($gameInfo['gametimeslot'])?$gameInfo['timeslot']:$gameInfo['gametimeslot'];
-}
-
-function gameHeight($duration) {
-  return max(intval($duration * MIN_HEIGHT), intval(15 * MIN_HEIGHT)) -2;
-}
-
-function pauseHeight($duration) {
-  // echo "<!--".EpocToMysql($gameStart)." ".EpocToMysql($nextStart)."-->\n";
-  return ($duration * MIN_HEIGHT) - 2;
-}
-
 $scrolling = "onkeydown='KeyDown(event);' onkeyup='KeyUp(event);'";
 pageTopHeadClose($title,false, $scrolling);
 pageMainStart();
@@ -190,96 +280,6 @@ if($poolId){
   $gameData = UnscheduledSeasonGameInfo($seasonId);
 }else{
   $gameData = array();
-}
-
-function jsSecure($string) {
-  return str_replace(array('"', "\n"), array('\"', ''), $string);
-}
-
-function pauseEntry($height, $duration, $gameId) {
-  $html = "<li class='schedule_item' id='pause" . $gameId . "' style='min-height:" . $height . "px'>";
-  $html .= "<input type='hidden' id='ptime" . $gameId . "' name='ptimes[]' value='" . $duration . "'/>";
-  $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
-  $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"pause" . $gameId . "\");'>x</a></span></li>\n";
-  return $html;
-}
-
-function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
-  $color = $gameInfo['color'];
-  $textColor = textColor($color);
-  $gameId = $gameInfo['game_id'];
-  $gamename = utf8entities(getGameName($gameInfo, true));
-  $tooltip = utf8entities(getGameName($gameInfo));
-  if ($tooltip == $gamename)
-    $tooltip = "";
-  else
-    $tooltip = " title='" . $tooltip . "'";
-  $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" . $height .
-       "px' id='game" . $gameId . "'" . $tooltip . ">";
-  $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
-  $html .= $poolname;
-  if ($editable) {
-    $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
-  } else {
-    $html .= "<span style='align:right;float:right;'>#</span>";
-  }
-  $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%d&thinsp;min."), $duration);
-  $html .= "</li>\n";
-  return $html;
-}
-
-function getHName($gameInfo) {
-  return empty($gameInfo['hometeamshortname'])?$gameInfo['hometeamname']:$gameInfo['hometeamshortname'];
-}
-
-function getVName($gameInfo) {
-  return empty($gameInfo['visitorteamshortname'])?$gameInfo['visitorteamname']:$gameInfo['visitorteamshortname'];
-}
-
-function getGameName($gameInfo, $short = false) {
-  if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
-    if ($short) {
-      $gametitle = substr(getHName($gameInfo), 0, 10) . " - " . substr(getVName($gameInfo), 0, 10);
-    } else {
-      $gametitle = $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
-    }
-  } else {
-    $gametitle = $gameInfo['phometeamname'] . " - " . $gameInfo['pvisitorteamname'];
-  }
-  return $gametitle;
-}
-
-function gamePoolName($gameInfo) {
-  return U_($gameInfo['seriesname']).", ". U_($gameInfo['poolname']);
-}
-
-function tableStart($dayArray, $skip, $max) {
-  echo "<table class='scheduling'><tr>\n";
-  $index = 0;
-  foreach ($dayArray as $reservationId => $reservationArray) {
-    if (++$index <= $skip)
-      continue;
-    if ($index > $skip + $max)
-      break;
-    $startTime = strtotime($reservationArray['starttime']);
-    echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field ") . " " . $reservationArray['fieldname'] .
-         " " . date("H:i", $startTime) . "</th>\n";
-  }
-  echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";
-  return $startTime;
-}
-
-function tableEnd($firstStart, $lastEnd) {
-  echo "<td class='timecolumn'>";
-  if (isset($firstStart)) {
-    echo "<ul class='timelist'>\n";
-    for($t=$firstStart;$t<$lastEnd;$t+=60*60) {
-      echo "<li style='min-height:".(max(10, min(60, ($lastEnd-$t)/60)*MIN_HEIGHT-2))."px'>".date("H:i", $t)."</li>\n";
-    }
-    echo "</ul>";
-  }
-  echo "</td>\n";
-  echo "</tr>\n</table>\n";
 }
 
 echo "<table class='scheduling'><tr><td class='scheduling_column'>\n";

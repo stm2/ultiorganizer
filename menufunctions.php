@@ -90,7 +90,7 @@ function pageTopHeadOpen($title) {
   
   echo "<link rel='icon' type='image/png' href='$icon' />
 		<title>" . GetPageTitle() . "" . $title . "</title>\n";
-  echo styles();
+  echo stylesCompressed();
   include $include_prefix . 'script/common.js.inc';
   global $include_prefix;
   include_once $include_prefix . 'script/help.js.inc';

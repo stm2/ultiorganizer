@@ -71,22 +71,27 @@ function styles() {
   } else {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/colors.css\" type=\"text/css\" />\n";
   }
+  $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/default.css\" type=\"text/css\" />\n";
   if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/default.css')) {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/default.css\" type=\"text/css\" />\n";
   } else {
-    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/default.css\" type=\"text/css\" />\n";
   }
+  $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/layout.css\" type=\"text/css\" />\n";
   if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/layout.css')) {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/layout.css\" type=\"text/css\" />\n";
   } else {
-    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/layout.css\" type=\"text/css\" />\n";
   }
+  $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/font.css\" type=\"text/css\" />\n";
   if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/font.css')) {
     $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/".CUSTOMIZATIONS."/font.css\" type=\"text/css\" />\n";
   } else {
-    $ret .= "		<link rel=\"stylesheet\" href=\"".$styles_prefix."cust/default/font.css\" type=\"text/css\" />\n";
   }
   return $ret;
+}
+
+function stylesCompressed() {
+  global $include_prefix;
+  return "<link rel='stylesheet' type='text/css' media='screen, print, projection' href='{$include_prefix}lib/compressedCss.php' />";
 }
 
 function MapLocale($ext_locale) {

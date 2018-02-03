@@ -14,12 +14,10 @@
   --softbordercolor: #464646;
   --lightbordercolor : #eeeedd;
 
-  --breadcrumbscolor: var(--fgcolor);
-  --breadcrumbsbgcolor: var(--bgcolor);
+  --breadcrumbscolor: inherit;
+  --breadcrumbsbgcolor: inherit;
 
   --fadedfgcolor: #666;
-
-  --thfgcolor: #ffffff;
 
   --posvaluecolor: #2f5721;
   --negvaluecolor: #6b1a1a;
@@ -47,12 +45,15 @@
   --thhlinkcolor: var(--shadecolor);
   
   --currentlinkcolor: #986598;
+  --currentgroupinglinkcolor: #986598;
   
   --navlinkcolor: #2d2d2d;
   --navlinkbgcolor: inherit;
   --navhlinkcolor: #2d2d2d;
   --navhlinkbgcolor: var(--hishadecolor);
-  
+  --navcurrentlinkcolor: #2d2d2d;
+  --navcurrentbgcolor: #fff;
+    
   --thcolor: var(--bgcolor);
   --thbgcolor: var(--headercolor);
   --tableheadhicolor: var(--shadecolor);
