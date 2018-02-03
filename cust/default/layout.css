@@ -125,7 +125,7 @@ table.leftmenulinks+table.leftmenulinks {
   width: 175px;
   color: var(--fgcolor, #004466);
   background-color: var(--hishadecolor, #eeeeee);
-  font-size: 12px;
+  font-size: 1.2em;
   border-top: solid var(--lightbordercolor, #eeeedd) 1px;
   border-bottom: solid var(--softbordercolor, #464646) 1px;
   border-left: solid var(--lightbordercolor, #eeeedd) 1px;
@@ -155,34 +155,20 @@ table.leftmenulinks+table.leftmenulinks {
   border-bottom: 1px dotted var(--headercolor, #333);
 }
 
-.center {
-  text-align: center;
-  vertical-align: middle;
-}
-
-.right {
-  text-align: right;
-  vertical-align: middle;
-}
-
-.left {
-  text-align: left;
-  vertical-align: middle;
-}
-
-.button {
-  cursor: pointer;
-  font-size: 10px;
-}
-
-.input {
-  font-size: 10px;
-}
-
 .checkbox {
-  font-size: 10px;
+  font-size: 1em;
   padding: 1px;
   margin: 1px;
+}
+
+.pagemenu_container {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.grouping_container {
+  padding: 3px 0px 5px 3px;
 }
 
 select {
@@ -230,7 +216,7 @@ td.scoreinput.bright {
 }
 
 .dropdown {
-  font-size: 10px;
+  font-size: 1em;
   width: auto;
 }
 
@@ -390,10 +376,11 @@ div.workarea {
 td.scheduling_column {
   vertical-align: top;
   padding: 0px;
-  font-size: 8px;
+  font-size: .8em;
 }
 
 ul.draglist, ol.draglist, select.series_select {
+  font-size: .8em;
   position: relative;
   width: 180px;
   background-color: var(--draglistcolor, #f7f7f7);
@@ -479,7 +466,7 @@ div.tabcell {
   overflow: auto;
   width: 200px;
   height: 400px;
-  font-size: 11px;
+  font-size: 1.1em;
   color: var(--fgcolor, #000);
 }
 

@@ -44,13 +44,12 @@ table {
 }
 /* end reset */
 body {
+  color: var(--fgcolor, #000000);
   background-color: var(--hishadecolor, #e8e8e8);
   font-family: Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
 
 p {
-  color: var(--fgcolor, #000000);
-  font-size: 10px;
   text-align: left;
   text-decoration: none;
   margin-top: .3ex;
@@ -65,7 +64,6 @@ table {
 th {
   color: var(--thcolor, #ffffff);
   background-color: var(--thbgcolor, #006699);
-  font-size: 10px;
   text-align: left;
   text-decoration: none;
   padding: 1px;
@@ -73,7 +71,6 @@ th {
 
 th a:link, th a:visited {
   color: var(--thlinkcolor, #ffffff);
-  font-size: 10px;
   text-align: left;
   text-decoration: underline;
 }
@@ -83,14 +80,13 @@ th a:visited {
 }
 
 td {
-  font-size: 10px;
   text-align: left;
   text-decoration: none;
 }
 
 h1 {
   color: var(--fgcolor, #000000);
-  font-size: 10pt;
+  font-size: 1.2em;
   line-height: 12pt;
   font-weight: bold;
   text-transform: uppercase;
@@ -98,7 +94,7 @@ h1 {
 
 h2 {
   color: var(--fgcolor, #000000);
-  font-size: 9pt;
+  font-size: 1.1em;
   line-height: 12pt;
   font-weight: bold;
 }
@@ -109,7 +105,7 @@ h2 ~ h2 {
 
 h3 {
   color: var(--fgcolor, #000000);
-  font-size: 8pt;
+  font-size: 1em;
   line-height: 10pt;
   font-weight: bold;
 }
@@ -120,7 +116,7 @@ h3 ~ h3 {
 
 h4 {
   color: var(--fgcolor, #000000);
-  font-size: 8pt;
+  font-size: .9em;
   text-align: left;
   text-decoration: none;
   font-weight: bold;
@@ -134,7 +130,6 @@ h4 ~ h4 {
 
 a:link, a:visited {
   color: var(--linkcolor, #004466);
-  font-size: 10px;
   text-align: left;
   text-decoration: none;
 }
@@ -149,15 +144,31 @@ a:hover, a:focus {
 }
 
 input {
-  font-size: 10px;
+  font-size: 1em;
 }
 
 button {
   cursor: pointer;
-  font-size: 10px;
+  font-size: 1em;
 }
 
 a.current {
   font-weight: bold;
   background-color: var(--currentlinkcolor, #d00000);
 }
+
+.center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.right {
+  text-align: right;
+  vertical-align: middle;
+}
+
+.left {
+  text-align: left;
+  vertical-align: middle;
+}
+

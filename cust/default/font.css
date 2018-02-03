@@ -1,7 +1,19 @@
+body {
+  font-size: 1em;
+}
+
+p {
+  font-size: 1em;
+}
+
+td {
+  font-size: 1em;
+}
+
 .header_text:link, .header_text:visited, .header_text:active,
   .header_text:hover, .header_text:focus, div.header_text {
   color: var(--headercolor, #006699);
-  font-size: 18pt;
+  font-size: 2em;
   margin-left: 8px;
   font-weight: normal;
   font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
@@ -12,7 +24,7 @@
 .header_text_small:link, .header_text_small:visited, .header_text_small:active,
   .header_text_small:hover, .header_text_small:focus {
   color: var(--headercolor, #006699);
-  font-size: 12pt;
+  font-size: 1.2em;
   padding-left: 10px;
   font-weight: normal;
   text-decoration: none;
@@ -33,11 +45,11 @@
 }
 
 .seasondropdown {
-  font-size: 12px;
+  font-size: 1.2em;
 }
 
 .nav:link, .nav:visited {
-  font-size: 8pt;
+  font-size: 1em;
   font-weight: bold;
   padding: 2px;
   color: var(--navlinkcolor, #2d2d2d);
@@ -54,7 +66,7 @@
 }
 
 .subnav, .subnav:link, .subnav:visited {
-  font-size: 8pt;
+  font-size: 1em;
   padding-top: 2px;
   padding-left: 2px;
   color: var(--navlinkcolor, #2d2d2d);
@@ -70,7 +82,7 @@
 }
 
 .navpoollink, .navpoollink:link, .navpoollink:visited {
-  font-size: 8pt;
+  font-size: 1em;
   padding-left: 1ex;
   color: var(--navlinkcolor, #2d2d2d);
   background-color: var(--navlinkbgcolor, inherit);
@@ -92,11 +104,11 @@
   margin-bottom: 2px;
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 10px;
+  font-size: 1em;
 }
 
 .menuseasonlevel {
-  font-size: 10px;
+  font-size: 1.1em;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
@@ -105,18 +117,12 @@
 }
 
 .menuserieslevel {
-  font-size: 10px;
+  font-size: 1.1em;
   font-weight: bold;
 }
 
 .menupoollevel {
-  font-size: 10px;
-}
-
-.pagemenu_container {
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
+  font-size: 1.1em;
 }
 
 ul#pagemenu {
@@ -124,13 +130,13 @@ ul#pagemenu {
   position: relative;
   width: 100%;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 1.1em;
   margin: 0px;
   padding: 0px;
 }
 
 table#pagemenu {
-  font-size: 10px;
+  font-size: 1.1em;
   margin: 0px;
 }
 
@@ -154,7 +160,7 @@ ul#pagemenu li a, table#pagemenu a {
   color: var(--navlinkcolor, #2d2d2d);
   background-color: var(--navlinkbgcolor, acd1e9);
   text-decoration: none;
-  padding: 3px 17px 0 18px;
+  padding: 3px 17px 1px 18px;
 }
 
 ul#pagemenu li a.right {
@@ -162,9 +168,10 @@ ul#pagemenu li a.right {
 }
 
 ul#pagemenu li a:hover, table#pagemenu a:hover {
-  text-decoration: underline;
   color: var(--hnavlinkcolor, #000000);
   background-color: var(--hnavlinkbgcolor, #d3d3d3);
+  text-decoration: underline;
+  padding: 3px 16px 0px 17px;
   border-left: 1px solid var(--hardbordercolor, #333);
   border-right: 1px solid var(--hardbordercolor, #333);
   border-top: 1px solid var(--hardbordercolor, #333);
@@ -174,13 +181,13 @@ ul#pagemenu li a.current, table#pagemenu a.current {
   color: var(--navcurrentlinkcolor, #2d2d2d);
   background-color: var(--navcurrentbgcolor, #fff);
   text-decoration: underline;
+  padding: 3px 16px 0px 17px;
   border-left: 1px solid var(--hardbordercolor, #333);
   border-right: 1px solid var(--hardbordercolor, #333);
   border-top: 1px solid var(--hardbordercolor, #333);
 }
 
 .thlink, .thlink:link, .thlink:visited {
-  font-size: 10px;
   color: var(--thlinkcolor, #ffffff);
   text-decoration: underline;
 }
@@ -224,7 +231,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .list_letter {
   color: var(--fgcolor, #000000);
-  font-size: 10pt;
+  font-size: 1.2em;
   line-height: 12pt;
   font-weight: bold;
   text-transform: uppercase;
@@ -279,7 +286,6 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .infocell {
   color: var(--fgcolor, #000000);
-  font-size: 8pt;
   text-align: left;
   text-decoration: none;
   font-weight: bold;
@@ -289,7 +295,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .headerlink {
   color: var(--fgcolor, #000000);
-  font-size: 12pt;
+  font-size: 1.3em;
   text-align: left;
   text-decoration: none;
   font-weight: bold;
@@ -330,7 +336,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .dbrow {
-  font-size: 1em;
+  font-size: 1.1em;
 }
 
 .timezone {
@@ -340,7 +346,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .guides {
   font-style: italic;
-  font-size: 8pt;
+  font-size: .8em;
   text-align: center;
   vertical-align: middle;
 }

@@ -72,7 +72,7 @@ $html .= pageMenu($menutabs, respgameslink($season, $series_id, $group, $hide, $
 
 $seasoninfo = SeasonInfo($season);
 $groups = TimetableGrouping($season, "season", "all");
-$html .= "<table width='100%'><tr><td>\n";
+$html .= "<table width='100%'><tr><td class='grouping_container'>\n";
 
 function respgameslink($season, $series_id, $group, $hide, $mass, $htmlentities=true) {
   if($hide=="none")

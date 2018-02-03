@@ -7,4 +7,5 @@
 .header_text:link, .header_text:visited, .header_text:active,
   .header_text:hover, .header_text:focus, div.header_text {
   font-size: 24pt;
+  font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
