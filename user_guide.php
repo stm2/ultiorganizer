@@ -11,7 +11,7 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/'.$htmlfile)) {
 }else if (is_file($htmlfile)){
   $html .= file_get_contents($htmlfile);
 } else {
-  $html .= "<p>" . _("Sorry, userguide not available for your language.") . "</p>";
+  $html .= "<p>" . _("Sorry, user guide not available for your language.") . "</p>";
 }
 
 $querystring = $_SERVER['QUERY_STRING'];
