@@ -125,7 +125,7 @@ table.leftmenulinks+table.leftmenulinks {
   width: 175px;
   color: var(--fgcolor, #004466);
   background-color: var(--hishadecolor, #eeeeee);
-  font-size: 1.2em;
+  font-size: 1.1rem;
   border-top: solid var(--lightbordercolor, #eeeedd) 1px;
   border-bottom: solid var(--softbordercolor, #464646) 1px;
   border-left: solid var(--lightbordercolor, #eeeedd) 1px;
@@ -151,12 +151,17 @@ table.leftmenulinks+table.leftmenulinks {
   width: 860px;
 }
 
+.printlink {
+  text-align: right;
+  color: var(--printcolor, #eee);
+}
+
 .menuseparator {
   border-bottom: 1px dotted var(--headercolor, #333);
 }
 
 .checkbox {
-  font-size: 1em;
+  font-size: 1rem;
   padding: 1px;
   margin: 1px;
 }
@@ -216,7 +221,7 @@ td.scoreinput.bright {
 }
 
 .dropdown {
-  font-size: 1em;
+  font-size: 1rem;
   width: auto;
 }
 
@@ -376,11 +381,11 @@ div.workarea {
 td.scheduling_column {
   vertical-align: top;
   padding: 0px;
-  font-size: .8em;
+  font-size: .8rem;
 }
 
 ul.draglist, ol.draglist, select.series_select {
-  font-size: .8em;
+  font-size: .8rem;
   position: relative;
   width: 180px;
   background-color: var(--draglistcolor, #f7f7f7);
@@ -454,7 +459,7 @@ div.tabcell {
 
 .map_container {
   font-family: Arial, sans-serif;
-  font-size: 11px;
+  font-size: 1.1rem;
   border: 1px solid var(--hardbordercolor, black);
 }
 
@@ -466,7 +471,7 @@ div.tabcell {
   overflow: auto;
   width: 200px;
   height: 400px;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   color: var(--fgcolor, #000);
 }
 

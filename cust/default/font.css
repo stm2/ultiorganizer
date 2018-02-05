@@ -1,19 +1,19 @@
-body {
-  font-size: 1em;
+p {
+  font-size: 1rem;
 }
 
-p {
-  font-size: 1em;
+th {
+  font-size: 1rem;
 }
 
 td {
-  font-size: 1em;
+  font-size: 1rem;
 }
 
 .header_text:link, .header_text:visited, .header_text:active,
   .header_text:hover, .header_text:focus, div.header_text {
   color: var(--headercolor, #006699);
-  font-size: 2em;
+  font-size: 2rem;
   margin-left: 8px;
   font-weight: normal;
   font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
@@ -24,7 +24,7 @@ td {
 .header_text_small:link, .header_text_small:visited, .header_text_small:active,
   .header_text_small:hover, .header_text_small:focus {
   color: var(--headercolor, #006699);
-  font-size: 1.2em;
+  font-size: 1.2rem;
   padding-left: 10px;
   font-weight: normal;
   text-decoration: none;
@@ -45,11 +45,11 @@ td {
 }
 
 .seasondropdown {
-  font-size: 1.2em;
+  font-size: 1.1rem;
 }
 
 .nav:link, .nav:visited {
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: bold;
   padding: 2px;
   color: var(--navlinkcolor, #2d2d2d);
@@ -66,7 +66,7 @@ td {
 }
 
 .subnav, .subnav:link, .subnav:visited {
-  font-size: 1em;
+  font-size: 1rem;
   padding-top: 2px;
   padding-left: 2px;
   color: var(--navlinkcolor, #2d2d2d);
@@ -82,7 +82,7 @@ td {
 }
 
 .navpoollink, .navpoollink:link, .navpoollink:visited {
-  font-size: 1em;
+  font-size: 1rem;
   padding-left: 1ex;
   color: var(--navlinkcolor, #2d2d2d);
   background-color: var(--navlinkbgcolor, inherit);
@@ -104,11 +104,11 @@ td {
   margin-bottom: 2px;
   margin-left: 5px;
   margin-right: 5px;
-  font-size: 1em;
+  font-size: 1rem;
 }
 
 .menuseasonlevel {
-  font-size: 1.1em;
+  font-size: 1.1rem;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
@@ -117,12 +117,12 @@ td {
 }
 
 .menuserieslevel {
-  font-size: 1.1em;
+  font-size: 1.1rem;
   font-weight: bold;
 }
 
 .menupoollevel {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 ul#pagemenu {
@@ -130,13 +130,13 @@ ul#pagemenu {
   position: relative;
   width: 100%;
   font-weight: bold;
-  font-size: 1.1em;
+  font-size: 1.1rem;
   margin: 0px;
   padding: 0px;
 }
 
 table#pagemenu {
-  font-size: 1.1em;
+  font-size: 1.1rem;
   margin: 0px;
 }
 
@@ -231,7 +231,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .list_letter {
   color: var(--fgcolor, #000000);
-  font-size: 1.2em;
+  font-size: 1.2rem;
   line-height: 12pt;
   font-weight: bold;
   text-transform: uppercase;
@@ -295,7 +295,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .headerlink {
   color: var(--fgcolor, #000000);
-  font-size: 1.3em;
+  font-size: 1.1rem;
   text-align: left;
   text-decoration: none;
   font-weight: bold;
@@ -336,7 +336,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 }
 
 .dbrow {
-  font-size: 1.1em;
+  font-size: 1.1rem;
 }
 
 .timezone {
@@ -346,7 +346,7 @@ ul#pagemenu li a.current, table#pagemenu a.current {
 
 .guides {
   font-style: italic;
-  font-size: .8em;
+  font-size: .8rem;
   text-align: center;
   vertical-align: middle;
 }

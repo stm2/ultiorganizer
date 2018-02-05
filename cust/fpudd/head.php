@@ -9,7 +9,7 @@ function pageHeader() {
 	if (!isset($styles_prefix)) {
 		$styles_prefix = $include_prefix;
 	}
-	return "<a href='http://localhost' class='header_text'><img class='header_logo' src='".$styles_prefix."/cust/default/head_logo_fpudd_600_120.png' alt='FPUDD' width=600/></a><br/>\n";
+	return "<a href='http://localhost' class='header_text'><img class='header_logo' src='".$styles_prefix."cust/fpudd/head_logo_fpudd_600_120.png' alt='FPUDD' width=600/></a><br/>\n";
 }
 
 ?>
