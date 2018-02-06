@@ -7,7 +7,6 @@ include_once $include_prefix.'lib/pool.functions.php';
 include_once $include_prefix.'lib/reservation.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
-$LAYOUT_ID = ADDMEDIALINK;
 $max_file_size = 5 * 1024 * 1024; //5 MB
 $max_new_links = 3;
 $html = "";
@@ -104,27 +103,8 @@ if(isset($_POST['save'])){
 
 	
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-include_once 'script/common.js.inc';
-?>
-<script type="text/javascript">
-<!--
-function validTime(field) 
-	{
-	field.value=field.value.replace(/[^0-9]/g, '.')
-	}
-//-->
-</script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
-
-//content
 $html .= "<form method='post' enctype='multipart/form-data' action='$pageurl'>\n";
 	
-
 $urls = GetMediaUrlList($owner, $owner_id);
 
 if(count($urls)){
@@ -212,17 +192,17 @@ for($i=0;$i<$max_new_links;$i++){
 }
 $html .= "</table>";
 $html .=  "<p>
-	  <input class='button' type='submit' name='save' value='"._("Save")."' />
-	  <input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>
-	  <input type='hidden' name='backurl' value='$backurl'/>
+	  <input class='button' type='submit' name='save' value='"._("Save")."' />\n";
+if ($backurl) {
+  $html .= "	  <input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>\n";
+}
+$html .="	  <input type='hidden' name='backurl' value='$backurl'/>
 	  <input type='hidden' name='MAX_FILE_SIZE' value='$max_file_size'/>
 	  </p>\n";
 $html .= "<div><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></div>";
 $html .= "</form>";
 
-echo $html;
-
-//common end
-contentEnd();
-pageEnd();
+addHeaderScript('script/disable_enter.js.inc');
+addHeaderScript('script/common.js.inc');
+showPage($title, $html);
 ?>

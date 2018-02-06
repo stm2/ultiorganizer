@@ -1,7 +1,7 @@
 <?php
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
-$LAYOUT_ID = ADDSEASONSERIES;
+
 $html = "";
 
 $seriesId=0;
@@ -72,13 +72,11 @@ else if(!empty($_POST['save']))
 	}
 	
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities", "datasource", "autocomplete"));
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+addHeaderScript('script/disable_enter.js.inc');
+
+include_once $include_prefix . 'lib/yui.functions.php';
+
+$html .= yuiLoad(array("utilities", "datasource", "autocomplete"));
 
 //retrieve values if series id known
 if($seriesId)
@@ -92,54 +90,52 @@ if($seriesId)
 	$sp['valid']=$info['valid'];
 	}
 	
-echo $html;
-
 //if seriesid is empty, then add new serie	
 if($seriesId)
-	echo "<h2>"._("Edit division").":</h2>\n";	
+	$html .= "<h2>"._("Edit division").":</h2>\n";	
 else
-	echo "<h2>"._("Add division")."</h2>\n";	
+	$html .= "<h2>"._("Add division")."</h2>\n";	
 	
-	echo "<form method='post' action='?view=admin/addseasonseries&amp;series=$seriesId&amp;season=$season'>";
-	echo "<table class='formtable'>
+	$html .= "<form method='post' action='?view=admin/addseasonseries&amp;series=$seriesId&amp;season=$season'>";
+	$html .= "<table class='formtable'>
 			<tr>
 			<td class='infocell'>"._("Name").":</td>
 			<td>".TranslatedField("name", $sp['name'])."
 			</td>
 			</tr>\n";
-	echo "<tr><td class='infocell'>"._("Order")." (A,B,C,D..):</td>
+	$html .= "<tr><td class='infocell'>"._("Order")." (A,B,C,D..):</td>
 			<td><input class='input' id='ordering' name='ordering' value='".utf8entities($sp['ordering'])."'/></td></tr>";
 
-	echo "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
+	$html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
 	
 	$types = SeriesTypes();
 
 	
 	foreach($types as $type){
 		if($sp['type']==$type)
-			echo "<option class='dropdown' selected='selected' value='$type'>".U_($type)."</option>\n";
+			$html .= "<option class='dropdown' selected='selected' value='$type'>".U_($type)."</option>\n";
 		else
-			echo "<option class='dropdown' value='$type'>".U_($type)."</option>\n";
+			$html .= "<option class='dropdown' value='$type'>".U_($type)."</option>\n";
 	}
 	
-	echo "</select></td></tr>\n";
+	$html .= "</select></td></tr>\n";
 	
-	echo "<tr><td class='infocell'>"._("Valid").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Valid").":</td>";
 	if(intval($sp['valid']))
-		echo "<td><input class='input' type='checkbox' id='valid' name='valid' checked='checked'/></td></tr>";
+		$html .= "<td><input class='input' type='checkbox' id='valid' name='valid' checked='checked'/></td></tr>";
 	else
-		echo "<td><input class='input' type='checkbox' id='valid' name='valid'/></td></tr>";
+		$html .= "<td><input class='input' type='checkbox' id='valid' name='valid'/></td></tr>";
 		
-	echo "</table><p>\n";
+	$html .= "</table><p>\n";
 if($seriesId)
-	echo "<input class='button' name='save' type='submit' value='"._("Save")."'/>";
+	$html .= "<input class='button' name='save' type='submit' value='"._("Save")."'/>";
 else
-	echo "<input class='button' name='add' type='submit' value='"._("Add")."'/>";
+	$html .= "<input class='button' name='add' type='submit' value='"._("Add")."'/>";
 	
-	echo "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/seasonseries&amp;season=$season'\"/>
+	$html .= "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/seasonseries&amp;season=$season'\"/>
 		  </p></form>";
 
-echo TranslationScript("name");
-contentEnd();
-pageEnd();
+$html .= TranslationScript("name");
+
+showPage($title, $html);
 ?>

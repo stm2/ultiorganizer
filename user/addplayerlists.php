@@ -4,7 +4,6 @@ include_once $include_prefix.'lib/game.functions.php';
 include_once $include_prefix.'lib/team.functions.php';
 include_once $include_prefix.'lib/player.functions.php';
 
-$LAYOUT_ID = ADDPLAYERLISTS;
 $title = _("Rosters");
 $gameId = intval($_GET["game"]);
 $game_result = GameResult($gameId);
@@ -97,9 +96,10 @@ if (!empty($_POST['save'])) {
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-?>
+addHeaderScript('script/disable_enter.js.inc');
+
+addHeaderCallback(function () {
+  echo '
 <script type="text/javascript">
 <!--
 function checkAll(field){
@@ -120,10 +120,8 @@ function checkAll(field){
 }
 //-->
 </script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+';
+});
 
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";
@@ -136,9 +134,7 @@ if(ShowDefenseStats())
   $menutabs[_("Defense sheet")]= "?view=user/adddefensesheet&game=$gameId";
 }
 
-pageMenu($menutabs);
-
-
+$html .= pageMenu($menutabs, "", false);
 
 $html .= "<form method='post' action='?view=user/addplayerlists&amp;game=".$gameId."'>";
 
@@ -233,9 +229,5 @@ $html .= $html2;
 $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
 $html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."'/></p></form>";
 
-echo $html;
-
-//common end
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

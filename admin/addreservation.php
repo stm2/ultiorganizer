@@ -2,7 +2,6 @@
 include_once 'lib/reservation.functions.php';
 include_once 'lib/location.functions.php';
 
-$LAYOUT_ID = ADDRESERVATION;
 $addmore = false;
 $html = "";
 $allfields = "";
@@ -166,9 +165,10 @@ YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
 
 <?php
 $setFocus = "OnLoad=\"document.getElementById('date').focus();\"";
-pageTopHeadClose($title,false,$setFocus);
-leftMenu($LAYOUT_ID);
+pageTopHeadClose($title, false, $setFocus);
+leftMenu();
 contentStart();
+
 if ($reservationId > 0) {
   $reservationInfo = ReservationInfo($reservationId);
   $res['id']=$reservationId;
@@ -266,6 +266,6 @@ echo LocationScript('location');
 <?php
 echo TranslationScript("reservationgroup");
 echo TranslationScript("fieldname");
-contentEnd();
-pageEnd();
+
+postContent();
 ?>

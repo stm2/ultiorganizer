@@ -2,7 +2,7 @@
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
-$LAYOUT_ID = ADDSEASONPOOLS;
+
 $html = "";
 $template = 0;
 $addmore = false;
@@ -215,9 +215,9 @@ echo yuiLoad(array(
 
 <?php
 $setFocus = "onload=\"document.getElementById('name').focus();\"";
-pageTopHeadClose($title, false, $setFocus);
 
-leftMenu($LAYOUT_ID);
+pageTopHeadClose($title, false, $setFocus);
+leftMenu();
 contentStart();
 
 echo $html;
@@ -488,6 +488,6 @@ if (! $poolId || $addmore) {
   echo "</form>\n";
 }
 echo TranslationScript("name");
-contentEnd();
-pageEnd();
+
+postContent();
 ?>

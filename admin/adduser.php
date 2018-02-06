@@ -75,15 +75,9 @@ if(!empty($_POST['save'])) {
   }
 }
 
-$LAYOUT_ID = REGISTER;
 $title = _("Add new user");
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
-
+addHeaderScript('script/disable_enter.js.inc');
 
 $html .= "<form method='post' action='?view=admin/adduser";
 $html .= "'>\n";
@@ -130,9 +124,5 @@ $html .= "<tr><td colspan = '2' align='right'><br/>
 $html .= "</table>\n";
 $html .= "</form>";
 
-echo $html;
-
-//common end
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

@@ -28,5 +28,5 @@ if(empty($html)){
     $html .= "<p>".sprintf(_("Invalid username %s."), $userId)."</p>\n";
   }
 }
-showPage($title, $html, true);
+showPageMobile($title, $html);
 ?>

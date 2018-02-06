@@ -6,8 +6,9 @@ include_once 'lib/pool.functions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/country.functions.php';
 
-$LAYOUT_ID = ADDSEASONTEAMS;
+$title = _("Edit");
 $html="";
+
 $teamId=0;
 $season=0;
 $seriesId=0;
@@ -92,12 +93,14 @@ while($row = @mysqli_fetch_assoc($result)){
 $orgarray=trim($orgarray,',');
 			
 //common page
-$title = _("Edit");
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
+
+addHeaderScript('script/disable_enter.js.inc');
+
 include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities", "datasource", "autocomplete"));
-?>
+
+$preText = yuiLoad(array("utilities", "datasource", "autocomplete"));
+
+$preText .= <<<EOT
 <style type="text/css">
 #orgAutoComplete {
     width:26em;
@@ -107,15 +110,14 @@ echo yuiLoad(array("utilities", "datasource", "autocomplete"));
 <script type="text/javascript">
 
 var clubs = new Array(
-	<?php
-		echo $orgarray;
-	?>
+		$orgarray
 	);
 </script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+
+EOT;
+
+addHeaderText($preText);
+
 $seasonInfo = SeasonInfo($season);
 
 if($teamId){
@@ -212,8 +214,8 @@ else
 $html .= "<input class='button' type='button' name='back'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/seasonteams&amp;season=$season'\"/></p>";
 $html .= "</form>\n";
 
-echo $html;
-?>
+
+$preText = <<<EOT
 <script type="text/javascript">
 YAHOO.autocomplete = function() {
     var oDS = new YAHOO.util.LocalDataSource(clubs);
@@ -226,10 +228,14 @@ YAHOO.autocomplete = function() {
     };
 }();
 </script>
-<?php
+EOT;
+
 if(intval($seasonInfo['isnationalteams'])) {
-	echo TranslationScript("name");
+  $html .= TranslationScript("name");
 }
-contentEnd();
-pageEnd();
+
+$html .= $preText;
+// addHeaderText($preText);
+
+showPage($title, $html);
 ?>

@@ -3,7 +3,6 @@ include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
-$LAYOUT_ID = ADDSEASONUSERS;
 $title = _("Team admins");
 $html = "";
 $seriesId = intval($_GET["series"]);
@@ -46,11 +45,7 @@ foreach($teams as $team){
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+addHeaderScript('script/disable_enter.js.inc');
 
 $html .= "<h3>"._("Team admins").":</h3>";
 $html .= "<form method='post' action='?view=admin/addteamadmins&amp;series=".$seriesId."' name='teamadmin'>";
@@ -93,7 +88,5 @@ $html .= "<div><input type='hidden' name='teamId'/></div>";
 $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
 $html .= "</form>";
 
-echo $html;
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

@@ -3,8 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = ADDSERIEFORMATS;
-
 $title = _("Edit");
 $html = "";
 
@@ -71,13 +69,9 @@ if(!empty($_POST['save']) || !empty($_POST['add'])){
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-include_once 'lib/yui.functions.php';
-$html .= yuiLoad(array("utilities", "datasource", "autocomplete"));
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+addHeaderScript('script/disable_enter.js.inc');
+addHeaderScript('lib/yui.functions.php');
+addHeaderText(yuiLoad(array("utilities", "datasource", "autocomplete")));
 
 if($poolId){
   $info = PoolTemplateInfo($poolId);
@@ -192,7 +186,5 @@ $html .= "<input class='button' type='button' name='back'  value='"._("Back")."'
 $html .= "</form>\n";
 $html .= TranslationScript("name");
 
-echo $html;
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

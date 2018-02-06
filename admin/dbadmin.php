@@ -7,11 +7,7 @@ $html = "";
 
 //common page
 $title = _("Database administration");
-$LAYOUT_ID = DBADMIN;
-pageTopHeadOpen($title);
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
+
 if(isSuperAdmin()){
 	
     $html .= "<p><span class='profileheader'>"._("Database administration").": </span><br/>\n";
@@ -100,8 +96,6 @@ if(isSuperAdmin()){
 }else{
 	$html .= "<p>"._("User credentials does not match")."</p>\n";
 }
-echo $html;
 
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

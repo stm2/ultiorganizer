@@ -21,7 +21,7 @@
   background-color: var(--bgcolor, #ffffff);
 }
 
-.main_page_print {
+.main_page.print {
   width: 100%;
 }
 
@@ -151,9 +151,16 @@ table.leftmenulinks+table.leftmenulinks {
   width: 860px;
 }
 
+.backlink {
+  text-align:left;
+  float:left;
+  clear:left;
+  color: var(--fadedfgcolor, #333);
+}
+
 .printlink {
   text-align: right;
-  color: var(--printcolor, #eee);
+  color: var(--fadedfgcolor, #333);
 }
 
 .menuseparator {

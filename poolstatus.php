@@ -7,7 +7,7 @@ include_once 'lib/timetable.functions.php';
 
 $title = _("Pool Ranking")." ";
 $seriesScoreboard = false;
-$print=0;
+$print=getPrintMode();
 $html = "";
 $comment = "";
 
@@ -45,10 +45,6 @@ if (iget("season")) {
 
   $seasoninfo = SeasonInfo($poolinfo['season']);
   $title.= utf8entities(U_($poolinfo['seriesname']).", ". U_($poolinfo['name']));
-}
-if(iget("print")) {
-  $print = intval(iget("print"));
-  $format = "paper";
 }
 
 $html .= $comment;
@@ -97,20 +93,7 @@ if($seriesScoreboard && !$print){
   $html .= scoreboard($prevseries, true);
 }
 
-$querystring = $_SERVER['QUERY_STRING'];
-$querystring = preg_replace("/&Print=[0-1]/","",$querystring);
-if($print){
-  $html .= "<hr/><div style='text-align:right'><a href='?".utf8entities($querystring)."'>"._("Return")."</a></div>";
-}else{
-  $html .= "<hr/>";
-  $html .= "<div style='text-align:right'><a href='?".utf8entities($querystring)."&amp;print=1'>"._("Printable version")."</a></div>";
-}
-
-if($print){
-  showPrintablePage($title, $html);
-}else{
-  showPage($title, $html);
-}
+showPage($title, $html);
 
 function scoreboard($id, $seriesScoreboard){
   

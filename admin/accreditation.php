@@ -1,8 +1,6 @@
 <?php
 include_once 'lib/accreditation.functions.php';
 
-$LAYOUT_ID = ACCREDITATION;
-
 $title = _("Accreditation");
 $html = "";
 
@@ -40,10 +38,7 @@ if (isset($_POST['accredit']) && isset($_POST['series'])) {
 $unAccredited = SeasonUnaccredited($season);
 
 //common page
-pageTopHeadOpen($title);
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+preContent($title);
 
 $html .= "[<a href='?view=admin/accreditation&amp;season=".$season."&amp;list=acc'>"._("Accreditation")."</a>]";
 $html .= "&nbsp;&nbsp;";	
@@ -193,7 +188,6 @@ if($view=="accId"){
   echo "</table>";
 }
 
-contentEnd();
-pageEnd();
+postContent();
 
 ?>

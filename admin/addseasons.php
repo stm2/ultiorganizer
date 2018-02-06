@@ -1,12 +1,11 @@
 <?php
-include_once 'lib/season.functions.php';
-include_once 'lib/series.functions.php';
-include_once 'lib/common.functions.php';
+include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/series.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
 
-$LAYOUT_ID = SEASONS;
 $seasonId = "";
 $html = "";
-$backurl = utf8entities($_SERVER['HTTP_REFERER']);
+$backurl = isset($_SERVER['HTTP_REFERER'])?utf8entities($_SERVER['HTTP_REFERER']):"";
 
 //season parameters
 $sp = array(
@@ -137,10 +136,12 @@ if($seasonId){
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
-?>
+include_once $include_prefix . 'lib/yui.functions.php';
+
+addHeaderCallback(function() {
+  echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
+
+echo '
 <link rel="stylesheet" type="text/css" href="script/yui/calendar/calendar.css" />
 
 <script type="text/javascript">
@@ -252,11 +253,8 @@ YAHOO.calendar.init = function() {
 }
 YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
 //-->
-</script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+</script>';});
+
 
 if(empty($seasonId)){
 	$html .= "<h2>"._("Add new season/tournament")."</h2>\n";
@@ -371,13 +369,13 @@ if(empty($seasonId)){
 }else{
 	$html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."' />";	
 }
-$html .= "<input type='hidden' name='backurl' value='$backurl'/>";
-$html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";
+if ($backurl) {
+	$html .= "<input type='hidden' name='backurl' value='$backurl'/>";
+	$html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";
+}
 $html .= "</form>\n";
 
-echo $html;
-echo TranslationScript("seasonname");
+$html .= TranslationScript("seasonname");
 
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

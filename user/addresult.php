@@ -14,7 +14,6 @@ $gameId = intval($_GET["game"]);
 $game_result = GameInfo($gameId);
 $seasoninfo = SeasonInfo($game_result['season']);
 
-$LAYOUT_ID = ADDRESULT;
 $title = _("Result");
 
 //process itself if save button was pressed
@@ -47,12 +46,7 @@ if(!empty($_POST['save'])) {
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
-//content
+
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";
 $menutabs[_("Score sheet")]= "?view=user/addscoresheet&game=$gameId";
@@ -64,8 +58,7 @@ if(ShowDefenseStats())
   $menutabs[_("Defense sheet")]= "?view=user/adddefensesheet&game=$gameId";
 }
 
-
-pageMenu($menutabs);
+$html .= pageMenu($menutabs, "", false);
 
 $html .= "<form  method='post' action='?view=user/addresult&amp;game=".$gameId."'>
 <table cellpadding='2'>
@@ -105,9 +98,7 @@ $html .= "<p>
 	</p></form>";
 
 
-echo $html;
+addHeaderScript('script/disable_enter.js.inc');
 
-//common end
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

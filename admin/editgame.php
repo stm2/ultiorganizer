@@ -4,7 +4,6 @@ include_once 'lib/game.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/common.functions.php';
 
-$LAYOUT_ID = EDITGAME;
 $backurl = utf8entities(empty($_SERVER['HTTP_REFERER'])?"":$_SERVER['HTTP_REFERER']);
 $gameId = $_GET["game"];
 $info = GameResult($gameId);
@@ -13,7 +12,7 @@ if(!empty($_GET["season"]))
 	$season = $_GET["season"];
 
 $title = _("Game") . " $gameId";
-
+$html = "";
 
 //game parameters
 $gp = array(
@@ -81,12 +80,54 @@ if(!empty($_POST['save']))
       }
 	}
 
+function TeamSelectionList($name, $selected, $schedule_selected, $poolId) {
+  $html = "";
+  $html .= "<select class='dropdown' name='$name'>";
+  $html .= "<option class='dropdown' value='0'></option>";
+  
+  $pseudoteams = false;
+  $teams = PoolTeams($poolId);
+  if (count($teams) == 0) {
+    $teams = PoolSchedulingTeams($poolId);
+    $pseudoteams = true;
+  }
+  
+  $teamlist = "";
+  foreach ($teams as $row) {
+    if ($pseudoteams) {
+      if ($row['scheduling_id'] == $schedule_selected) {
+        $teamlist .= "<option class='dropdown' selected='selected' value='" . utf8entities($row['scheduling_id']) . "'>" .
+           utf8entities($row['name']) . "</option>\n";
+      } else {
+        $teamlist .= "<option class='dropdown' value='" . utf8entities($row['scheduling_id']) . "'>" .
+           utf8entities($row['name']) . "</option>\n";
+      }
+    } else {
+      if ($row['team_id'] == $selected) {
+        $teamlist .= "<option class='dropdown' selected='selected' value='" . utf8entities($row['team_id']) . "'>" .
+           utf8entities($row['name']) . "</option>\n";
+      } else {
+        $teamlist .= "<option class='dropdown' value='" . utf8entities($row['team_id']) . "'>" .
+           utf8entities($row['name']) . "</option>\n";
+      }
+    }
+  }
+  $html .= $teamlist;
+  $html .= "</select>";
+  
+  if ($pseudoteams) {
+    $html .= "<div><input type='hidden' name='pseudo' value='1' /></div>";
+  }
+  return $html;
+}
+	
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
+addHeaderScript('script/disable_enter.js.inc');
+
 include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities","calendar", "datasource", "autocomplete"));
-?>
+addHeaderText(yuiLoad(array("utilities","calendar", "datasource", "autocomplete")));
+
+$headerText = <<<EOT
 <link rel="stylesheet" type="text/css" href="script/yui/calendar/calendar.css" />
 
 <script type="text/javascript">
@@ -138,17 +179,12 @@ YAHOO.calendar.init = function() {
 YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
 //-->
 </script>
-<?php
+EOT;
 
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+addHeaderText($headerText);
 
-
-//echo "<form method='post' action='" . $_SERVER[ 'PHP_SELF' ]. "'>";
-
-echo "<h2>"._("Edit game")."</h2>\n";	
-echo "<form method='post' action='?view=admin/editgame&amp;season=$season&amp;game=$gameId'>";
+$html .= "<h2>"._("Edit game")."</h2>\n";	
+$html .= "<form method='post' action='?view=admin/editgame&amp;season=$season&amp;game=$gameId'>";
 $info = GameResult($gameId);
 $pool_info = PoolInfo($info['pool']);
 $seriesId = $pool_info['series'];
@@ -156,168 +192,107 @@ $poolId=$info['pool'];
 
 if(GameHasStarted($info))
 	{
-	echo "<p>"._("Game played").". "._("Final score").": ".$info['homescore'] ." - ". $info['visitorscore']."</p>";
+	$html .= "<p>"._("Game played").". "._("Final score").": ".$info['homescore'] ." - ". $info['visitorscore']."</p>";
 	}
-echo "<ul>";
-echo "<li><a href='?view=user/addresult&amp;game=".$gameId."'>"._("Change game result")."</a></li>";
-echo "<li><a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Change game roster")."</a></li>";
-echo "<li><a href='?view=user/addscoresheet&amp;game=".$gameId."'>"._("Change game score sheet")." </a></li>";
+$html .= "<ul>";
+$html .= "<li><a href='?view=user/addresult&amp;game=".$gameId."'>"._("Change game result")."</a></li>";
+$html .= "<li><a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Change game roster")."</a></li>";
+$html .= "<li><a href='?view=user/addscoresheet&amp;game=".$gameId."'>"._("Change game score sheet")." </a></li>";
 if(ShowDefenseStats())
 {
-echo "<li><a href='?view=user/adddefensesheet&amp;game=".$gameId."'>"._("Change game defense sheet")." </a></li>";
+$html .= "<li><a href='?view=user/adddefensesheet&amp;game=".$gameId."'>"._("Change game defense sheet")." </a></li>";
 }
 
-echo "<li><a href='?view=user/pdfscoresheet&amp;game=".$gameId."'>"._("Print score sheet")." </a></li>";
-echo "<li><a href='?view=user/addmedialink&amp;game=$gameId'>"._("Add media")."</a></li>";
-echo "</ul>\n";
+$html .= "<li><a href='?view=user/pdfscoresheet&amp;game=".$gameId."'>"._("Print score sheet")." </a></li>";
+$html .= "<li><a href='?view=user/addmedialink&amp;game=$gameId'>"._("Add media")."</a></li>";
+$html .= "</ul>\n";
 
-echo "<table class='formtable'>";
-
-
-echo "<tr><td class='infocell'>"._("Home team").":</td><td>";
-//TeamSelectionList('home', $info['hometeam'], $seriesId);
-TeamSelectionListNew('home', $info['hometeam'], $info['scheduling_name_home'], $poolId);
-echo "</td></tr>\n";
-
-echo "<tr><td class='infocell'>"._("Guest team").":</td><td>";
-//TeamSelectionList('away', $info['visitorteam'], $seriesId);
-TeamSelectionListNew('away', $info['visitorteam'], $info['scheduling_name_visitor'], $poolId);
-echo "</td></tr>\n";
+$html .= "<table class='formtable'>";
 
 
-echo "<tr><td class='infocell'>"._("Location").":</td><td><select class='dropdown' name='place'>\n";
+$html .= "<tr><td class='infocell'>"._("Home team").":</td><td>";
+$html .= TeamSelectionList('home', $info['hometeam'], $info['scheduling_name_home'], $poolId);
+$html .= "</td></tr>\n";
+
+$html .= "<tr><td class='infocell'>"._("Guest team").":</td><td>";
+$html .= TeamSelectionList('away', $info['visitorteam'], $info['scheduling_name_visitor'], $poolId);
+$html .= "</td></tr>\n";
 
 
-echo "<option class='dropdown' value='0'></option>";
+$html .= "<tr><td class='infocell'>"._("Location").":</td><td><select class='dropdown' name='place'>\n";
+
+
+$html .= "<option class='dropdown' value='0'></option>";
 
 // places
 $places = SeasonReservations($season);
 
 foreach($places as $row){
 	if($row['id'] == $info['reservation']){
-		echo "<option class='dropdown' selected='selected' value='".utf8entities($row['id'])."'>";
-		echo utf8entities($row['reservationgroup']) ." ". utf8entities($row['name']) .", "._("Field")." ".utf8entities($row['fieldname'])." (".JustDate($row['starttime']) .")";
-		echo "</option>";
+		$html .= "<option class='dropdown' selected='selected' value='".utf8entities($row['id'])."'>";
+		$html .= utf8entities($row['reservationgroup']) ." ". utf8entities($row['name']) .", "._("Field")." ".utf8entities($row['fieldname'])." (".JustDate($row['starttime']) .")";
+		$html .= "</option>";
 	}else{
-		echo "<option class='dropdown' value='".utf8entities($row['id'])."'>";
-		echo utf8entities($row['reservationgroup']) ." ". utf8entities($row['name']) .", "._("Field")." ".utf8entities($row['fieldname'])." (".JustDate($row['starttime']) .")";
-		echo "</option>";
+		$html .= "<option class='dropdown' value='".utf8entities($row['id'])."'>";
+		$html .= utf8entities($row['reservationgroup']) ." ". utf8entities($row['name']) .", "._("Field")." ".utf8entities($row['fieldname'])." (".JustDate($row['starttime']) .")";
+		$html .= "</option>";
 	}
 }
-echo "</select></td></tr>\n";	
+$html .= "</select></td></tr>\n";	
 
-echo "<tr><td class='infocell'>"._("Starting time")." (hh:mm):</td>
+$html .= "<tr><td class='infocell'>"._("Starting time")." (hh:mm):</td>
 <td><input class='input' id='time' name='time' value='".DefHourFormat($info['time'])."'/></td></tr>\n";
 
 
-echo "<tr><td class='infocell'>"._("Division").":</td><td><select class='dropdown' name='pool'>\n";
-echo "<option class='dropdown' value='0'></option>";
+$html .= "<tr><td class='infocell'>"._("Division").":</td><td><select class='dropdown' name='pool'>\n";
+$html .= "<option class='dropdown' value='0'></option>";
 
 $pools = SeasonPools($season);
 foreach($pools as $row){
 	if($row['pool_id'] == $info['pool'])
-		echo "<option class='dropdown' selected='selected' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
+		$html .= "<option class='dropdown' selected='selected' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
 	else
-		echo "<option class='dropdown' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
+		$html .= "<option class='dropdown' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
 }
-echo "</select></td></tr>\n";	
+$html .= "</select></td></tr>\n";	
 
-echo "<tr><td class='infocell'>"._("Responsible team").":</td><td>";
-//TeamSelectionList('respteam', $info['respteam'], $seriesId);
-TeamSelectionListNew('respteam', $info['respteam'],$info['respteam'], $poolId);
-echo "</td></tr>";
-echo "<tr><td class='infocell' style='vertical-align:text-top;'>"._("Responsible person").":</td><td>";
+$html .= "<tr><td class='infocell'>"._("Responsible team").":</td><td>";
+$html .= TeamSelectionList('respteam', $info['respteam'],$info['respteam'], $poolId);
+$html .= "</td></tr>";
+$html .= "<tr><td class='infocell' style='vertical-align:text-top;'>"._("Responsible person").":</td><td>";
 $users = GameAdmins($gameId);
 foreach($users as $user){
-  echo utf8entities($user['name'])."<br/>";
+  $html .= utf8entities($user['name'])."<br/>";
 }
-echo _("User Id")." <input class='input' size='20' name='userid'/> "._("or")." ";
-echo _("E-Mail")." <input class='input' size='20' name='email'/>\n";
-echo "</td></tr>";
+$html .= _("User Id")." <input class='input' size='20' name='userid'/> "._("or")." ";
+$html .= _("E-Mail")." <input class='input' size='20' name='email'/>\n";
+$html .= "</td></tr>";
 
-echo "<tr><td class='infocell'>"._("Name").":</td>";
-echo "<td>".TranslatedField("name", $info['gamename']);
-echo TranslationScript("name");
-echo "</td></tr>\n";
+$html .= "<tr><td class='infocell'>"._("Name").":</td>";
+$html .= "<td>".TranslatedField("name", $info['gamename']);
+$html .= TranslationScript("name");
+$html .= "</td></tr>\n";
 
 if(intval($info['valid']))
 	{
-	echo "<tr><td class='infocell'>"._("Valid").":</td>
+	$html .= "<tr><td class='infocell'>"._("Valid").":</td>
 		<td><input class='input' type='checkbox' id='valid' name='valid' checked='checked' value='".utf8entities($info['valid'])."'/></td></tr>";
 	}
 else
 	{
-	echo "<tr><td class='infocell'>"._("Valid").":</td>
+	$html .= "<tr><td class='infocell'>"._("Valid").":</td>
 		<td><input class='input' type='checkbox' id='valid' name='valid' value='".utf8entities($info['valid'])."'/></td></tr>";
 	
 	}
 		
-echo "</table>";
+$html .= "</table>";
 
-echo "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
-echo "<p><input class='button' name='save' type='submit' value='"._("Save")."'/>";
+$html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
+$html .= "<p><input class='button' name='save' type='submit' value='"._("Save")."'/>";
 if (!empty($backurl)) {
-  echo "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>";
+  $html .= "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>";
 }
-echo "</p></form>\n";
+$html .= "</p></form>\n";
 
-contentEnd();
-pageEnd();
-
-function TeamSelectionListNew($name, $selected, $schedule_selected, $poolId)
-{
-	echo "<select class='dropdown' name='$name'>";
-	echo "<option class='dropdown' value='0'></option>";	
-	
-	$pseudoteams = false;
-	$teams = PoolTeams($poolId);
-	if(count($teams)==0){
-		$teams = PoolSchedulingTeams($poolId);
-		$pseudoteams = true;
-	}
-
-	$teamlist = "";
-	foreach($teams as $row){
-		if($pseudoteams){
-			if($row['scheduling_id'] == $schedule_selected){
-				$teamlist .= "<option class='dropdown' selected='selected' value='".utf8entities($row['scheduling_id'])."'>". utf8entities($row['name']) ."</option>\n";
-			}else{			
-				$teamlist .= "<option class='dropdown' value='".utf8entities($row['scheduling_id'])."'>". utf8entities($row['name']) ."</option>\n";
-			}
-		}else{
-			if($row['team_id'] == $selected){
-				$teamlist .= "<option class='dropdown' selected='selected' value='".utf8entities($row['team_id'])."'>". utf8entities($row['name']) ."</option>\n";
-			}else{						
-				$teamlist .= "<option class='dropdown' value='".utf8entities($row['team_id'])."'>". utf8entities($row['name']) ."</option>\n";
-			}
-		}
-		}
-	echo $teamlist;
-	echo "</select>";
-	
-	if ($pseudoteams) {
-		echo "<div><input type='hidden' name='pseudo' value='1' /></div>";
-	}
-	
-}
-
-function TeamSelectionList($name, $selected, $seriesId)
-	{
-
-	echo "<select class='dropdown' name='$name'>";
-	echo "<option class='dropdown' value='0'></option>";	
-
-	// teams from series
-	$teams = SeriesTeams($seriesId);
-	foreach($teams as $team){
-		if($team['team_id'] == $selected){
-			echo "<option class='dropdown' selected='selected' value='".utf8entities($team['team_id'])."'>". utf8entities($team['name']) ."</option>";
-		}else{
-			echo "<option class='dropdown' value='".utf8entities($team['team_id'])."'>". utf8entities($team['name']) ."</option>";
-		}
-	}
-	echo "</select>";
-	
-	}
-	
+showPage($title, $html);
 ?>

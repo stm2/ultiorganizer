@@ -3,7 +3,6 @@ include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
-$LAYOUT_ID = ADDSEASONLINKS;
 $title = _("Event links");
 $html = "";
 $seasonId = $_GET["season"];
@@ -65,10 +64,7 @@ if(!empty($_POST['savebutton'])){
 }
 
 $settings = GetServerConf();
-//common page
-pageTop($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+
 $htmltmp1 = "";
 $htmltmp2 = "";
 
@@ -119,8 +115,6 @@ $html .= "</table>\n";
 $html .= "<p><input class='button' name='savebutton' type='submit' value='"._("Save")."'/></p>";
 $html .= "<div>" . getHiddenInput() . "</div>";
 $html .= "</form>";
-echo $html;
-contentEnd();
 
-	echo "</body></html>";
+showPage($title, $html);
 ?>

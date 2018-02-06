@@ -3,7 +3,6 @@ include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
-$LAYOUT_ID = ADDSEASONUSERS;
 $title = _("Event users");
 $html = "";
 $seasonId = $_GET["season"];
@@ -57,11 +56,8 @@ if(!empty($_POST['add'])){
 }
 
 //common page
-pageTopHeadOpen($title);
-include_once 'script/disable_enter.js.inc';
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+
+addHeaderScript('script/disable_enter.js.inc');
 
 function adminHeader($title, $formId) {
   global $seasonId;
@@ -266,7 +262,5 @@ $html .= "<div><input type='hidden' name='delId'/></div>";
 $html .= "<div><input type='hidden' name='teamId'/></div>";
 $html .= "</form>";
 
-echo $html;
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>

@@ -70,6 +70,13 @@ $user = $_SESSION['uid'];
 
 setSelectedSeason();
 
+if(iget("print")) {
+  $_SESSION['print'] = 1;
+} else {
+  $_SESSION['print'] = 0;
+}
+
+
 include $view . ".php";
 
 CloseConnection();

@@ -17,36 +17,72 @@ if (is_file('cust/' . CUSTOMIZATIONS . '/head.php')) {
  * @param string $html
  *          page's content
  */
-function showPage($title, $html, $mobile = false) {
-  if ($mobile) {
-    mobilePageTop($title);
-    echo $html;
-    mobilePageEnd();
-  } else {
-    pageTop($title);
-    leftMenu();
-    contentStart();
-    echo $html;
-    contentEnd();
-    pageEnd();
-  }
+function showPage($title, $html) {
+  preContent($title);
+  echo $html;
+  postContent();
 }
 
-/**
- * Shows html content without ultiorganizer menus and layout.
- *
- * @param string $title
- *          page's title
- * @param string $html
- *          page's content
- */
-function showPrintablePage($title, $html) {
-  pageTop($title, true);
-  leftMenu(0, true, true);
-  contentStart();
+function showPageMobile($title, $html) {
+  mobilePageTop($title);
   echo $html;
+  mobilePageEnd();
+}
+
+$headerScripts = array();
+
+function addHeaderScript($name) {
+  global $headerScripts;
+  $headerScripts[] = $name;
+}
+
+$headerFunctions = array();
+
+function addHeaderCallback($callback) {
+  global $headerFunctions;
+  $headerFunctions[] = $callback;
+}
+
+function addHeaderText($text) {
+  global $headerTexts;
+  $headerTexts[] = $text;
+}
+
+function preContent($title) {
+  global $headerScripts;
+  global $headerFunctions;
+  global $headerTexts;
+  
+  pageTopHeadOpen($title);
+  if (!empty($headerScripts)) {
+    foreach ($headerScripts as $script) {
+      include_once($script);
+    }
+  }
+  if (!empty($headerFunctions)) {
+    foreach ($headerFunctions as $function) {
+      $function();
+    }
+  }
+  if (!empty($headerTexts)) {
+    foreach ($headerTexts as $text) {
+      echo $text;
+    }
+  }
+  pageTopHeadClose($title);
+  leftMenu();
+  contentStart();
+}
+
+function postContent() {
   contentEnd();
   pageEnd();
+}
+
+function getPrintMode() {
+  if(isset($_SESSION['print']) && $_SESSION['print']==1)
+    return 1;
+  return 0;
 }
 
 /**
@@ -113,6 +149,8 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     $user = "anonymous";
   }
   
+  $printable |= getPrintMode();
+  
   if ((!empty($_GET['view']) && $_GET['view'] == 'logout') || !isset($_SERVER['QUERY_STRING'])) {
     $query_string = "view=frontpage";
   } else {
@@ -126,8 +164,9 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
   if (!isset($styles_prefix)) {
     $styles_prefix = $include_prefix;
   }
+  $printclass = $printable ? "class='print'" : "";
   
-  echo "</head><body style='overflow-y:scroll;' " . $bodyfunctions . ">\n";
+  echo "</head><body style='overflow-y:scroll;' $printclass " . $bodyfunctions . ">\n";
   echo "<div class='page'>\n";
   
   if (!$printable) {
@@ -198,18 +237,58 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
  * Start of page content.
  */
 function contentStart() {
-  echo "\n<td align='left' valign='top' class='tdcontent'><div class='content'>\n";
+  if (getPrintMode())
+    contentStartWide();
+  else
+    echo "\n<td align='left' valign='top' class='tdcontent'><div class='content'>\n";
 }
 
 function contentStartWide() {
   echo "\n<td align='left' valign='top' class='tdcontent'><div class='content nomenu'>\n";
 }
 
+$footers = array();
+
+/**
+ * Add a footer printed at bottom of page.
+ *
+ * @param string $link HTML entities must already be encoded!
+ * @param string $caption HTML entities must already be encoded!
+ *          
+ */
+function addFooter($link, $caption) {
+  global $footers;
+  $footers[$link] = $caption;
+}
+
 /**
  * End of page content.
  */
 function contentEnd() {
-  echo "\n</div><!--content--></td></tr></table></div><!--page_middle-->\n";
+  global $footers;
+  
+  $querystring = $_SERVER['QUERY_STRING'];
+  $querystring = preg_replace("/&print=[^&]/", "", $querystring);
+  
+  echo "<hr />";
+  $backurl = isset($_SERVER['HTTP_REFERER']) ? ($_SERVER['HTTP_REFERER']) : "";
+  if ($backurl) {
+    echo "<div class='backlink'><a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></div>\n";
+  }
+  
+  echo "<div class='printlink'>";
+  foreach ($footers as $link => $caption) {
+      echo " <a href='$link'>$caption</a> |";
+  }
+  if (getPrintMode() == 0) {
+    echo " <a href='?" . utf8entities($querystring) . "&amp;print=1'>" .
+       _("Printable version") . "</a></div>\n";
+  } else {
+    echo " <a href='?" . utf8entities($querystring) . "'>" . _("Screen version") .
+       "</a></div>\n";
+  }
+  
+  echo "</div><!--content--></td></tr></table></div><!--page_middle-->\n";
 }
 
 /**
@@ -441,11 +520,10 @@ function seasonSelection() {
 
 function pageMainStart($printable = false) {
   if ($printable) {
-    echo "<table class='main_page_print'><tr>\n";
-    return;
+    echo "<table class='main_page print'><tr>\n";
+  } else {
+    echo "<table class='main_page'><tr>\n";
   }
-  
-  echo "<table class='main_page'><tr>\n";
 }
 
 function startTable(&$status) {
@@ -472,9 +550,15 @@ function endTable($status) {
  *          - if true, menu is not drawn.
  */
 function leftMenu($id = 0, $pagestart = true, $printable = false) {
+  $printable |= getPrintMode();
   if ($pagestart) {
     pageMainStart($printable);
   }
+  
+  if ($printable) {
+    return;
+  }
+  
   echo "<td class='menu_left'>";
   
   // Administration menu
