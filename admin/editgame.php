@@ -13,6 +13,7 @@ if(!empty($_GET["season"]))
 
 $title = _("Game") . " $gameId";
 $html = "";
+$warning = "";
 
 //game parameters
 $gp = array(
@@ -29,56 +30,57 @@ $gp = array(
 	);
 	
 //process itself on submit
-if(!empty($_POST['save']))
-	{
-	$backurl = $_POST['backurl'];
-	$ok = true;
-	if (empty($_POST['pseudo'])) {
-		$gp['hometeam'] = $_POST['home'];
-		$gp['visitorteam'] = $_POST['away'];
-	} else {
-		$gp['scheduling_name_home'] = $_POST['home'];
-		$gp['scheduling_name_visitor'] = $_POST['away'];
-	}
-	$gp['reservation'] = $_POST['place'];
-	
-	$res = ReservationInfo($gp['reservation']);
-	if(!empty($_POST['time'])){
-		$gp['time'] = ToInternalTimeFormat((ShortDate($res['starttime']) . " " .$_POST['time']));
-	}else{
-// Chris: I don't see why we want to do that		
-//		$gp['time'] = ToInternalTimeFormat($res['starttime']);
-	}
-	
-	
-	$gp['pool'] = $_POST['pool'];
-	
-	if(!empty($_POST['valid']))
-		$gp['valid'] = 1;
-	else
-		$gp['valid'] = 0;
-	
-	if(!empty($_POST['respteam']))
-		$gp['respteam'] = $_POST['respteam'];
-	
-	if(!empty($_POST['name']))
-		$gp['name'] = $_POST['name'];
-
-	
-	SetGame($gameId, $gp);
-	
-	$userid = $_POST['userid'];
-    if(empty($userid)){
-      $userid = UserIdForMail($_POST['email']);
-    }
-    if(IsRegistered($userid)){
-      AddSeasonUserRole($userid, 'gameadmin:'.$gameId,$season);
-    }
-    if (!empty($backurl)) {
-      session_write_close();
-        header("location:$backurl");
-      }
-	}
+if (!empty($_POST['save'])) {
+  $backurl = $_POST['backurl'];
+  $ok = true;
+  if (empty($_POST['pseudo'])) {
+    $gp['hometeam'] = $_POST['home'];
+    $gp['visitorteam'] = $_POST['away'];
+  } else {
+    $gp['scheduling_name_home'] = $_POST['home'];
+    $gp['scheduling_name_visitor'] = $_POST['away'];
+  }
+  $gp['reservation'] = $_POST['place'];
+  
+  $res = ReservationInfo($gp['reservation']);
+  if (!empty($_POST['time'])) {
+    $gp['time'] = ToInternalTimeFormat((ShortDate($res['starttime']) . " " . $_POST['time']));
+  } else {
+    // Chris: I don't see why we want to do that
+    // $gp['time'] = ToInternalTimeFormat($res['starttime']);
+  }
+  
+  $gp['pool'] = $_POST['pool'];
+  
+  if (!empty($_POST['valid']))
+    $gp['valid'] = 1;
+  else
+    $gp['valid'] = 0;
+  
+  if (!empty($_POST['respteam']))
+    $gp['respteam'] = $_POST['respteam'];
+  
+  $gp['name'] = $_POST['name'];
+  
+  if (!SetGame($gameId, $gp))
+    $warning = "<p>" . _("Error") . "</p>\n";
+  
+  $userid = $_POST['userid'];
+  if (empty($userid) && !empty($_POST['email'])) {
+    $userid = UserIdForMail($_POST['email']);
+    if ($userid < 0)
+      $userid = "";
+  }
+  if (IsRegistered($userid)) {
+    AddSeasonUserRole($userid, 'gameadmin:' . $gameId, $season);
+  } else if (!empty($_POST['userid']) || !empty($_POST['email'])) {
+    $warning .= "<p>" . _("Invalid user"). "</p>\n";
+  }
+  if (!empty($backurl)) {
+    session_write_close();
+    header("location:$backurl");
+  }
+}
 
 function TeamSelectionList($name, $selected, $schedule_selected, $poolId) {
   $html = "";
@@ -288,6 +290,8 @@ else
 $html .= "</table>";
 
 $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
+if (!empty($warning))
+  $html .= $warning;
 $html .= "<p><input class='button' name='save' type='submit' value='"._("Save")."'/>";
 if (!empty($backurl)) {
   $html .= "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>";

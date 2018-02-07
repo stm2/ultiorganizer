@@ -1077,54 +1077,77 @@ function AddGame($params) {
 	} else { die('Insufficient rights to add game'); }
 }
 
-function SetGame($gameId, $params)	{
-	$poolinfo = PoolInfo($params['pool']);
-	if (hasEditGamesRight($poolinfo['series'])) {
-		
-		foreach($params as $key => $param) {
-			if (!empty($param)) {
-				$query = sprintf("
-					UPDATE uo_game SET ".$key."='%s' 
-					WHERE game_id=%d\n",
-					mysql_adapt_real_escape_string($param),
-					intval($gameId));
-					
-					$result = DBQuery($query);
-			}
-		}
-		
-		
-		if(!empty($params['respteam'])){
-				$query = sprintf("UPDATE uo_game SET respteam=%d
-					WHERE game_id=%d",
-					(int)$params['respteam'],
-					(int)$gameId);
-			
-			DBQuery($query);
-		}else{
-			$query = sprintf("UPDATE uo_game SET respteam=NULL
-					WHERE game_id=%d",
-					(int)$gameId);
-			
-			DBQuery($query);
-		}
-		
-		if(!empty($params['name'])){
-			$query = sprintf("INSERT INTO uo_scheduling_name 
+/**
+ * Updates game information.
+ *
+ * @param int $gameId
+ * @param array $params
+ *          keys correspond to column names, values are new values. uo_game is updated with this information.
+ *          All columns with empty values are left untouched except for 'name' and 'respteam', which are set to null.
+ * @return bool true if everything could be set accordingly
+ */
+function SetGame($gameId, $params) {
+  $poolinfo = PoolInfo($params['pool']);
+  if (hasEditGamesRight($poolinfo['series'])) {
+    $result = true;
+    foreach ($params as $key => $param) {
+      switch ($key) {
+      case 'respteam':
+        if (!empty($param)) {
+          $query = sprintf("UPDATE uo_game SET respteam=%d
+					WHERE game_id=%d", (int) $params['respteam'], (int) $gameId);
+          
+          $result &= DBQuery($query);
+        } else {
+          $query = sprintf("UPDATE uo_game SET respteam=NULL
+					WHERE game_id=%d", (int) $gameId);
+          
+          $result &= DBQuery($query);
+        }
+        break;
+      
+      case 'name':
+        if (!empty($param)) {
+          $query = sprintf("INSERT INTO uo_scheduling_name 
 				(name) VALUES ('%s')",
-			mysql_adapt_real_escape_string($params['name']));
-		
-			$nameId = DBQueryInsert($query);
-			
-			$query = sprintf("UPDATE uo_game SET
-					name=%d	WHERE game_id=%d",
-				(int)$nameId,
-				(int)$gameId);
-			DBQuery($query);
-		}
-		
-		return $result;
-	} else { die('Insufficient rights to edit game'); }
+            mysql_adapt_real_escape_string($params['name']));
+          
+          $nameId = DBQueryInsert($query);
+          
+          if ($nameId != 0) {
+            $query = sprintf("UPDATE uo_game SET
+					name=%d	WHERE game_id=%d", (int) $nameId, (int) $gameId);
+            $result &= DBQuery($query);
+          } else {
+            $result = false;
+          }
+        } else {
+          $query = sprintf(
+            "SELECT COUNT(g.game_id) as num FROM uo_game AS g 
+               RIGHT JOIN (SELECT * FROM uo_game WHERE game_id=%d AND name IS NOT NULL) AS gg ON (g.name = gg.name)
+               GROUP BY g.name", (int) $gameId);
+          if (DBQueryToValue($query) == 1) {
+            $result &= DBQuery(sprintf("DELETE FROM uo_scheduling_name WHERE scheduling_id = %d", (int) $param));
+            $result &= DBQuery(sprintf("UPDATE uo_game SET name=NULL WHERE game_id=%d", (int) $gameId));
+          }
+        }
+        break;
+      
+      default:
+        if (!empty($param)) {
+          $query = sprintf("
+					UPDATE uo_game SET " . $key . "='%s'
+					WHERE game_id=%d\n",
+            mysql_adapt_real_escape_string($param), intval($gameId));
+          
+          $result &= DBQuery($query);
+        }
+      }
+    }
+    return $result;
+  } else {
+    die('Insufficient rights to edit game');
+  }
 }
 
 /**

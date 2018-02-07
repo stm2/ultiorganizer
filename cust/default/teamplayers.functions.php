@@ -18,7 +18,7 @@ function urlencode(str) {
 return escape(str).replace('+', '%2B').replace('%20', '+').replace('*', '%2A').replace('/', '%2F').replace('@', '%40');
 }
 
-function checkProfileId(playerId) {
+function checkProfileId(playerId, teamId) {
 	YAHOO.util.Dom.get('dialogPlayerId').value = playerId;
 	YAHOO.util.Dom.get('dialogaccreditation_id').value = "";
 	firstname = YAHOO.util.Dom.get('firstname' + playerId).value; 
@@ -27,7 +27,7 @@ function checkProfileId(playerId) {
 		alert("<?php echo _("Name must be at least 2 letters long!"); ?>");
 	}else{
 		memberTable.initializeTable();
-		memberDataSource.sendRequest("firstname=" + urlencode(firstname) + "&lastname=" + urlencode(lastname)+ "&team=<?php echo $teamId; ?>", oCallback); 
+		memberDataSource.sendRequest("firstname=" + urlencode(firstname) + "&lastname=" + urlencode(lastname)+ "&team=" . teamId, oCallback); 
 		dialog.show();
 	}
 }
