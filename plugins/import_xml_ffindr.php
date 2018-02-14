@@ -330,7 +330,7 @@ class XMLHandler{
             $query = sprintf("INSERT INTO uo_users (name, userid, password, email) VALUES ('%s', '%s', MD5('%s'), '%s')",
 			  mysql_adapt_real_escape_string($email),
 			  mysql_adapt_real_escape_string($email),
-			  mysql_adapt_real_escape_string(CreateRandomPassword()),
+			  mysql_adapt_real_escape_string(UserCreateRandomPassword()),
 			  mysql_adapt_real_escape_string($email));
 			DBQuery($query);
 			

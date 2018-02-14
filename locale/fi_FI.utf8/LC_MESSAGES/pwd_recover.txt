@@ -1,0 +1,9 @@
+Someone has requested to reset the $ultiorganizer password for the user '$username'. 
+
+If this was you, go to $url and enter a new password. 
+
+If this was an error or you just forgot your username, you don't have to do anything. 
+
+Best regards
+
+$ultiorganizer

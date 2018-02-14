@@ -116,7 +116,7 @@ function MapFBUserId($fb_cookie) {
 		} else {
 			// Create user
 			$userid = CreateNewUsername($user->first_name, $user->last_name, $user->email);
-			$password = CreateRandomPassword();
+			$password = UserCreateRandomPassword();
 			$query = sprintf("INSERT INTO uo_users (name, userid, password, email) VALUES ('%s', '%s', '%s', '%s')",
 				mysql_adapt_real_escape_string($user->name),
 				mysql_adapt_real_escape_string($userid),

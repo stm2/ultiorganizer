@@ -716,6 +716,23 @@ function upgrade80() {
   }
 }
 
+function upgrade81() {
+  if (!hasTable("uo_recoverrequest")) {
+    runQuery("CREATE TABLE `uo_recoverrequest` (
+      `userid` varchar(50) NOT NULL,
+      `email` varchar(100) NOT NULL,
+      `token` varchar(100) NOT NULL,
+      `time` datetime NOT NULL
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+    
+    runQuery ("ALTER TABLE `uo_recoverrequest`
+    ADD PRIMARY KEY (`userid`,`token`),
+    ADD KEY `idx_userid` (`userid`),
+    ADD KEY `idx_token` (`token`)");
+  }
+  addColumn('uo_extraemailrequest', 'time', 'datetime DEFAULT CURRENT_TIMESTAMP');
+}
+
 function runQuery($query) {
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }

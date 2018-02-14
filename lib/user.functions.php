@@ -41,6 +41,15 @@ function Forbidden($user) {
    	exit();
 }
 
+function UserExpireTokens($userId) {
+  $query = "DELETE FROM `uo_extraemailrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60"; 
+  DBQuery($query);
+  $query = "DELETE FROM `uo_recoverrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60";
+  DBQuery($query);
+  $query = "DELETE FROM `uo_registerrequest` WHERE TIMESTAMPDIFF(HOUR, last_login, NOW()) > 24";
+  DBQuery($query);
+}
+
 function UserAuthenticate($user, $passwd, $failcallback) {
 	$query = sprintf("SELECT * FROM uo_users WHERE UserID='%s' AND Password=MD5('%s')",
 		mysql_adapt_real_escape_string($user),
@@ -53,6 +62,8 @@ function UserAuthenticate($user, $passwd, $failcallback) {
 		SetUserSessionData($user);
 		$row = mysqli_fetch_assoc($result);
 		mysql_adapt_query("UPDATE uo_users SET last_login=NOW() WHERE userid='".mysql_adapt_real_escape_string($user)."'");
+		
+		UserExpireTokens($user);
 		
 		//first logging
 		if(empty($row['last_login']) && $user=="admin"){
@@ -151,15 +162,83 @@ function UserUpdateInfo($user_id, $olduser, $user, $name) {
 	} else { die('Insufficient rights to change user info'); }
 }
 
-function UserChangePassword($user_id, $passwd) {
+function UserValidPassword($newPassword1, $newPassword2) {
+  $message = "";
+  if (empty($newPassword1)) {
+    $message .= "<p class='warning'>" . _("Password cannot be empty.") . "</p>";
+  }
+  
+  if (!empty($newPassword1) && (strlen($newPassword1) < 8 || strlen($newPassword1) > 20)) {
+    $message .= "<p class='warning'>" . sprintf(_("Password is too short (min. %d letters)."), 8) . "</p>";
+  }
+  
+  if (!empty($newPassword1) && ($newPassword1 != $newPassword2)) {
+    $message .= "<p class='warning'>" . _("Passwords do not match.") . "</p>";
+  }
+  
+  return $message;
+}
 
-	if ($user_id == $_SESSION['uid'] || hasEditUsersRight()) {
-		$query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'",
-			mysql_adapt_real_escape_string($passwd),
-			mysql_adapt_real_escape_string($user_id));
-	
-		DBQuery($query);
-	} else { die('Insufficient rights to change user info'); }
+function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEmail, $checkDuplicate = false, $checkPw = true) {
+  $html = "";
+  if (empty($newUsername) || strlen($newUsername) < 3 || strlen($newUsername) > 30) {
+    $html .= "<p class='warning'>" . sprintf(_("Username is too short or too long (between %d and %d letters)"), 3, 30) . ".</p>";
+  }
+  
+  $uidcheck = mysql_adapt_real_escape_string($newUsername);
+  
+  if ($uidcheck != $newUsername || preg_match('/[ ]/', $newUsername) || preg_match('/[^a-z0-9._]/i', $newUsername)) {
+    $html .= "<p class='warning'>" . _("User id may not have spaces or special characters") . ".</p>";
+    $error = 1;
+  }
+  
+  if ($checkDuplicate && IsRegistered($newUsername)) {
+    $html .= "<p class='warning'>" . _("The username is already in use") . ".</p>";
+  }
+  
+  if ($checkPw) {
+    $pw = UserValidPassword($newPassword1, $newPassword2);
+    if (!empty($pw)) {
+      $html .= $pw;
+    }
+    
+    $pswcheck = mysql_adapt_real_escape_string($newPassword);
+    
+    if ($pswcheck != $newPassword) {
+      $html .= "<p class='warning'>" . _("Illegal characters in the password") . ".</p>";
+      $error = 1;
+    }
+  }
+  if (empty($newName)) {
+    $html .= "<p class='warning'>" . _("Name can not be empty") . ".</p>";
+  }
+  
+  if (empty($newEmail)) {
+    $html .= "<p class='warning'>" . _("Email can not be empty") . ".</p>";
+    $error = 1;
+  }
+  
+  if (!validEmail($newEmail)) {
+    $html .= "<p class='warning'>" . _("Invalid email address") . ".</p>";
+    $error = 1;
+  }
+  return $html;
+}
+
+
+function UserChangePassword($user_id, $passwd, $token=null) {
+  Log1("user", "change", $user_id, "", "set password");
+  
+  if ($user_id == $_SESSION['uid'] || hasEditUsersRight() || UserCheckRecoverToken($user_id, $token)) {
+    $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'", mysql_adapt_real_escape_string(
+      $passwd), mysql_adapt_real_escape_string($user_id));
+    
+    DBQuery($query);
+    $query = sprintf("DELETE FROM uo_recoverrequest WHERE userid='%s'", mysql_adapt_real_escape_string($user_id));
+    DBQuery($query);
+  } else {
+    die('Insufficient rights to change user info');
+  }
 }
 
 function SetUserSessionData($user_id) {
@@ -851,7 +930,7 @@ function DeleteRegisterRequest($userid) {
 function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $message='register.txt') {
 	Log1("user","add",$newUsername,"","register request");
 	$token = uuidSecure();
-	$query = sprintf("INSERT INTO uo_registerrequest (userid, password, name, email, token) VALUES ('%s', MD5('%s'), '%s', '%s', '%s')",
+	$query = sprintf("INSERT INTO uo_registerrequest (userid, password, name, email, token, last_login) VALUES ('%s', MD5('%s'), '%s', '%s', '%s', NOW())",
 					mysql_adapt_real_escape_string($newUsername),
 					mysql_adapt_real_escape_string($newPassword),
 					mysql_adapt_real_escape_string($newName),
@@ -862,12 +941,8 @@ function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $me
 	$message = file_get_contents('locale/'.GetSessionLocale().'/LC_MESSAGES/'.$message);
 	
 	// for IIS
-	if(!isset($_SERVER['REQUEST_URI'])) {
-		$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."?view=register&token=".$token;
-	} else	{
-		$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."&token=".$token;
-	}
-	
+	$url = GetURLBase()."?view=register&token=" . urlencode($token);
+
 	$message = str_replace(array('$url', '$ultiorganizer'), array($url, _("Ultiorganizer")), $message);
 	$headers  = "MIME-Version: 1.0" . "\r\n";
 	$headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
@@ -906,7 +981,7 @@ function emailUsed($email) {
 function AddExtraEmailRequest($userid, $extraEmail, $message='verify_email.txt') {
 	Log1("user","add",$userid,"","extra email request");
 	$token = uuidSecure();
-	$query = sprintf("INSERT INTO uo_extraemailrequest (userid, email, token) VALUES ('%s', '%s', '%s')",
+	$query = sprintf("INSERT INTO uo_extraemailrequest (userid, email, token, time) VALUES ('%s', '%s', '%s', NOW())",
 					mysql_adapt_real_escape_string($userid),
 					mysql_adapt_real_escape_string($extraEmail),
 					mysql_adapt_real_escape_string($token));
@@ -915,12 +990,8 @@ function AddExtraEmailRequest($userid, $extraEmail, $message='verify_email.txt')
 	$message = file_get_contents('locale/'.GetSessionLocale().'/LC_MESSAGES/'.$message);
 	
 	// for IIS
-	if(!isset($_SERVER['REQUEST_URI'])) {
-		$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']."?view=user/addextraemail&token=".$token;
-	} else	{
-		$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."&token=".$token;
-	}
-	
+	$url = GetURLBase()."?view=user/addextraemail&token=" . urlencode($token);
+		
 	$message = str_replace(array('$url', '$ultiorganizer'), array($url, _("Ultiorganizer")), $message);
 	$headers  = "MIME-Version: 1.0" . "\r\n";
 	$headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
@@ -972,32 +1043,37 @@ function ConfirmRegister($token) {
 	} else return false;
 }
 
-
-function ConfirmRegisterUID($userid) {
-    if(isSuperAdmin()){
-    	$query = sprintf("SELECT userid, password, name, email FROM uo_registerrequest WHERE userid='%s'",
-    		mysql_adapt_real_escape_string($userid));
-    	$result = mysql_adapt_query($query);
-    	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    	if ($row = mysqli_fetch_assoc($result)) {
-    		$query = sprintf("INSERT INTO uo_users (name, userid, password, email) VALUES ('%s', '%s', '%s', '%s')",
-    			mysql_adapt_real_escape_string($row['name']),
-    			mysql_adapt_real_escape_string($row['userid']),
-    			mysql_adapt_real_escape_string($row['password']),
-    			mysql_adapt_real_escape_string($row['email']));
-    		$result = mysql_adapt_query($query);
-    		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    		$query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'",
-    			mysql_adapt_real_escape_string($userid));
-    		$result = mysql_adapt_query($query);
-    		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    		FinalizeNewUser($row['userid'], $row['email']);
-    		Log1("user","add",$row['userid'],"","added by administrator");
-    		return true;
-    	} else return false;
-    }else{
-    die("Insufficient user rights."); 
+/**
+ * Adds a new user.
+ * Attention! This does not require any user rights!
+ *
+ * @param string $newUsername
+ * @param string $newPassword
+ * @param string $newName
+ * @param string $newEmail
+ * @param string $creator The user that created the new user
+ * @return string|boolean
+ */
+function AddUser($newUsername, $newPassword, $newName, $newEmail, $creator) {
+  $message = UserValid($newUsername, $newPassword, $newPassword, $newName, $newEmail, true);
+  if (empty($message)) {
+    
+    $query = sprintf("INSERT INTO uo_users (userid, password, name, email) VALUES ('%s', MD5('%s'), '%s', '%s')",
+      mysql_adapt_real_escape_string($newUsername), mysql_adapt_real_escape_string($newPassword),
+      mysql_adapt_real_escape_string($newName), mysql_adapt_real_escape_string($newEmail));
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
     }
+    $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($newUsername));
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+    FinalizeNewUser($row['userid'], $row['email']);
+    Log1("user", "add", $newUsername, $creator, "added by administrator");
+  }
+  return $message;
 }
 
 function FinalizeNewUser($userid, $email) {
@@ -1237,6 +1313,73 @@ function GameResponsibilityArray($season, $series=null) {
 	return  $ret;	
 }
 
+function UserCheckRecoverToken($userId, $token) {
+  if (empty($token))
+    return false;
+  $query = sprintf("SELECT COUNT(*) FROM uo_recoverrequest WHERE userid='%s' AND token='%s' AND TIMESTAMPDIFF(MINUTE, time, NOW()) < 60",
+    mysql_adapt_real_escape_string($userId), 
+    mysql_adapt_real_escape_string($token));
+  return DBQueryToValue($query) == 1;
+}
+  
+
+function UserRecoverPasswordRequest($userId) {
+  $query = sprintf("SELECT MAX(time) as last FROM uo_recoverrequest WHERE userid='%s' AND TIMESTAMPDIFF(MINUTE, time, NOW()) < 6 GROUP BY time",
+    mysql_adapt_real_escape_string($userId));
+  $lastRequest = DBQueryToArray($query);
+  if (!empty($lastRequest)) {
+    // too many requests
+    return false;
+  }
+  
+  $query = sprintf("SELECT email FROM uo_users WHERE userid='%s'", mysql_adapt_real_escape_string($userId));
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
+  $row = mysqli_fetch_assoc($result);
+  
+  $email = $row['email'];
+  if (!empty($email)) {
+    Log1("user", "change", $userId, "", "recover mail");
+    $token = uuidSecure();
+    $url = GetURLBase() . "?view=login_failed&user=" . urlencode($userId) . "&token=" . urlencode($token);
+    $query = sprintf(
+      "INSERT INTO uo_recoverrequest (userid, email, token, time) 
+       VALUES ('%s', '%s', '%s', NOW())", 
+      mysql_adapt_real_escape_string($userId),
+      mysql_adapt_real_escape_string($email),
+      mysql_adapt_real_escape_string($token));
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+    $query = sprintf("DELETE FROM uo_recoverrequest WHERE userid='%s' AND token != '%s'",
+      mysql_adapt_real_escape_string($userId), 
+      mysql_adapt_real_escape_string($token));
+    DBQuery($query);
+    
+    $locale = getSessionLocale();
+    $message = file_get_contents('locale/' . $locale . '/LC_MESSAGES/pwd_recover.txt');
+    $message = str_replace(array('$url', '$ultiorganizer', '$username'), array($url, _("Ultiorganizer"), $userId),
+      $message);
+    
+    $headers = "MIME-Version: 1.0" . "\r\n";
+    $headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
+    
+    global $serverConf;
+    $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
+    
+    if (mail($email, _("Password recovery request"), $message, $headers)) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 function UserResetPassword($userId) {
 	Log1("user","change",$userId,"","reset password");
 	
@@ -1248,7 +1391,7 @@ function UserResetPassword($userId) {
 	
 	$email = $row['email'];
 	if(!empty($email)){
-		$password = CreateRandomPassword();
+		$password = UserCreateRandomPassword();
 				
 		$url = GetURLBase();
 		$locale = getSessionLocale();
@@ -1278,16 +1421,6 @@ function UserResetPassword($userId) {
 	}
 }
 
-function CreateRandomPassword() {
-    
-	$chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789";
-    $password = '' ;
-    for($i=0;$i<8;$i++) {
-        $password .= substr($chars, mt_rand(0, strlen($chars)-1), 1);
-    }
-    return $password;
-}
-
 function CreateNewUsername($firstname, $lastname, $email) {
 	$firstname = strtolower($firstname);
 	$lastname = strtolower($lastname);
@@ -1306,19 +1439,23 @@ function CreateNewUsername($firstname, $lastname, $email) {
 	}
 }
 
-function UserCreateRandomPassword() {
+function rchar($alnum = false) {
+  $chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ._-:#+*~!%=?023456789";
+  $num = almostSecureRandom(0, strlen($chars)-1);
+  return substr($chars, $num, 1);
+}
 
-    $chars = "abcdefghijkmnopqrstuvwxyz023456789";
-    srand((double)microtime()*1000000);
+function UserCreateRandomPassword() {
     $i = 0;
-    $pass = '' ;
+    $pass = '' . rchar(true) ;
     while ($i <= 7) {
-        $num = rand() % 33;
-        $tmp = substr($chars, $num, 1);
-        $pass = $pass . $tmp;
+        $pass = $pass . rchar();
         $i++;
     }
+    $pass .= rchar(true) ;
     return $pass;
 }
+
+
 
 ?>

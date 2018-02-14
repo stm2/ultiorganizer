@@ -74,7 +74,7 @@ if (!$confirmed && !$mailsent) {
 	$html .= "'>\n";	
 	$html .= "<table cellpadding='8px'>
 		<tr><td class='infocell'>"._("Email").":</td>
-			<td><input type='text' class='input' maxlength='512' id='Email' name='Email' size='40' value='";
+			<td><input type='text' class='input' maxlength='100' id='Email' name='Email' size='40' value='";
 	if (isset($_POST['Email'])) $html .= $_POST['Email'];
 	$html .= "'/></td></tr>";
 	

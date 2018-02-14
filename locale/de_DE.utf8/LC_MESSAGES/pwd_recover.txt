@@ -1,0 +1,9 @@
+Für den Benutzer '$username' wurde eine Passworterinnerung angefordert. 
+
+Falls Sie das waren, gehen Sie zu $url und geben Sie ein neues Passwort ein.
+
+Falls dies ein Irrtum war oder Sie nur ihren Benutzernamen vergessen haben, müssen Sie nichts tun.
+
+Mit freundlichen Grüßen
+
+$ultiorganizer

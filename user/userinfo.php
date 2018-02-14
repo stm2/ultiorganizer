@@ -51,29 +51,8 @@ if ($userid != "anonymous") {
     $newUsername=$_POST['UserName'];
     $newName=$_POST['Name'];
     $newLocale=$_POST['userlocale'];
-
-    $message = "";
-    if(empty($newUsername)|| strlen($newUsername) < 3 || strlen($newUsername) > 20){
-      $message .= "<p class='warning'>"._("Username is too short (min. 3 letters)").".</p>";
-      $error = 1;
-    }
     
-    if (IsRegistered($newUsername) && $userid != $newUsername){
-      $message .=  "<p class='warning'>"._("The username is already in use.")."</p>";
-      $error = 1;
-    }
-    
-    if(empty($newName)){
-      $message .= "<p class='warning'>"._("Name can not be empty.")."</p>";
-      $error = 1;
-    }
-
-    $uidcheck = mysql_adapt_real_escape_string($newUsername);
-
-    if($uidcheck != $newUsername){
-      $message .= "<p class='warning'>"._("Illegal characters in the username.")."</p>";
-      $error = 1;
-    }
+    $message = UserValid($newUsername, null, null, $newName, "abc@example.com", $userid != $newUsername, false);
 
     global $locales;
     if (!isset($locales[$newLocale])) {
@@ -115,20 +94,12 @@ if ($userid != "anonymous") {
   if(!empty($_POST['changepsw'])) {
     $newPassword1=$_POST['Password1'];
     $newPassword2=$_POST['Password2'];
-    if(empty($newPassword1)){
-      $message .= "<p class='warning'>"._("Password cannot be empty.")."</p>";
-      $error = 1;
-    }
-    	
-    if(!empty($newPassword1) && (strlen($newPassword1) <5 || strlen($newPassword1) > 20)){
-      $message .= "<p class='warning'>"._("Password is too short (min. 5 letters).")."</p>";
+    $pw = UserValidPassword($newPassword1, $newPassword2);
+    if (!empty($pw)) {
+      $message .= $pw;
       $error = 1;
     }
     
-    if(!empty($newPassword1) && ($newPassword1 != $newPassword2)){
-      $message .= "<p class='warning'>"._("Passwords do not match.")."</p>";
-      $error = 1;
-    }
     if(!$error){
       $message .= "<p>"._("Changes were saved")."</p><hr/>";
     }else{
@@ -534,48 +505,47 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
 if (hasEditUsersRight()) {
   $html .= "<form method='get' action='?view=admin/select_userrole";
   if (!empty($_GET['user'])) {
-    $html .= "&amp;user=".urlencode($_GET['user']);
+    $html .= "&amp;user=" . urlencode($_GET['user']);
   }
   $html .= "'>";
   $html .= "<p>\n";
   $html .= "<select class='dropdown' name='userrole'>\n";
-  $html .= "<option value='superadmin'>"._("Administrator")."</option>\n";
-  $html .= "<option value='translationadmin'>"._("Translation administrator")."</option>\n";
-  $html .= "<option value='useradmin'>"._("User administrator")."</option>\n";
-  $html .= "<option value='teamadmin'>". _("Team contact person")."</option>\n";
-  $html .= "<option value='seasonadmin'>"._("Event responsible")."</option>\n";
-  $html .= "<option value='seriesadmin'>"._("Division organizer")."</option>\n";
-  $html .= "<option value='accradmin'>"._("Accreditation official")."</option>\n";
-  $html .= "<option value='resadmin'>"._("Scheduling right")."</option>\n";
-  $html .= "<option value='resgameadmin'>"._("Reservation game input responsible")."</option>\n";
-  $html .= "<option value='gameadmin'>"._("Game input responsibility")."</option>\n";
-  $html .= "<option value='playeradmin'>"._("Player profile administrator")."</option>\n";
-	$html .= "</select>\n";
-	$html .= "<input type='hidden' name='view' value='admin/select_userrole'/>\n";
-	if (!empty($_GET['user'])) {
-		$html .= "<input type='hidden' name='user' value='".urlencode($_GET['user'])."'/>\n";
-	}
-	$html .= "<input class='button' type='submit' name='addpoolselector' value='"._("Add")."...' />\n";
-	$html .= "</p>\n";
-	$html .= "</form>\n";
-	
-}
-  $html .= "<hr/>\n";
-  $html .= "<form method='post' action='?view=user/userinfo";
+  $html .= "<option value='superadmin'>" . _("Administrator") . "</option>\n";
+  $html .= "<option value='translationadmin'>" . _("Translation administrator") . "</option>\n";
+  $html .= "<option value='useradmin'>" . _("User administrator") . "</option>\n";
+  $html .= "<option value='teamadmin'>" . _("Team contact person") . "</option>\n";
+  $html .= "<option value='seasonadmin'>" . _("Event responsible") . "</option>\n";
+  $html .= "<option value='seriesadmin'>" . _("Division organizer") . "</option>\n";
+  $html .= "<option value='accradmin'>" . _("Accreditation official") . "</option>\n";
+  $html .= "<option value='resadmin'>" . _("Scheduling right") . "</option>\n";
+  $html .= "<option value='resgameadmin'>" . _("Reservation game input responsible") . "</option>\n";
+  $html .= "<option value='gameadmin'>" . _("Game input responsibility") . "</option>\n";
+  $html .= "<option value='playeradmin'>" . _("Player profile administrator") . "</option>\n";
+  $html .= "</select>\n";
+  $html .= "<input type='hidden' name='view' value='admin/select_userrole'/>\n";
   if (!empty($_GET['user'])) {
-    $html .= "&amp;user=".urlencode($_GET['user']);
+    $html .= "<input type='hidden' name='user' value='" . urlencode($_GET['user']) . "'/>\n";
   }
-  $html .= "'>\n";
-  $html .= "<table cellpadding='8'>";
-  $html .= "<tr><td class='infocell'>"._("New  password").":</td>";
-  $html .= "<td><input class='input' type='password' maxlength='20' id='Password1' name='Password1' /></td></tr>";
-  $html .= "<tr><td class='infocell'>"._("Repeat password").":</td>";
-  $html .= "<td><input class='input' type='password' maxlength='20' id='Password2' name='Password2' /></td></tr>";	
-  $html .= "<tr><td colspan = '2' align='right'>";
-  $html .= "<input class='button' type='submit' name='changepsw' value='"._("Change Password")."' />";
-  $html .= "</td></tr>\n";  
-  $html .= "</table>\n";
+  $html .= "<input class='button' type='submit' name='addpoolselector' value='" . _("Add") . "...' />\n";
+  $html .= "</p>\n";
   $html .= "</form>\n";
+}
+$html .= "<hr/>\n";
+$html .= "<form method='post' action='?view=user/userinfo";
+if (!empty($_GET['user'])) {
+  $html .= "&amp;user=" . urlencode($_GET['user']);
+}
+$html .= "'>\n";
+$html .= "<table cellpadding='8'>";
+$html .= "<tr><td class='infocell'>" . _("New  password") . ":</td>";
+$html .= "<td><input class='input' type='password' maxlength='20' id='Password1' name='Password1' /></td></tr>";
+$html .= "<tr><td class='infocell'>" . _("Repeat password") . ":</td>";
+$html .= "<td><input class='input' type='password' maxlength='20' id='Password2' name='Password2' /></td></tr>";
+$html .= "<tr><td colspan = '2' align='right'>";
+$html .= "<input class='button' type='submit' name='changepsw' value='" . _("Change Password") . "' />";
+$html .= "</td></tr>\n";
+$html .= "</table>\n";
+$html .= "</form>\n";
 
-  showPage($title, $html);
-  ?>
+showPage($title, $html);
+?>

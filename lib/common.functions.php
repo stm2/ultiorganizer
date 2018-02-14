@@ -289,6 +289,7 @@ function GetURLBase()
 	}
 	return $url;
 }
+
 function GetPageURL() {
  $pageURL = 'http';
  if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
@@ -1425,5 +1426,19 @@ function mailto_link($email, $name = null, $text = null) {
   $encode = mailto_encode($email, $name);
   $text = is_null($text) ? is_null($name) ? utf8entities($email) : utf8entities($name) : utf8entities($text);
   return "<a href='$encode'>$text</a>";
+}
+
+function almostSecureRandom(int $min, int $max) {
+  if ($max - $min < 0 || $max - $min > mt_getrandmax())
+    die("invalid random number requested");
+  
+  if (function_exists('random_int') === false) {
+    return mt_rand($min, $max);
+  }
+  try {
+    return random_int($min, $max);
+  } catch (Throwable $e) {
+    die("random generator error");
+  }
 }
 ?>
