@@ -498,7 +498,7 @@ function seasonSelection() {
   $seasons = CurrentSeasons();
   if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
-    echo "<form action='?view=index' method='get' id='seasonsels'>";
+    echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
     echo "<div><select class='seasondropdown' name='selseason'
 			onchange='changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
     while ($row = mysqli_fetch_assoc($seasons)) {
@@ -511,6 +511,9 @@ function seasonSelection() {
          SeasonName($row['season_id']) . "</option>";
     }
     echo "</select>";
+    foreach($_GET as $name => $value) {
+      echo "<input type='hidden' name='". utf8entities($name)."' value='". utf8entities($value)."' />";
+    }
     echo "<noscript><div><input type='submit' value='" . utf8entities(_("Go")) .
        "' name='selectseason'/></div></noscript>";
     echo "</div></form>";
@@ -977,7 +980,7 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
     $line .= " - ";
   }
   if (strlen($line) < 100) {
-    $html .= "<table id='pagemenu'><tr>\n";
+    $html .= "<table class='pagemenu'><tr>\n";
     $first = true;
     foreach ($menuitems as $name => $url) {
       if (!$first)
@@ -991,7 +994,7 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
     }
     $html .= "</tr></table>";
   } else {
-    $html .= "<ul id='pagemenu'>\n";
+    $html .= "<ul class='pagemenu'>\n";
     
     foreach ($menuitems as $name => $url) {
       
