@@ -110,7 +110,7 @@
 /*	height:15px;*/
 }
 
-ul#pagemenu{
+ul.pagemenu{
 	list-style-type:none;
 	position:relative;
 	width:100%;
@@ -120,26 +120,26 @@ ul#pagemenu{
 	padding:0px;
 }
 
-table#pagemenu{
+table.pagemenu{
 	font-size: 10px;
 	margin:0px;
 }
 
-ul#pagemenu li{
+ul.pagemenu li{
 	display:block;
 	float:left;
 	margin:0 0 0 4px;
 }
 
-ul#pagemenu li.left{
+ul.pagemenu li.left{
 	margin:0;
 }
 
-table#pagemenu th {
+table.pagemenu th {
 	background:#ffffff;
 }
 
-ul#pagemenu li a, table#pagemenu a {
+ul.pagemenu li a, table.pagemenu a {
 	display:block;
 	float:left;
 	color: #2d2d2d;
@@ -148,11 +148,11 @@ ul#pagemenu li a, table#pagemenu a {
 	padding:3px 17px 0 18px;
 }
 	
-ul#pagemenu li a.right{
+ul.pagemenu li a.right{
 	padding-right:19px;
 }
 	
-ul#pagemenu li a:hover, table#pagemenu a:hover {
+ul.pagemenu li a:hover, table.pagemenu a:hover {
 	text-decoration: underline;
 	background-color: #d3d3d3;
 	border-left:1px solid #333;
@@ -160,7 +160,7 @@ ul#pagemenu li a:hover, table#pagemenu a:hover {
 	border-top:1px solid #333;
 }
 	
-ul#pagemenu li a.current, table#pagemenu a.current {
+ul.pagemenu li a.current, table.pagemenu a.current {
 	color: #2d2d2d;
 	text-decoration:  underline;
 	background:#fff;

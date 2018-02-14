@@ -125,7 +125,7 @@ td {
   font-size: 1.1rem;
 }
 
-ul#pagemenu {
+ul.pagemenu {
   list-style-type: none;
   position: relative;
   width: 100%;
@@ -135,53 +135,55 @@ ul#pagemenu {
   padding: 0px;
 }
 
-table#pagemenu {
+table.pagemenu {
+  font-weight: bold;
   font-size: 1.1rem;
   margin: 0px;
 }
 
-ul#pagemenu li {
+ul.pagemenu li {
   display: block;
   float: left;
-  margin: 0 0 0 4px;
+  margin: 0 0 2px 4px;
+  background: var(--shadecolor, #ffffff);
 }
 
-ul#pagemenu li.left {
+ul.pagemenu li.left {
   margin: 0;
 }
 
-table#pagemenu th {
-  background: var(--bgcolor, #ffffff);
+table.pagemenu th {
+  background: var(--shadecolor, #ffffff);
 }
 
-ul#pagemenu li a, table#pagemenu a {
+.pagemenu a {
   display: block;
   float: left;
   color: var(--navlinkcolor, #2d2d2d);
-  background-color: var(--navlinkbgcolor, acd1e9);
+  background-color: var(--navlinkbgcolor, #acd1e9);
   text-decoration: none;
-  padding: 3px 17px 1px 18px;
+  padding: 3px 4px 4px 4px;
 }
 
-ul#pagemenu li a.right {
+ul.pagemenu li a.right {
   padding-right: 19px;
 }
 
-ul#pagemenu li a:hover, table#pagemenu a:hover {
+.pagemenu a:hover {
   color: var(--hnavlinkcolor, #000000);
   background-color: var(--hnavlinkbgcolor, #d3d3d3);
   text-decoration: underline;
-  padding: 3px 16px 0px 17px;
+  padding: 3px 3px 3px 3px;
   border-left: 1px solid var(--hardbordercolor, #333);
   border-right: 1px solid var(--hardbordercolor, #333);
   border-top: 1px solid var(--hardbordercolor, #333);
 }
 
-ul#pagemenu li a.current, table#pagemenu a.current {
+.pagemenu a.current {
   color: var(--navcurrentlinkcolor, #2d2d2d);
   background-color: var(--navcurrentbgcolor, #fff);
   text-decoration: underline;
-  padding: 3px 16px 0px 17px;
+  padding: 3px 3px 3px 3px;
   border-left: 1px solid var(--hardbordercolor, #333);
   border-right: 1px solid var(--hardbordercolor, #333);
   border-top: 1px solid var(--hardbordercolor, #333);
