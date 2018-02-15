@@ -33,7 +33,8 @@ foreach($teams as $team){
   }
   
   if(IsRegistered($userid)){
-     AddSeasonUserRole($userid, "teamadmin:$tid", $seriesinfo['season']);    
+    if ($seriesinfo['season'] == TeamSeason($tid))
+      AddSeasonUserRole($userid, "teamadmin:$tid", $seriesinfo['season']);    
     $html .= "<p>"._("User rights added for:")." ".$userid."</p>";
   }else{
     $html .= "<p class='warning'>"._("Invalid user:")." ".$userid."</p>";
@@ -78,7 +79,7 @@ foreach($teams as $team){
   $html .= "</tr>\n";;
 }
 $html .= "</table>";
-$html .= "<p><a href='?view=admin/adduser&amp;season=".$seriesinfo['season']."'>"._("Add new user")."</a></p>";
+$html .= "<p><a href='?view=admin/adduser&amp;season=".$seriesinfo['season']."'>"._("Add new user")."</a></p>\n";
 $html .= "<p>";
 $html .= "<input class='button' name='add' type='submit' value='"._("Grant rights")."'/>";
 $html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";

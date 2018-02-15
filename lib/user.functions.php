@@ -840,6 +840,12 @@ function RemoveUserRole($userid, $propid) {
 	} else { die('Insufficient rights to change user info'); }
 }
 
+/**
+ * 
+ * @param string $userid 
+ * @param string $role
+ * @return boolean
+ */
 function AddUserRole($userid, $role) {
 	if (hasEditUsersRight()) {
 		$query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
@@ -853,28 +859,40 @@ function AddUserRole($userid, $role) {
 	} else { die('Insufficient rights to change user info'); } 
 }
 
+/**
+ * Attention: Use this function only if season admin rights for $seasonId are sufficient to grant the role. 
+ *
+ * @param string $userid
+ * @param string $role
+ * @param string $seasonId
+ * @return boolean
+ */
 function AddSeasonUserRole($userid, $role, $seasonId) {
-	if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
-	    
-	  $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
-			mysql_adapt_real_escape_string($userid),
-			mysql_adapt_real_escape_string($role));
-		$result = DBQueryToValue($query);
-		
-		if($result<=0){
-    	    $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
-    			mysql_adapt_real_escape_string($userid),
-    			mysql_adapt_real_escape_string($role));
-    		$result = DBQuery($query);
-    		Log1("security","add",$userid,$seasonId,$role);
-    		AddEditSeason($userid, $seasonId);
-    		 
-    		if ($userid == $_SESSION['uid']) { SetUserSessionData($userid); }
-    		return true;
-		}else{
-		  return false;
-		}
-	} else { die('Insufficient rights to change user info'); } 
+  if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
+    
+    $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
+      mysql_adapt_real_escape_string($userid),
+      mysql_adapt_real_escape_string($role));
+    $result = DBQueryToValue($query);
+    
+    if ($result <= 0) {
+      $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
+        mysql_adapt_real_escape_string($userid),
+        mysql_adapt_real_escape_string($role));
+      $result = DBQuery($query);
+      Log1("security", "add", $userid, $seasonId, $role);
+      AddEditSeason($userid, $seasonId);
+      
+      if ($userid == $_SESSION['uid']) {
+        SetUserSessionData($userid);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    die('Insufficient rights to change user info');
+  }
 }
 
 function RemoveSeasonUserRole($userid, $role, $seasonId) {

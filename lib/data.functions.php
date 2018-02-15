@@ -625,7 +625,7 @@ class EventDataXMLHandler{
             DBQueryInsert($query);
             
             AddEditSeason($_SESSION['uid'], $newId);
-            AddUserRole($_SESSION['uid'], 'seasonadmin:' . $newId);
+            AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:' . $newId, $newId);
           }
         } else if ($this->mode == "insert") {
           $key = $row['season_id'];

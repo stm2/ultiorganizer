@@ -21,21 +21,25 @@ if(!empty($_POST['add'])){
     if($_GET["access"]=="eventadmin"){
       AddSeasonUserRole($userid, "seasonadmin:".$seasonId, $seasonId);
     }elseif($_GET["access"]=="seriesadmin"){
-      AddSeasonUserRole($userid, "seriesadmin:".$_POST["series"], $seasonId);
+      if ($seasonId == SeriesSeasonId($_POST['series'])) // check series belongs to season to avoid privilege escalation
+        AddSeasonUserRole($userid, "seriesadmin:".$_POST["series"], $seasonId);
     }elseif($_GET["access"]=="teamadmin"){
-      AddSeasonUserRole($userid, "teamadmin:".$_POST["team"], $seasonId);    
+      if ($seasonId == TeamSeason($_POST['team']))
+        AddSeasonUserRole($userid, "teamadmin:".$_POST["team"], $seasonId);    
     }elseif($_GET["access"]=="gameadmin"){
       $reservations = $_POST["reservations"];
       foreach($reservations as $res){
         $games = ReservationGames($res);
         while ($game = mysqli_fetch_assoc($games)) {
-          AddSeasonUserRole($userid, 'gameadmin:'.$game['game_id'],$seasonId);
+          if ($seasonId == GameSeason($game['game_id']))
+            AddSeasonUserRole($userid, 'gameadmin:'.$game['game_id'], $seasonId);
         }
       }    
     }elseif($_GET["access"]=="accradmin"){
       $teams = $_POST["teams"];
       foreach($teams as $teamId){
-        AddSeasonUserRole($userid, 'accradmin:'.$teamId,$seasonId);
+        if ($seasonId == TeamSeason($teamId))
+          AddSeasonUserRole($userid, 'accradmin:'.$teamId, $seasonId);
       }
     }    
     $html .= "<p>".sprintf(_("User rights added for %s."), utf8entities($userid))."</p>";

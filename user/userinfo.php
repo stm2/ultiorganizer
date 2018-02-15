@@ -159,7 +159,7 @@ if ($userid != "anonymous") {
     }
   }
 
-  if (!empty($_POST['selectuserrole'])) {
+  if (!empty($_POST['selectuserrole']) && hasEditUsersRight()) {
     if ($_POST['userrole'] == 'superadmin') {
       $selector = 'superadmin';
       AddUserRole($userid, $selector);

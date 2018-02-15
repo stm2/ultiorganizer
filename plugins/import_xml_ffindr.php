@@ -288,7 +288,7 @@ class XMLHandler{
           $this->InsertRow("uo_season", $data);
 
           AddEditSeason($_SESSION['uid'],$id);
-          AddUserRole($_SESSION['uid'], 'seasonadmin:'.$id);
+          AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:'.$id, $id); 
         }
         
         $this->eventId=$id;

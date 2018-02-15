@@ -71,7 +71,7 @@ if (!empty($_POST['save'])) {
     if ($userid < 0)
       $userid = "";
   }
-  if (IsRegistered($userid)) {
+  if (IsRegistered($userid) && $season == GameSeason($gameId)) {
     AddSeasonUserRole($userid, 'gameadmin:' . $gameId, $season);
   } else if (!empty($_POST['userid']) || !empty($_POST['email'])) {
     $warning .= "<p>" . _("Invalid user"). "</p>\n";
