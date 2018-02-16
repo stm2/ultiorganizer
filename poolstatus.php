@@ -19,17 +19,18 @@ if (iget("season")) {
   $seriesScoreboard = true;
 
 } else if (iget("series")) {
-  $seriesinfo = SeriesInfo(iget("series"));
-  $pools = SeriesPools($seriesinfo['series_id'], true);
+  $seriesId = iget("series");
+  $seriesinfo = SeriesInfo($seriesId);
+  $pools = SeriesPools($seriesId, true);
   $title.= U_($seriesinfo['name']);
-  $comment = CommentHTML(2, $seriesinfo['series_id']);
+  $comment = CommentHTML(2, $seriesId);
   $seriesScoreboard = true;
   $seasoninfo = SeasonInfo($seriesinfo['season']);
+  SetCurrentSeries($seriesId);
 } else if (iget("pool")) {
 
   $poolinfo = PoolInfo(iget("pool"));
   $games=PoolGames($poolinfo['pool_id']);
-
 
   //if pool has only one game, show game's schoresheet if exist
   if(count($games)==1 && $poolinfo['type']==1){
@@ -45,6 +46,21 @@ if (iget("season")) {
 
   $seasoninfo = SeasonInfo($poolinfo['season']);
   $title.= utf8entities(U_($poolinfo['seriesname']).", ". U_($poolinfo['name']));
+  SetCurrentSeries($poolinfo['series']);
+} else {
+  die("invalid request");
+}
+
+
+if (!empty($seriesId)) {
+  $tabs = array(_("Statistics") => MakeUrl(array('view' => 'seriesstatus', 'series' => $seriesId)),
+    _("Games") => MakeUrl(array('view' => 'games', 'series' => $seriesId)), _("Pools") => MakeUrl($_GET));
+  
+//   foreach (SeriesPools($seriesId, true) as $pool) {
+//     $tabs[$pool['name']] = MakeUrl(array('view' => 'poolstatus', 'pool' => $pool['pool_id']));
+//   }
+  
+  $html .= pageMenu($tabs, MakeUrl($_GET), false);
 }
 
 $html .= $comment;
@@ -100,12 +116,15 @@ function scoreboard($id, $seriesScoreboard){
   $ret = "";
   
   if($seriesScoreboard){
+    $scores = SeriesScoreBoard($id,"total", 10);
+    if (mysqli_num_rows($scores) == 0)
+      return $ret;
+    
     $ret .= "<h2>"._("Scoreboard leaders")."</h2>\n";
     $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
 
-    $scores = SeriesScoreBoard($id,"total", 10);
     while($row = mysqli_fetch_assoc($scores))
     {
       $ret .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
@@ -119,11 +138,6 @@ function scoreboard($id, $seriesScoreboard){
     $ret .= "</table>";
     $ret .= "<a href='?view=scorestatus&amp;series=".$id."'>"._("Scoreboard")."</a>";
   }else{
-    $ret .= "<h2>"._("Scoreboard leaders")."</h2>\n";
-    $ret .= "<table class='admintable'>\n";
-    $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
-		<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
-
     $poolinfo = PoolInfo($id);
     $pools = array();
     if($poolinfo['type']==2){
@@ -136,6 +150,14 @@ function scoreboard($id, $seriesScoreboard){
       $scores = PoolScoreBoard($id,"total", 5);
     }
 
+    if (mysqli_num_rows($scores) == 0)
+      return $ret;
+    
+    $ret .= "<h2>"._("Scoreboard leaders")."</h2>\n";
+    $ret .= "<table class='admintable'>\n";
+    $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
+		<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
+    
     while($row = mysqli_fetch_assoc($scores))
     {
       $ret .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
@@ -162,12 +184,15 @@ function defenseboard($id, $seriesDefenseboard){
   $ret = "";
   
   if($seriesDefenseboard){
+    $defenses = SeriesDefenseBoard($seriesinfo['series_id'],"deftotal", 10);
+    if (mysqli_num_rows($defenses) == 0)
+      return $ret;
+    
     $ret .= "<h2>"._("Defenseboard leaders")."</h2>\n";
     $ret .= "<table class='admintable'>\n";
     $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
 		<th class='center'>"._("Total defenses")."</th></tr>\n";
 
-    $defenses = SeriesDefenseBoard($seriesinfo['series_id'],"deftotal", 10);
     while($row = mysqli_fetch_assoc($defenses))
     {
       $ret .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
@@ -180,11 +205,6 @@ function defenseboard($id, $seriesDefenseboard){
     $ret .= "<a href='?view=defensestatus&amp;series=".$seriesinfo['series_id']."'>"._("Defenseboard")."</a>";
 
   }else{
-    $ret .= "<h2>"._("Defenseboard leaders")."</h2>\n";
-    $ret .= "<table class='admintable'>\n";
-    $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
-		<th class='center'>"._("Total defenses")."</th></tr>\n";
-
     $poolinfo = PoolInfo($id);
     $pools = array();
     if($poolinfo['type']==2){
@@ -197,6 +217,15 @@ function defenseboard($id, $seriesDefenseboard){
       $scores = PoolScoreBoardWithDefenses($id,"deftotal", 5);
     }
 
+    if (mysqli_num_rows($scores) == 0)
+      return $ret;
+
+    $ret .= "<h2>"._("Defenseboard leaders")."</h2>\n";
+    $ret .= "<table class='admintable'>\n";
+    $ret .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
+		<th class='center'>"._("Total defenses")."</th></tr>\n";
+    
+    
     while($row = mysqli_fetch_assoc($scores))
     {
       $ret .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
@@ -274,13 +303,13 @@ function printSwissdraw($seasoninfo, $poolinfo){
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
     foreach($mvgames as $game){
-      $ret .= GameRow($game, false, false, false, false, false, true);
+      $ret .= GameRow($game, true, true, false, false, false, true);
     }
   }
   $games = TimetableGames($poolinfo['pool_id'], "pool", "all", "series");
   while($game = mysqli_fetch_assoc($games)){
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-    $ret .= GameRow($game, false, false, false, false, false, true);
+    $ret .= GameRow($game, true, true, false, false, false, true);
   }
   $ret .= "</table>\n";
 
@@ -412,13 +441,13 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
     foreach($mvgames as $game){
-      $ret .= GameRow($game, false, false, false, false, false, true);
+      $ret .= GameRow($game, true, true, false, false, false, true);
     }
   }
   $games = TimetableGames($poolinfo['pool_id'], "pool", "all", "series");
   while($game = mysqli_fetch_assoc($games)){
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-    $ret .= GameRow($game, false, false, false, false, false, true);
+    $ret .= GameRow($game, true, true, false, false, false, true);
   }
   $ret .= "</table>\n";
 
@@ -488,7 +517,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
         $notemplate .= "<table class='admintable'>\n";
         $games = TimetableGames($pool['pool_id'], "pool", "all", "series");
         while ($game = mysqli_fetch_assoc($games)) {
-          $notemplate .= GameRow($game, false, false, false, false, false, true);
+          $notemplate .= GameRow($game, true, true, false, false, false, true);
         }
         $notemplate .= "</table>\n";
       }

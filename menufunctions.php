@@ -469,24 +469,24 @@ function navigationBar($title) {
   $i = 1;
   $needsdots = false;
   if (isset($_SESSION['navigation'])) {
-    
     foreach ($_SESSION['navigation'] as $view => $ptitle) {
-      
-      if ($i < count($_SESSION['navigation'])) {
-        if ($i > 1 && $i < (count($_SESSION['navigation']) - 3)) {
-          $needsdots = true;
-        } else {
-          if ($needsdots) {
-            $ret .= "... &raquo; ";
-            $needsdots = false;
-          }
-          $ret .= "<a href='?" . utf8entities($view) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; ";
-        }
+      $first = $view;
+      break;
+    }
+    foreach (array_reverse($_SESSION['navigation'], true) as $view => $ptitle) {
+
+      if ($i == 1)
+        $ret = $ptitle;
+      else if ($i>3 || strlen($ptitle) + strlen($ret) + strlen($_SESSION['navigation'][$first]) > 300) {
+        $ret = "&hellip;&nbsp;&raquo;" . $ret;
+        break;
+      } else {
+        $ret = "<a href='?" . utf8entities($view) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; " .$ret;
       }
       $i++;
     }
   }
-  $ret = $ret . " " . $ptitle;
+  $ret = "<a href='?" . utf8entities($first) . "&amp;goindex=" . $i . "'>" . $_SESSION['navigation'][$first] . "</a> &raquo; " . $ret;
   
   return $ret;
 }
@@ -532,8 +532,8 @@ function pageMainStart($printable = false) {
 function startTable(&$status) {
   if (!$status) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Administration")) . "</th></tr>\n";
-    echo "<tr><td>\n";
+    echo "<tr class='level1'><th class='menuseasonlevel'>" . utf8entities(_("Administration")) . "</th></tr>\n";
+    echo "<tr class='level2'><td>\n";
   }
   $status = true;
 }
@@ -542,6 +542,56 @@ function endTable($status) {
   if ($status)
     echo "</td></tr></table>\n";
   $status = false;
+}
+
+$currentSeries = 0;
+
+function SetCurrentSeries($seriesId) {
+  global $currentSeries;
+  $currentSeries = (int) $seriesId;
+}
+
+function leftMenuScript() {
+  global $currentSeries;
+  echo <<<EOG
+<script type="text/javascript">
+<!--
+class LeftMenu {
+  static hide2(parent, className, collapse) {
+    var elements = parent.getElementsByClassName(className);
+    
+    for (var i = 0; i < elements.length; i++) {
+       elements[i].style.display = collapse?"none":"";
+    }
+  }
+  static hide() {
+    LeftMenu.hide2(document, "menulevel2", true);
+    LeftMenu.hide2(document, "menulevel3", true);
+    LeftMenu.hide2(document, "collapse", true);
+    LeftMenu.hide2(document, "uncollapse", false);
+  }
+  
+  static toggle(id) {
+     var element = document.getElementById(id);
+     if (element != null) {
+       var parent = element.parentNode;
+       element = parent.nextElementSibling;
+       var collapsed = element !=null && (element.className === "menulevel2" || element.clasName === "menulevel3") && element.style.display === "none";
+       for (; element != null && (element.className == "menulevel2" || element.className == "menulevel3");) {
+         element.style.display = collapsed?"":"none";
+         
+         element = element.nextElementSibling;
+       }
+       LeftMenu.hide2(parent, "collapse", !collapsed);
+       LeftMenu.hide2(parent, "uncollapse", collapsed);
+     }
+  }
+}
+
+YAHOO.util.Event.onDOMReady(function() { LeftMenu.hide(); LeftMenu.toggle("seriesNav$currentSeries"); });
+//-->
+</script>
+EOG;
 }
 
 /**
@@ -558,10 +608,12 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     pageMainStart($printable);
   }
   
+  leftMenuScript();
+  
   if ($printable) {
     return;
   }
-  
+    
   echo "<td class='menu_left'>";
   
   // Administration menu
@@ -666,8 +718,9 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   $curseason = CurrentSeason();
   
   echo "<table class='leftmenulinks'>\n";
+  $colspan=" colspan='3'";
   if ($curseason < 0) {
-    echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("No seasons created")) . "</th></tr>\n";
+    echo "<tr class='menulevel0'><th class='menuseasonlevel'>" . utf8entities(_("No seasons created")) . "</th></tr>\n";
   } else {
     $pools = getViewPools($curseason);
     if ($pools && mysqli_num_rows($pools)) {
@@ -681,48 +734,59 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
         }
         if ($lastseason != $season) {
           $lastseason = $season;
-          echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
+          echo "<tr class='menulevel0'><th $colspan class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
              urlencode($season) . "&amp;list=bystandings'>";
           echo utf8entities(U_($row['season_name'])) . "</a></th></tr>\n";
-          echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=bystandings'>" .
+          echo "<tr class='menulevel1'><td $colspan><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=bystandings'>" .
              utf8entities(_("Final ranking")) . "</a></td></tr>\n";
-          echo "<tr><td><a class='nav' href='?view=games&amp;season=" . urlencode($season) .
-             "&amp;filter=tournaments&amp;group=all'>" . utf8entities(_("Games")) . "</a></td></tr>\n";
-          // echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
-          echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=allteams'>" .
+          echo "<tr class='menulevel1'><td $colspan><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "&amp;list=allteams'>" .
              utf8entities(_("Teams")) . "</a></td></tr>\n";
-          echo "<tr><td class='menuseparator'></td></tr>\n";
+          echo "<tr class='menulevel1'><td $colspan class='menuseparator'></td></tr>\n";
         }
         
         if ($lastseries != $series) {
           $lastseries = $series;
-          echo "<tr><td class='menuserieslevel'>";
-          echo "<a class='subnav' href='?view=seriesstatus&amp;series=" . $series . "'>" .
-             utf8entities(U_($row['series_name'])) . "</a></td></tr>\n";
-          echo "<tr><td class='navpoollink'>\n";
+          $onclick="onclick='LeftMenu.toggle(\"seriesNav".$series."\");'";
+          echo "<tr class='menulevel1'><td class='menuserieslevel' id='seriesNav".$series."'>";
+          echo "<a href='#$series' class='subnav' $onclick>";
+          // echo "<a class='subnav' href='?view=poolstatus&amp;series=" . $series . "'>";
+          echo utf8entities(U_($row['series_name']));
+          echo "</a>";
+          echo "</td><td class='uncollapse' style='display:none;'><a $onclick>&raquo;</a></td><td class='collapse' style='display:none;'><a $onclick>v</a></td></tr>\n";
+          echo "<tr class='menulevel2'><td $colspan class='navpoollink'>\n";
+          echo "<a class='subnav' href='?view=seriesstatus&amp;series=" . $series . "'>&raquo; " . utf8entities(_("Statistics")) .
+          "</a></td></tr>\n";
+          echo "<tr class='menulevel2'><td $colspan class='navpoollink'>\n";
+          echo "<a class='subnav' href='?view=games&amp;series=" . $series . "'>&raquo; " . utf8entities(_("Games")) .
+             "</a></td></tr>\n";
+          echo "<tr class='menulevel2'><td $colspan class='navpoollink'>\n";
           echo "<a class='subnav' href='?view=poolstatus&amp;series=" . $series . "'>&raquo; " .
              utf8entities(_("Show all pools")) . "</a></td></tr>\n";
         }
-        echo "<tr><td class='menupoollevel'>\n";
-        echo "<a class='navpoollink' href='?view=poolstatus&amp;pool=" . $row['pool'] . "'>&raquo; " .
-           utf8entities(U_($row['pool_name'])) . "</a>\n";
-        echo "</td></tr>\n";
+         echo "<tr class='menulevel3'><td $colspan class='menupoollevel'>\n";
+         echo "<a class='navpoollink' href='?view=poolstatus&amp;pool=" . $row['pool'] . "'>&raquo; " .
+            utf8entities(U_($row['pool_name'])) . "</a>\n";
+         echo "</td></tr>\n";
       }
+      echo "<tr class='menulevel1'><td $colspan class='menuseparator'></td></tr>\n";
+      echo "<tr class='menulevel1'><td $colspan><a class='nav' href='?view=games&amp;season=" . urlencode($season) .
+      "&amp;filter=series&amp;group=all'>" . utf8entities(_("All Games")) . "</a></td></tr>\n";
+      // echo "<tr><td $colspan><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
     } else {
       $season = CurrentSeason();
-      echo "<tr><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
+      echo "<tr class='menulevel0'><th class='menuseasonlevel'><a class='seasonnav' style='text-align:center;' href='?view=teams&amp;season=" .
          urlencode($season) . "&amp;list=bystandings'>" . utf8entities(U_(CurrentSeasonName())) . "</a></th></tr>\n";
-      echo "<tr><td><a class='nav' href='?view=timetables&amp;season=" . urlencode($season) .
+      echo "<tr class='menulevel1'><td><a class='nav' href='?view=timetables&amp;season=" . urlencode($season) .
          "&amp;filter=tournaments&amp;group=all'>" . utf8entities(_("Games")) . "</a></td></tr>\n";
       // echo "<tr><td><a class='nav' href='?view=played&amp;season=".urlencode($season)."'>".utf8entities(_("Played games"))."</a></td></tr>\n";
-      echo "<tr><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "'>" . utf8entities(_("Teams")) .
+      echo "<tr class='menulevel1'><td><a class='nav' href='?view=teams&amp;season=" . urlencode($season) . "'>" . utf8entities(_("Teams")) .
          "</a></td></tr>\n";
-      echo "<tr><td class='menuseparator'></td></tr>\n";
+      echo "<tr class='menulevel1'><td class='menuseparator'></td></tr>\n";
       
       $tmpseries = SeasonSeries($season, true);
       foreach ($tmpseries as $row) {
-        echo "<tr><td class='menuserieslevel'>" . utf8entities(U_($row['name'])) . "</td></tr>\n";
-        echo "<tr><td class='menupoollevel'>\n";
+        echo "<tr class='menulevel1'><td class='menuserieslevel'>" . utf8entities(U_($row['name'])) . "</td></tr>\n";
+        echo "<tr class='menulevel2'><td class='menupoollevel'>\n";
         echo utf8entities(_("Pools not yet created"));
         echo "</td></tr>\n";
       }

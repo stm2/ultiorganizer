@@ -12,15 +12,29 @@ $sort="ranking";
 $html = "";
 
 if(iget("series")){
+  $seriesId = iget('series');
   $seriesinfo = SeriesInfo(iget("series"));
   $viewUrl .= "&amp;series=".$seriesinfo['series_id'];
   $seasoninfo = SeasonInfo($seriesinfo['season']);
   $title.= U_($seriesinfo['name']);
+} else {
+  die("invalid request");
 }
 
 if(iget("sort")){
   $sort = iget("sort");
 }
+
+$tabs = array(
+  _("Statistics") => MakeUrl($_GET),
+  _("Games") => MakeUrl(array('view' => 'games', 'series' => $seriesId)),
+  _("Show all pools") => MakeUrl(array('view' => 'poolstatus', 'series' => $seriesId)),
+);
+foreach (SeriesPools($seriesId, true) as $pool) {
+  $tabs[$pool['name']] = MakeUrl(array('view' => 'poolstatus', 'pool' => $pool['pool_id']));
+}
+
+$html .= pageMenu($tabs, MakeUrl($_GET), false);
 
 $teamstats = array();
 $allteams = array();
@@ -239,47 +253,56 @@ foreach($allteams as $stats){
   $html .= "</tr>\n";
 }
 $html .= "</table>\n";
-$html .= "<a href='?view=poolstatus&amp;series=".$seriesinfo['series_id']."'>"._("Show all pools")."</a>";
-$html .= "<h2>"._("Scoreboard leaders")."</h2>\n";
-$html .= "<table cellspacing='0' border='0' width='100%'>\n";
-$html .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
-<th class='center'>"._("Assists")."</th><th class='center'>"._("Goals")."</th><th class='center'>"._("Tot.")."</th></tr>\n";
+$html .= "<p><a href='?view=poolstatus&amp;series=".$seriesinfo['series_id']."'>"._("Show all pools")."</a></p>\n";
 
-$scores = SeriesScoreBoard($seriesinfo['series_id'],"total", 10);
-while($row = mysqli_fetch_assoc($scores)){
-  $html .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
-  $html .= "<td>".utf8entities($row['teamname'])."</td>";
-  $html .= "<td class='center'>".intval($row['games'])."</td>";
-  $html .= "<td class='center'>".intval($row['fedin'])."</td>";
-  $html .= "<td class='center'>".intval($row['done'])."</td>";
-  $html .= "<td class='center'>".intval($row['total'])."</td></tr>\n";
-}
+$scores = SeriesScoreBoard($seriesinfo['series_id'], "total", 10);
 
-$html .= "</table>";
-$html .= "<a href='?view=scorestatus&amp;series=".$seriesinfo['series_id']."'>"._("Scoreboard")."</a>";
-
-
-if(ShowDefenseStats()) {
-  $html .= "<h2>"._("Defenseboard leaders")."</h2>\n";
+if (mysqli_num_rows($scores) > 0) {
+  
+  $html .= "<h2>" . _("Scoreboard leaders") . "</h2>\n";
   $html .= "<table cellspacing='0' border='0' width='100%'>\n";
-  $html .= "<tr><th style='width:200px'>"._("Player")."</th><th style='width:200px'>"._("Team")."</th><th class='center'>"._("Games")."</th>
-	<th class='center'>"._("Total defenses")."</th></tr>\n";
-
-
-  $defenses = SeriesDefenseBoard($seriesinfo['series_id'],"deftotal", 10);
-  while($row = mysqli_fetch_assoc($defenses)) {
-    $html .= "<tr><td>". utf8entities($row['firstname']." ".$row['lastname'])."</td>";
-    $html .= "<td>".utf8entities($row['teamname'])."</td>";
-    $html .= "<td>". _("Games") . "</td>";
-    $html .= "<td class='center'>".intval($row['games'])."</td>";
-    $html .= "<td class='center'>".intval($row['deftotal'])."</td></tr>\n";
+  $html .= "<tr><th style='width:200px'>" . _("Player") . "</th><th style='width:200px'>" . _("Team") .
+     "</th><th class='center'>" . _("Games") .
+     "</th>
+<th class='center'>" .
+     _("Assists") . "</th><th class='center'>" . _("Goals") . "</th><th class='center'>" . _("Tot.") . "</th></tr>\n";
+  
+  while ($row = mysqli_fetch_assoc($scores)) {
+    $html .= "<tr><td>" . utf8entities($row['firstname'] . " " . $row['lastname']) . "</td>";
+    $html .= "<td>" . utf8entities($row['teamname']) . "</td>";
+    $html .= "<td class='center'>" . intval($row['games']) . "</td>";
+    $html .= "<td class='center'>" . intval($row['fedin']) . "</td>";
+    $html .= "<td class='center'>" . intval($row['done']) . "</td>";
+    $html .= "<td class='center'>" . intval($row['total']) . "</td></tr>\n";
   }
-
+  
   $html .= "</table>";
-  $html .= "<a href='?view=defensestatus&amp;series=".$seriesinfo['series_id']."'>"._("Defenseboard")."</a>";
+  $html .= "<a href='?view=scorestatus&amp;series=" . $seriesinfo['series_id'] . "'>" . _("Scoreboard") . "</a>";
 }
 
-if ($seasoninfo['showspiritpoints']){ // TODO total
+if (ShowDefenseStats()) {
+  $defenses = SeriesDefenseBoard($seriesinfo['series_id'], "deftotal", 10);
+  if (mysqli_num_rows($defenses) > 0) {
+    $html .= "<h2>" . _("Defenseboard leaders") . "</h2>\n";
+    $html .= "<table cellspacing='0' border='0' width='100%'>\n";
+    $html .= "<tr><th style='width:200px'>" . _("Player") . "</th><th style='width:200px'>" . _("Team") .
+       "</th><th class='center'>" . _("Games") . "</th>
+	<th class='center'>" . _("Total defenses") . "</th></tr>\n";
+    
+    while ($row = mysqli_fetch_assoc($defenses)) {
+      $html .= "<tr><td>" . utf8entities($row['firstname'] . " " . $row['lastname']) . "</td>";
+      $html .= "<td>" . utf8entities($row['teamname']) . "</td>";
+      $html .= "<td>" . _("Games") . "</td>";
+      $html .= "<td class='center'>" . intval($row['games']) . "</td>";
+      $html .= "<td class='center'>" . intval($row['deftotal']) . "</td></tr>\n";
+    }
+    
+    $html .= "</table>";
+    $html .= "<a href='?view=defensestatus&amp;series=" . $seriesinfo['series_id'] . "'>" . _("Defenseboard") . "</a>";
+  }
+}
+
+if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0){ // TODO total
   $categories = SpiritCategories($seasoninfo['spiritmode']);
   $html .= "<h2>"._("Spirit points average per category")."</h2>\n";
 
@@ -318,7 +341,7 @@ if ($seasoninfo['showspiritpoints']){ // TODO total
   
 }
 
-
+SetCurrentSeries($seriesId);
 showPage($title, $html);
 
 ?>
