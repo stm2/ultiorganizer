@@ -169,7 +169,7 @@ function UserValidPassword($newPassword1, $newPassword2) {
   }
   
   if (!empty($newPassword1) && (strlen($newPassword1) < 8 || strlen($newPassword1) > 20)) {
-    $message .= "<p class='warning'>" . sprintf(_("Password is too short (min. %d letters)."), 8) . "</p>";
+    $message .= "<p class='warning'>" . sprintf(_("Password is too short or too long (between %d and %d letters)."), 8, 20) . "</p>";
   }
   
   if (!empty($newPassword1) && ($newPassword1 != $newPassword2)) {
@@ -182,7 +182,7 @@ function UserValidPassword($newPassword1, $newPassword2) {
 function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEmail, $checkDuplicate = false, $checkPw = true) {
   $html = "";
   if (empty($newUsername) || strlen($newUsername) < 3 || strlen($newUsername) > 30) {
-    $html .= "<p class='warning'>" . sprintf(_("Username is too short or too long (between %d and %d letters)"), 3, 30) . ".</p>";
+    $html .= "<p class='warning'>" . sprintf(_("Username is too short or too long (between %d and %d letters.)"), 3, 30) . ".</p>";
   }
   
   $uidcheck = mysql_adapt_real_escape_string($newUsername);
