@@ -553,17 +553,14 @@ function SetFont($family, $style='', $size=0)
 	//Select it
 	$this->FontFamily=$family;
 	$this->FontStyle=$style;
-	$this->FontSizePt=$size;
-	$this->FontSize=$size/$this->k;
 	$this->CurrentFont=&$this->fonts[$fontkey];
-	if($this->page>0)
-		$this->_out(sprintf('BT /F%d %.2F Tf ET',$this->CurrentFont['i'],$this->FontSizePt));
+	$this->SetFontSize($size, true);
 }
 
-function SetFontSize($size)
+function SetFontSize($size, $force=false)
 {
 	//Set font size in points
-	if($this->FontSizePt==$size)
+	if(!$force && $this->FontSizePt==$size)
 		return;
 	$this->FontSizePt=$size;
 	$this->FontSize=$size/$this->k;

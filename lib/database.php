@@ -86,7 +86,7 @@ function getDBVersion() {
  * Executes sql query and  returns result as an mysql array.
  *
  * @param string $query database query
- * @return mixed Array of rows
+ * @return mixed mysql result of rows
  */
 function DBQuery($query) {
   $result = mysql_adapt_query($query);

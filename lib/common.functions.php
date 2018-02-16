@@ -290,6 +290,27 @@ function GetURLBase()
 	return $url;
 }
 
+
+/**
+ * Creates an URL from $_GET-like parameter list
+ * 
+ * @param array $parameters list of $key => $value pairs. It should contain a 'view' => $value pair for the desired page. 
+ * @param array $newParameters list $key => $value pairs that overwrites values in $parameters
+ * @return string The URL
+ */
+function MakeUrl($parameters, $newParameters = array()) {
+  $url = "";
+  foreach ($newParameters as $key => $value) {
+    $parameters[$key] = $value;
+  }
+  foreach ($parameters as $key => $value) {
+    $url .= empty($url) ? "?" : "&";
+    $url .= "$key=$value";
+  }
+  return $url;
+}
+
+
 function GetPageURL() {
  $pageURL = 'http';
  if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {$pageURL .= "s";}

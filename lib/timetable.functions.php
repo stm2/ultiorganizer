@@ -2,7 +2,8 @@
 include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/game.functions.php';
 
-function TournamentView($games, $grouping=true){
+
+function TournamentView($games, $grouping=true, &$lines=null){
 
   $ret = "";
   $prevTournament = "";
@@ -14,7 +15,7 @@ function TournamentView($games, $grouping=true){
   $prevTimezone = "";
   $isTableOpen = false;
   $rss = IsGameRSSEnabled();
-
+  
   while($game = mysqli_fetch_assoc($games)){
     $ret .= "\n<!-- res:". $game['reservationgroup'] ." pool:". $game['pool']." date:".JustDate($game['starttime'])."-->\n";
     if($game['reservationgroup'] != $prevTournament
@@ -25,10 +26,10 @@ function TournamentView($games, $grouping=true){
         $isTableOpen = false;
       }
       if($grouping){
-        $ret .= groupHeading($game['reservationgroup']);
+        $ret .= "<h2>".utf8entities(groupHeading($game['reservationgroup']))."</h2>\n";
+        if ($lines!==null) $lines[] = array("type" => "h2", "text" => groupHeading($game['reservationgroup']));
       }
       $prevPlace="";
-      	
     }
 
     if(JustDate($game['starttime']) != $prevDate || $game['place_id'] != $prevPlace){
@@ -39,10 +40,13 @@ function TournamentView($games, $grouping=true){
       $ret .= "<h3>";
       $ret .= DefWeekDateFormat($game['starttime']);
       $ret .= " ";
-      $ret .= "<a href='?view=reservationinfo&amp;reservation=".$game['reservation_id']."'>";
-      $ret .= utf8entities(U_($game['placename']));
+      $link = "?view=reservationinfo&amp;reservation=".$game['reservation_id'];
+      $ret .= "<a href='$link'>";
+      $ret .= utf8entities($linktext=U_($game['placename']));
       $ret .= "</a>";
       $ret .= "</h3>\n";
+      if ($lines!==null) $lines[] = array("type" => "h3", 
+        "content" => array("text" => DefWeekDateFormat($game['starttime'])." ", "link" => array($link, $linktext)));
       $prevPool="";
     }
 
@@ -53,12 +57,13 @@ function TournamentView($games, $grouping=true){
       }
       $ret .= "<table class='admintable'>\n";
       $isTableOpen = true;
-      $ret .= SeriesAndPoolHeaders($game);
+      $ret .= SeriesAndPoolHeaders($game, $lines);
     }
 
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-      $ret .= GameRow($game, false,true,true,false,false,true,$rss);
+      $ret .= GameRow($game, false,true,true,false,false,true,$rss, true);
+      if ($lines!==null) $lines[] = array("type" => "game", "game" => $game);
     }
 
     $prevTournament = $game['reservationgroup'];
@@ -76,7 +81,15 @@ function TournamentView($games, $grouping=true){
   return $ret;
 }
 
-function SeriesView($games, $date=true, $time=false){
+function groupHeading($group){
+  if (!empty($group)) {
+    return U_($group);
+  } else {
+    return _("Without grouping");
+  }
+}
+
+function SeriesView($games, $date=true, $time=false, &$lines=null){
   $ret = "";
   $prevTournament = "";
   $prevPlace = "";
@@ -96,7 +109,8 @@ function SeriesView($games, $date=true, $time=false){
         $ret .= "<hr/>\n";
         $isTableOpen = false;
       }
-      $ret .= "<h1>". utf8entities(U_($game['seriesname'])) ."</h1>\n";
+      $ret .= "<h2>". utf8entities($text=U_($game['seriesname'])) ."</h2>\n";
+      if ($lines!==null) $lines[] = array("type"=>"h2", "text" => $text);
     }
 
     if($game['pool'] != $prevPool){
@@ -106,11 +120,12 @@ function SeriesView($games, $date=true, $time=false){
       }
       $ret .= "<table class='admintable'>\n";
       $isTableOpen = true;
-      $ret .= PoolHeaders($game);
+      $ret .= PoolHeaders($game, $lines);
     }
 
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
     $ret .= GameRow($game, $date, $time, true, false, false, true, $rss);
+    if ($lines!==null) $lines[] = array("type"=>"game", "game" => $game);
 
     $prevTournament = $game['reservationgroup'];
     $prevPlace = $game['place_id'];
@@ -127,7 +142,7 @@ function SeriesView($games, $date=true, $time=false){
   return $ret;
 }
 
-function PlaceView($games, $grouping=true){
+function PlaceView($games, $grouping=true, &$lines=null){
   $ret = "";
   $prevTournament = "";
   $prevPlace = "";
@@ -149,7 +164,8 @@ function PlaceView($games, $grouping=true){
         $isTableOpen = false;
       }
       if($grouping){
-        $ret .= groupHeading($game['reservationgroup']);
+        $ret .= "<h2>" . utf8entities($text=groupHeading($game['reservationgroup'])) . "</h2>\n";
+        if ($lines!==null) $lines[] = array("type"=>"h2", "text" => $text);
       }
       $prevDate = "";
     }
@@ -159,9 +175,9 @@ function PlaceView($games, $grouping=true){
         $ret .= "</table>\n";
         $isTableOpen = false;
       }
-      $ret .= "<h3>";
-      $ret .= DefWeekDateFormat($game['starttime']);
-      $ret .= "</h3>\n";
+      $text = DefWeekDateFormat($game['starttime']);
+      $ret .= "<h3>$text</h3>\n";
+      if ($lines!==null) $lines[] = array("type"=>"h3", "text" => $text);
     }
 
     if(((empty($game['place_id']) && $prevPlace != "none") || (!empty($game['place_id']) && $game['place_id'] != $prevPlace)) 
@@ -172,12 +188,13 @@ function PlaceView($games, $grouping=true){
       }
       $ret .= "<table class='admintable'>\n";
       $isTableOpen = true;
-      $ret .= PlaceHeaders($game, true);
+      $ret .= PlaceHeaders($game, true, $lines);
     }
 
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
       $ret .= GameRow($game, false, true, false, true, true, true,$rss);
+      if ($lines!==null) $lines[] = array("type"=>"game", "game" => $game);
     }
 
     $prevTournament = $game['reservationgroup'];
@@ -196,10 +213,11 @@ function PlaceView($games, $grouping=true){
   return $ret;
 }
 
-function TimeView($games, $grouping=true){
+function TimeView($games, $grouping=true, &$lines=null){
   $ret = "";
   $prevTournament = "";
   $prevTime = "";
+  $prevTimezone = "";
   $isTableOpen = false;
   $rss = IsGameRSSEnabled();
 
@@ -210,7 +228,9 @@ function TimeView($games, $grouping=true){
         //$ret .= "<hr/>\n";
         $isTableOpen = false;
       }
-      $ret .= "<h3>". DefWeekDateFormat($game['time']) ." ". DefHourFormat($game['time']) ."</h3>\n";
+      $text = DefWeekDateFormat($game['time']) ." ". DefHourFormat($game['time']);
+      $ret .= "<h3>$text</h3>\n";
+      if ($lines!==null) $lines[] = array("type" => "h3", "text" => $text);
       $ret .= "<table class='admintable'>\n";
       $isTableOpen = true;
     }
@@ -218,6 +238,7 @@ function TimeView($games, $grouping=true){
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
       $ret .= GameRow($game, false, false, true, true, true, true,$rss);
+      if ($lines!==null) $lines[] = array("type" => "game", "game" => $game);
     }
 
     $prevTime = $game['time'];
@@ -228,7 +249,7 @@ function TimeView($games, $grouping=true){
   if($isTableOpen){
     $ret .= "</table>\n";
   }
-  $ret .= PrintTimeZone($prevTimezone);
+  if ($prevTimezone) $ret .= PrintTimeZone($prevTimezone);
   return $ret;
 }
 
@@ -385,18 +406,23 @@ function ExtGameView($games){
   return $ret;
 }
 
-function PlaceHeaders($info, $field = false) {
+function PlaceHeaders($info, $field = false, &$lines=null) {
   $ret = "<tr>\n";
   $ret .= "<th align='left' colspan='13'>";
   if (empty($info['place_id'])) {
-    $ret .= _("No field defined");
+    $text = _("No field defined");
+    $ret .= $text;
+    if ($lines!==null) $lines[] = array("type"=>"th", "text" => $text);
   } else {
-    $ret .= "<a class='thlink' href='?view=reservationinfo&amp;reservation=" . $info['reservation_id'] . "'>";
+    $link = "?view=reservationinfo&amp;reservation=" . $info['reservation_id'];
+    $ret .= "<a class='thlink' href='$link'>";
     $ret .= utf8entities($info['placename']);
     $ret .= "</a>";
     if ($field) {
-      $ret .= " " . _("Field") . " " . utf8entities($info['fieldname']);
+      $field =  " " . _("Field") . " " . $info['fieldname'];
+      $ret .= utf8entities($field);
     }
+    if ($lines!==null) $lines[] = array("type"=>"th", "content" => array("link" => (array($link, $info['placename'].($field?$field:"")))));
   }
   $ret .= "</th>\n";
   $ret .= "</tr>\n";
@@ -404,23 +430,24 @@ function PlaceHeaders($info, $field = false) {
   return $ret;
 }
 
-function PoolHeaders($info){
+function PoolHeaders($info, &$lines=null){
   $ret = "<tr style='width:100%'>\n";
   $ret .= "<th align='left' colspan='13'>";
-  $ret .= utf8entities(U_($info['poolname']));
+  $ret .= utf8entities($text=U_($info['poolname']));
   $ret .= "</th>\n";
   $ret .= "</tr>\n";
+  if ($lines!==null) $lines[] = array("type"=>"th", "text" => $text);
   return $ret;
 }
 
-function SeriesAndPoolHeaders($info){
+function SeriesAndPoolHeaders($info, &$lines=null){
   $ret = "<tr style='width:100%'>\n";
   $ret .= "<th align='left' colspan='12'>";
-  $ret .= utf8entities(U_($info['seriesname']));
-  $ret .= " ";
-  $ret .= utf8entities(U_($info['poolname']));
+  $text = U_($info['seriesname']) . " " . U_($info['poolname']);
+  $ret .= utf8entities($text);
   $ret .= "</th>\n";
   $ret .= "</tr>\n";
+  if ($lines!==null) $lines[] = array("type" => "th", "text" => $text);
   return $ret;
 }
 
@@ -438,7 +465,7 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
   $mediaw='width:40px';
 
   $ret = "<tr style='width:100%'>\n";
-
+  
   if($date){
     $ret .= "<td style='$datew'><span>". ShortDate($game['time']) ."</span></td>\n";
   }
@@ -448,10 +475,11 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
   }
 
   if($field){
-    if (!empty($game['fieldname']))
+    if (!empty($game['fieldname'])) {
       $ret .= "<td style='$fieldw'><span>" . _("Field") . " " . utf8entities($game['fieldname']) . "</span></td>\n";
-    else
+    } else {
       $ret .= "<td style='$fieldw'></td>\n";
+    }
   }
 
   if($game['hometeam']){
@@ -644,13 +672,10 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
   switch($timefilter)
   {
     case "coming":
-      $query .= " AND pp.time IS NOT NULL AND ((pp.homescore IS NULL AND pp.visitorscore IS NULL) OR (pp.hasstarted=0) OR pp.isongoing=1)";
+      $query .= " AND ((pp.homescore IS NULL AND pp.visitorscore IS NULL) OR (pp.hasstarted=0) OR pp.isongoing=1)";
       break;
 
     case "past":
-      $query .= " AND ((pp.hasstarted > 0) )";
-      break;
-      	
     case "played":
       $query .= " AND ((pp.hasstarted > 0) )";
       break;
@@ -722,6 +747,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
       break;
 
     case "time":
+    case "timeslot":
       $query .= " ORDER BY pp.time ASC, pr.fieldname +0, game_id ASC";
       break;
       	
@@ -989,14 +1015,6 @@ function TimetableToCsv($season,$separator){
   // Gets the data from the database
   $result = DBQuery($query);
   return ResultsetToCsv($result, $separator);
-}
-
-function groupHeading($group){
-  if (!empty($group)) {
-    return "<h1>". utf8entities(U_($group)) ."</h1>\n";
-  } else {
-    return "<h1>". utf8entities(_("Without grouping")) ."</h1>\n";
-  }
 }
 
 ?>

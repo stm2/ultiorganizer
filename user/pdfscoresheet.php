@@ -92,7 +92,36 @@ if($teamId){
 }else{
   $seasonname = SeasonName($season);
   
-  while($gameRow = mysqli_fetch_assoc($games)) {
+  $games = DBResourceToArray($games);
+  
+  $printlist = false;
+  foreach($games as &$gameRow) {
+    $homeplayers = array();
+    
+    $playerlist = TeamPlayerList($gameRow["hometeam"]);
+    $i=0;
+    while ($player = mysqli_fetch_assoc($playerlist)) {
+      $homeplayers[$i]['name'] = $player['firstname']." ".$player['lastname'];
+      $homeplayers[$i]['accredited'] = $player['accredited'];
+      $homeplayers[$i]['num'] = $player['num'];
+      $i++;
+    }
+    $printlist |= $i>0;
+    $gameRow['homeplayers'] = $homeplayers;
+
+    $visitorplayers = array();
+    $playerlist = TeamPlayerList($gameRow["visitorteam"]);
+    $i=0;
+    while ($player = mysqli_fetch_assoc($playerlist)) {
+      $visitorplayers[$i]['name'] = $player['firstname']." ".$player['lastname'];
+      $visitorplayers[$i]['accredited'] = $player['accredited'];
+      $visitorplayers[$i]['num'] = $player['num'];
+      $i++;
+    }
+    $printlist |= $i>0;
+    $gameRow['visitorplayers'] = $visitorplayers;
+  }
+  foreach($games as $gameRow) {
   
   	if($filter2=="teams"){
   		if(!$gameRow['hometeam'] || !$gameRow['visitorteam']){
@@ -103,26 +132,7 @@ if($teamId){
   	$sGid = $gameRow['game_id'];
   	//$sGid .= getChkNum($sGid);
   	
-  	$homeplayers = array();
-  		
-  	$playerlist = TeamPlayerList($gameRow["hometeam"]);
-  	$i=0;
-  	while ($player = mysqli_fetch_assoc($playerlist)) {
-  		$homeplayers[$i]['name'] = $player['firstname']." ".$player['lastname'];
-  		$homeplayers[$i]['accredited'] = $player['accredited'];
-  		$homeplayers[$i]['num'] = $player['num'];
-  		$i++;
-  	}
-  	$visitorplayers = array();
-  	$playerlist = TeamPlayerList($gameRow["visitorteam"]);
-  	$i=0;
-  	while ($player = mysqli_fetch_assoc($playerlist)) {
-  		$visitorplayers[$i]['name'] = $player['firstname']." ".$player['lastname'];
-  		$visitorplayers[$i]['accredited'] = $player['accredited'];
-  		$visitorplayers[$i]['num'] = $player['num'];
-  		$i++;
-  	}
-  	
+  	  	
   	$home = empty($gameRow["hometeamname"])?U_($gameRow["phometeamname"]):$gameRow["hometeamname"];
   	$visitor = empty($gameRow["visitorteamname"])?U_($gameRow["pvisitorteamname"]):$gameRow["visitorteamname"];
   	
@@ -131,8 +141,10 @@ if($teamId){
   		$visitor,
   		U_($gameRow['seriesname']) . ", ". U_($gameRow['poolname']),
   		$gameRow["time"], 
-  		U_($gameRow["placename"])." "._("Field")." ".U_($gameRow['fieldname'])); 
-  	$pdf->PrintPlayerList($homeplayers, $visitorplayers);
+  		U_($gameRow["placename"])." "._("Field")." ".U_($gameRow['fieldname']));
+  	
+  	if ($printlist)
+  	  $pdf->PrintPlayerList($gameRow['homeplayers'], $gameRow['visitorplayers']);
   }
 }
 
