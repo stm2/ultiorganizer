@@ -730,7 +730,7 @@ function upgrade81() {
     ADD KEY `idx_userid` (`userid`),
     ADD KEY `idx_token` (`token`)");
   }
-  addColumn('uo_extraemailrequest', 'time', 'datetime DEFAULT CURRENT_TIMESTAMP');
+  addColumn('uo_extraemailrequest', 'time', 'datetime DEFAULT NULL');
 }
 
 function runQuery($query) {

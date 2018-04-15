@@ -42,9 +42,9 @@ function Forbidden($user) {
 }
 
 function UserExpireTokens($userId) {
-  $query = "DELETE FROM `uo_extraemailrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60"; 
+  $query = "DELETE FROM `uo_extraemailrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60  OR TIME is NULL"; 
   DBQuery($query);
-  $query = "DELETE FROM `uo_recoverrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60";
+  $query = "DELETE FROM `uo_recoverrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60  OR TIME is NULL";
   DBQuery($query);
   $query = "DELETE FROM `uo_registerrequest` WHERE TIMESTAMPDIFF(HOUR, last_login, NOW()) > 24";
   DBQuery($query);
