@@ -70,7 +70,7 @@ if(!empty($_POST['save']) || !empty($_POST['add'])){
 
 //common page
 addHeaderScript('script/disable_enter.js.inc');
-addHeaderScript('lib/yui.functions.php');
+include_once 'lib/yui.functions.php';
 addHeaderText(yuiLoad(array("utilities", "datasource", "autocomplete")));
 
 if($poolId){
