@@ -1453,7 +1453,7 @@ function mailto_link($email, $name = null, $text = null, $subject = null) {
   return "<a href='$encode'>$text</a>";
 }
 
-function almostSecureRandom(int $min, int $max) {
+function almostSecureRandom($min, $max) {
   if ($max - $min < 0 || $max - $min > mt_getrandmax())
     die("invalid random number requested");
   
