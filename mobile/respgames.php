@@ -18,17 +18,17 @@ $massPar="";
 $rgPar="";
 
 if(isset($_GET['rg'])){
-	$reservationgroup = urldecode($_GET['rg']);
+	$reservationgroup = $_GET['rg'];
 	$rgPar = "&amp;rg=".urlencode($reservationgroup);
 }
 
 if(isset($_GET['loc'])){
-	$location = urldecode($_GET['loc']);
+	$location = $_GET['loc'];
 	$locationPar = "&amp;loc=".urlencode($location);
 }
 
 if(isset($_GET['day'])){
-	$day = urldecode($_GET['day']);
+	$day = $_GET['day'];
 	$dayPar = "&amp;day=".urlencode($day);
 }
 

@@ -15,7 +15,7 @@ if (ENABLE_ADMIN_DB_ACCESS != "enabled") {
 
 if (! empty($_POST['sql']) || ! empty($_GET['sql'])) {
     if (! empty($_GET['sql'])) {
-      $query = urldecode($_GET['sql']);
+      $query = $_GET['sql'];
     } else {
       $query = $_POST['sql'];
     }

@@ -8,15 +8,15 @@ $showall = false;
 $day="";
 
 if(isset($_GET['rg'])){
-  $reservationgroup = urldecode($_GET['rg']);
+  $reservationgroup = $_GET['rg'];
 }
 
 if(isset($_GET['loc'])){
-  $location = urldecode($_GET['loc']);
+  $location = $_GET['loc'];
 }
 
 if(isset($_GET['day'])){
-  $day = urldecode($_GET['day']);
+  $day = $_GET['day'];
 }
 
 if(isset($_GET['all'])){

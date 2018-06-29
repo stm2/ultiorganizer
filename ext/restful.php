@@ -58,7 +58,7 @@ if (isset($_GET['locale'])) {
 }
 
 if (isset($_GET['jsonp'])) {
-	$jsonp = urldecode($_GET['jsonp']);
+	$jsonp = $_GET['jsonp'];
 	paramHandled('jsonp');
 }
 

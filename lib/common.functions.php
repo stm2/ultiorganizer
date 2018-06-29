@@ -1250,25 +1250,25 @@ function strEndsWith($whole, $end){
 function iget($string){
 
   if(!empty($_GET[$string])) {
-    return urldecode($_GET[$string]);
+    return $_GET[$string];
   }
   
   $string = strtolower($string);
   
   if(!empty($_GET[$string])) {
-    return urldecode($_GET[$string]);
+    return $_GET[$string];
   }
 
   $string = ucfirst($string);
 
   if(!empty($_GET[$string])) {
-    return urldecode($_GET[$string]);
+    return $_GET[$string];
   }
 
   $string = strtoupper($string);
 
   if(!empty($_GET[$string])) {
-    return urldecode($_GET[$string]);
+    return $_GET[$string];
   }
   
   return "";
