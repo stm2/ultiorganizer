@@ -709,7 +709,7 @@ class EventDataXMLHandler{
       case "uo_movingtime":
         $row["season"] = $this->uo_season[$row["season"]];
         
-        $newId = $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row, true);
         break;
         
       case "uo_game":
@@ -798,8 +798,9 @@ class EventDataXMLHandler{
    * Inserts data into database as new data.
    * @param string $name Name of the table to insert
    * @param array $row Data to insert: key=>field, value=>data
+   * @param boolean $ignore If true, DB errors will be ignored
    */
-  function InsertRow($name, $row){
+  function InsertRow($name, $row, $ignore = false){
     $columns = GetTableColumns($name);
     $fields = implode(",",array_keys($row));
     
@@ -820,7 +821,11 @@ class EventDataXMLHandler{
     
     $values = substr($values, 0, -1);
 
-    $query = "INSERT INTO ".mysql_adapt_real_escape_string($name)." (";
+    if ($ignore)
+      $query = "INSERT IGNORE INTO ";
+    else
+      $query = "INSERT INTO ";
+    $query .= mysql_adapt_real_escape_string($name)." (";
     $query .= mysql_adapt_real_escape_string($fields);
     $query .= ") VALUES (";
     $query .= $values;
@@ -829,7 +834,7 @@ class EventDataXMLHandler{
       $this->debug .= $query .":" . (++$this->mockId). "\n";
       return $this->mockId;
     } else {
-      return DBQueryInsert($query);
+      return DBQueryInsert($query, $ignore);
     }
   }
 
