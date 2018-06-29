@@ -4,7 +4,12 @@ if (IsRegistered($_SESSION['uid'])) {
 }
 
 $title = _("Recover password");
-$userId = isset($_GET['user']) ? urldecode($_GET['user']) : "";
+$userId = "";
+if (isset($_POST['user']) && $_POST['user'])
+  $userId = $_POST['user'];
+if (!$userId && isset($_GET['user']) && $_GET['user']) 
+  $userId = $_GET['user'];
+
 $html = "";
 
 function getResetForm($userId, $token) {
@@ -31,7 +36,7 @@ function getResetForm($userId, $token) {
 if (isset($_POST['recoverpassword'])) {
   // 2. send recover mail
   if (!$userId) {
-    if (isset($_POST['email'])) {
+    if (isset($_POST['email']) && $_POST['email']) {
       $userId = UserIdForMail($_POST['email']);
       $html .= "<p>" . sprintf(_("If the address '%s' is registered, an email with further instructions was sent."),
         utf8entities($_POST['email'])) . "</p>\n";
@@ -40,9 +45,9 @@ if (isset($_POST['recoverpassword'])) {
     }
   }
   if ($userId) {
-    $ret = UserRecoverPasswordRequest(urldecode($userId));
+    $ret = UserRecoverPasswordRequest($userId);
   }
-  if (empty($html)) {
+  if ($userId && empty($html)) {
     $html .= sprintf(_("If '%s' is a registered user, an email will be sent to the corresponding address."),
       utf8entities($userId));
   }
@@ -54,10 +59,9 @@ if (!empty($_GET['token']) && !empty($userId)) {
   if (UserCheckRecoverToken($userId, $token)) {
     $html .= getResetForm($userId, $token);
   } else {
-    $html .= "<p class='warning'>" .
-       _(
-        "Invalid or expired token. Please try logging in again or, if this problem persists, contact an administrator.") .
-       "</p>";
+    $html .= "<p class='warning'>" . _("Invalid or expired token.") .
+      " <a class='topheaderlink' href='?view=login_failed&user=$userId'>" .
+      _("Click this link to try again</a> or, if this problem persists, contact an administrator.") . "</p>";
   }
 }
 
@@ -76,10 +80,11 @@ if (!empty($_POST['changepw']) && !empty($userId)) {
       $html .= getResetForm($userId, $token);
     }
   } else {
-    $html .= "<p>" .
-       _(
-        "Invalid or expired token. Please try logging in again or, if this problem persists, contact an administrator.") .
-       "</p>";
+    $html .= "<p>".
+      _(
+        "Invalid or expired token.
+         Please <a href='login_failed&user=$userId'>try again</a> or, if this problem persists, contact an administrator.") .
+      "</p>";   
   }
 }
 
@@ -99,7 +104,7 @@ if (empty($html)) {
   $html .= "<td><input type='text' class='input' maxlength='20' size='40' name='user' value='" . utf8entities($userId) .
      "'/></td></tr>\n";
   $html .= "<tr><td class='infocell'>" . _("Email") . ":</td>";
-  $html .= "<td><input type='text' class='input' maxlength='100' size='40' name='Email' size='40' /></td></tr></table>\n";
+  $html .= "<td><input type='text' class='input' maxlength='100' size='40' name='email' size='40' /></td></tr></table>\n";
   $html .= "<p><input class='button' type='submit' name='recoverpassword' value='" . _("Recover password") . "'/></p>\n";
   $html .= "</form>\n";
 }
