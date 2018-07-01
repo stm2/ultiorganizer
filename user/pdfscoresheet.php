@@ -121,6 +121,8 @@ if($teamId){
     $printlist |= $i>0;
     $gameRow['visitorplayers'] = $visitorplayers;
   }
+  unset($gameRow);
+  
   foreach($games as $gameRow) {
   
   	if($filter2=="teams"){

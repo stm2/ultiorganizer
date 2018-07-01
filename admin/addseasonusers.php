@@ -153,10 +153,12 @@ foreach ($admins as &$user) {
   $teaminfo = TeamInfo($user['team_id']);
   $user['teamname'] = $teaminfo['seriesname'] . ", " . $user['teamname'];
 }
+unset($user);
 $teams = SeasonTeams($seasonId);
 foreach ($teams as &$team) {
   $team['name'] = $team['seriesname'] . ", " . $team['name'];
 }
+unset($team);
 $html .= adminTable($admins, 'teamadmin', 'teamname', array(
   'delId' => 'userid',
   'teamId' => 'team_id'
