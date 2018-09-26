@@ -98,20 +98,20 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $tooltip = utf8entities(getGameName($gameInfo));
   if ($tooltip == $gamename)
     $tooltip = "";
-    else
-      $tooltip = " title='" . $tooltip . "'";
-      $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" . $height .
-      "px' id='game" . $gameId . "'" . $tooltip . ">";
-      $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
-      $html .= $poolname;
-      if ($editable) {
-        $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
-      } else {
-        $html .= "<span style='align:right;float:right;'>#</span>";
-      }
-      $html .= "<br/>".(empty($gamename)?"":"<b>$gamename</b> "). sprintf(_("%d&thinsp;min."), $duration);
-      $html .= "</li>\n";
-      return $html;
+  else
+    $tooltip = " title='" . $tooltip . "'";
+  $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" .
+    $height . "px' id='game" . $gameId . "'" . $tooltip . ">";
+  $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
+  $html .= $poolname;
+  if ($editable) {
+    $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
+  } else {
+    $html .= "<span style='align:right;float:right;'>#</span>";
+  }
+  $html .= "<br/>" . (empty($gamename) ? "" : "<b>$gamename</b> ") . sprintf(_("%d&thinsp;min."), $duration);
+  $html .= "</li>\n";
+  return $html;
 }
 
 function getHName($gameInfo) {
@@ -125,7 +125,7 @@ function getVName($gameInfo) {
 function getGameName($gameInfo, $short = false) {
   if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
     if ($short) {
-      $gametitle = substr(getHName($gameInfo), 0, 10) . " - " . substr(getVName($gameInfo), 0, 10);
+      $gametitle = mb_substr(getHName($gameInfo), 0, 10) . " - " . mb_substr(getVName($gameInfo), 0, 10);
     } else {
       $gametitle = $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
     }
