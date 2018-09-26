@@ -352,7 +352,9 @@ class PDF extends FPDF {
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
     // print all games in order
+    
     while ($game = mysqli_fetch_assoc($games)) {
+      
       
       if (!empty($game['place_id']) && $game['reservationgroup'] != $prevTournament) {
         $txt = utf8_decode(U_($game['reservationgroup']));
@@ -384,7 +386,7 @@ class PDF extends FPDF {
         $this->Cell(0, 5, $txt, 0, 2, 'L', false);
       }
       if (!empty($game['reservationgroup']) && !empty($game['place_id'])) {
-        $this->GameRowWithPool($game, false, true, false);
+        $this->GameRowWithPool($game, false, true, true);
         $this->Ln();
       }
       
@@ -649,8 +651,8 @@ class PDF extends FPDF {
       }
       if ($this->GetStringWidth($text) > $width)
         $this->SetFontSize($current - .5);
-      if ($this->GetStringWidth($text) > $width && strlen($text)>1) {
-        $text = substr($text, 0, floor(strlen($text) * 3 / 4));
+      if ($this->GetStringWidth($text) > $width && mb_strlen($text)>1) {
+        $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4));
       }
     }
     return $text;
@@ -1140,7 +1142,7 @@ class PDF extends FPDF {
       } else {
         // Tag
         if ($e[0] == '/')
-          $this->CloseTag(strtoupper(substr($e, 1)));
+          $this->CloseTag(strtoupper(mb_substr($e, 1)));
         else {
           // Extract attributes
           $a2 = explode(' ', $e);

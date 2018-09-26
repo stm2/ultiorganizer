@@ -296,7 +296,14 @@ class PDF extends FPDF
 		$this->SetFillColor(255);
 		$this->WriteHTML($data);
 		
-		}		
+		}
+		
+	function ufield($game) {
+		$txt = U_($game['placename']);
+		$txt .= " "._("Field")." ".U_($game['fieldname']);
+		$txt = utf8_decode($txt);
+		return $txt;
+	}
 	function PrintSchedule($scope, $id, $games)
 		{
 		$left_margin = 10;
@@ -358,9 +365,7 @@ class PDF extends FPDF
 			}
 			
 			if(!empty($game['place_id']) && ($game['place_id'] != $prevPlace || $game['fieldname'] != $prevField || JustDate($game['starttime']) != $prevDate)){
-				$txt = U_($game['placename']);
-				$txt .= " "._("Field")." ".U_($game['fieldname']);
-				$txt = utf8_decode($txt);
+				$txt = $this->ufield($game);
 				
 				$this->SetFont('Arial','',10);
 				$this->SetTextColor(0);
@@ -368,7 +373,7 @@ class PDF extends FPDF
 				$this->Cell(0,5,$txt,0,2,'L',false);
 			}
 			if(!empty($game['reservationgroup']) && !empty($game['place_id'])){
-				$this->GameRowWithPool($game, false, true, false);
+				$this->GameRowWithPool($game, true, true, true);
 				$this->Ln();
 			}
 			
@@ -587,7 +592,7 @@ class PDF extends FPDF
 		}
 		
 		if($field){
-			$txt = utf8_decode(U_($info['fieldname']));
+			$txt = $this->ufield($game);
 			$this->Cell(20,5,$txt,'TB',0,'L',true);
 		}
 		
@@ -1056,7 +1061,7 @@ class PDF extends FPDF
 				{
 				//Tag
 				if($e[0]=='/')
-					$this->CloseTag(strtoupper(substr($e,1)));
+				    $this->CloseTag(strtoupper(substr($e,1)));
 				else
 					{
 					//Extract attributes

@@ -736,6 +736,7 @@ function MultiCell($w, $h, $txt, $border=0, $align='J', $fill=false)
 				$this->ws=0;
 				$this->_out('0 Tw');
 			}
+			/* FIXME do we need mb_substr here? */
 			$this->Cell($w,$h,substr($s,$j,$i-$j),$b,2,$align,$fill);
 			$i++;
 			$sep=-1;
