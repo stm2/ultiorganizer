@@ -39,7 +39,7 @@ $counter = 0;
 while($team = mysqli_fetch_assoc($teams)){
 
   if($filter == "ALL"){
-    $firstchar = strtoupper(substr(utf8_decode($team['name']),0,1));
+    $firstchar = strtoupper(mb_substr(utf8_decode($team['name']),0,1));
     if($listletter != $firstchar && in_array($firstchar,$validletters)){
       $listletter = $firstchar;
       if($counter>0 && $counter<=$maxcols){$html .= "</tr>\n";}

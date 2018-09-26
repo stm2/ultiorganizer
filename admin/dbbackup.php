@@ -96,7 +96,7 @@ if(isSuperAdmin()){
 	$total_size = 0;
 	$result = mysql_adapt_query("SHOW TABLE STATUS");
 	while($row = mysqli_fetch_assoc($result)){
-	    if (substr($row['Name'],0,3) == 'uo_'){
+	    if (mb_substr($row['Name'],0,3) == 'uo_'){
     		$html .= "<tr>";
     		$html .= "<td class='center'><input type='checkbox' name='tables[]' value='".utf8entities($row['Name'])."' /></td>";
     		$html .= "<td>". $row['Name'] ."</td>";

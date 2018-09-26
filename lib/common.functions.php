@@ -271,23 +271,22 @@ function GetScriptName() {
 	}
 }
 
-function GetURLBase()
-	{
-	$url = "http://";
-	$url .= GetServerName();
-	$url .= GetScriptName();
-	
-	$cutpos = strrpos($url, "/");
-	$url = substr($url,0,$cutpos);
-	global $include_prefix;
-	if (strlen($include_prefix) > 0) {
-		$updirs = explode($include_prefix, "/");
-		foreach ($updirs as $dotdot) {
-			$cutpos = strrpos($url, "/");
-			$url = substr($url,0,$cutpos);
-		}
-	}
-	return $url;
+function GetURLBase() {
+  $url = "http://";
+  $url .= GetServerName();
+  $url .= GetScriptName();
+  
+  $cutpos = mb_strrpos($url, "/");
+  $url = mb_substr($url, 0, $cutpos);
+  global $include_prefix;
+  if (mb_strlen($include_prefix) > 0) {
+    $updirs = explode($include_prefix, "/");
+    foreach ($updirs as $dotdot) {
+      $cutpos = mb_strrpos($url, "/");
+      $url = mb_substr($url, 0, $cutpos);
+    }
+  }
+  return $url;
 }
 
 
@@ -352,17 +351,17 @@ function GetW3CLocale() {
 
 function validEmail($email) {
    $isValid = true;
-   $atIndex = strrpos($email, "@");
+   $atIndex = mb_strrpos($email, "@");
    if (is_bool($atIndex) && !$atIndex)
    {
       $isValid = false;
    }
    else
    {
-      $domain = substr($email, $atIndex+1);
-      $local = substr($email, 0, $atIndex);
-      $localLen = strlen($local);
-      $domainLen = strlen($domain);
+      $domain = mb_substr($email, $atIndex+1);
+      $local = mb_substr($email, 0, $atIndex);
+      $localLen = mb_strlen($local);
+      $domainLen = mb_strlen($domain);
       if ($localLen < 1 || $localLen > 64)
       {
          // local part length exceeded
@@ -505,7 +504,7 @@ if(function_exists("strptime") == false)
         while($sFormat != "")
         {
             // ===== Search a %x element, Check the static string before the %x =====
-            $nIdxFound = strpos($sFormat, '%');
+            $nIdxFound = mb_strpos($sFormat, '%');
             if($nIdxFound === false)
             {
                 
@@ -514,19 +513,19 @@ if(function_exists("strptime") == false)
                 break;
             }
             
-            $sFormatBefore = substr($sFormat, 0, $nIdxFound);
-            $sDateBefore   = substr($sDate,   0, $nIdxFound);
+            $sFormatBefore = mb_substr($sFormat, 0, $nIdxFound);
+            $sDateBefore   = mb_substr($sDate,   0, $nIdxFound);
             
             if($sFormatBefore != $sDateBefore) break;
             
             // ===== Read the value of the %x found =====
-            $sFormat = substr($sFormat, $nIdxFound);
-            $sDate   = substr($sDate,   $nIdxFound);
+            $sFormat = mb_substr($sFormat, $nIdxFound);
+            $sDate   = mb_substr($sDate,   $nIdxFound);
             
             $aResult['unparsed'] = $sDate;
             
-            $sFormatCurrent = substr($sFormat, 0, 2);
-            $sFormatAfter   = substr($sFormat, 2);
+            $sFormatCurrent = mb_substr($sFormat, 0, 2);
+            $sFormatAfter   = mb_substr($sFormat, 2);
             
             $nValue = -1;
             $sDateAfter = "";
@@ -647,23 +646,22 @@ function recur_mkdirs($path, $mode = 0775){
 }
 
 function SafeUrl($url){
-	if((strtolower(substr($url,0,7))!= "http://") && (strtolower(substr($url,0,8))!= "https://")) {
-		$url = "http://".$url;
-	}
-	return $url;
-
+    if((strtolower(mb_substr($url,0,7))!= "http://") && (strtolower(mb_substr($url,0,8))!= "https://")) {
+        $url = "http://".$url;
+    }
+    return $url;
 }	
 
 function colorstring2rgb($color)
 {
     if ($color[0] == '#')
-        $color = substr($color, 1);
+        $color = mb_substr($color, 1);
 
-    if (strlen($color) == 6)
+    if (mb_strlen($color) == 6)
         list($r, $g, $b) = array($color[0].$color[1],
                                  $color[2].$color[3],
                                  $color[4].$color[5]);
-    elseif (strlen($color) == 3)
+    elseif (mb_strlen($color) == 3)
         list($r, $g, $b) = array($color[0].$color[0], $color[1].$color[1], $color[2].$color[2]);
     else
         return false;
@@ -734,7 +732,7 @@ function ResultsetToCsv($result, $separator){
         $schema_insert .= $csv_separator;
     } // end for
  
-    $out = trim(substr($schema_insert, 0, -1));
+    $out = trim(mb_substr($schema_insert, 0, -1));
     $out .= $csv_terminated;
  
     // Format the data
@@ -761,7 +759,7 @@ function ResultsetToCsv($result, $separator){
         $out .= $schema_insert;
         $out .= $csv_terminated;
     } // end while
-	return $out;
+    return $out;
 }
 
 function ArrayToCsv($result, $separator){
@@ -776,7 +774,7 @@ function ArrayToCsv($result, $separator){
     $fields_cnt = count($result[0]);
 	
     $schema_insert = '';
-	$keys = array_keys($result[0]);
+    $keys = array_keys($result[0]);
 	
     foreach($keys as $fieldname){
         $l = $csv_enclosed . str_replace($csv_enclosed, $csv_escaped . $csv_enclosed,
@@ -786,7 +784,7 @@ function ArrayToCsv($result, $separator){
 		//echo $fieldname;
     } // end for
 	
-    $out = trim(substr($schema_insert, 0, -1));
+    $out = trim(mb_substr($schema_insert, 0, -1));
     $out .= $csv_terminated;
  
     // Format the data
@@ -815,7 +813,7 @@ function ArrayToCsv($result, $separator){
         $out .= $schema_insert;
         $out .= $csv_terminated;
     } // end while
-	return $out;
+    return $out;
 }
 
 function CreateOrdering($tables, $orderby) {
@@ -868,7 +866,7 @@ function CreateOrdering($tables, $orderby) {
 		$ret .= ", ".$field." ".$direction;
 	}
 	if (strlen($ret) > 0) {
-		$ret = "ORDER BY".substr($ret, 1);
+	    $ret = "ORDER BY".mb_substr($ret, 1);
 	} 
 	return $ret;
 }

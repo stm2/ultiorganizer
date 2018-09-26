@@ -44,7 +44,7 @@ if(!empty($profile['founded'])){
 
 if(!empty($profile['homepage'])){
   $html .= "<tr><td class='profileheader'>"._("Homepage").":</td>";
-  if(substr(strtolower($profile['homepage']),0,4)=="http"){
+  if(mb_substr(strtolower($profile['homepage']),0,4)=="http"){
     $html .= "<td><a href='".$profile['homepage']."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";
   }else{
     $html .= "<td><a href='http://".$profile['homepage']."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";

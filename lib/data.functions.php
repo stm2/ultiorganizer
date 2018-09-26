@@ -351,8 +351,8 @@ class EventDataXMLHandler{
   function get_attribute(&$row, $name, $value) {
     if ($value === self::NULL_MARKER) {
       $row[strtolower($name)] = NULL;
-    } else if (substr($value, 0, 2) === '%%') {
-      $row[strtolower($name)] = substr($value, 1, strlen($value)-1);
+    } else if (mb_substr($value, 0, 2) === '%%') {
+      $row[strtolower($name)] = mb_substr($value, 1);
     } else {
       $row[strtolower($name)] = $value;
     }
@@ -602,7 +602,7 @@ class EventDataXMLHandler{
           $max = 1;
           while (SeasonExists($newId) || SeasonNameExists($newName)) {
             $modifier = rand(1, ++ $max);
-            $newId = substr($seasonId, 0, 7) . "_$modifier";
+            $newId = mb_substr($seasonId, 0, 7) . "_$modifier";
             $newName = $row["name"] . " ($modifier)";
           }
           $row["name"] = $newName;
@@ -819,7 +819,7 @@ class EventDataXMLHandler{
       }
     }
     
-    $values = substr($values, 0, -1);
+    $values = mb_substr($values, 0, -1);
 
     if ($ignore)
       $query = "INSERT IGNORE INTO ";

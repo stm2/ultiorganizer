@@ -43,7 +43,7 @@ if(isSuperAdmin()){
 	$html .= "<th>"._("Updated")."</th>";
 	$html .= "</tr>\n";
 	while($row = mysqli_fetch_assoc($result)){
-	  if (substr($row['Name'],0,3) == 'uo_'){
+	  if (mb_substr($row['Name'],0,3) == 'uo_'){
     	    $sql = urlencode("SELECT * FROM ".$row['Name']);
     		$html .= "<tr>";
     		$html .= "<td><a href='?view=admin/executesql&amp;sql=$sql'>". $row['Name'] ."</a></td>";

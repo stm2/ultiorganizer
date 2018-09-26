@@ -1444,7 +1444,7 @@ function CreateNewUsername($firstname, $lastname, $email) {
 	$lastname = strtolower($lastname);
 	$emailSplitted = explode("@", strtolower($email));
 	$emailStart= $emailSplitted[0];
-	$try = substr($firstname, 0, 1).$lastname;
+	$try = mb_substr($firstname, 0, 1).$lastname;
 	if (!isRegistered($try)) return $try;
 	if (!isRegistered($emailStart)) return $emailStart;
 	if (!isRegistered($firstname.".".$lastname)) return $firstname.".".$lastname;

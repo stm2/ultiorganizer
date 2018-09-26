@@ -25,7 +25,7 @@ if(!empty($_POST['register']) && isSuperAdmin()){
 	$twitter = new TwitterOAuth($_SESSION['TwitterConsumerKey'], $_SESSION['TwitterConsumerSecret'], $key['keystring'], $key['secrets']);
 	$twitter->post('account/end_session');
 	DeleteTwitterKey($_POST['id']);
-	$url = GetUrl(substr($key['purpose'],0,6), $key['id'], "result_twitter");
+	$url = GetUrl(mb_substr($key['purpose'],0,6), $key['id'], "result_twitter");
 	RemoveUrl($url['url_id']);	
 }
 //common page

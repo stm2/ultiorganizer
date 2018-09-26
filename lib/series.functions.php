@@ -688,7 +688,7 @@ function ConfirmEnrolledTeam($seriesId, $id) {
       $notfound=true;
       $letters=3;
       $num=0;
-      $abb = substr($teaminfo['name'],0,$letters);
+      $abb = mb_substr($teaminfo['name'],0,$letters);
       while($notfound){
         $notfound = false;
 
@@ -702,9 +702,9 @@ function ConfirmEnrolledTeam($seriesId, $id) {
           $letters++;
           if($letters>6){
             $num++;
-            $abb = substr($teaminfo['name'],0,5)."$num";
+            $abb = mb_substr($teaminfo['name'],0,5)."$num";
           }else{
-            $abb = substr($teaminfo['name'],0,$letters);
+            $abb = mb_substr($teaminfo['name'],0,$letters);
           }
         }
       }

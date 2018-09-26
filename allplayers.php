@@ -39,7 +39,7 @@ $html .= "<table width='90%' style='white-space: nowrap;'>\n";
 while($player = mysqli_fetch_assoc($players)){
 
   if($filter == "ALL"){
-    $firstchar = strtoupper(substr(utf8_decode($player['lastname']),0,1));
+    $firstchar = strtoupper(mb_substr(utf8_decode($player['lastname']),0,1));
     if($listletter != $firstchar && in_array($firstchar,$validletters)){
       $listletter = $firstchar;
       if($counter>0 && $counter<=$maxcols){$html .= "</tr>\n";}

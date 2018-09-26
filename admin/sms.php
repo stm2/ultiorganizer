@@ -34,7 +34,7 @@ if(!empty($_POST["sms_1"])) {
 	debugvar($_POST);
 	$smscounter=0;
 	foreach($_POST as $key=>$sms) {
-		if (substr($key,0,4)=="sms_") {
+	    if (mb_substr($key,0,4)=="sms_") {
 			$smscounter++;
 			$smstext=explode(";",$sms);
 			$smsarray[$smscounter]['msg']=$smstext[0];
