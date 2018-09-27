@@ -9,9 +9,11 @@ include_once 'lib/series.functions.php';
 $LAYOUT_ID = SCHEDULE;
 $title = _("Scheduling");
 
+$reservations = array();
+
 if (isset($_GET['reservations'])) {
   $reservations = explode(",", $_GET['reservations']);
-} else {
+} else if (isset($_SESSION['userproperties']['userrole'])){
   $reservations = array_flip($_SESSION['userproperties']['userrole']['resadmin']);
 }
 $reservationData = ReservationInfoArray($reservations);

@@ -220,6 +220,8 @@ function RemoveReservation($id, $season) {
 }
 
 function ReservationInfoArray($reservations) {
+	if (empty($reservations))
+		return array();
 	$fetch = array();
 	foreach ($reservations as $reservation) {
 		$fetch[] = (int)$reservation;
