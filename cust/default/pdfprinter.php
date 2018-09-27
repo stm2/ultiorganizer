@@ -344,50 +344,6 @@ class PDF extends FPDF {
     $this->SetTextColor(255);
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
-    // print all games in order
-    
-    while ($game = mysqli_fetch_assoc($games)) {
-      
-      
-      if (!empty($game['place_id']) && $game['reservationgroup'] != $prevTournament) {
-        $txt = utf8_decode(U_($game['reservationgroup']));
-        $this->SetFont('Arial', 'B', 12);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Write(5, $txt);
-        $this->Ln();
-        $prevDate = "";
-      }
-      
-      if (!empty($game['place_id']) && JustDate($game['starttime']) != $prevDate) {
-        $txt = DefWeekDateFormat($game['starttime']);
-        $this->SetFont('Arial', 'B', 10);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Write(5, $txt);
-      }
-      
-      if (!empty($game['place_id']) && ($game['place_id'] != $prevPlace || $game['fieldname'] != $prevField ||
-         JustDate($game['starttime']) != $prevDate)) {
-        $txt = $this->ufield($game);
-           
-        $this->SetFont('Arial', '', 10);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Cell(0, 5, $txt, 0, 2, 'L', false);
-      }
-      if (!empty($game['reservationgroup']) && !empty($game['place_id'])) {
-        $this->GameRowWithPool($game, false, true, true);
-        $this->Ln();
-      }
-      
-      $prevTournament = $game['reservationgroup'];
-      $prevPlace = $game['place_id'];
-      $prevField = $game['fieldname'];
-      $prevSeries = $game['series_id'];
-      $prevPool = $game['pool'];
-      $prevDate = JustDate($game['starttime']);
-    }
     
     $groups = array('date' => true, 'time' => true, 'field' => true, 'pool' => true, 'result' => true);
     

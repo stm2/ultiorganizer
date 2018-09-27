@@ -43,6 +43,8 @@ class PDF extends FPDF {
     return $data;
   }
 
+  function getRosterInstructions() {}
+  
   function getOrganization() {
     return $this->organization;
   }
@@ -154,9 +156,6 @@ class PDF extends FPDF {
 
   // Playerlist array("name"=>name, "accredited"=>accredited, "num"=>number)
   function PrintPlayerList($homeplayers, $visitorplayers) {
-    if (!isset($homeplayers[0]['name']) && !$visitorplayers[0]['name'])
-      return;
-    
     $this->AddPage();
     
     $data = $this->getOrganization();
@@ -315,16 +314,7 @@ class PDF extends FPDF {
     
     $this->Ln();
     
-    // instructions
-    $data = "<b>" . _("NOTICE") . " 1!</b> " .
-       _("For new players added, accreditation id or date of birth must be written down.") . "<BR>";
-    $data .= "<b>" . _("NOTICE") . " 2!</b> " .
-       _("The team is responsible for the accreditation of <u>all</u> players on the list.") . "<BR>";
-    $data .= "<b>" . _("NOTICE") . " 3! " .
-       _(
-        "<b><i>Bold italic</i></b> printed players has problems with license. They are <u>not</u> allowed to play until problems are solved (= payment recipe or note from organizer shown).") .
-       "";
-    $data = utf8_decode($data);
+    $data = utf8_decode($this->getScoresheetInstructions());
     $this->setEmptyStyle(4);
     $this->WriteHTML($data);
   }
@@ -390,10 +380,8 @@ class PDF extends FPDF {
       
       if (!empty($game['place_id']) && ($game['place_id'] != $prevPlace || $game['fieldname'] != $prevField ||
          JustDate($game['starttime']) != $prevDate)) {
-        $txt = U_($game['placename']);
-        $txt .= " " . _("Field") . " " . U_($game['fieldname']);
-        $txt = utf8_decode($txt);
-        
+        $txt = $this->ufield($game);
+           
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(0);
         $this->Ln();
@@ -436,12 +424,13 @@ class PDF extends FPDF {
         $this->Ln();
         break;
       case "th":
-        $this->SetFont('Arial', '', 10);
+        $this->SetFont('Arial', 'B', 10);
         $this->SetTextColor(0);
         $this->Ln();
         $this->Cell(0, 5, $this->getText($line), 0, 2, 'L', false);
         break;
       case "game":
+        $this->SetFont('Arial', '', 8);
         if (isset($line['game'])) {
           $this->GameRowWithPool($line["game"], $groups['date'], $groups['time'], $groups['field'], $groups['pool']);
           $this->Ln();
@@ -461,17 +450,24 @@ class PDF extends FPDF {
 
   function getText($line) {
     if (isset($line["text"]))
-      return $line["text"];
+      return utf8_decode($line["text"]);
     $text = "";
     foreach ($line["content"] as $type => $content) {
-      if ($type == "text")
-        $text .= $content[$type];
-      else if ($type == "link")
+      if ($type == "text") {
+        $text .= $content;
+      } else if ($type == "link")
         $text .= $content[1];
     }
-    return $text;
+    return utf8_decode($text);
   }
 
+  function ufield($game) {
+    $txt = U_($game['placename']);
+    $txt .= " " . _("Field") . " " . U_($game['fieldname']);
+    $txt = utf8_decode($txt);
+    return $txt;
+  }
+  
   function PrintOnePageSchedule($scope, $id, $games, $colors = false) {
     $left_margin = 10;
     $top_margin = 10;
@@ -685,7 +681,7 @@ class PDF extends FPDF {
     $this->SetXY(-50, -8);
     $this->SetFont('Arial', '', 6);
     $this->SetTextColor(0);
-    $txt = date('Y-m-d H:i:s P', time());
+    $txt = utf8_decode(date('Y-m-d H:i:s P', time()));
     $this->Cell(0, 0, $txt, 0, 2, 'R', false);
   }
 
@@ -770,14 +766,31 @@ class PDF extends FPDF {
 
   function fitFont($text, $maxsize, $width) {
     while ($this->GetStringWidth($text) > $width) {
-      $this->SetFontSize($maxsize -= .5);
+      $lower = $this->minFontSize;
+      $upper = $maxsize;
+      $i = 0;
+      while ($upper > $lower + .5 && $i++ < 10) {
+        $current = floor($upper + $lower) / 2;
+        $this->SetFontSize($current);
+        if ($this->GetStringWidth($text) > $width) {
+          $upper = $current;
+        } else {
+          $lower = $current;
+        }
+      }
+      if ($this->GetStringWidth($text) > $width)
+        $this->SetFontSize($current - .5);
+      if ($this->GetStringWidth($text) > $width && mb_strlen($text)>1) {
+        $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4));
+      }
     }
+    return $text;
   }
 
   function fitCell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '') {
     if ($w > 1) {
       $oldSize = $this->FontSizePt;
-      $this->fitFont($txt, $oldSize, $w - 1);
+      $txt = $this->fitFont($txt, $oldSize, $w - 1);
     }
     $this->Cell($w, $h, $txt, $border, $ln, $align, $fill, $link);
     if ($w > 0) {
@@ -807,17 +820,17 @@ class PDF extends FPDF {
       $extra = 0;
     
     if ($date) {
-      $txt = ShortDate($game['time']);
+      $txt = utf8_decode(ShortDate($game['time']));
       $this->fitCell(10 + $extra, 5, $txt, 'TB', 0, 'L', true);
     }
     
     if ($time) {
-      $txt = DefHourFormat($game['time']);
+      $txt = utf8_decode(DefHourFormat($game['time']));
       $this->fitCell(10 + $extra, 5, $txt, 'TB', 0, 'L', true);
     }
     
     if ($field) {
-      $txt = utf8_decode(U_($game['fieldname']));
+      $txt = $this->ufield($game);
       $this->fitCell(20 + $extra, 5, $txt, 'TB', 0, 'L', true);
     }
     
@@ -1146,20 +1159,10 @@ class PDF extends FPDF {
     
     // data
     $this->setPreFilledStyle(3);
-    $fontsize = 4;
-    while ($this->GetStringWidth($this->game['hometeamname']) > 36 && $fontsize > -5) {
-      $this->setPreFilledStyle($fontsize--);
-    }
     
-    $this->Cell(38, 6, $this->game['hometeamname'], 'LT', 0, 'C', true);
+    $this->fitCell(38, 6, $this->game['hometeamname'], 'LT', 0, 'C', true);
     $this->Cell(4, 6, "-", 'T', 0, 'C', true);
-    
-    $this->setPreFilledStyle(3);
-    $fontsize = 4;
-    while ($this->GetStringWidth($this->game['visitorteamname']) > 36 && $fontsize > -5) {
-      $this->setPreFilledStyle($fontsize--);
-    }
-    $this->Cell(38, 6, $this->game['visitorteamname'], 'RT', 0, 'C', true);
+    $this->fitCell(38, 6, $this->game['visitorteamname'], 'RT', 0, 'C', true);
     
     $this->setEmptyStyle();
     $this->Ln();
@@ -1268,7 +1271,7 @@ class PDF extends FPDF {
       } else {
         // Tag
         if ($e[0] == '/')
-          $this->CloseTag(strtoupper(substr($e, 1)));
+          $this->CloseTag(strtoupper(mb_substr($e, 1)));
         else {
           // Extract attributes
           $a2 = explode(' ', $e);
