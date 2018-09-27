@@ -24,12 +24,14 @@ class PDF extends FPDF {
 
   function __construct($orientation = 'P', $unit = 'mm', $format = 'A4') {
     parent::__construct($orientation, $unit, $format);
-    $this->organization = _("Organization");
+    $this->organization = U_("Organization");
     $this->logo = "cust/" . CUSTOMIZATIONS . "/logo.png";
   }
 
   function getScoresheetInstructions() {}
 
+  function getRosterInstructions() {}
+  
   function getOrganization() {
     return $this->organization;
   }
@@ -299,16 +301,7 @@ class PDF extends FPDF {
     
     $this->Ln();
     
-    // instructions
-    $data = "<b>" . _("NOTICE") . " 1!</b> " .
-       _("For new players added, accreditation id or date of birth must be written down.") . "<BR>";
-    $data .= "<b>" . _("NOTICE") . " 2!</b> " .
-       _("The team is responsible for the accreditation of <u>all</u> players on the list.") . "<BR>";
-    $data .= "<b>" . _("NOTICE") . " 3! " .
-       _(
-        "<b><i>Bold italic</i></b> printed players has problems with license. They are <u>not</u> allowed to play until problems are solved (= payment recipe or note from organizer shown).") .
-       "";
-    $data = utf8_decode($data);
+    $data = utf8_decode($this->getScoresheetInstructions());
     $this->setEmptyStyle(4);
     $this->WriteHTML($data);
   }
@@ -376,10 +369,8 @@ class PDF extends FPDF {
       
       if (!empty($game['place_id']) && ($game['place_id'] != $prevPlace || $game['fieldname'] != $prevField ||
          JustDate($game['starttime']) != $prevDate)) {
-        $txt = U_($game['placename']);
-        $txt .= " " . _("Field") . " " . U_($game['fieldname']);
-        $txt = utf8_decode($txt);
-        
+        $txt = $this->ufield($game);
+           
         $this->SetFont('Arial', '', 10);
         $this->SetTextColor(0);
         $this->Ln();
@@ -459,6 +450,13 @@ class PDF extends FPDF {
     return utf8_decode($text);
   }
 
+  function ufield($game) {
+    $txt = U_($game['placename']);
+    $txt .= " " . _("Field") . " " . U_($game['fieldname']);
+    $txt = utf8_decode($txt);
+    return $txt;
+  }
+  
   function PrintOnePageSchedule($scope, $id, $games, $colors = false) {
     $left_margin = 10;
     $top_margin = 15;
@@ -701,7 +699,7 @@ class PDF extends FPDF {
     }
     
     if ($field) {
-      $txt = utf8_decode(U_($game['fieldname']));
+      $txt = $this->ufield($game);
       $this->fitCell(20 + $extra, 5, $txt, 'TB', 0, 'L', true);
     }
     
