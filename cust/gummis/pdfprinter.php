@@ -443,7 +443,7 @@ class PDF extends FPDF {
     return $slotlength;
   }
 
-  function printGame($game, $top, $left, $width, $field, $starttime, $endtime, $pause, $yscale, $teamfont, $colors,
+  function printGame($game, $top, $left, $width, $field, $starttime, $endtime, $pause, $yscale, $fontsize, $colors,
     $pseudo = false, $printdate = false, $printfield = false, $debug = false) {
     $field_offset = $left + 8 + $field * $width;
     $startoffset = $top + (strtotime($game['time']) - $pause - $starttime) * $yscale; // (strtotime($game['time']) - $starttime) / 60 / 30 * $gridy;
@@ -453,23 +453,23 @@ class PDF extends FPDF {
     $this->SetDrawColor(0);
     
     if ($printdate) {
-      $this->SetFont('Arial', 'B', 8);
+      $this->SetFont('Arial', 'B', $fontsize * 8 / 10);
       $this->SetXY($left, $startoffset);
-      $this->Cell(8, 8, JustDate($game['time']), 0, 2, 'L', false);
+      $this->Cell(8, $fontsize * 4 / 10, JustDate($game['time']), 0, 2, 'L', false);
     }
     if ($printfield) {
-      $this->SetFont('Arial', 'B', 8);
+      $this->SetFont('Arial', 'B', $fontsize * 8 / 10);
       $txt = $this->ufield($game);
       $this->SetXY($field_offset, $top - 5);
-      $this->fitCell($width, 5, $txt, 'LRTB', 0, 'L', false);
+      $this->fitCell($width, $fontsize * 4 / 10, $txt, 'LRTB', 0, 'L', false);
     }
     
-    $height = max(30, $game['timeslot']) * 60 * $yscale;
+    $height = ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60 * $yscale;
     
     $this->SetTextColor(0);
     $this->SetFillColor(255);
     $this->SetDrawColor(0);
-    $this->SetFont('Arial', '', $teamfont);
+    $this->SetFont('Arial', '', $fontsize);
     $this->SetTextColor(0);
     
     $pooltxt = utf8_decode($game['seriesname']);
@@ -494,11 +494,11 @@ class PDF extends FPDF {
     // $this->SetXY($field_offset, $startoffset);
     if ($pseudo) {
       $height = ($endtime - strtotime($game['time'])) * $yscale;
-      $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, "", "", "", "", $pooltxt, $teamfont, $colors,
+      $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, "", "", "", "", $pooltxt, $fontsize, $colors,
         "#aaaaaa");
     } else {
       $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, $hname, $hsname, $vname, $vsname, $pooltxt,
-        $teamfont, $colors, $game['color']);
+        $fontsize, $colors, $game['color']);
     }
   }
 
@@ -513,7 +513,7 @@ class PDF extends FPDF {
     $teamfont = 10;
     $columns = 4;
     $cellwidth = ($xarea - 2 * $left_margin - $xtimetitle) / $columns - 1;
-    $cellheight = min($yarea, $cellwidth / 3, $teamfont * 3);
+    $cellheight = min($yarea, $cellwidth / 3, $teamfont * 1.5);
     
     // event title
     $this->SetAutoPageBreak(false, $top_margin);
@@ -591,7 +591,7 @@ class PDF extends FPDF {
         // print games between $timestart and $timeend on current horizontal page
         while ($currentGame < count($gameArray) && strtotime($game['time']) - $pause < $timeend) {
           $gamestart = strtotime($game['time']);
-          $gameend = $gamestart + max(30, $game['timeslot']) * 60;
+          $gameend = $gamestart + ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60;
           if ($lastend + $minslotlength < $gamestart) {
             $pause += $gamestart - $lastend - $minslotlength;
           }
