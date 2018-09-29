@@ -361,7 +361,7 @@ class PDF extends FPDF {
         $this->Ln();
         break;
       case "h3":
-        $txt = DefWeekDateFormat($game['starttime']);
+//        $txt = DefWeekDateFormat($game['starttime']);
         $this->SetFont('Arial', 'B', 10);
         $this->SetTextColor(0);
         $this->Ln();
@@ -448,14 +448,31 @@ class PDF extends FPDF {
     $this->SetTextColor(255);
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
-    // print all games in order
-    while ($game = mysqli_fetch_assoc($games)) {
+      // print all games in order
+    while (($gameArray[] = mysqli_fetch_assoc($games)) || array_pop($gameArray));
+
+    function cmp($a, $b) {
+      /*
+       * $diff = strcmp($a["place_id"], $b["place_id"]);
+       * if ($diff == 0)
+       */
+      $diff = strcmp($a["time"], $b["time"]);
+      if ($diff == 0)
+        $diff = strcmp($a["fieldname"], $b["fieldname"]);
+      return $diff;
+    }
+    
+    usort($gameArray, "cmp");
+    $g = 0;
+    foreach ($gameArray as $game) {
+      $g++;
+      $seasonId = $game['season'];
       
       // one reservation group per page
       if (!empty($game['place_id']) && $game['reservationgroup'] != $prevTournament ||
          $prevDate != JustDate($game['starttime'])) {
         $this->AddPage("L", "A3");
-        $times = TimetableTimeslots($game['reservationgroup'], $id);
+        $times = TimetableTimeslots($game['reservationgroup'], $seasonId);
         $timeslots = array();
         $i = 0;
         foreach ($times as $time) {
@@ -463,11 +480,12 @@ class PDF extends FPDF {
           $i++;
         }
         
-        $fieldstotal = TimetableFields($game['reservationgroup'], $id);
+        $fieldstotal = TimetableFields($game['reservationgroup'], $seasonId);
         $fieldlimit = max($fieldstotal / 2 + 1, 10);
         $gridx = $xarea / $fieldlimit;
         $field = 0;
         $prevField = "";
+        $firstField = $game['fieldname'];
         $time_offset = $top_margin + $yfieldtitle;
       }
       
@@ -475,12 +493,14 @@ class PDF extends FPDF {
       if (!empty($game['place_id']) && $game['fieldname'] != $prevField) {
         $field++;
         
+        if ($game['fieldname'] == $firstField)
+          $field = 1;
         if ($field >= $fieldlimit) {
           $field = 1;
           $time_offset = $yarea / 2 + $top_margin + 2 * $yfieldtitle;
         }
         // write times
-        if ($field == 1) {
+        if ($g==1) {
           $this->SetFont('Arial', 'B', 10);
           $this->SetTextColor(0);
           $this->SetXY($left_margin, $time_offset);
@@ -489,7 +509,7 @@ class PDF extends FPDF {
           foreach ($times as $time) {
             $this->Cell($xtimetitle, $gridy / 4, "", 0, 2, 'L', false);
             $txt = utf8_decode(ShortDate($time['time']));
-            $this->Cell($xtimetitle, $gridy / 4, $txt, 0, 2, 'L', false);
+            $this->Cell($xtimetitle, $gridy / 4, $g.".".$txt, 0, 2, 'L', false);
             $txt = utf8_decode(DefHourFormat($time['time']));
             $this->Cell($xtimetitle, $gridy / 4, $txt, 0, 2, 'L', false);
             $this->Cell($xtimetitle, $gridy / 4, "", 0, 2, 'L', false);
@@ -518,21 +538,16 @@ class PDF extends FPDF {
       $this->SetFont('Arial', '', 8);
       $this->SetTextColor(0);
       $this->Cell($gridx, 1, "", 0, 2, 'L', false);
+      $this->setTeamFont($txt, $gridx, 8);
       if ($game['hometeam'] && $game['visitorteam']) {
-        $txt = utf8_decode($game['hometeamname']);
-        $this->setTeamFont($txt, $gridx, 8);
-        $this->fitCell($gridx, 4, $txt, 0, 2, 'L', false);
-        $txt = utf8_decode($game['visitorteamname']);
-        $this->setTeamFont($txt, $gridx, 8);
-        $this->fitCell($gridx, 4, $txt, 0, 2, 'L', false);
+        $thome = utf8_decode($game['hometeamname']);
+        $tvisit = utf8_decode($game['visitorteamname']);
       } else {
-        $txt = utf8_decode(U_($game['phometeamname']));
-        $this->setTeamFont($txt, $gridx, 8);
-        $this->fitCell($gridx, 4, $txt, 0, 2, 'L', false);
-        $txt = utf8_decode(U_($game['pvisitorteamname']));
-        $this->setTeamFont($txt, $gridx, 8);
-        $this->fitCell($gridx, 4, $txt, 0, 2, 'L', false);
+        $home = utf8_decode(U_($game['phometeamname']));
+        $tvisit = utf8_decode(U_($game['pvisitorteamname']));
       }
+      $this->fitCell($gridx, 4, $g."-".$game["place_id"]."-".$game['fieldname'].$game['time'].$thome, 0, 2, 'L', false);
+      $this->fitCell($gridx, 4, $tvisit, 0, 2, 'L', false);
       $this->SetFont('Arial', '', 8);
       
       if ($colors) {

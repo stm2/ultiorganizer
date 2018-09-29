@@ -159,11 +159,13 @@ mysqli_data_seek($games, 0);
 $subset = findPools($games, $html);
 
 if ($format == "grid" || $format == "list") {
-  $pdf = new PDF();
+  $pdf = null;
   if ($format == "grid") {
+    $pdf = new PDF('L', 'mm', 'A4');
     mysqli_data_seek($games, 0);
-    $pdf->PrintOnePageSchedule($filters['gamefilter'], $id, $games);
+    $pdf->PrintOnePageSchedule($filters['gamefilter'], $id, $games, true, $title);
   } else {
+    $pdf = new PDF();
     mysqli_data_seek($games, 0);
     $pdf->PrintSchedule($filters['gamefilter'], $id, $games, $subset, $lines);
   }

@@ -19,7 +19,9 @@ class PDF extends FPDF {
   var $organization;
 
   var $logo;
-
+  
+  var $minFontSize = 6;
+  
   function __construct($orientation = 'P', $unit = 'mm', $format = 'A4') {
     parent::__construct($orientation, $unit, $format);
     $this->organization = "Gummis";
@@ -467,216 +469,207 @@ class PDF extends FPDF {
     $txt = utf8_decode($txt);
     return $txt;
   }
-  
-  function PrintOnePageSchedule($scope, $id, $games, $colors = false) {
+
+  function findSlotLength($games) {
+    $slotlength = 365 * 24 * 60 * 60;
+    foreach ($games as $game) {
+      $slotlength = min($slotlength, $game['timeslot'] * 60);
+    }
+    return $slotlength;
+  }
+
+  function printGame($game, $top, $left, $width, $field, $starttime, $endtime, $pause, $yscale, $teamfont, $colors,
+    $pseudo = false, $printdate = false, $printfield = false, $debug = false) {
+    $field_offset = $left + 8 + $field * $width;
+    $startoffset = $top + (strtotime($game['time']) - $pause - $starttime) * $yscale; // (strtotime($game['time']) - $starttime) / 60 / 30 * $gridy;
+    
+    $this->SetTextColor(0);
+    $this->SetFillColor(230);
+    $this->SetDrawColor(0);
+    
+    if ($printdate) {
+      $this->SetFont('Arial', 'B', 8);
+      $this->SetXY($left, $startoffset);
+      $this->Cell(8, 8, JustDate($game['time']), 0, 2, 'L', false);
+    }
+    if ($printfield) {
+      $this->SetFont('Arial', 'B', 8);
+      $txt = $this->ufield($game);
+      $this->SetXY($field_offset, $top - 5);
+      $this->fitCell($width, 5, $txt, 'LRTB', 0, 'L', false);
+    }
+    
+    $height = $game['timeslot'] * 60 * $yscale;
+    
+    
+    $this->SetTextColor(0);
+    $this->SetFillColor(255);
+    $this->SetDrawColor(0);
+    $this->SetFont('Arial', '', $teamfont);
+    $this->SetTextColor(0);
+    
+    $pooltxt = utf8_decode($game['seriesname']);
+    $pooltxt .= ", ";
+    $pooltxt .= utf8_decode($game['poolname']);
+    
+    $ctime = date("H:i", strtotime($game['time']));
+    $hsname = NULL;
+    $vsname = NULL;
+    if ($game['hometeam'] && $game['visitorteam']) {
+      $hname = $game['hometeamname'];
+      $hsname = $game['homeshortname'];
+      $vname = $game['visitorteamname'];
+      $vsname = $game['visitorshortname'];
+    } elseif ($game['gamename']) {
+      $hname = $game['gamename'];
+      $vname = NULL;
+    } else {
+      $hname = $game['phometeamname'];
+      $vname = $game['pvisitorteamname'];
+    }
+      // $this->SetXY($field_offset, $startoffset);
+    if ($pseudo) {
+      $height = ($endtime - strtotime($game['time'])) * $yscale;
+      $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, "", "", "", "", $pooltxt, $teamfont, $colors,
+        "#aaaaaa");
+    } else {
+      $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, $hname, $hsname, $vname, $vsname, $pooltxt,
+        $teamfont, $colors, $game['color']);
+    }
+  }
+
+  function PrintOnePageSchedule($scope, $id, $games, $colors = false, $title) {
     $left_margin = 10;
     $top_margin = 10;
-    $xarea = 400;
-    $yarea = 270;
-    $yfieldtitle = 8;
-    $xtimetitle = 12;
-    $ypagetitle = 5;
+    $xarea = $this->w;
+    $yarea = $this->h;
+    $yfieldtitle = 10;
+    $xtimetitle = 10;
+    $ypagetitle = 12;
     $teamfont = 10;
+    $columns = 4;
+    $cellwidth = ($xarea - 2 * $left_margin - $xtimetitle) / $columns - 1;
+    $cellheight = min($yarea, $cellwidth / 3, $teamfont * 3);
     
     // event title
     $this->SetAutoPageBreak(false, $top_margin);
     $this->SetMargins($left_margin, $top_margin);
     
-    $timeslots = array();
-    $times = array();
-    $prevTournament = "";
-    $prevPlace = "";
-    $prevSeries = "";
-    $prevPool = "";
-    $prevTeam = "";
-    $prevDate = "";
-    $prevField = "";
-    $fieldstotal = 0;
-    
-    $isTableOpen = false;
-    
-    $field = 0;
-    $time_offset = $top_margin + $yfieldtitle;
-    $field_offset = 0;
-    $gridx = 12;
-    $gridy = $yarea / 60;
-    $min_gridy = 5;
-    $min_gridx = 40;
-    $fieldlimit = 15;
-    $num_rows = 1;
-    
     $this->SetTextColor(255);
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
+    
+    if (!empty($title))
+      $this->SetTitle($title, true);
+    
     // print all games in order
     while (($gameArray[] = mysqli_fetch_assoc($games)) || array_pop($gameArray));
+
+    function cmp($a, $b) {
+      $diff = strcmp($a["time"], $b["time"]);
+      if ($diff == 0)
+        $diff = strcmp($a["placename"], $b["placename"]);
+      if ($diff == 0)
+        $diff = strcmp($a["fieldname"], $b["fieldname"]);
+      return $diff;
+    }
     
-    $g = 0;
-    foreach ($gameArray as $game) {
-      $g++;
+    usort($gameArray, "cmp");
+    
+    $numGames = count($gameArray);
+    if ($numGames == 0)
+      return 0;
+    $start0 = $gameArray[0]['time'];
+    
+    // debug_to_apache(print_r($gameArray, TRUE));
+    
+    $gamesPrinted = 0;
+    $daycount = 0;
+    $trycount = 0;
+    $lastPrinted = -1;
+    while ($gamesPrinted < $numGames) {
+      $daycount++;
+      $pagecount = 0;
+      $pagestartgame = $gamesPrinted;
+      $minslotlength = $this->findSlotLength($gameArray);
+      $yscale = $cellheight / $minslotlength;
+      $timestart = strtotime($gameArray[$pagestartgame]['time']);
+      $timeend = $timestart + ($yarea - 2 * $top_margin - $yfieldtitle - $ypagetitle) / $cellheight * $minslotlength;
+      $this->SetXY(0, ($timeend -$timestart) * $yscale + $top_margin + $ypagetitle + $yfieldtitle);
+      $this->Cell($xarea, 1, "", 1);
       
-      // one reservation group per page
-      if (!empty($game['place_id']) && $game['reservationgroup'] != $prevTournament ||
-         $prevDate != JustDate($game['starttime'])) {
-        $this->AddPage("L", "A3");
-        
-        $title = utf8_decode(SeasonName($id));
-        $title .= " " . utf8_decode($game['reservationgroup']);
-        $title .= " (" . utf8_decode(ShortDate($game['starttime'])) . ")";
-        $this->SetFont('Arial', 'BU', 12);
+      $places = array();
+      $horizontal_page = 0;
+      $page_done = false;
+      // debug_to_apache("pagestart $gamesPrinted\n");
+      
+      while (!$page_done) {
+        if ($gamesPrinted == $lastPrinted) {
+          $this->SetXY($left_margin, $top_margin);
+          $this->Cell(100, $ypagetitle, "Error - could not finish grid");
+          return;
+        }
+        $lastPrinted = $gamesPrinted;
+        $currentGame = $pagestartgame;
+        $game = $gameArray[$currentGame];
+        $pagecount++;
+        $lastend = $timestart;
+        $pause = 0;
+        // debug_to_apache("newpage $pagestartgame $gamesPrinted\n");
+        $this->AddPage();
+        $this->SetFont('Arial', 'B', $ypagetitle);
         $this->SetTextColor(0);
+        $this->SetXY($left_margin, $top_margin);
+        $this->Cell(20, 0, "$title", 0, 2, 'L', false);
+        $this->SetXY($xarea - $left_margin - 20, $top_margin);
+        $this->Cell(20, 0, "$daycount, $pagecount ", 0, 2, 'R', false);
         
-        $times = TimetableTimeslots($game['reservationgroup'], $id);
-        $timeslots = array();
-        
-        $startslot = floor(strtotime($times[0]['time']) / 60 / 30) * 30 * 60;
-        $endslot = ceil(strtotime($times[count($times) - 1]['time']) / 60 / 30) * 30 * 60;
-        $numslots = ($endslot - $startslot) / 60 / 30 + 2;
-        
-        $fieldstotal = TimetableFields($game['reservationgroup'], $id);
-        
-        if ($numslots * 2 * $min_gridy > $yarea - ($top_margin + $yfieldtitle * 2 + $ypagetitle + 5) ||
-           $fieldstotal * $min_gridx * 1.5 < ($xarea - $xtimetitle)) {
-          $num_rows = 1;
-        } else {
-          $num_rows = 2;
-        }
-        
-        $gridy = ($yarea - $top_margin - $yfieldtitle * 2 - $ypagetitle - 10) / $numslots / $num_rows;
-        
-        $num_pages = floor($fieldstotal / $num_rows / ($xarea - $xtimetitle) * $min_gridx) + 1;
-        $fieldlimit = max(3, floor($fieldstotal / $num_rows / $num_pages) + 1);
-        
-        $time_offset = ($yarea / $num_rows) * 0 + $top_margin + $yfieldtitle + $ypagetitle;
-        
-        $i = 0;
-        
-        for ($i = 0, $slot = $startslot; $i < max(3, $numslots); $i++) {
-          $timeslots[date("H:i", $slot)] = $i * $gridy;
-          $slot = $slot + 60 * 30;
-        }
-        // foreach($times as $time){
-        // $timeslots[DefHourFormat($time['time'])] = $i*20;
-        // $i++;
-        // }
-        
-        $gridx = ($xarea - $xtimetitle) / $fieldlimit;
-        $field = 0;
-        $prevField = "";
-        $row = 1;
-        
-        // $this->SetXY($left_margin, $top_margin);
-        // $this->SetFont('Arial','B',10);
-        // $this->SetTextColor(0,200,0);
-        // $this->SetFillColor(0,0,200);
-        // $this->Cell($xarea,$yarea,"*****","LRTB",2,'C',true);
-        
-        $this->Cell(0, 0, $title . "." . $fieldstotal . "." . $fieldlimit, 0, 2, 'C', false);
-      }
-      
-      // next field
-      if (!empty($game['place_id']) && $game['place_id'] != $prevPlace || $game['fieldname'] != $prevField) {
-        $field++;
-        
-        if ($field > $fieldlimit) {
-          $row++;
-          if ($row > $num_rows) {
-            $row = 1;
-            $this->AddPage("L", "A3");
+        $page_done = true;
+        $lastday = "";
+        // print games between $timestart and $timeend on current horizontal page
+        while ($currentGame < count($gameArray) && strtotime($game['time']) - $pause < $timeend) {
+          $gamestart = strtotime($game['time']);
+          $gameend = $gamestart + $game['timeslot'] * 30;
+          if ($lastend + $minslotlength < $gamestart) {
+            $pause += $gamestart - $lastend - $minslotlength;
           }
           
-          $field = 1;
-          $time_offset = ($yarea / $num_rows) * ($row - 1) + $top_margin + $yfieldtitle + $ypagetitle;
-        }
-        // write times
-        if ($field == 1) {
-          $this->SetFont('Arial', 'B', 10);
-          $this->SetTextColor(0);
-          $this->SetXY($left_margin, $time_offset);
-          
-          // write times
-          foreach ($timeslots as $time => $toffset) {
-            $this->Cell($xtimetitle, $gridy, $time, 0, 2, 'L', false);
+          if (!isset($places[$game['place_id'] . $game['fieldname']])) {
+            $places[$game['place_id'] . $game['fieldname']] = array('num' => count($places), 'lastpage' => -1);
           }
+          $gamefield = &$places[$game['place_id'] . $game['fieldname']];
+          $field = $gamefield['num'] - $horizontal_page * $columns;
+          
+          if ($field >= $columns) {
+            $page_done = false;
+          } else if ($field >= 0) {
+            // debug_to_apache("printed ". ($gameend - $pause <= $timeend)." $gameend $pause $timeend ");
+            // //////////////////////////////////////////////////////////////////////////////////////////////////////
+            $this->printGame($game, //
+              $top_margin + $ypagetitle, // 
+              $left_margin, //
+              $cellwidth, $field, $timestart, $timeend, $pause,
+              $yscale, $teamfont, $colors, //
+              $gameend - $pause > $timeend, //
+              $lastday != JustDate($game['time']), //
+              $pagecount > $gamefield['lastpage']);
+            
+            $lastday = JustDate($game['time']);
+            $gamefield['lastpage'] = $pagecount;
+            
+            if ($gameend - $pause <= $timeend)
+              $gamesPrinted++;
+          }
+          $lastend = $gameend;
+          $currentGame++;
+          if ($currentGame < count($gameArray))
+            $game = $gameArray[$currentGame];
         }
-        
-        $field_offset = $left_margin + ($field - 1) * $gridx + $xtimetitle;
-        $this->SetXY($field_offset, $time_offset - $yfieldtitle);
-        
-        $this->SetFont('Arial', 'B', 10);
-        $this->SetTextColor(0);
-        $this->SetFillColor(190);
-        
-        $txt = utf8_decode(_("Field") . " " . $game['fieldname']);
-        $this->Cell($gridx, $yfieldtitle / 2, $txt, "LRT", 2, 'C', true);
-        
-        $this->SetFont('Arial', '', 8);
-        $this->SetTextColor(0);
-        $txt = utf8_decode($game['placename']);
-        $this->Cell($gridx, $yfieldtitle / 2, $txt, "LR", 2, 'C', true);
-        // write grids
-        foreach ($timeslots as $time) {
-          $this->Cell($gridx, $gridy, "", 1, 2, 'L', false);
-        }
+        $horizontal_page++;
       }
-      
-      $starttime = floor(strtotime($times[0]['time']) / 60 / 30) * 30 * 60;
-      $startoffset = (strtotime($game['time']) - $starttime) / 60 / 30 * $gridy;
-      // $slot = date("H:i",floor(strtotime($game['time'])/30/60)*30*60);
-      
-      $this->SetXY($field_offset, $time_offset + $startoffset);
-      
-      $this->SetTextColor(0);
-      $this->SetFillColor(230);
-      $this->SetDrawColor(0);
-      
-      $height = ($game['timeslot'] / 30) * $gridy;
-      $this->Cell($gridx, $height, "", 'LRBT', 0, 'C', true);
-      
-      $this->SetXY($field_offset, $time_offset + $startoffset);
-      
-      $this->SetTextColor(0);
-      $this->SetFillColor(255);
-      $this->SetDrawColor(0);
-      $this->SetFont('Arial', '', $teamfont);
-      $this->SetTextColor(0);
-      // $this->Cell($gridx,1,"",0,2,'',false);
-      
-      $this->Cell($gridx, 1, "", 0, 2, 'L', $colors);
-      $pooltxt = utf8_decode($game['seriesname']);
-      $pooltxt .= ", ";
-      $pooltxt .= utf8_decode($game['poolname']);
-      
-      if ($game['hometeam'] && $game['visitorteam']) {
-        $this->DynCell($gridx, $height, date("H:i", strtotime($game['time'])), $game['hometeamname'],
-          $game['homeshortname'], $game['visitorteamname'], $game['visitorshortname'], $pooltxt, $gridx, $teamfont,
-          $colors, $game['color']);
-      } elseif ($game['gamename']) {
-        $this->DynCell($gridx, $height, date("H:i", strtotime($game['time'])), $game['gamename'], NULL, NULL, NULL,
-          $pooltxt, $gridx, $teamfont, $colors, $game['color']);
-      } else {
-        $this->DynCell($gridx, $height, date("H:i", strtotime($game['time'])), $game['phometeamname'], NULL,
-          $game['pvisitorteamname'], NULL, $pooltxt, $gridx, $teamfont, $colors, $game['color']);
-      }
-      $this->SetFont('Arial', '', $teamfont);
-      
-      $this->SetTextColor(0);
-      $this->SetFillColor(255);
-      $this->SetDrawColor(0);
-      
-      $this->SetXY($field_offset, $time_offset + $startoffset);
-      // $this->Cell($gridx,$gridy,"","LRBT",2,'L',false);
-      
-      $prevTournament = $game['reservationgroup'];
-      $prevPlace = $game['place_id'];
-      $prevField = $game['fieldname'];
-      $prevSeries = $game['series_id'];
-      $prevPool = $game['pool'];
-      $prevDate = JustDate($game['starttime']);
-      $prevTime = DefHourFormat($game['starttime']);
     }
   }
-
+  
   function Footer() {
     $this->SetXY(-50, -8);
     $this->SetFont('Arial', '', 6);
@@ -694,53 +687,49 @@ class PDF extends FPDF {
     return $hsv->getRGB();
   }
 
-  function DynCell($width, $height, $pretext, $longname1, $abbrev1, $longname2, $abbrev2, $posttext, $x, $fontsize,
+  function DynCell($x, $y, $width, $height, $pretext, $longname1, $abbrev1, $longname2, $abbrev2, $posttext, $fontsize,
     $colors = false, $gamecolor = NULL) {
     $text1 = utf8_decode($longname1);
-    $fs1 = min($fontsize, $height / 3);
-    $this->SetFont('Arial', '', $fs1);
-    if ($this->GetStringWidth($text1) > $x - 2 && !empty($abbrev1)) {
+    $fs = $fontsize;
+    $this->SetFont('Arial', '', $fs);
+    if ($this->GetStringWidth($text1) > $width - 2 && !empty($abbrev1)) {
       $text1 = utf8_decode($abbrev1);
     }
-    while ($this->GetStringWidth($text1) > $x - 2) {
-      $this->SetFont('Arial', '', --$fs1);
-    }
+    if (!empty($longname2))
+      $text1 .= " -";
     
     $text2 = utf8_decode($longname2);
-    $fs2 = min($fontsize, $height / 3);
-    $this->SetFont('Arial', '', $fs2);
-    if ($this->GetStringWidth($text2) > $x - 2 && !empty($abbrev)) {
-      $text1 = utf8_decode($abbrev2);
-    }
-    while ($this->GetStringWidth($text2) > $x - 2) {
-      $this->SetFont('Arial', '', --$fs2);
+    $fs = $fontsize;
+    $this->SetFont('Arial', '', $fs);
+    if ($this->GetStringWidth($text2) > $width - 2 && !empty($abbrev)) {
+      $text2 = utf8_decode($abbrev2);
     }
     
-    $text3 = utf8_decode($pretext . " " . $posttext);
-    $fs3 = min($fontsize, $height / 3);
-    $this->SetFont('Arial', '', $fs3);
-    while ($this->GetStringWidth($text3) > $x - 2) {
-      $this->SetFont('Arial', '', --$fs2);
-    }
+    $ratio = $this->GetStringWidth($pretext) / $this->GetStringWidth($pretext. " " .$posttext);
+    $w1 = $width * $ratio + 2;
+    $w2 = $width - $w1;
+    // $text3 = ($pretext . " " . $posttext);
     
-    $fs4 = min(ceil($height), $fontsize);
-    $this->SetFont('Arial', '', $fs4);
-    $txt = utf8_decode($pretext) . " ";
-    if (!empty($abbrev1))
-      $txt .= utf8_decode($abbrev1);
-    else
-      $txt .= utf8_decode($longname1);
-    $txt .= " - ";
-    if (!empty($abbrev2))
-      $txt .= utf8_decode($abbrev2);
-    else
-      $txt .= utf8_decode($longname2);
-    $txt .= " (";
-    $txt .= utf8_decode($posttext);
-    $txt .= ")";
-    if ($this->GetStringWidth($txt) > $x - 2)
-      $this->SetFont('Arial', '', --$fs4);
+    $this->setColors($colors, $gamecolor);
+    $this->SetFont('Arial', 'I', $fontsize);
+    $text3 = $this->fitFont($posttext, $fontsize, $w2);
+    $this->SetXY($x+$w1, $y);
+    $this->Cell($w2, $height / 3, $text3, 'TR', 2, 'L', $colors);
+    $this->SetFont('Arial', 'B', $fontsize);
+    $text3 =  $this->fitFont($pretext, $fontsize, $w1);
+    $this->SetXY($x, $y);
+    $this->Cell($w1+.5, $height / 3, $text3, 'LT', 2, 'L', $colors);
     
+    $this->SetFont('Arial', '', $fontsize);
+    $this->setColors(false, $gamecolor);
+    $text1 = $this->fitFont($text1, $fontsize, $width - 2);
+    $text2 = $this->fitFont($text2, $this->FontSize, $width - 2);
+    $this->Cell($width, $height / 3, $text1, 'LR', 2, 'L', $colors);
+    $this->Cell($width, $height / 3, $text2, 'LRB', 2, 'L', $colors);
+    $this->SetFont('Arial', 'I', $fontsize);
+  }
+  
+  function setColors($colors, $gamecolor) {
     if ($colors) {
       $textcolor = $this->TextColor($gamecolor);
       $fillcolor = colorstring2rgb($gamecolor);
@@ -753,21 +742,13 @@ class PDF extends FPDF {
       $this->SetFillColor(230);
       $this->SetDrawColor(0);
     }
-    
-    if ($fs4 > $fs1 || $fs4 > $fs2 || $fs4 > $fs3) {
-      $this->Cell($width, $height, $txt, 0, 2, 'L', false);
-    } else {
-      $this->SetFont('Arial', '', min($fs1, $fs2, $fs3));
-      $this->Cell($width, $height / 3, $text1, 0, 2, 'L', $colors);
-      $this->Cell($width, $height / 3, $text2, 0, 2, 'L', $colors);
-      $this->Cell($width, $height / 3, utf8_decode($pretext . " " . $posttext), 0, 2, 'L', $colors);
-    }
   }
 
   function fitFont($text, $maxsize, $width) {
     while ($this->GetStringWidth($text) > $width) {
       $lower = $this->minFontSize;
       $upper = $maxsize;
+      $current = $upper;
       $i = 0;
       while ($upper > $lower + .5 && $i++ < 10) {
         $current = floor($upper + $lower) / 2;
@@ -778,10 +759,10 @@ class PDF extends FPDF {
           $lower = $current;
         }
       }
-      if ($this->GetStringWidth($text) > $width)
-        $this->SetFontSize($current - .5);
-      if ($this->GetStringWidth($text) > $width && mb_strlen($text)>1) {
-        $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4));
+      /*if ($this->GetStringWidth($text) > $width)
+        $this->SetFontSize($current - .5);*/
+      if ($this->GetStringWidth($text) > $width && mb_strlen($text)>2) {
+        $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4)) . "...";
       }
     }
     return $text;
