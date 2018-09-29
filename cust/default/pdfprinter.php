@@ -28,7 +28,22 @@ class PDF extends FPDF {
     $this->logo = "cust/" . CUSTOMIZATIONS . "/logo.png";
   }
 
-  function getScoresheetInstructions() {}
+  function getScoresheetInstructions() {
+    $data = "<br><b>" . _("Scoresheet filling instructions:") . "</b><br>";
+    $data .= "1. " . _("Officials fill in their names.") . "<br>";
+    $data .= "2. " .
+       _("Captains confirm roster by crossing out injured players, and adjusting jersey numbers if necessary.") . "<br>";
+    $data .= "3. " . _("After the toss, officials check the team that will start on offence.") . "<br>";
+    $data .= "4. " . _("When half time starts, fill in time it ends (the second half start time).") . "<br>";
+    $data .= "5. " .
+       _(
+        "During the game, fill in which team has scored, the jersey numbers of the player who threw the goal (Assist) and the player who caught the goal (Goal), the time that the goal was scored, and the scoreline after the goal. If a player scores an intercept goal (Callahan), then mark XX as assist.") .
+       "<br>";
+    $data .= "6. " . _("When a team takes a time-out, mark the time in the \"Time-outs\" section.") . "<br>";
+    $data .= "7. " . _("After the game, each captain signs the scoresheet to confirm the final score.") . "<br>";
+    $data .= "8. " . _("Officials return the completed scoresheet to the results headquarters.");
+    return $data;
+  }
 
   function getRosterInstructions() {}
   
@@ -361,7 +376,6 @@ class PDF extends FPDF {
         $this->Ln();
         break;
       case "h3":
-//        $txt = DefWeekDateFormat($game['starttime']);
         $this->SetFont('Arial', 'B', 10);
         $this->SetTextColor(0);
         $this->Ln();
@@ -608,6 +622,7 @@ class PDF extends FPDF {
     while ($this->GetStringWidth($text) > $width) {
       $lower = $this->minFontSize;
       $upper = $maxsize;
+      $current = $upper;
       $i = 0;
       while ($upper > $lower + .5 && $i++ < 10) {
         $current = floor($upper + $lower) / 2;
@@ -618,8 +633,6 @@ class PDF extends FPDF {
           $lower = $current;
         }
       }
-      if ($this->GetStringWidth($text) > $width)
-        $this->SetFontSize($current - .5);
       if ($this->GetStringWidth($text) > $width && mb_strlen($text)>1) {
         $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4));
       }
@@ -720,10 +733,10 @@ class PDF extends FPDF {
         $this->SetTextColor(0);
         $this->SetFillColor(255);
         $this->SetDrawColor(0);
-        $this->Cell(7 + $extra / 2, 5, "", 'TB', 0, 'L', true);
+        $this->fitCell(7 + $extra / 2, 5, "", 'TB', 0, 'L', true);
         $txt = " - ";
         $this->Cell(4, 5, $txt, 'TB', 0, 'L', true);
-        $this->Cell(7 + $extra / 2, 5, "", 'TB', 0, 'L', true);
+        $this->fitCell(7 + $extra / 2, 5, "", 'TB', 0, 'L', true);
         $this->SetDrawColor(0);
         $this->SetFillColor($fillcolor['r'], $fillcolor['g'], $fillcolor['b']);
         $this->SetTextColor($textcolor['r'], $textcolor['g'], $textcolor['b']);

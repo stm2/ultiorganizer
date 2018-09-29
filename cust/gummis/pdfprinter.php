@@ -19,9 +19,9 @@ class PDF extends FPDF {
   var $organization;
 
   var $logo;
-  
+
   var $minFontSize = 6;
-  
+
   function __construct($orientation = 'P', $unit = 'mm', $format = 'A4') {
     parent::__construct($orientation, $unit, $format);
     $this->organization = "Gummis";
@@ -359,48 +359,6 @@ class PDF extends FPDF {
     $this->SetTextColor(255);
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
-    // print all games in order
-    while ($game = mysqli_fetch_assoc($games)) {
-      
-      if (!empty($game['place_id']) && $game['reservationgroup'] != $prevTournament) {
-        $txt = utf8_decode(U_($game['reservationgroup']));
-        $this->SetFont('Arial', 'B', 12);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Write(5, $txt);
-        $this->Ln();
-        $prevDate = "";
-      }
-      
-      if (!empty($game['place_id']) && JustDate($game['starttime']) != $prevDate) {
-        $txt = DefWeekDateFormat($game['starttime']);
-        $this->SetFont('Arial', 'B', 10);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Write(5, $txt);
-      }
-      
-      if (!empty($game['place_id']) && ($game['place_id'] != $prevPlace || $game['fieldname'] != $prevField ||
-         JustDate($game['starttime']) != $prevDate)) {
-        $txt = $this->ufield($game);
-           
-        $this->SetFont('Arial', '', 10);
-        $this->SetTextColor(0);
-        $this->Ln();
-        $this->Cell(0, 5, $txt, 0, 2, 'L', false);
-      }
-      if (!empty($game['reservationgroup']) && !empty($game['place_id'])) {
-        $this->GameRowWithPool($game, false, true, false);
-        $this->Ln();
-      }
-      
-      $prevTournament = $game['reservationgroup'];
-      $prevPlace = $game['place_id'];
-      $prevField = $game['fieldname'];
-      $prevSeries = $game['series_id'];
-      $prevPool = $game['pool'];
-      $prevDate = JustDate($game['starttime']);
-    }
     
     $groups = array('date' => true, 'time' => true, 'field' => true, 'pool' => true, 'result' => true);
     
@@ -418,7 +376,6 @@ class PDF extends FPDF {
         $this->Ln();
         break;
       case "h3":
-        $txt = DefWeekDateFormat($game['starttime']);
         $this->SetFont('Arial', 'B', 10);
         $this->SetTextColor(0);
         $this->Ln();
@@ -471,9 +428,17 @@ class PDF extends FPDF {
   }
 
   function findSlotLength($games) {
-    $slotlength = 365 * 24 * 60 * 60;
+    $slotlength = 30 * 60;
     foreach ($games as $game) {
-      $slotlength = min($slotlength, $game['timeslot'] * 60);
+      if ($game['timeslot'] > 0) {
+        $slotlength = $game['timeslot'] * 60;
+        break;
+      }
+    }
+    
+    foreach ($games as $game) {
+      if ($game['timeslot'] > 0)
+        $slotlength = min($slotlength, $game['timeslot'] * 60);
     }
     return $slotlength;
   }
@@ -499,8 +464,7 @@ class PDF extends FPDF {
       $this->fitCell($width, 5, $txt, 'LRTB', 0, 'L', false);
     }
     
-    $height = $game['timeslot'] * 60 * $yscale;
-    
+    $height = max(30, $game['timeslot']) * 60 * $yscale;
     
     $this->SetTextColor(0);
     $this->SetFillColor(255);
@@ -527,7 +491,7 @@ class PDF extends FPDF {
       $hname = $game['phometeamname'];
       $vname = $game['pvisitorteamname'];
     }
-      // $this->SetXY($field_offset, $startoffset);
+    // $this->SetXY($field_offset, $startoffset);
     if ($pseudo) {
       $height = ($endtime - strtotime($game['time'])) * $yscale;
       $this->DynCell($field_offset, $startoffset, $width, $height, $ctime, "", "", "", "", $pooltxt, $teamfont, $colors,
@@ -595,8 +559,6 @@ class PDF extends FPDF {
       $yscale = $cellheight / $minslotlength;
       $timestart = strtotime($gameArray[$pagestartgame]['time']);
       $timeend = $timestart + ($yarea - 2 * $top_margin - $yfieldtitle - $ypagetitle) / $cellheight * $minslotlength;
-      $this->SetXY(0, ($timeend -$timestart) * $yscale + $top_margin + $ypagetitle + $yfieldtitle);
-      $this->Cell($xarea, 1, "", 1);
       
       $places = array();
       $horizontal_page = 0;
@@ -629,7 +591,7 @@ class PDF extends FPDF {
         // print games between $timestart and $timeend on current horizontal page
         while ($currentGame < count($gameArray) && strtotime($game['time']) - $pause < $timeend) {
           $gamestart = strtotime($game['time']);
-          $gameend = $gamestart + $game['timeslot'] * 30;
+          $gameend = $gamestart + max(30, $game['timeslot']) * 60;
           if ($lastend + $minslotlength < $gamestart) {
             $pause += $gamestart - $lastend - $minslotlength;
           }
@@ -646,13 +608,12 @@ class PDF extends FPDF {
             // debug_to_apache("printed ". ($gameend - $pause <= $timeend)." $gameend $pause $timeend ");
             // //////////////////////////////////////////////////////////////////////////////////////////////////////
             $this->printGame($game, //
-              $top_margin + $ypagetitle, // 
-              $left_margin, //
-              $cellwidth, $field, $timestart, $timeend, $pause,
-              $yscale, $teamfont, $colors, //
-              $gameend - $pause > $timeend, //
-              $lastday != JustDate($game['time']), //
-              $pagecount > $gamefield['lastpage']);
+            $top_margin + $ypagetitle, //
+            $left_margin, //
+            $cellwidth, $field, $timestart, $timeend, $pause, $yscale, $teamfont, $colors, //
+            $gameend - $pause > $timeend, //
+            $lastday != JustDate($game['time']), //
+            $pagecount > $gamefield['lastpage']);
             
             $lastday = JustDate($game['time']);
             $gamefield['lastpage'] = $pagecount;
@@ -669,7 +630,7 @@ class PDF extends FPDF {
       }
     }
   }
-  
+
   function Footer() {
     $this->SetXY(-50, -8);
     $this->SetFont('Arial', '', 6);
@@ -759,8 +720,6 @@ class PDF extends FPDF {
           $lower = $current;
         }
       }
-      /*if ($this->GetStringWidth($text) > $width)
-        $this->SetFontSize($current - .5);*/
       if ($this->GetStringWidth($text) > $width && mb_strlen($text)>2) {
         $text = mb_substr($text, 0, floor(mb_strlen($text) * 3 / 4)) . "...";
       }
