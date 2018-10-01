@@ -43,30 +43,36 @@ if(!empty($_POST['clone_x'])) {
 }
 
 //add
-if(!empty($_POST['add'])) {
-  $pp['name']=!empty($_POST['name0']) ? $_POST['name0'] : "no name";
-  $pp['type']=intval($_POST["type0"]);
-  $pp['ordering']=!empty($_POST['ordering0']) ? $_POST['ordering0'] : "A";
-  $pp['visible']=isset($_POST["visible0"]) ? 1 : 0;
-  $pp['continuingpool']=isset($_POST["continuation0"]) ? 1 : 0;
-  $pp['placementpool']=isset($_POST["placement0"]) ? 1 : 0;
-
+if (!empty($_POST['add'])) {
+  $pp['name'] = !empty($_POST['name0']) ? $_POST['name0'] : "no name";
+  $pp['type'] = intval($_POST["type0"]);
+  $pp['ordering'] = !empty($_POST['ordering0']) ? $_POST['ordering0'] : "A";
+  $pp['visible'] = isset($_POST["visible0"]) ? 1 : 0;
+  $pp['continuingpool'] = isset($_POST["continuation0"]) ? 1 : 0;
+  $pp['placementpool'] = isset($_POST["placement0"]) ? 1 : 0;
+  
   $poolId = PoolFromPoolTemplate($series_id, $pp['name'], $pp['ordering'], $_POST['new_pool_template']);
-  SetPoolDetails($poolId,$pp);
+  SetPoolDetails($poolId, $pp);
 }
 
 //save
-if(!empty($_POST['save'])) {
+if (!empty($_POST['save'])) {
   $pools = SeriesPools($series_id);
-  foreach($pools as $pool){
-    $pool_id=$pool['pool_id'];
-    $pp['name']=!empty($_POST["name$pool_id"]) ? $_POST["name$pool_id"] : "no name";
-    $pp['type']=intval($_POST["type$pool_id"]);
-    $pp['ordering']=!empty($_POST["ordering$pool_id"]) ? $_POST["ordering$pool_id"] : "A";
-    $pp['visible']=isset($_POST["visible$pool_id"]) ? 1 : 0;
-    $pp['continuingpool']=isset($_POST["continuation$pool_id"]) ? 1 : 0;
-    $pp['placementpool']=isset($_POST["placement$pool_id"]) ? 1 : 0;
-    SetPoolDetails($pool_id,$pp);
+  foreach ($pools as $pool) {
+    $pool_id = $pool['pool_id'];
+    $pp['name'] = !empty($_POST["name$pool_id"]) ? $_POST["name$pool_id"] : "no name";
+    $pp['type'] = intval($_POST["type$pool_id"]);
+    $pp['ordering'] = !empty($_POST["ordering$pool_id"]) ? $_POST["ordering$pool_id"] : "A";
+    if (isset($_POST["root$pool_id"])) {
+      $root = $_POST["root$pool_id"];
+      $pp['continuingpool'] = 1;
+    } else {
+      $root = $pool_id;
+      $pp['continuingpool'] = isset($_POST["continuation$root"]) ? 1 : 0;
+    }
+    $pp['visible'] = isset($_POST["visible$root"]) ? 1 : 0;
+    $pp['placementpool'] = isset($_POST["placement$root"]) ? 1 : 0;
+    SetPoolDetails($pool_id, $pp);
   }
 }
 
@@ -167,6 +173,7 @@ foreach($pools as $pool){
   $is_visible = intval($info['visible'])?"checked='checked'":"";
   $is_played = intval($info['played'])?"checked='checked'":"";
   
+  $hidden = "";
   if($info['type']==2){
     $rootid = PoolPlayoffRoot($id);
     if($rootid!=$id){
@@ -175,10 +182,11 @@ foreach($pools as $pool){
       $is_visible .= " disabled='disabled'";
       $is_continuation .= " disabled='disabled'";
       $is_placement .= " disabled='disabled'";
+      $hidden = "<input type='hidden' id='root$id' name='root$id' value='$rootid' />";
     }
   }
   
-  $html .= "<td class='center'><input class='input' type='checkbox' name='visible$id' $is_visible/></td>";
+  $html .= "<td class='center'>$hidden<input class='input' type='checkbox' name='visible$id' $is_visible/></td>";
   $html .= "<td class='center'><input class='input' type='checkbox' name='continuation$id' $is_continuation/></td>";
   $html .= "<td><input class='input' type='checkbox' name='placement$id' $is_placement/> <span style='vertical-align:top;font-size:80%'>$placements</span></td>";
    
