@@ -1,13 +1,7 @@
 <?php
 include_once 'lib/common.functions.php';
-include_once 'lib/game.functions.php';
-include_once 'lib/statistical.functions.php';
-include_once 'lib/configuration.functions.php';
 
-if (version_compare(PHP_VERSION, '5.0.0', '>')) {
-  include_once 'lib/twitter.functions.php';
-}
-$html = "";
+$html = "<h2>"._("Add result")."</h2>\n";
 
 $errors = "";
 if(!empty($_POST['save'])) {
@@ -31,7 +25,6 @@ if(!empty($_POST['confirm'])) {
 if(!empty($_POST['cancel'])) {
   $html .= "<p class='warning'>". _("Result not saved!")."</p>";
 }
-PageTop(_("Add result"));
 
 $html .= $errors;
 
@@ -101,7 +94,6 @@ if(!empty($_POST['save']) && empty($errors)) {
 $html .= "</form>";
 $html .= "<p><a href='?view=played'>"._("Played games")."</a></p>";
 $html .= "</div>";
-echo $html;
 ?>
 <script type="text/javascript">
 <!--
@@ -117,5 +109,5 @@ function validNumber(field)
 //-->
 </script>
 <?php
-pageEnd();
+showPage(_("Add result"), $html);
 ?>
