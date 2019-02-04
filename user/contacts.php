@@ -69,7 +69,7 @@ if ($numSeries > 0) {
   $first = false;
   $all = "";
   foreach ($seasonAdmins as $user) {
-    $all .= mailto_address($user['email'], $user['name']);
+    $all .= mailto_address($user['email'], $user['name']). ";";
   }
   $subject = $subject = utf8entities(rawurlencode($seasonName));
   $html .= "<li><a href='mailto:$all?subject='>" . _("All season admins") . "</a></li>";

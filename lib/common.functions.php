@@ -1433,7 +1433,7 @@ function mailto_encode($email, $nameOrmailtag = null, $nametag = null, $subject 
     foreach ($email as $amail) {
       /* FIXME without the if, this fails with PHP warning: Illegal string offset 'email'; I don't know why */
       if (is_string($amail))
-        $link .= mailto_address($amail);
+        $link .= mailto_address($amail) . ";";
       else
         $link .= mailto_address($amail[$nameOrmailtag], $amail[$nametag]) . ";";
     }
@@ -1446,7 +1446,7 @@ function mailto_encode($email, $nameOrmailtag = null, $nametag = null, $subject 
 }
 
 function mailto_link($email, $name = null, $text = null, $subject = null) {
-  $encode = utf8entities(mailto_encode($email, $name, null, $subject));
+  $encode = (mailto_encode($email, $name, null, $subject));
   $text = is_null($text) ? is_null($name) ? utf8entities($email) : utf8entities($name) : utf8entities($text);
   return "<a href='$encode'>$text</a>";
 }
