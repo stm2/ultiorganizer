@@ -444,7 +444,7 @@ function migrateLocationInfo() {
     foreach ($cinfos as $column) {
       if (!empty($whereclause))
         $whereclause .= " OR ";
-        $whereclause .= "(`$column` IS NOT NULL AND `$column` != '')";
+      $whereclause .= "(`$column` IS NOT NULL AND `$column` != '')";
     }
     $query .= $whereclause;
     
@@ -454,7 +454,7 @@ function migrateLocationInfo() {
         $locale = substr($column, 5);
         if (!empty($info[$column])) {
           $query = sprintf(
-            'INSERT INTO `uo_location_info` (`location_id`, `locale`, `info`)
+            'INSERT IGNORE  INTO `uo_location_info` (`location_id`, `locale`, `info`)
             VALUES ("%d", "%s", "%s")', $info['id'], mysql_adapt_real_escape_string($locale),
             mysql_adapt_real_escape_string($info[$column]));
           DBQuery($query);
