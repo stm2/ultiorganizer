@@ -724,7 +724,12 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
     $ret .= "<tr>";
     $ret .= "<td class='center' style='".$winnerspoolstyle."'></td>";
     $ret .= "<td class='center' style='".$loserspoolstyle."'></td>";
-    $ret .= "<td style='width:10%'>"._("Game")." $i "."</td>";
+    if (empty($game['gamename'])) {
+      $gamename = _("Game")." $i ";
+    } else {
+      $gamename = $game['gamename'];
+    }
+    $ret .= "<td style='width:10%'>".$gamename."</td>";
     $ret .= "<td></td>";
 
     // $goals = intval($game['homescore'])+intval($game['visitorscore']);
@@ -801,7 +806,7 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
     $ret .= "</td>";
   }
 
-  $ret .= "<td>"._("Losers continues in:")."</td>";
+  $ret .= "</tr>\n<tr><td>"._("Losers continues in:")."</td>";
   foreach ($loserspools as $loserId => $color) {
     $ret .= "<td style='background-color:#".$color.";background-color:".RGBtoRGBa($color,0.3).";color:#".textColor($color).";'>";
     if($loserspool['visible']){

@@ -187,12 +187,12 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     
     // 1st row: Locale selection
     echo "<tr>";
-    echo "<td class='right' style='vertical-align:top;'>" . localeSelection() . "</td>";
+    echo "<td colspan='3' class='right' style='vertical-align:top;'>" . localeSelection() . "</td>";
     echo "</tr>";
     
     // 2nd row: User Log in
     echo "<tr>\n";
-    echo "<td class='right' style='padding-top:5px'>";
+    echo "<td class='left' style='padding-top:5px'>";
     
     if (IsFacebookEnabled() && $user == 'anonymous') {
       echo "<div id='fb-root'></div>\n";
@@ -200,21 +200,26 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     }
     
     if ($user == 'anonymous') {
-      echo "<input class='input' type='text' id='myusername' name='myusername' size='10' style='border:1px solid #555555'/>&nbsp;";
-      echo "<input class='input' type='password' id='mypassword' name='mypassword' size='10' style='border:1px solid #555555'/>&nbsp;";
-      echo "<input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
+      echo "<label for='myusername'>"._("Username")." </label></td><td><input class='input' type='text' id='myusername' name='myusername' size='10' style='border:1px solid #555555'/>&nbsp;";
+      echo "</td><td>";
+      if ($user == 'anonymous') {
+        echo "<span class='topheadertext'><a class='topheaderlink' href='?view=register'>" . utf8entities(_("New user?")) .
+        "</a></span>";
+      }
+      echo "</td></tr><tr><td class='left' style='padding-top:5px'>";
+      echo "<label for='myusername'>"._("Password")." </label></td><td><input class='input' type='password' id='mypassword' name='mypassword' size='10' style='border:1px solid #555555'/>&nbsp;</td>";
+      echo "<td><input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
          "' style='border:1px solid #000000'/>";
     } else {
       $userinfo = UserInfo($user);
-      echo "<span class='topheadertext'>" . utf8entities(_("User")) .
+      echo "</td><td colspan='2' class='right' style='padding-top:5px'><span class='topheadertext'>" . utf8entities(_("User")) .
          ": <a class='topheaderlink' href='?view=user/userinfo'>" . utf8entities($userinfo['name']) . "</a></span>";
     }
     
-    echo "&nbsp;";
+    // echo "&nbsp;";
     
     if ($user == 'anonymous') {
-      echo "<span class='topheadertext'><a class='topheaderlink' href='?view=register'>" . utf8entities(_("New user?")) .
-         "</a></span>";
+      // 
     } else {
       echo "<span class='topheadertext'><a class='topheaderlink' href='?view=logout'>&raquo; " .
          utf8entities(_("Logout")) . "</a></span>";
