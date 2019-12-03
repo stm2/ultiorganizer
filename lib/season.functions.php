@@ -715,7 +715,7 @@ function SpiritTotal($points, $categories) {
     return null;
 }
 
-function SeasonPoolGamesTable($formId, $seasonId, $series = null) {
+function SeasonPoolGamesTable($formId, $seasonId, $series = null, $disableunfinished=false) {
   $html = "<table>";
   $html .= "<tr><th class='left'><input type='checkbox' onclick='checkAll(\"pools[]\");'/></th>";
   $html .= "<th>" . _("Pool") . "</th>";
@@ -733,7 +733,7 @@ function SeasonPoolGamesTable($formId, $seasonId, $series = null) {
     $pools = SeriesPools($seriesRow['series_id']);
     foreach ($pools as $pool) {
       $html .= "<tr>";
-      if (PoolTotalPlayedGames($pool['pool_id']) < count(PoolGames($pool['pool_id'])) && PoolIsMoveFromPoolsPlayed($pool['pool_id'])) {
+      if ($disableunfinished && PoolTotalPlayedGames($pool['pool_id']) < count(PoolGames($pool['pool_id'])) && PoolIsMoveFromPoolsPlayed($pool['pool_id'])) {
         $checked = "disabled='disabled'";
       } else {
         $checked = "";

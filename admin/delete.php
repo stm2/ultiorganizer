@@ -66,7 +66,7 @@ if (empty($mode)) {
     $html .= "<p>" . _("Select pools to play or undo") . ":</p>\n";
     $html .= "<form method='post' id='delete_form' action='" . getLinkUrl($seasonId, $seriesId, $mode) . "'>";
     
-    $html .= SeasonPoolGamesTable('delete_form', $seasonId, array( 0 => array( 'series_id' => $seriesId, 'name' => SeriesName($seriesId))));
+    $html .= SeasonPoolGamesTable('delete_form', $seasonId, array( 0 => array( 'series_id' => $seriesId, 'name' => SeriesName($seriesId))), true);
     
     $html .= "<p><input class='button' type='submit' name='reset_games' value='" . _("Reset played games") . "'/></p>";
     $html .= "<div>";

@@ -176,7 +176,7 @@ if (empty($seasonId)) {
   
   $html .= "<p>" . _("Select pools to play or undo") . ":</p>\n";
   
-  $html .= SeasonPoolGamesTable('tables', $seasonId, null);
+  $html .= SeasonPoolGamesTable('tables', $seasonId, null, false);
   
   $html .= "<p><input class='button' type='submit' name='simulate' value='" . _("Simulate") . "'/> <input class='button' type='submit' name='reset' value='" . _("Reset played games") . "'/></p>";
   $html .= "<div>";
