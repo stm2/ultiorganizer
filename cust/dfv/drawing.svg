@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="200.08958mm"
+   height="145.42888mm"
+   viewBox="0 0 200.08958 145.42888"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="drawing.svg"
+   inkscape:export-filename="/home/steffen/workspace.php/Ultiorganizer/cust/dfv/drawing.png"
+   inkscape:export-xdpi="180.07014"
+   inkscape:export-ydpi="180.07014">
+  <defs
+     id="defs2">
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker7185"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path7183"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker7177"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path7175"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6889"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path6887"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6881"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         id="path6879"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker5211"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5209" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path4830"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker5193"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5191" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker5169"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5167" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker5149"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5147" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path4827"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <linearGradient
+       id="linearGradient6332"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6330" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6326"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6324" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6284">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop6280" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="1"
+         id="stop6282" />
+    </linearGradient>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter6320"
+       x="-0.29087454"
+       width="1.5817491"
+       y="-0.47222218"
+       height="1.9444444">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="17.038431"
+         id="feGaussianBlur6322" />
+    </filter>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6364"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6366"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6368"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6388"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6390"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6392"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6284"
+       id="radialGradient6364-8"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.65088067,0.00517358,-0.00301929,0.37985438,47.726141,23.400499)"
+       cx="103.96784"
+       cy="159.08891"
+       fx="103.96784"
+       fy="159.08891"
+       r="70.291878" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter6320-2"
+       x="-0.29087454"
+       width="1.5817491"
+       y="-0.47222218"
+       height="1.9444444">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="17.038431"
+         id="feGaussianBlur6322-0" />
+    </filter>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker5149-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5147-5" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker5211-9"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path5209-2" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart-2"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4827-8"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-9"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4830-7"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.00000003pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="387.54935"
+     inkscape:cy="231.05795"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1055"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid6340"
+       originx="-4.9552088"
+       originy="-154.37174" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-4.9552088,2.8006347)">
+    <g
+       id="g4801"
+       transform="translate(2.9556278e-8,-7.9375165)">
+      <path
+         style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:15.11785603;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+         d="M 76.171517,16.54167 H 129.78492 V 44.261825 H 76.171517 Z"
+         id="path6358-2"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="ccccc" />
+      <rect
+         id="rect6360-3"
+         width="140.58376"
+         height="86.595329"
+         x="44.62458"
+         y="41.071335"
+         style="opacity:0.68300003;fill:url(#radialGradient6364-8);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320-2)"
+         transform="matrix(0.47303052,0,0,0.38892006,50.641009,-2.8702902)" />
+      <text
+         id="text6396"
+         y="26.603466"
+         x="104.98302"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+           y="26.603466"
+           x="104.98302"
+           id="tspan6394"
+           sodipodi:role="line">1. Liga</tspan><tspan
+           id="tspan4563"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+           y="39.832634"
+           x="104.98302"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <g
+       id="g4681"
+       transform="translate(2.4365541,-11.845155)">
+      <g
+         transform="matrix(0.53324573,0,0,0.47622319,92.794001,54.398219)"
+         id="g6356">
+        <path
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+           d="M 52.916673,48.291673 H 153.45833 V 106.5 H 52.916673 Z"
+           id="path6352"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccc" />
+        <rect
+           id="rect6354"
+           width="140.58376"
+           height="86.595329"
+           x="44.62458"
+           y="41.071335"
+           style="opacity:0.68300003;fill:url(#radialGradient6366);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+           transform="matrix(0.88707793,0,0,0.81667605,5.0391063,7.529363)" />
+      </g>
+      <text
+         id="text6396-3"
+         y="87.457634"
+         x="149.8231"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+           y="87.457634"
+           x="149.8231"
+           id="tspan6394-6"
+           sodipodi:role="line">2. Liga Süd</tspan><tspan
+           id="tspan4563-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+           y="100.6868"
+           x="149.8231"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <g
+       id="g7577">
+      <g
+         id="g4815">
+        <path
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0"
+           id="path6358"
+           d="m 28.894887,65.550679 h 53.61341 v 27.720155 h -53.61341 z"
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:15.11785603;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="57.706394"
+           y="75.61248"
+           id="text6396-5"><tspan
+             sodipodi:role="line"
+             id="tspan6394-3"
+             x="57.706394"
+             y="75.61248"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332">2. Liga Nord</tspan><tspan
+             sodipodi:role="line"
+             x="57.706394"
+             y="88.841644"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.26458332"
+             id="tspan4563-5">Mixed/Frauen/Open</tspan></text>
+      </g>
+      <rect
+         id="rect6360"
+         width="140.58376"
+         height="86.595329"
+         x="44.62458"
+         y="41.071335"
+         style="opacity:0.68300003;fill:url(#radialGradient6364);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+         transform="matrix(0.47303052,0,0,0.38892007,3.3643794,46.138721)" />
+    </g>
+    <g
+       id="g4731"
+       transform="translate(4.6525902,-13.229166)">
+      <g
+         id="g6350"
+         transform="matrix(0.29004957,0,0,0.2909391,-2.1192916,113.61673)">
+        <path
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0"
+           id="path6346"
+           d="M 52.916673,48.291673 H 153.45833 V 106.5 H 52.916673 Z"
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" />
+        <rect
+           transform="matrix(0.88707793,0,0,0.81667605,5.0391063,7.529363)"
+           style="opacity:0.68300003;fill:url(#radialGradient6368);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+           y="41.071335"
+           x="44.62458"
+           height="86.595329"
+           width="140.58376"
+           id="rect6348" />
+      </g>
+      <text
+         id="text6396-6"
+         y="134.13528"
+         x="28.855104"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.44644022px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.136161"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="134.13528"
+           x="28.855104"
+           id="tspan6394-2"
+           sodipodi:role="line">3. Liga NW</tspan><tspan
+           id="tspan4563-9"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.54167223px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="140.94333"
+           x="28.855104"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <g
+       id="g4723"
+       transform="translate(2.0067567,-14.814926)">
+      <g
+         transform="matrix(0.29004957,0,0,0.2909391,48.151542,115.20249)"
+         id="g6386">
+        <path
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+           d="M 52.916673,48.291673 H 153.45833 V 106.5 H 52.916673 Z"
+           id="path6382"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccc" />
+        <rect
+           id="rect6384"
+           width="140.58376"
+           height="86.595329"
+           x="44.62458"
+           y="41.071335"
+           style="opacity:0.68300003;fill:url(#radialGradient6388);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+           transform="matrix(0.88707793,0,0,0.81667605,5.0391063,7.529363)" />
+      </g>
+      <text
+         id="text6396-6-1"
+         y="135.72105"
+         x="79.125938"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.44644022px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.136161"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="135.72105"
+           x="79.125938"
+           id="tspan6394-2-2"
+           sodipodi:role="line">3. Liga NO</tspan><tspan
+           id="tspan4563-9-7"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.54167223px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="142.5291"
+           x="79.125938"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <g
+       id="g4715"
+       transform="translate(-0.58117828,-14.814926)">
+      <g
+         id="g6380"
+         transform="matrix(0.29004957,0,0,0.2909391,98.364477,115.20249)">
+        <path
+           sodipodi:nodetypes="ccccc"
+           inkscape:connector-curvature="0"
+           id="path6376"
+           d="M 52.916673,48.291673 H 153.45833 V 106.5 H 52.916673 Z"
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal" />
+        <rect
+           transform="matrix(0.88707793,0,0,0.81667605,5.0391063,7.529363)"
+           style="opacity:0.68300003;fill:url(#radialGradient6390);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+           y="41.071335"
+           x="44.62458"
+           height="86.595329"
+           width="140.58376"
+           id="rect6378" />
+      </g>
+      <text
+         id="text6396-6-0"
+         y="135.72105"
+         x="129.33887"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.44644022px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.136161"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="135.72105"
+           x="129.33887"
+           id="tspan6394-2-9"
+           sodipodi:role="line">3. Liga SW</tspan><tspan
+           id="tspan4563-9-3"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.54167223px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="142.5291"
+           x="129.33887"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <g
+       id="g4689"
+       transform="translate(-3.2270114,-14.814926)">
+      <g
+         transform="matrix(0.29004957,0,0,0.2909391,148.63531,115.20249)"
+         id="g6374">
+        <path
+           style="fill:#006699;fill-opacity:1;stroke:#006699;stroke-width:30;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+           d="M 52.916673,48.291673 H 153.45833 V 106.5 H 52.916673 Z"
+           id="path6370"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="ccccc" />
+        <rect
+           id="rect6372"
+           width="140.58376"
+           height="86.595329"
+           x="44.62458"
+           y="41.071335"
+           style="opacity:0.68300003;fill:url(#radialGradient6392);fill-opacity:1;stroke-width:0.26458332;filter:url(#filter6320)"
+           transform="matrix(0.88707793,0,0,0.81667605,5.0391063,7.529363)" />
+      </g>
+      <text
+         id="text6396-6-6"
+         y="135.72105"
+         x="179.60971"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.44644022px;line-height:1.25;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.136161"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="135.72105"
+           x="179.60971"
+           id="tspan6394-2-0"
+           sodipodi:role="line">3. Liga SO</tspan><tspan
+           id="tspan4563-9-6"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.54167223px;font-family:Aller;-inkscape-font-specification:Aller;text-align:center;text-anchor:middle;stroke-width:0.136161"
+           y="142.5291"
+           x="179.60971"
+           sodipodi:role="line">Mixed/Frauen/Open</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="137.58333"
+       y="135.60417"
+       id="text4649"><tspan
+         sodipodi:role="line"
+         id="tspan4647"
+         x="137.58333"
+         y="144.96794"
+         style="stroke-width:0.26458332"></tspan></text>
+    <rect
+       style="opacity:0.68300003;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="bbox"
+       width="190.5"
+       height="129.64583"
+       x="10.583333"
+       y="0.66665351"
+       inkscape:export-xdpi="180.07014"
+       inkscape:export-ydpi="180.07014"
+       inkscape:label="bbox" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 10.583333,130.31249 c 0,0 19.087796,-6.4256 23.245535,-5.85864 4.157739,0.56696 16.393117,5.85864 24.379464,5.85864 7.986347,0 17.76488,-6.4256 23.245536,-5.85864 5.480656,0.56696 16.393116,5.85864 24.379462,5.85864 7.98635,0 19.08781,-6.4256 23.24554,-5.85864 4.15773,0.56696 16.39323,5.81476 24.37946,5.85864 8.8633,0.0487 21.73363,-6.4256 25.89137,-5.85864 4.15774,0.56696 19.0878,5.85864 19.0878,5.85864 v 7.9375 H 10.583333 Z"
+       id="path4807"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="czszszszcccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker5149);marker-end:url(#marker5211)"
+       d="m 103.1875,44.322904 v 6.614582 l -46.302083,10e-7 1e-6,5.291668"
+       id="path4825"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:url(#Arrow1Lend)"
+       d="m 103.1875,44.322904 v 6.614582 l 48.94792,10e-7 v 5.291667"
+       id="path5131"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccc" />
+    <g
+       id="g7241"
+       transform="matrix(0.78939021,0,0,0.78939021,15.563771,21.058756)">
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4825-3"
+         d="m 55.5625,102.67049 v 3.8295 H 26.458331 v 3.06359"
+         style="fill:none;stroke:#000000;stroke-width:0.15317982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker5149-7);marker-end:url(#marker5211-9)" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path5131-6"
+         d="m 55.5625,102.67049 v 3.8295 h 29.104167 v 3.06359"
+         style="fill:none;stroke:#000000;stroke-width:0.15317982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart-2);marker-end:url(#Arrow1Lend-9)" />
+    </g>
+    <g
+       transform="matrix(0.78939021,0,0,0.78939021,109.49085,21.058756)"
+       id="g7539">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.15317982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker5149-7);marker-end:url(#marker5211-9)"
+         d="m 55.5625,102.67049 v 3.8295 H 26.458331 v 3.06359"
+         id="path7535"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="fill:none;stroke:#000000;stroke-width:0.15317982px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart-2);marker-end:url(#Arrow1Lend-9)"
+         d="m 55.5625,102.67049 v 3.8295 h 29.104167 v 3.06359"
+         id="path7537"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccc" />
+    </g>
+  </g>
+</svg>
