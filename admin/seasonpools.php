@@ -63,14 +63,15 @@ if (!empty($_POST['save'])) {
     $pp['name'] = !empty($_POST["name$pool_id"]) ? $_POST["name$pool_id"] : "no name";
     $pp['type'] = intval($_POST["type$pool_id"]);
     $pp['ordering'] = !empty($_POST["ordering$pool_id"]) ? $_POST["ordering$pool_id"] : "A";
+    $pp['visible'] = isset($_POST["visible$pool_id"]) ? 1 : 0;
     if (isset($_POST["root$pool_id"])) {
       $root = $_POST["root$pool_id"];
       $pp['continuingpool'] = 1;
+      $pp['visible'] = 0;
     } else {
       $root = $pool_id;
       $pp['continuingpool'] = isset($_POST["continuation$root"]) ? 1 : 0;
     }
-    $pp['visible'] = isset($_POST["visible$root"]) ? 1 : 0;
     $pp['placementpool'] = isset($_POST["placement$root"]) ? 1 : 0;
     SetPoolDetails($pool_id, $pp);
   }
@@ -178,7 +179,7 @@ foreach($pools as $pool){
     $rootid = PoolPlayoffRoot($id);
     if($rootid!=$id){
       $info['continuingpool'] = 1;
-      $root_info = PoolInfo($rootid);
+      // $root_info = PoolInfo($rootid);
       $is_visible .= " disabled='disabled'";
       $is_continuation .= " disabled='disabled'";
       $is_placement .= " disabled='disabled'";
