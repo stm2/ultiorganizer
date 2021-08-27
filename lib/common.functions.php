@@ -861,12 +861,12 @@ function CreateOrdering($tables, $orderby) {
 			die("Invalid field '".$field."'");
 		}
 		if (isset($table)) {
-			$field = $table.".".$field;
+			$field = '`' . $table. '`.`' . $field . '`';
 		}
-		$ret .= ", ".$field." ".$direction;
+		$ret .= ", " . $field . " " . $direction;
 	}
 	if (strlen($ret) > 0) {
-	    $ret = "ORDER BY".mb_substr($ret, 1);
+	    $ret = "ORDER BY" . mb_substr($ret, 1);
 	} 
 	return $ret;
 }

@@ -122,7 +122,7 @@ class EventDataXMLHandler{
     $seriesId = (int)$ser['series_id'];
     
     //uo_team
-    $teams = DBQuery("SELECT * FROM uo_team WHERE series='$seriesId' ORDER BY rank");
+    $teams = DBQuery("SELECT * FROM uo_team WHERE series='$seriesId' ORDER BY `rank`");
     while($team = mysqli_fetch_assoc($teams)){
       if ($template) {
         $team['activerank'] = null;

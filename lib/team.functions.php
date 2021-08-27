@@ -131,7 +131,7 @@ function TeamProfile($teamId)
 
 function TeamFullInfo($teamId)
 {
-  $query = sprintf("SELECT pj.*, club.name as clubname, ps.name AS lastname, pjs.rank AS poolrank, pjs.activerank
+  $query = sprintf("SELECT pj.*, club.name as clubname, ps.name AS lastname, pjs.`rank` AS poolrank, pjs.activerank
 		FROM uo_team pj 
 		LEFT JOIN uo_pool ps ON (pj.pool=ps.pool_id) 
 		LEFT JOIN uo_team_pool pjs ON (pjs.team=pj.team_id)
@@ -147,7 +147,7 @@ function TeamFullInfo($teamId)
 
 function TeamPoolInfo($teamId, $poolId)
 {
-  $query = sprintf("SELECT pj.*, club.name as clubname, ps.name AS lastname, pjs.rank AS poolrank, pjs.activerank
+  $query = sprintf("SELECT pj.*, club.name as clubname, ps.name AS lastname, pjs.`rank` AS poolrank, pjs.activerank
 		FROM uo_team pj 
 		LEFT JOIN uo_team_pool pjs ON (pjs.team=pj.team_id)
 		LEFT JOIN uo_pool ps ON (pjs.pool=ps.pool_id) 		
@@ -397,7 +397,7 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
   if($move['ismoved']){
 
     $query = sprintf("SELECT team FROM uo_team_pool
-  					WHERE pool=%d AND rank=%d",
+  					WHERE pool=%d AND `rank`=%d",
     (int)$move['topool'],
     (int)$move['torank']);
 
@@ -417,7 +417,7 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
       }
     }
     foreach ($team_exist as $key => $exists) {
-      $query = sprintf("DELETE FROM uo_team_pool WHERE pool=%d AND rank=%d AND team=%d",
+      $query = sprintf("DELETE FROM uo_team_pool WHERE pool=%d AND `rank`=%d AND team=%d",
           (int) $move['topool'],
           (int) $move['torank'],
           (int) $exists['team']);
@@ -431,7 +431,7 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
 
   //insert team to next pool
   $query = sprintf("INSERT IGNORE INTO uo_team_pool
-				(team, pool, rank, activerank) 
+				(team, pool, `rank`, activerank) 
 				VALUES	('%s','%s','%s','%s')",
   (int)$teamId,
   (int)$move['topool'],
@@ -1238,7 +1238,7 @@ function AddTeam($params) {
   if (hasEditTeamsRight($params['series'])) { /* FIXME: pool obsolete? */
     $query = sprintf("
 			INSERT INTO uo_team
-			(name, pool, rank, valid, series) 
+			(name, pool, `rank`, valid, series) 
 			VALUES ('%s', %d, %d, %d, %d)",
       mysql_adapt_real_escape_string($params['name']),
       intval($params['pool']),
@@ -1270,7 +1270,7 @@ function SetTeam($params) { /* FIXME: pool obsolete? */
     $query = sprintf("
 			UPDATE uo_team SET
 			name='%s', pool=%d, abbreviation='%s',
-			rank=%d, valid=%d, series=%d
+			`rank`=%d, valid=%d, series=%d
 			WHERE team_id=%d",
       mysql_adapt_real_escape_string($params['name']),
       intval($params['pool']),
@@ -1322,7 +1322,7 @@ function SetTeamSerieRank($teamId, $poolId, $rank, $activerank) {
   if (hasEditTeamsRight($poolInfo['series'])) {
     $query = sprintf("
 			UPDATE uo_team_pool SET
-			rank=%d, activerank=%d
+			`rank`=%d, activerank=%d
 			WHERE team=%d AND pool=%d",
     (int) $rank,
     (int) $activerank,
@@ -1341,7 +1341,7 @@ function SetTeamPoolRank($teamId, $poolId, $rank) {
   if (hasEditTeamsRight($poolInfo['series'])) {
     $query = sprintf("
 			UPDATE uo_team_pool SET
-			rank=%d
+			`rank`=%d
 			WHERE team=%d AND pool=%d",
         (int) $rank,
         (int) $teamId,
@@ -1376,7 +1376,7 @@ function SetTeamSeeding($seriesId, $teamId, $seed) {
   if (hasEditTeamsRight($seriesId)) {
     $query = sprintf("
 			UPDATE uo_team SET
-			rank=%d
+			`rank`=%d
 			WHERE team_id=%d",
     (int)$seed,
     (int)$teamId);

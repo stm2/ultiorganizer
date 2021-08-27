@@ -20,7 +20,7 @@ function ResolvePlayoffPoolStandings($poolId){
 		SELECT j.team_id, js.activerank 
 		FROM uo_team AS j INNER JOIN uo_team_pool AS js ON (j.team_id = js.team) 
 		WHERE js.pool=%d 
-		ORDER BY js.rank ASC",
+		ORDER BY js.`rank` ASC",
 		(int)$poolId);
 	
 	$teams = DBQueryToArray($query);
@@ -100,7 +100,7 @@ function ResolveCrossMatchPoolStandings($poolId){
 		SELECT j.team_id, js.activerank 
 		FROM uo_team AS j INNER JOIN uo_team_pool AS js ON (j.team_id = js.team) 
 		WHERE js.pool=%d 
-		ORDER BY js.activerank ASC, js.rank ASC",
+		ORDER BY js.activerank ASC, js.`rank` ASC",
 		(int)$poolId);
 	
 	$teams = DBQueryToArray($query);
@@ -198,7 +198,7 @@ function SolveStandingsAccordingSwissdraw($points){
 	//sort according victorypoints
 	usort($points, "CompareTeamsSwissdraw");
 	
-	//update active rank
+	//update active `rank`
 	$stand=1;
 	$points[0]['arank']=1;
 	
@@ -219,7 +219,7 @@ function ResolveSwissdrawPoolStandings($poolId)
 		SELECT j.team_id, js.activerank 
 		FROM uo_team AS j INNER JOIN uo_team_pool AS js ON (j.team_id = js.team) 
 		WHERE js.pool='%s' 
-		ORDER BY js.activerank ASC, js.rank ASC",
+		ORDER BY js.activerank ASC, js.`rank` ASC",
 		mysql_adapt_real_escape_string($poolId));
 		
 	$standings = mysql_adapt_query($query);
@@ -282,7 +282,7 @@ function ResolveSeriesPoolStandings($poolId){
 	SELECT j.team_id, js.activerank 
 	FROM uo_team AS j INNER JOIN uo_team_pool AS js ON (j.team_id = js.team) 
 	WHERE js.pool='%s' 
-	ORDER BY js.activerank ASC, js.rank ASC",
+	ORDER BY js.activerank ASC, js.`rank` ASC",
   mysql_adapt_real_escape_string($poolId));
 
   $standings = mysql_adapt_query($query);
@@ -452,7 +452,7 @@ function SolveStandings($points, $cmpf){
 	//sort according wins
 	usort($points, $cmpf); 
 	
-	//update active rank
+	//update active `rank`
 	$offset=1;
 	
 	for($i=1; $i < count($points); $i++){
@@ -477,7 +477,7 @@ function FindSameRank($points, $offset)
 	for ($i=$offset; $i < count($points) && !empty($points[$i]['team']); $i++) 
 		{
 		if($points[$i]['arank']==$points[$i-1]['arank']){
-			//if first found, then previous team was with same rank
+			//if first found, then previous team was with same `rank`
 			if(!$total)
 				{
 				$samerank[$total]['team'] = $points[$i-1]['team'];

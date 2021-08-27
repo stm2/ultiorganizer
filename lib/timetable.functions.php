@@ -756,7 +756,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
       break;
       	
     case "crossmatch":
-      $query .= " ORDER BY homepool.rank ASC, game_id ASC";
+      $query .= " ORDER BY homepool.`rank` ASC, game_id ASC";
       break;
   }
 

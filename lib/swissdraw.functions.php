@@ -55,7 +55,7 @@ function AutoResolveTies($poolId) {
 //	print "Resolving ties in pool".$poolId."<br>";
 	
 	$query = sprintf("
-		SELECT team,rank,activerank
+		SELECT team,`rank`,activerank
 		FROM uo_team_pool
 		WHERE pool='%s'
 		ORDER BY activerank,team",
@@ -72,7 +72,7 @@ function AutoResolveTies($poolId) {
 //		print_r($row);
 		if ($row['activerank']<$i && !empty($row['activerank'])){
 			// set this team's activerank to $i
-//			print "Adjusting team ".$row['team']."'s rank to ".$i."<br>";
+//			print "Adjusting team ".$row['team']."'s `rank` to ".$i."<br>";
 			$query = sprintf("
 				UPDATE uo_team_pool
 				SET activerank=%d
@@ -305,7 +305,7 @@ function GenerateSwissdrawPools($poolId, $rounds, $generate=true){
 		$pools = array();
 		
 		$query = sprintf("SELECT team.team_id from uo_team_pool as tp left join uo_team team 
-				on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.rank",
+				on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
 				(int)$poolId);
 		$result = DBQuery($query);
 		

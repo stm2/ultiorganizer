@@ -106,7 +106,7 @@ function SeriesTypes() {
  */
 function SeriesTeams($seriesId, $orderbyseeding=false){
   $query = sprintf("SELECT t.team_id, t.name, t.abbreviation, t.club, cl.name AS clubname,
-			t.country, c.name AS countryname, t.rank, c.flagfile, c.flagfile
+			t.country, c.name AS countryname, t.`rank`, c.flagfile, c.flagfile
 			FROM uo_team t
 			LEFT JOIN uo_series ser ON(ser.series_id=t.series)
 			LEFT JOIN uo_club cl ON(cl.club_id=t.club)
@@ -117,7 +117,7 @@ function SeriesTeams($seriesId, $orderbyseeding=false){
   (int)($seriesId));
 
   if($orderbyseeding){
-    $query .= " ORDER BY t.rank, t.name, t.team_id";
+    $query .= " ORDER BY t.`rank`, t.name, t.team_id";
   }else{
     $query .= " ORDER BY t.name, t.team_id";
   }
@@ -130,12 +130,12 @@ function SeriesTeams($seriesId, $orderbyseeding=false){
  * @return array PHP array of teams.
  */
 function SeriesTeamsWithoutPool($seriesId){
-  $query = sprintf("SELECT pj.team_id, pj.name, pj.club, club.name as clubname, pj.rank 
+  $query = sprintf("SELECT pj.team_id, pj.name, pj.club, club.name as clubname, pj.`rank` 
 		FROM uo_team pj
 		LEFT JOIN uo_team_pool pjs ON (pj.team_id=pjs.team)
 		LEFT JOIN uo_club club ON (pj.club=club.club_id)	
 		WHERE pj.series = %d AND pjs.pool IS NULL
-		ORDER BY pj.rank ASC",
+		ORDER BY pj.`rank` ASC",
     (int)$seriesId);
   return DBQueryToArray($query);
 }
@@ -782,7 +782,7 @@ function SeriesCopyTeams($to, $from) {
   if (isSeasonAdmin(SeriesSeasonId($to))) {
     $teams = SeriesTeams($from);
     foreach($teams as $team){
-      $query = sprintf("INSERT INTO uo_team(name, club, country, rank, abbreviation, valid, series )
+      $query = sprintf("INSERT INTO uo_team(name, club, country, `rank`, abbreviation, valid, series )
       			VALUES ('%s',%d,%d,%d,'%s',1,%d)",
           mysql_adapt_real_escape_string($team['name']),
           (int) $team['club'],

@@ -192,7 +192,7 @@ function PoolTypes() {
  */
 function PoolTeams($poolId, $order="rank"){
   $query = sprintf("SELECT uo_team.team_id, uo_team.name, uo_team.club, club.name AS clubname,
-        uo_team_pool.Rank, uo_team.country, c.name AS countryname, uo_team.rank AS seed,
+        uo_team_pool.`rank`, uo_team.country, c.name AS countryname, uo_team.`rank` AS seed,
         c.flagfile, uo_team_pool.activerank
         FROM uo_team
         RIGHT JOIN uo_team_pool ON (uo_team.team_id=uo_team_pool.team)
@@ -203,16 +203,16 @@ function PoolTeams($poolId, $order="rank"){
 
   switch($order) {
     case "seed":
-      $query .= " ORDER BY uo_team_pool.Rank ASC";
+      $query .= " ORDER BY uo_team_pool.`rank` ASC";
       break;
     case "name":
       $query .= " ORDER BY uo_team.name, uo_team.team_id";
       break;
     case "rank":
-      $query .= " ORDER BY uo_team_pool.activerank ASC, uo_team_pool.Rank ASC, uo_team.team_id";
+      $query .= " ORDER BY uo_team_pool.activerank ASC, uo_team_pool.`rank` ASC, uo_team.team_id";
       break;
     default:
-      $query .= " ORDER BY uo_team_pool.activerank ASC, uo_team_pool.Rank ASC, uo_team.team_id ";
+      $query .= " ORDER BY uo_team_pool.activerank ASC, uo_team_pool.`rank` ASC, uo_team.team_id ";
       break;
   }
 
@@ -813,7 +813,7 @@ function PoolTeamFromInitialRank($poolId, $rank,$countbye=true){
             FROM uo_team AS j
             LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
             LEFT JOIN uo_country c ON(c.country_id=j.country)
-            WHERE js.pool=%d AND js.rank=%d",
+            WHERE js.pool=%d AND js.`rank`=%d",
     (int)$poolId,
     (int)$rank);
   }else{
@@ -822,11 +822,11 @@ function PoolTeamFromInitialRank($poolId, $rank,$countbye=true){
             FROM uo_team AS j
             LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
             LEFT JOIN uo_country c ON(c.country_id=j.country)
-            WHERE js.pool=%d AND js.rank=%d+
+            WHERE js.pool=%d AND js.`rank`=%d+
                 (SELECT count(j.team_id)
                  FROM uo_team AS j
                  LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
-                 WHERE js.pool=%d and js.rank<=%d and j.valid=2)",
+                 WHERE js.pool=%d and js.`rank`<=%d and j.valid=2)",
     (int)$poolId,
     (int)$rank,
     (int)$poolId,
@@ -1435,7 +1435,7 @@ function PoolDeleteTeam($poolId, $teamId, $checkrights=true) {
  *
  * @param int $curpool - old pool
  * @param int $teamId - team to change
- * @param int $rank - rank in new pool
+ * @param int $rank - `rank` in new pool
  * @param int $newpool - new pool
  */
 function PoolSetTeam($curpool, $teamId, $rank, $newpool) {
@@ -1453,7 +1453,7 @@ function PoolSetTeam($curpool, $teamId, $rank, $newpool) {
 
   if ($newpool > 0){
     $query = sprintf("UPDATE uo_team_pool
-                      SET rank=%d, pool=%d WHERE pool=%d AND team=%d",
+                      SET `rank`=%d, pool=%d WHERE pool=%d AND team=%d",
                       (int) $rank, (int) $newpool, (int) $curpool, (int) $teamId);
     DBQuery($query);
   } else {
@@ -1476,7 +1476,7 @@ function PoolSetTeam($curpool, $teamId, $rank, $newpool) {
  *
  * @param int $poolId
  * @param int $teamId
- * @param int $rank - team rank in pool
+ * @param int $rank - team `rank` in pool
  * @param int $updaterank - if activerank is updated
  */
 function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=true) {
@@ -1485,7 +1485,7 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
   if (!$checkrights || hasEditTeamsRight($poolInfo['series'])) {
     if($updaterank){
       $query = sprintf("INSERT INTO uo_team_pool
-                  (team, pool, rank, activerank)
+                  (team, pool, `rank`, activerank)
                   VALUES (%d,%d,%d,%d)",
       (int)$teamId,
       (int)$poolId,
@@ -1493,7 +1493,7 @@ function PoolAddTeam($poolId, $teamId, $rank, $updaterank=false, $checkrights=tr
       (int)$rank);
     }else{
       $query = sprintf("INSERT INTO uo_team_pool
-                  (team, pool, rank)
+                  (team, pool, `rank`)
                   VALUES (%d,%d,%d)",
       (int)$teamId,
       (int)$poolId,
@@ -1581,7 +1581,7 @@ function PoolAddMove($frompool, $topool, $fromplacing, $torank,$pteamname) {
  * @param int $frompool - move from pool
  * @param int $oldfpos - old from placing value
  * @param int $fromplacing - new from placing value
- * @param int $torank - new to rank value
+ * @param int $torank - new to `rank` value
  */
 function PoolSetMove($frompool, $oldfpos, $fromplacing, $torank) {
   $poolInfo = PoolInfo($frompool);
@@ -1981,7 +1981,7 @@ function GeneratePlayoffPools($poolId, $generate=true){
     $pools = array();
 
     $query = sprintf("SELECT team.team_id from uo_team_pool as tp left join uo_team team
-                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.rank",
+                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
     (int)$poolId);
     $result = DBQuery($query);
 
@@ -2147,7 +2147,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
 
       $poolInfo = PoolInfo($poolId);
       $query = sprintf("SELECT team.team_id from uo_team_pool as tp left join uo_team team
-                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.rank",
+                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
       (int)$poolId);
       $result = DBQuery($query);
 
