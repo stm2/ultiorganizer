@@ -27,23 +27,22 @@ if (isset($_POST['backup']) && !empty($_POST['tables']) && isSuperAdmin()){
 				for($j=0; $j<$num_fields; $j++){
 											
 					if(mysql_adapt_is_blob($result, $j) && $table=='uo_image'){
-						if (isset($row[$j]) && ($row[$j] != NULL)){ 
+						if (isset($row[$j]) && ($row[$j] !== NULL)){ 
 							$return .= '0x'.bin2hex($row[$j]);
 						}else{ 
 							$return.= 'NULL'; 
 						}
 					}elseif(mysql_adapt_is_int($result, $j)){
-						if (isset($row[$j]) && ($row[$j] != NULL)){ 
+						if (isset($row[$j]) && ($row[$j] !== NULL)){ 
 							$return .= intval($row[$j]);
 						}else{ 
 							$return.= 'NULL'; 
 						}
 					}else{
-						$row[$j] = addslashes($row[$j]);
-						$row[$j] = preg_replace("/\n/", "\\n",$row[$j]);
-					
-						if (isset($row[$j]) && ($row[$j] != NULL)){ 
-							$return.= '"'.$row[$j].'"' ; 
+						if (isset($row[$j]) && ($row[$j] !== NULL)){ 
+						  $row[$j] = addslashes($row[$j]);
+						  $row[$j] = preg_replace("/\n/", "\\n",$row[$j]);
+						  $return.= '"'.$row[$j].'"' ; 
 						}else{ 
 							$return.= 'NULL'; 
 						}
