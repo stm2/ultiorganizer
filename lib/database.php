@@ -65,6 +65,29 @@ function CheckDB() {
 }
 
 /**
+ * Starts a transaction.
+ */
+function DBTransaction() {
+  return mysqli_begin_transaction(DBLink());
+}
+
+/**
+ * Commits a transaction. 
+ */
+function DBCommit() {
+  return mysqli_commit(DBLink());
+}
+
+/**
+ * Rolls back a transaction.
+ */
+function DBRollback() {
+  return mysqli_rollback(DBLink());
+}
+
+
+
+/**
  * Returns ultiorganizer database internal version number.
  *
  * @return integer version number

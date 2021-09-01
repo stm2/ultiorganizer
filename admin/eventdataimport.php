@@ -31,7 +31,7 @@ if (empty($seasonId)) {
 $mode = 'select';
 
 if (empty($seasonId)) {
-  $button_name = 'add';
+  $button_name = 'new';
   $button_label = _("Import");
   $return_url = "?view=admin/seasons";
 } else {
@@ -78,8 +78,8 @@ if (isset($_POST['load']) && isSuperAdmin()) {
   } else {
     $html .= "<p>" . sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected"), $filename, $_FILES['restorefile']['error']) . "</p>\n";
   }
-} elseif (isset($_POST['add']) && isSuperAdmin()) {
-  $mode = 'add';
+} elseif (isset($_POST['new']) && isSuperAdmin()) {
+  $mode = 'new';
 } elseif (isset($_POST['replace'])) {
   if ($_POST['rename_mode'] === 'replace_mode') {
     $mode = 'replace';
@@ -91,9 +91,16 @@ if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
   set_time_limit(300);
   $eventdatahandler = new EventDataXMLHandler();
   
-  $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), false);
+  $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
   
-  $html .= "<p>" . preg_replace("/\n/i", "<br />\n", $eventdatahandler->debug) ."</p>\n";
+  if (empty($eventdatahandler->error))
+    $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
+  else
+    $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $eventdatahandler->error .
+      "</p>\n";
+    
+  if (!empty($_POST['mock']))
+    $html .= "<textarea cols='70' rows='10' style='width:100%'>" . $eventdatahandler->debug ."</textarea>\n";
 
   // unlink($filename);
   $imported = true;
@@ -116,7 +123,6 @@ ini_set("memory_limit", -1 );
 
 $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataimport&amp;season=".$seasonId."'>\n";
 if($imported) {
-  $html .= "<p>"._("Data imported!")."</p>";
   unset($_POST['restore']);
   unset($_POST['replace']);
 }
@@ -135,7 +141,7 @@ if ($mode == 'rename') {
     $html .= "<td class='infocell'>" . _("Event ID") . "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
     $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" . utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";
   } else {
-    $html .= "<td>" . _("Event ID") . "</td><td><input class='input' size='20' maxlength='30' name='new_season_id' value='" . utf8entities($seasonInfo['season_id']) . "'/></td>\n";
+    $html .= "<td>" . _("Event ID") . "</td><td><input class='input' size='30' maxlength='30' name='new_season_id' value='" . utf8entities($seasonInfo['season_id']) . "'/></td>\n";
     $html .= "<td>" . _("Event Name") . "</td><td><input class='input' size='30' maxlength='50' name='new_season_name' value='" . utf8entities($seasonInfo['season_name']) . "'/></td></tr>\n";
   }
   
@@ -172,7 +178,8 @@ if ($mode == 'rename') {
         ._("Team Name"). "</td><td><input class='input' $disabled size='30' maxlength='50' id='teamnames" . utf8entities($tkey) . "' name='teamnames[]' value='". utf8entities($tval['name']) ."'/></td></tr>\n";
     }
   }
-  
+  $html .= "<tr><td>&nbsp;</td><td></td></tr><tr><td class='infocell'>" . _("Mock (test only)") .
+    "</td><td><input class='input' type='checkbox' name='mock' /></td><tr>\n";
   $html .= "</table>";
 }
 

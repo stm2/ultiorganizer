@@ -20,10 +20,11 @@ class EventDataXMLHandler{
   var $uo_game=array(); //game id mapping array
   var $uo_reservation=array(); //reservation id mapping array
   var $followers = array(); // pools with unresolved followers
-  var $mode; //import mode: 'add' or 'replace'
+  var $mode; //import mode: 'new', 'insert', or 'replace'
   var $mock; // should we do a dry run?
   var $mockId = 10000;
   var $debug; // logging
+  var $error;
   var $structure; // document structure
   var $structure_seriesId; // current series in structure parse
   
@@ -34,7 +35,7 @@ class EventDataXMLHandler{
    */
   function __construct(){}
 
-  // FIXME include defense, gameevent, played (?)
+  // FIXME include defense, gameevent, played, userproperties (?)
   /**
    * Converts element data into xml-format.
    *
@@ -93,18 +94,18 @@ class EventDataXMLHandler{
     if (! empty($series))
       $select .= sprintf(" AND series IN (%s)", mysql_adapt_real_escape_string(implode(",", $series)));
     
-    $query = "SELECT rr.* FROM uo_reservation rr 
-        LEFT JOIN uo_game gg ON (gg.reservation = rr.id)
-        LEFT JOIN uo_pool pp on (pp.pool_id = gg.pool)
+    $query = "SELECT `rr`.* FROM `uo_reservation` `rr` 
+        LEFT JOIN `uo_game` `gg` ON (`gg`.`reservation` = `rr`.`id`)
+        LEFT JOIN `uo_pool` `pp` on (`pp`.`pool_id` = `gg`.`pool`)
         
-    WHERE $select GROUP BY rr.id";
+    WHERE $select GROUP BY `rr`.`id`";
     $reservations = DBQuery($query);
     
     while ($reservation = mysqli_fetch_assoc($reservations)) {
       $ret .= $this->RowToXML("uo_reservation", $reservation);
     }
     
-    $times = DBQuery("SELECT * FROM uo_movingtime WHERE season='" . mysql_adapt_real_escape_string($eventId) . "'");
+    $times = DBQuery("SELECT * FROM `uo_movingtime` WHERE `season`='" . mysql_adapt_real_escape_string($eventId) . "'");
     while ($time = mysqli_fetch_assoc($times)) {
       $ret .= $this->RowToXML("uo_movingtime", $time);
     }
@@ -122,7 +123,7 @@ class EventDataXMLHandler{
     $seriesId = (int)$ser['series_id'];
     
     //uo_team
-    $teams = DBQuery("SELECT * FROM uo_team WHERE series='$seriesId' ORDER BY `rank`");
+    $teams = DBQuery("SELECT * FROM `uo_team` WHERE `series`='$seriesId' ORDER BY `rank`");
     while($team = mysqli_fetch_assoc($teams)){
       if ($template) {
         $team['activerank'] = null;
@@ -130,7 +131,7 @@ class EventDataXMLHandler{
       $ret .= $this->RowToXML("uo_team", $team, false);
       
       //uo_player
-      $players = DBQuery("SELECT * FROM uo_player WHERE team='".mysql_adapt_real_escape_string($team['team_id'])."'");
+      $players = DBQuery("SELECT * FROM `uo_player` WHERE `team`='".mysql_adapt_real_escape_string($team['team_id'])."'");
       while($player = mysqli_fetch_assoc($players)){
         $ret .= $this->RowToXML("uo_player", $player);
       }
@@ -148,20 +149,20 @@ class EventDataXMLHandler{
       //             GROUP BY scheduling_id");
     
     // this is faster
-    DBQuery("SELECT scheduling_id, MIN(name) as name FROM (
-                (SELECT sched.*
-                    FROM uo_scheduling_name sched
-                    LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
-                    LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
-                    WHERE pool.series = $seriesId)
+    DBQuery("SELECT `scheduling_id`, MIN(`name`) as `name` FROM (
+                (SELECT `sched`.*
+                    FROM `uo_scheduling_name` `sched`
+                    LEFT JOIN `uo_game` `game` ON (`sched`.`scheduling_id` = `game`.`scheduling_name_home` OR `sched`.`scheduling_id` = `game`.`scheduling_name_visitor`)
+                    LEFT JOIN `uo_pool` `pool` ON (`game`.`pool` = `pool`.`pool_id`)
+                    WHERE `pool`.`series` = $seriesId)
                 UNION
-                (SELECT sched.*
-                    FROM uo_scheduling_name sched
-                    LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
-                    LEFT JOIN uo_pool pool ON (mv.frompool = pool.pool_id OR mv.topool = pool.pool_id)
-                    WHERE pool.series = $seriesId )
-                ) as unioned
-                GROUP BY scheduling_id");
+                (SELECT `sched`.*
+                    FROM `uo_scheduling_name` `sched`
+                    LEFT JOIN `uo_moveteams` `mv` ON (`sched`.`scheduling_id` = `mv`.`scheduling_id`)
+                    LEFT JOIN `uo_pool` `pool` ON (`mv`.`frompool` = `pool`.`pool_id` OR `mv`.`topool` = `pool`.`pool_id`)
+                    WHERE `pool`.`series` = $seriesId )
+                ) as `unioned`
+                GROUP BY `scheduling_id`");
     
     while ($row = mysqli_fetch_assoc($schedulings)) {
       $ret .= $this->RowToXML("uo_scheduling_name", $row);
@@ -189,7 +190,7 @@ class EventDataXMLHandler{
   
   function write_pools($seriesId, $template) {
     $ret = "";
-    $pools = DBQuery("SELECT * FROM uo_pool WHERE series='$seriesId'");
+    $pools = DBQuery("SELECT * FROM `uo_pool` WHERE `series`='$seriesId'");
     while($poolRow = mysqli_fetch_assoc($pools)){
       if ($template) {
         $poolRow['played'] = 0;
@@ -199,7 +200,7 @@ class EventDataXMLHandler{
 
       if (!$template || !$this->is_continuing($poolRow)) { /* FIXME playoff pools may have continuing == FALSE */
         //uo_team_pool
-        $teampools = DBQuery("SELECT * FROM uo_team_pool WHERE pool='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
+        $teampools = DBQuery("SELECT * FROM `uo_team_pool` WHERE `pool`='".mysql_adapt_real_escape_string($poolRow['pool_id'])."'");
         while($teampool = mysqli_fetch_assoc($teampools)){
           $ret .= $this->RowToXML("uo_team_pool", $teampool);
         }
@@ -214,7 +215,7 @@ class EventDataXMLHandler{
 
   function write_games($poolId, $template) {
     $ret = "";
-    $games = DBQuery("SELECT * FROM uo_game WHERE pool='".mysql_adapt_real_escape_string($poolId)."'");
+    $games = DBQuery("SELECT * FROM `uo_game` WHERE `pool`='".mysql_adapt_real_escape_string($poolId)."'");
     while($gameRow = mysqli_fetch_assoc($games)){
       if($template) {
         if (!empty($gameRow['scheduling_name_home'])) {
@@ -235,17 +236,17 @@ class EventDataXMLHandler{
 
       if (!$template) {
         //uo_goal
-        $goals = DBQuery("SELECT * FROM uo_goal WHERE game='". $gameId ."'");
+        $goals = DBQuery("SELECT * FROM `uo_goal` WHERE `game`='". $gameId ."'");
         while($goal = mysqli_fetch_assoc($goals)){
           $ret .= $this->RowToXML("uo_goal", $goal);
         }
         //uo_gameevent
-        $gameevents = DBQuery("SELECT * FROM uo_gameevent WHERE game='".$gameId."'");
+        $gameevents = DBQuery("SELECT * FROM `uo_gameevent` WHERE `game`='".$gameId."'");
         while($gameevent = mysqli_fetch_assoc($gameevents)){
           $ret .= $this->RowToXML("uo_gameevent", $gameevent);
         }
         //uo_played
-        $playedplayers = DBQuery("SELECT * FROM uo_played WHERE game='".$gameId."'");
+        $playedplayers = DBQuery("SELECT * FROM `uo_played` WHERE `game`='".$gameId."'");
         while($playedplayer = mysqli_fetch_assoc($playedplayers)){
           $ret .= $this->RowToXML("uo_played", $playedplayer);
         }
@@ -257,9 +258,9 @@ class EventDataXMLHandler{
   
   function write_moveteams($seriesId, $template) {
     $ret = "";
-    $moveteams = DBQuery("SELECT m.* FROM uo_moveteams m
-				LEFT JOIN uo_pool p ON(m.frompool=p.pool_id)
-				WHERE p.series='$seriesId'");
+    $moveteams = DBQuery("SELECT m.* FROM `uo_moveteams` m
+				LEFT JOIN `uo_pool` p ON(m.`frompool`=p.`pool_id`)
+				WHERE p.`series`='$seriesId'");
     while($moveteam = mysqli_fetch_assoc($moveteams)) {
       if ($template) {
         $moveteam['ismoved'] = 0;
@@ -271,9 +272,9 @@ class EventDataXMLHandler{
   
   function write_gamepools($seriesId, $template) {
     $ret = "";
-    $gamepools = DBQuery("SELECT g.* FROM uo_game_pool g
-				LEFT JOIN uo_pool p ON(g.pool=p.pool_id)
-				WHERE p.series='$seriesId'");
+    $gamepools = DBQuery("SELECT g.* FROM `uo_game_pool` g
+				LEFT JOIN `uo_pool` p ON(g.`pool`=p.`pool_id`)
+				WHERE p.`series`='$seriesId'");
     while($gamepool = mysqli_fetch_assoc($gamepools)){
       if (!$template || $gamepool['timetable'] == 1) {
         $ret .= $this->RowToXML("uo_game_pool", $gamepool);
@@ -460,6 +461,8 @@ class EventDataXMLHandler{
    * @param string $filename Name of XML-file uploaded
    * @param string $eventId Event to Update or empty if new event created
    * @param string $mode new - for new event, replace - to update existing event
+   * 
+   * @return 
    */
   function XMLToEvent($filename, $eventId="", $mode="new", $replacers, $mock = false){
     $this->mode = $mode;
@@ -471,33 +474,39 @@ class EventDataXMLHandler{
     if ($this->mock)
       $this->debug .= print_r($replacers, true);
     
-
     if((empty($this->eventId) && isSuperAdmin()) || isSeasonAdmin($eventId)){
       //create parser and set callback functions
       $xmlparser = xml_parser_create();
       xml_set_element_handler($xmlparser, array($this, "start_tag"), array($this, "end_tag"));
 
       if (!($fp = fopen($filename, "r"))) { die("cannot open ".$filename); }
+      DBTransaction();
+      try {
 
-      //remove extra spaces
-      while ($data = fread($fp, 4096)){
-        $data=preg_replace(";>"."[[:space:]]+"."< ;",">< ",$data);
-        if (!xml_parse($xmlparser, $data, feof($fp))) {
-          $reason = xml_error_string(xml_get_error_code($xmlparser));
-          $reason .= xml_get_current_line_number($xmlparser);
-          die($reason);
+        // remove extra spaces
+        while ($data = fread($fp, 4096)) {
+          $data = preg_replace(";>" . "[[:space:]]+" . "< ;", ">< ", $data);
+          if (!xml_parse($xmlparser, $data, feof($fp))) {
+            $reason = xml_error_string(xml_get_error_code($xmlparser));
+            $reason .= xml_get_current_line_number($xmlparser);
+            $this->error = $reason;
+            throw new Exception($this->error);
+          }
         }
-      }
 
-      foreach ($this->followers as $pool => $follow) {
-        $query = "UPDATE uo_pool SET follower='" . ((int) $this->uo_pool[$follow]) . "' WHERE pool_id='$pool'";
-        if ($this->mock) {
-          $this->debug .= $query . "\n";
-        } else {
-          DBQuery($query);
+        foreach ($this->followers as $pool => $follow) {
+          $query = "UPDATE `uo_pool` SET `follower`='" . ((int) $this->uo_pool[$follow]) . "' WHERE `pool_id`='$pool'";
+          if ($this->mock) {
+            $this->debug .= $query . "\n";
+          } else {
+            DBQuery($query);
+          }
         }
+        DBCommit();
+      } catch (Exception $e) {
+        DBRollback();
+        $this->error = $e->message;
       }
-       
       xml_parser_free($xmlparser);
     } else { die('Insufficient rights to import data'); }
   }
@@ -605,15 +614,16 @@ class EventDataXMLHandler{
             $newId = mb_substr($seasonId, 0, 7) . "_$modifier";
             $newName = $row["name"] . " ($modifier)";
           }
+          $this->debug .= "new season " . $newName . " (" . $seasonId . " -> " . $newId . ")\n"; 
           $row["name"] = $newName;
           $this->uo_season[$row["season_id"]] = $newId;
           unset($row["season_id"]);
           
           $values = "'" . implode("','", array_values($row)) . "'";
-          $fields = implode(",", array_keys($row));
+          $fields = "`" . implode("`,`", array_keys($row)) . "`";
           
-          $query = "INSERT INTO " . mysql_adapt_real_escape_string($tagName) . " (";
-          $query .= "season_id,";
+          $query = "INSERT INTO `" . mysql_adapt_real_escape_string($tagName) . "` (";
+          $query .= "`season_id`,";
           $query .= mysql_adapt_real_escape_string($fields);
           $query .= ") VALUES (";
           $query .= "'" . mysql_adapt_real_escape_string($newId) . "',";
@@ -632,13 +642,14 @@ class EventDataXMLHandler{
           unset($row['season_id']);
           $this->uo_season[$key] = empty($this->replacers['season_id'])?$this->eventId:$this->replacers['season_id'];
           
-          $cond = "season_id='" . $this->uo_season[$key] . "'";
-          $query = "SELECT season_id FROM uo_season WHERE $cond";
+          $cond = "`season_id`='" . $this->uo_season[$key] . "'";
+          $query = "SELECT `season_id` FROM `uo_season` WHERE $cond";
+          $this->debug .= "insert season " . $key . " -> " . $this->uo_season   . "\n";
           $exist = DBQueryRowCount($query);
-          if($exist){
+          if ($exist) {
             // don't update
-          }else{
-            die(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
+          } else {
+            throw new Exception(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
           }
           break;
         }
@@ -648,6 +659,7 @@ class EventDataXMLHandler{
         $key = $row["series_id"];
         unset($row["series_id"]);
         $row["season"] = $this->uo_season[$row["season"]];
+        $this->debug .= "replace series " . $key . "\n";
         $this->replace($row, $key, $tagName);
 
         $newId = $this->InsertRow($tagName, $row);
@@ -802,7 +814,7 @@ class EventDataXMLHandler{
    */
   function InsertRow($name, $row, $ignore = false){
     $columns = GetTableColumns($name);
-    $fields = implode(",",array_keys($row));
+    $fields = '`' . implode("`,`",array_keys($row)) . '`';
     
     
     $values = "";
@@ -813,7 +825,7 @@ class EventDataXMLHandler{
         } elseif (is_numeric($value))
           $values .= "'".mysql_adapt_real_escape_string($value)."',";
         else
-          die($this->debug . "Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
+          throw new Exception($this->debug . "Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
       } else {
         $values .= "'".mysql_adapt_real_escape_string($value)."',";
       }
@@ -853,18 +865,20 @@ class EventDataXMLHandler{
       case "uo_season":
         // no replace
 
-        $cond = "season_id='".$row["season_id"]."'";
-        $query = "SELECT season_id FROM uo_season WHERE ". $cond;
+        $cond = "`season_id`='".$row["season_id"]."'";
+        $query = "SELECT `season_id` FROM `uo_season` WHERE ". $cond;
         $exist = DBQueryRowCount($query);
         if($exist){
           if($this->eventId === $row["season_id"]){
-          $this->SetRow($tagName, $row, $cond);
+            $this->debug .= "replace season " . $this->eventId . "\n";
+            
+            $this->SetRow($tagName, $row, $cond);
             $this->uo_season[$row["season_id"]]=$row["season_id"];
           }else{
-            die(sprintf(_("Target event %s is not the same as in the file (%s)."), $this->eventId, utf8entities($row["season_id"])));
+            throw new Exception(sprintf(_("Target event %s is not the same as in the file (%s)."), $this->eventId, utf8entities($row["season_id"])));
           }
         }else{
-          die(sprintf(_("Event to replace (%s) doesn't exist."), utf8entities($row['season_id'])));
+          throw new Exception(sprintf(_("Event to replace (%s) doesn't exist."), utf8entities($row['season_id'])));
         }
         break;
 
@@ -874,14 +888,16 @@ class EventDataXMLHandler{
 
         $this->replace($row, $key, $tagName);
         
-        $cond = "series_id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`series_id`='".$key."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
+          $this->debug .= "replace series " . $key . "\n";
           $this->SetRow($tagName,$row,$cond);
           $this->uo_series[$key]=$key;
         }else{
+          $this->debug .= "insert series " . $key . "\n";
           $row["season"] = $this->uo_season[$row["season"]];
           $newId = $this->InsertRow($tagName, $row);
           $this->uo_series[$key]=$newId;
@@ -892,8 +908,8 @@ class EventDataXMLHandler{
         $key = $row["scheduling_id"];
         unset($row["scheduling_id"]);
       
-        $cond = "scheduling_id='$key'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`scheduling_id`='$key'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
          
         if($exist){
@@ -911,8 +927,8 @@ class EventDataXMLHandler{
         
         $this->replace($row, $key, $tagName);
         
-        $cond = "team_id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`team_id`='".$key."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -930,8 +946,8 @@ class EventDataXMLHandler{
         unset($row["player_id"]);
         $row["team"] = $this->uo_team[$row["team"]];
 
-        $cond = "player_id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`player_id`='".$key."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -949,7 +965,7 @@ class EventDataXMLHandler{
         $row["series"] = $this->uo_series[$row["series"]];
 
         $cond = "pool_id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -968,8 +984,8 @@ class EventDataXMLHandler{
         
         $this->replace($row, $key, $tagName);
          
-        $cond = "id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`id`='".$key."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -989,8 +1005,8 @@ class EventDataXMLHandler{
         $fromfield=$row["fromfield"];
         $to=$row["tolocation"];
         $tofield=$row["tofield"];
-        $cond = "season='$season' AND fromlocation='$from' AND fromfield='$fromfield' AND tolocation='$to' AND tofield='$tofield'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`season`='$season' AND `fromlocation`='$from' AND `fromfield`='$fromfield' AND `tolocation`='$to' AND `tofield`='$tofield'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
         
         if($exist) {
@@ -1033,8 +1049,8 @@ class EventDataXMLHandler{
         
         $this->uo_game[$key]=$newId;
         
-        $cond = "game_id='".$key."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`game_id`='".$key."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1055,8 +1071,8 @@ class EventDataXMLHandler{
           $row["scorer"] = $this->uo_player[$row["scorer"]];
         }
 
-        $cond = "game='".$row["game"]."' AND num='".$row["num"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`game`='".$row["game"]."' AND `num`='".$row["num"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1069,8 +1085,8 @@ class EventDataXMLHandler{
       case "uo_gameevent":
         $row["game"] = $this->uo_game[$row["game"]];
 
-        $cond = "game='".$row["game"]."' AND num='".$row["num"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`game`='".$row["game"]."' AND `num`='".$row["num"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1085,8 +1101,8 @@ class EventDataXMLHandler{
         $row["game"] = $this->uo_game[$row["game"]];
         $row["player"] = $this->uo_player[$row["player"]];
 
-        $cond = "game='".$row["game"]."' AND player='".$row["player"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`game`='".$row["game"]."' AND `player`='".$row["player"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1100,8 +1116,8 @@ class EventDataXMLHandler{
         $row["team"] = $this->uo_team[$row["team"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
 
-        $cond = "team='".$row["team"]."' AND pool='".$row["pool"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`team`='".$row["team"]."' AND `pool`='".$row["pool"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1115,8 +1131,8 @@ class EventDataXMLHandler{
         $row["game"] = $this->uo_game[$row["game"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
 
-        $cond = "game='".$row["game"]."' AND pool='".$row["pool"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`game`='".$row["game"]."' AND `pool`='".$row["pool"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1131,8 +1147,8 @@ class EventDataXMLHandler{
         $row["topool"] = $this->uo_pool[$row["topool"]];
         $row["frompool"] = $this->uo_pool[$row["frompool"]];
 
-        $cond = "topool='".$row["topool"]."' AND fromplacing='".$row["fromplacing"]."'";
-        $query = "SELECT * FROM ".$tagName." WHERE ".$cond;
+        $cond = "`topool`='".$row["topool"]."' AND `fromplacing`='".$row["fromplacing"]."'";
+        $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 
         if($exist){
@@ -1154,10 +1170,10 @@ class EventDataXMLHandler{
     $values = array_values($row);
     $fields = array_keys($row);
 
-    $query = "UPDATE ".mysql_adapt_real_escape_string($name)." SET ";
+    $query = "UPDATE `".mysql_adapt_real_escape_string($name)."` SET ";
     
     for($i=0;$i<count($fields);$i++){
-      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='". mysql_adapt_real_escape_string($values[$i])."', ";
+      $query .= '`' . mysql_adapt_real_escape_string($fields[$i]) ."`='". mysql_adapt_real_escape_string($values[$i])."', ";
     }
     $query = rtrim($query,', ');
     $query .= " WHERE ";

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-03 10:14+0200\n"
+"POT-Creation-Date: 2021-09-01 16:32+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../..\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ext\n"
 "X-Poedit-SearchPath-2: lib\n"
@@ -21,8 +21,8 @@ msgstr ""
 "X-Poedit-SearchPath-5: cust\n"
 
 #: admin/accreditation.php:4 admin/accreditation.php:43
-#: admin/accreditation.php:128 menufunctions.php:904 menufunctions.php:923
-#: menufunctions.php:963 menufunctions.php:972
+#: admin/accreditation.php:128 menufunctions.php:909 menufunctions.php:928
+#: menufunctions.php:968 menufunctions.php:977
 msgid "Accreditation"
 msgstr ""
 
@@ -53,8 +53,8 @@ msgid "Games played without accreditation"
 msgstr ""
 
 #: admin/accreditation.php:75 admin/accreditation.php:96
-#: admin/accreditation.php:114 cust/default/pdfprinter.php:1000
-#: cust/dfv/pdfprinter.php:946 cust/gummis/pdfprinter.php:1118
+#: admin/accreditation.php:114 cust/default/pdfprinter.php:1071
+#: cust/dfv/pdfprinter.php:921 cust/gummis/pdfprinter.php:1071
 #: defensestatus.php:49 defensestatus.php:51 ext/poolscoreboard.php:32
 #: ext/teamscoreboard.php:41 gamecard.php:191 gamecard.php:195 gameplay.php:569
 #: poolstatus.php:125 poolstatus.php:158 poolstatus.php:193 poolstatus.php:225
@@ -68,14 +68,14 @@ msgstr ""
 #: admin/seasonstandings.php:349 admin/seasonstandings.php:391
 #: admin/seasonstandings.php:445 admin/serieteams.php:181 admin/smsmoves.php:42
 #: admin/smsmoves.php:105 clubcard.php:126 clubcard.php:148 countrycard.php:19
-#: countrycard.php:71 countrycard.php:79 cust/default/pdfprinter.php:910
-#: cust/gummis/pdfprinter.php:1028 defensestatus.php:54 defensestatus.php:56
+#: countrycard.php:71 countrycard.php:79 cust/default/pdfprinter.php:981
+#: cust/gummis/pdfprinter.php:981 defensestatus.php:54 defensestatus.php:56
 #: ext/countrystatus.php:46 ext/eventpools.php:43 ext/poolscoreboard.php:33
 #: ext/poolstatus.php:35 gamecard.php:89 gamecard.php:199 gamecard.php:203
 #: lib/search.functions.php:106 lib/search.functions.php:148
 #: lib/search.functions.php:207 lib/search.functions.php:351
 #: lib/search.functions.php:502 lib/search.functions.php:678
-#: lib/swissdraw.functions.php:185 menufunctions.php:941 menufunctions.php:962
+#: lib/swissdraw.functions.php:185 menufunctions.php:946 menufunctions.php:967
 #: playercard.php:39 playercard.php:209 playercard.php:384
 #: plugins/reassign_playoffpools.php:49 poolstatus.php:125 poolstatus.php:158
 #: poolstatus.php:193 poolstatus.php:225 poolstatus.php:258 poolstatus.php:330
@@ -88,12 +88,12 @@ msgstr ""
 
 #: admin/accreditation.php:75 admin/accreditation.php:96
 #: admin/accreditation.php:115 admin/editgame.php:14
-#: cust/bula/pdfprinter.php:239 cust/default/pdfprinter.php:255
-#: cust/dfv/pdfprinter.php:236 cust/fpudd/pdfprinter.php:260
-#: cust/gummis/pdfprinter.php:271 cust/slkl/pdfprinter.php:229
+#: cust/bula/pdfprinter.php:239 cust/default/pdfprinter.php:272
+#: cust/dfv/pdfprinter.php:229 cust/fpudd/pdfprinter.php:260
+#: cust/gummis/pdfprinter.php:272 cust/slkl/pdfprinter.php:229
 #: cust/wfdf/pdfprinter.php:234 cust/windmill/pdfprinter.php:238
 #: gamecard.php:125 lib/search.functions.php:819 poolstatus.php:624
-#: poolstatus.php:727
+#: poolstatus.php:728
 msgid "Game"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgstr ""
 #: lib/search.functions.php:59 lib/search.functions.php:96
 #: lib/search.functions.php:133 lib/search.functions.php:192
 #: lib/search.functions.php:420 lib/search.functions.php:460
-#: lib/search.functions.php:502 menufunctions.php:897 playercard.php:209
+#: lib/search.functions.php:502 menufunctions.php:902 playercard.php:209
 #: playercard.php:384 statistics.php:40 statistics.php:84 teamcard.php:218
 #: teamcard.php:381 user/select_poolselector.php:25 user/userinfo.php:360
 #: user/userinfo.php:385
@@ -122,10 +122,10 @@ msgstr ""
 
 #: admin/accreditation.php:114 admin/eventviewer.php:84
 #: admin/seasonadmin.php:38 admin/smsmoves.php:109 cust/bula/pdfprinter.php:998
-#: cust/default/pdfprinter.php:912 cust/default/pdfprinter.php:971
-#: cust/default/pdfprinter.php:1004 cust/dfv/pdfprinter.php:913
-#: cust/dfv/pdfprinter.php:950 cust/gummis/pdfprinter.php:1030
-#: cust/gummis/pdfprinter.php:1089 cust/gummis/pdfprinter.php:1122
+#: cust/default/pdfprinter.php:983 cust/default/pdfprinter.php:1042
+#: cust/default/pdfprinter.php:1075 cust/dfv/pdfprinter.php:889
+#: cust/dfv/pdfprinter.php:925 cust/gummis/pdfprinter.php:983
+#: cust/gummis/pdfprinter.php:1042 cust/gummis/pdfprinter.php:1075
 #: cust/slkl/pdfprinter.php:933 cust/wfdf/pdfprinter.php:964
 #: cust/windmill/pdfprinter.php:957 gameplay.php:178
 #: mobile/addscoresheet.php:190 user/adddefensesheet.php:178
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: admin/accreditation.php:116 admin/eventviewer.php:84 menufunctions.php:209
+#: admin/accreditation.php:116 admin/eventviewer.php:84 menufunctions.php:215
 #: user/enrollteam.php:88
 msgid "User"
 msgstr ""
@@ -191,13 +191,13 @@ msgstr ""
 msgid "Add field reservation"
 msgstr ""
 
-#: admin/addreservation.php:193 admin/eventdataimport.php:158
+#: admin/addreservation.php:193 admin/eventdataimport.php:164
 #: admin/reservations.php:103 lib/search.functions.php:739
 msgid "Date"
 msgstr ""
 
 #: admin/addreservation.php:193 admin/addseasons.php:344
-#: admin/addseasons.php:347 admin/eventdataimport.php:158
+#: admin/addseasons.php:347 admin/eventdataimport.php:164
 #: lib/search.functions.php:244 lib/search.functions.php:256
 #: lib/search.functions.php:314 lib/search.functions.php:326
 #: user/playerprofile.php:258
@@ -248,15 +248,15 @@ msgstr ""
 #: admin/addseasonseries.php:131 admin/addseasonteams.php:208
 #: admin/addserieformats.php:180 admin/clubs.php:78 admin/clubs.php:117
 #: admin/editgame.php:295 admin/locations.php:297 admin/locations.php:395
-#: admin/schedule.php:480 admin/seasongames.php:235 admin/seasonmoves.php:216
-#: admin/seasonpools.php:287 admin/seasonseries.php:158
+#: admin/schedule.php:482 admin/seasongames.php:235 admin/seasonmoves.php:216
+#: admin/seasonpools.php:296 admin/seasonseries.php:158
 #: admin/seasonstandings.php:511 admin/seasonteams.php:204
 #: admin/select_teams.php:124 admin/serieteams.php:174 admin/serverconf.php:392
 #: admin/translations.php:137 mobile/addfirstoffence.php:45
 #: mobile/addhalftime.php:34 mobile/addofficial.php:25
 #: mobile/addplayerlists.php:126 mobile/addspiritpoints.php:54
 #: mobile/addtimeouts.php:95 mobile/respgames.php:125
-#: plugins/lisence_modifier.php:65 result.php:97
+#: plugins/lisence_modifier.php:65 result.php:90
 #: scorekeeper/addfirstoffence.php:45 scorekeeper/addhalftime.php:67
 #: scorekeeper/addofficial.php:22 scorekeeper/addplayerlists.php:143
 #: scorekeeper/addspiritpoints.php:57 scorekeeper/addtimeouts.php:203
@@ -273,7 +273,7 @@ msgstr ""
 #: admin/addseasonteams.php:210 admin/addserieformats.php:182
 #: admin/adduser.php:93 admin/clubs.php:49 admin/clubs.php:87
 #: admin/locations.php:328 admin/locations.php:352 admin/poolmoves.php:332
-#: admin/seasonpools.php:283 admin/seasons.php:157 admin/seasonseries.php:151
+#: admin/seasonpools.php:292 admin/seasons.php:157 admin/seasonseries.php:151
 #: admin/seasonteams.php:199 admin/serieformats.php:49
 #: admin/translations.php:133 user/addextraemail.php:82 user/enrollteam.php:144
 #: user/teamplayers.php:259 user/userinfo.php:393 user/userinfo.php:529
@@ -283,11 +283,11 @@ msgstr ""
 #: admin/addreservation.php:258 admin/addseasonpools.php:256
 #: admin/addseasonpools.php:487 admin/addseasons.php:374
 #: admin/addseasonseries.php:135 admin/addseasonteams.php:214
-#: admin/addteamadmins.php:85 admin/dbbackup.php:116 admin/dbequalize.php:122
-#: admin/dbrestore.php:64 admin/editgame.php:297 admin/eventdataimport.php:190
+#: admin/addteamadmins.php:85 admin/dbbackup.php:115 admin/dbequalize.php:122
+#: admin/dbrestore.php:64 admin/editgame.php:297 admin/eventdataimport.php:197
 #: admin/executesql.php:132 admin/failed.php:26 admin/poolmoves.php:334
-#: admin/schedule.php:269 admin/schedule.php:487 admin/seasonmoves.php:217
-#: admin/serieteams.php:252 admin/success.php:26 menufunctions.php:276
+#: admin/schedule.php:271 admin/schedule.php:489 admin/seasonmoves.php:217
+#: admin/serieteams.php:252 admin/success.php:26 menufunctions.php:281
 #: plugins/lisence_modifier.php:66 plugins/reassign_playoffpools.php:118
 #: user/addmedialink.php:197 user/clubprofile.php:223
 #: user/playerprofile.php:374 user/teamprofile.php:184
@@ -305,7 +305,7 @@ msgstr ""
 #: admin/addseasonlinks.php:85 admin/addseasonpools.php:276
 #: admin/addseasons.php:76 admin/addseasons.php:274
 #: admin/addseasonseries.php:109 admin/eventviewer.php:85
-#: admin/seasonadmin.php:28 admin/seasonpools.php:101 admin/seasons.php:92
+#: admin/seasonadmin.php:28 admin/seasonpools.php:108 admin/seasons.php:92
 #: admin/seasonseries.php:59 admin/seasonstats.php:19 admin/seasonstats.php:33
 #: admin/serverconf.php:344 user/addmedialink.php:169 user/clubprofile.php:185
 #: user/playerprofile.php:336 user/teamprofile.php:145
@@ -314,7 +314,7 @@ msgstr ""
 
 #: admin/addseasonlinks.php:85 admin/addseasonpools.php:235
 #: admin/addseasonpools.php:273 admin/addseasonseries.php:106
-#: admin/seasonpools.php:97 admin/serverconf.php:344
+#: admin/seasonpools.php:104 admin/serverconf.php:344
 msgid "Order"
 msgstr ""
 
@@ -324,18 +324,18 @@ msgstr ""
 #: admin/addseasonseries.php:102 admin/addseasonteams.php:142
 #: admin/addserieformats.php:107 admin/adduser.php:50 admin/clubs.php:52
 #: admin/clubs.php:83 admin/clubs.php:90 admin/dbadmin.php:37
-#: admin/dbbackup.php:88 admin/dbequalize.php:154 admin/dbequalize.php:173
+#: admin/dbbackup.php:87 admin/dbequalize.php:154 admin/dbequalize.php:173
 #: admin/dbequalize.php:193 admin/editgame.php:273 admin/locations.php:377
-#: admin/seasonpools.php:96 admin/seasons.php:91 admin/seasonseries.php:59
+#: admin/seasonpools.php:103 admin/seasons.php:91 admin/seasonseries.php:59
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasonteams.php:112
 #: admin/serieformats.php:26 admin/serieteams.php:140 admin/serverconf.php:344
 #: cust/bula/pdfprinter.php:131 cust/bula/pdfprinter.php:141
-#: cust/bula/pdfprinter.php:252 cust/default/pdfprinter.php:170
-#: cust/default/pdfprinter.php:178 cust/default/pdfprinter.php:263
-#: cust/dfv/pdfprinter.php:150 cust/dfv/pdfprinter.php:160
-#: cust/dfv/pdfprinter.php:249 cust/fpudd/pdfprinter.php:170
-#: cust/fpudd/pdfprinter.php:273 cust/gummis/pdfprinter.php:186
-#: cust/gummis/pdfprinter.php:194 cust/gummis/pdfprinter.php:279
+#: cust/bula/pdfprinter.php:252 cust/default/pdfprinter.php:187
+#: cust/default/pdfprinter.php:195 cust/default/pdfprinter.php:280
+#: cust/dfv/pdfprinter.php:145 cust/dfv/pdfprinter.php:155
+#: cust/dfv/pdfprinter.php:242 cust/fpudd/pdfprinter.php:170
+#: cust/fpudd/pdfprinter.php:273 cust/gummis/pdfprinter.php:187
+#: cust/gummis/pdfprinter.php:195 cust/gummis/pdfprinter.php:280
 #: cust/slkl/pdfprinter.php:135 cust/slkl/pdfprinter.php:145
 #: cust/slkl/pdfprinter.php:242 cust/wfdf/pdfprinter.php:124
 #: cust/wfdf/pdfprinter.php:134 cust/wfdf/pdfprinter.php:247
@@ -349,8 +349,9 @@ msgstr ""
 #: user/addplayerlists.php:189 user/clubprofile.php:132
 #: user/clubprofile.php:187 user/playerprofile.php:338 user/teamprofile.php:147
 #: user/userinfo.php:234
+#, fuzzy
 msgid "Name"
-msgstr ""
+msgstr "NAME"
 
 #: admin/addseasonlinks.php:85 admin/serverconf.php:344
 msgid "Url"
@@ -387,8 +388,9 @@ msgid "Add pool"
 msgstr ""
 
 #: admin/addseasonpools.php:239
+#, fuzzy
 msgid "Template"
-msgstr ""
+msgstr "template"
 
 #: admin/addseasonpools.php:259
 msgid "Edit pool"
@@ -399,8 +401,8 @@ msgstr ""
 #: admin/editgame.php:249 admin/seasonstats.php:31 admin/stats.php:57
 #: clubcard.php:126 clubcard.php:148 countrycard.php:19 countrycard.php:71
 #: countrycard.php:79 cust/bula/pdfprinter.php:51
-#: cust/default/pdfprinter.php:72 cust/dfv/pdfprinter.php:50
-#: cust/gummis/pdfprinter.php:85 cust/slkl/pdfprinter.php:51
+#: cust/default/pdfprinter.php:89 cust/dfv/pdfprinter.php:45
+#: cust/gummis/pdfprinter.php:89 cust/slkl/pdfprinter.php:51
 #: cust/wfdf/pdfprinter.php:45 cust/windmill/pdfprinter.php:51 gamecard.php:127
 #: lib/search.functions.php:31 lib/search.functions.php:63
 #: lib/search.functions.php:69 lib/search.functions.php:100
@@ -455,7 +457,7 @@ msgid "Mutual"
 msgstr ""
 
 #: admin/addseasonpools.php:329 admin/seasonadmin.php:51
-#: admin/seasonpools.php:98 admin/seasons.php:96 admin/seasonseries.php:59
+#: admin/seasonpools.php:105 admin/seasons.php:96 admin/seasonseries.php:59
 msgid "Visible"
 msgstr ""
 
@@ -504,11 +506,11 @@ msgstr ""
 
 #: admin/addseasonpools.php:386 admin/clubs.php:52 admin/clubs.php:90
 #: admin/dbequalize.php:94 admin/dbequalize.php:154 admin/seasonadmin.php:68
-#: admin/seasonpools.php:210 admin/seasonseries.php:106
+#: admin/seasonpools.php:219 admin/seasonseries.php:106
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasonteams.php:14
 #: admin/serieteams.php:22 admin/stats.php:54 lib/season.functions.php:723
-#: menufunctions.php:743 menufunctions.php:782 menufunctions.php:833
-#: menufunctions.php:899 menufunctions.php:918 restful/seasons/series.php:30
+#: menufunctions.php:748 menufunctions.php:787 menufunctions.php:838
+#: menufunctions.php:904 menufunctions.php:923 restful/seasons/series.php:30
 #: seasonlist.php:27 teams.php:7 teams.php:42
 msgid "Teams"
 msgstr ""
@@ -543,7 +545,7 @@ msgstr ""
 #: admin/addseasonpools.php:414 admin/addseasonpools.php:422
 #: admin/addseasonpools.php:426 admin/addserieformats.php:116
 #: admin/addserieformats.php:124 admin/addserieformats.php:128
-#: admin/schedule.php:355
+#: admin/schedule.php:357
 msgid "minutes"
 msgstr ""
 
@@ -585,8 +587,8 @@ msgstr ""
 
 #: admin/addseasonpools.php:441 admin/addserieformats.php:143
 #: admin/serieformats.php:26 cust/bula/pdfprinter.php:872
-#: cust/default/pdfprinter.php:882 cust/dfv/pdfprinter.php:788
-#: cust/fpudd/pdfprinter.php:812 cust/gummis/pdfprinter.php:1000
+#: cust/default/pdfprinter.php:953 cust/dfv/pdfprinter.php:771
+#: cust/fpudd/pdfprinter.php:812 cust/gummis/pdfprinter.php:953
 #: cust/wfdf/pdfprinter.php:846 cust/windmill/pdfprinter.php:831
 #: gameplay.php:492 mobile/addscoresheet.php:195
 #: scorekeeper/addscoresheet.php:258 scorekeeper/addtimeouts.php:47
@@ -804,14 +806,15 @@ msgstr ""
 #: admin/addseasonteams.php:189 admin/seasonstandings.php:347
 #: admin/seasonstandings.php:389 admin/seasonteams.php:111
 #: admin/serieteams.php:139
+#, fuzzy
 msgid "Seed"
-msgstr ""
+msgstr "seed"
 
 #: admin/addseasonteams.php:205
 msgid "Select contact person"
 msgstr ""
 
-#: admin/addseasonusers.php:6 menufunctions.php:1002
+#: admin/addseasonusers.php:6 menufunctions.php:1007
 msgid "Event users"
 msgstr ""
 
@@ -826,11 +829,11 @@ msgstr ""
 
 #: admin/addseasonusers.php:85 admin/addseasonusers.php:252
 #: admin/addteamadmins.php:65 admin/poolmoves.php:195 admin/poolmoves.php:268
-#: admin/seasonmoves.php:167 admin/seasonpools.php:245 admin/seasons.php:146
+#: admin/seasonmoves.php:167 admin/seasonpools.php:254 admin/seasons.php:146
 #: admin/seasonseries.php:114 admin/seasonstandings.php:379
 #: admin/seasonstandings.php:428 admin/seasonteams.php:176
 #: admin/serieformats.php:45 admin/serverconf.php:353
-#: admin/translations.php:123 lib/common.functions.php:1408
+#: admin/translations.php:123 lib/common.functions.php:1406
 #: lib/search.functions.php:752
 msgid "X"
 msgstr ""
@@ -905,12 +908,11 @@ msgstr ""
 #: admin/addseasonusers.php:220 admin/editgame.php:235 admin/editgame.php:239
 #: admin/reservations.php:110 admin/reservations.php:138 admin/smsmoves.php:110
 #: cust/bula/pdfprinter.php:52 cust/bula/pdfprinter.php:365
-#: cust/bula/pdfprinter.php:504 cust/default/pdfprinter.php:73
-#: cust/default/pdfprinter.php:378 cust/default/pdfprinter.php:548
-#: cust/dfv/pdfprinter.php:51 cust/dfv/pdfprinter.php:362
-#: cust/dfv/pdfprinter.php:472 cust/fpudd/pdfprinter.php:386
-#: cust/fpudd/pdfprinter.php:496 cust/gummis/pdfprinter.php:86
-#: cust/gummis/pdfprinter.php:394 cust/gummis/pdfprinter.php:614
+#: cust/bula/pdfprinter.php:504 cust/default/pdfprinter.php:90
+#: cust/default/pdfprinter.php:425 cust/dfv/pdfprinter.php:46
+#: cust/dfv/pdfprinter.php:285 cust/dfv/pdfprinter.php:459
+#: cust/fpudd/pdfprinter.php:386 cust/fpudd/pdfprinter.php:496
+#: cust/gummis/pdfprinter.php:90 cust/gummis/pdfprinter.php:425
 #: cust/slkl/pdfprinter.php:52 cust/slkl/pdfprinter.php:357
 #: cust/slkl/pdfprinter.php:479 cust/wfdf/pdfprinter.php:46
 #: cust/wfdf/pdfprinter.php:365 cust/wfdf/pdfprinter.php:495
@@ -972,15 +974,18 @@ msgid "Added new user"
 msgstr ""
 
 #: admin/adduser.php:23 admin/adduser.php:55 lib/search.functions.php:586
-#: login_failed.php:19 login_failed.php:103 menufunctions.php:348
-#: register.php:71 scorekeeper/login.php:19 user/userinfo.php:236
+#: login_failed.php:19 login_failed.php:103 menufunctions.php:203
+#: menufunctions.php:353 register.php:71 scorekeeper/login.php:19
+#: user/userinfo.php:236
 msgid "Username"
 msgstr ""
 
 #: admin/adduser.php:24 admin/adduser.php:60 login_failed.php:21
-#: menufunctions.php:352 register.php:75 scorekeeper/login.php:21
+#: menufunctions.php:210 menufunctions.php:357 register.php:75
+#: scorekeeper/login.php:21
+#, fuzzy
 msgid "Password"
-msgstr ""
+msgstr "PASSWORD"
 
 #: admin/adduser.php:26
 msgid "User has been notified to change password."
@@ -998,8 +1003,9 @@ msgstr ""
 #: lib/search.functions.php:213 lib/search.functions.php:586
 #: lib/search.functions.php:678 login_failed.php:106 register.php:83
 #: user/addextraemail.php:76
+#, fuzzy
 msgid "Email"
-msgstr ""
+msgstr "EMAIL"
 
 #: admin/adduser.php:73 admin/editgame.php:261
 msgid "Responsible team"
@@ -1037,7 +1043,7 @@ msgstr ""
 msgid "Run SQL"
 msgstr ""
 
-#: admin/dbadmin.php:15 admin/dbbackup.php:115
+#: admin/dbadmin.php:15 admin/dbbackup.php:114
 msgid "Backup"
 msgstr ""
 
@@ -1057,27 +1063,27 @@ msgstr ""
 msgid "Tables"
 msgstr ""
 
-#: admin/dbadmin.php:38 admin/dbbackup.php:91
+#: admin/dbadmin.php:38 admin/dbbackup.php:90
 msgid "Rows"
 msgstr ""
 
-#: admin/dbadmin.php:39 admin/dbbackup.php:92
+#: admin/dbadmin.php:39 admin/dbbackup.php:91
 msgid "avg. row length"
 msgstr ""
 
-#: admin/dbadmin.php:40 admin/dbbackup.php:89
+#: admin/dbadmin.php:40 admin/dbbackup.php:88
 msgid "Data"
 msgstr ""
 
-#: admin/dbadmin.php:41 admin/dbbackup.php:90
+#: admin/dbadmin.php:41 admin/dbbackup.php:89
 msgid "Index"
 msgstr ""
 
-#: admin/dbadmin.php:42 admin/dbbackup.php:93
+#: admin/dbadmin.php:42 admin/dbbackup.php:92
 msgid "Auto Increment"
 msgstr ""
 
-#: admin/dbadmin.php:43 admin/dbbackup.php:94
+#: admin/dbadmin.php:43 admin/dbbackup.php:93
 msgid "Updated"
 msgstr ""
 
@@ -1085,15 +1091,15 @@ msgstr ""
 msgid "Execute"
 msgstr ""
 
-#: admin/dbadmin.php:64 admin/dbbackup.php:114
+#: admin/dbadmin.php:64 admin/dbbackup.php:113
 msgid "Database size"
 msgstr ""
 
-#: admin/dbadmin.php:64 admin/dbbackup.php:114
+#: admin/dbadmin.php:64 admin/dbbackup.php:113
 msgid "bytes"
 msgstr ""
 
-#: admin/dbadmin.php:66 menufunctions.php:757 menufunctions.php:829
+#: admin/dbadmin.php:66 menufunctions.php:762 menufunctions.php:834
 #: poolstatus.php:56 seriesstatus.php:9 seriesstatus.php:29 statistics.php:6
 msgid "Statistics"
 msgstr ""
@@ -1118,16 +1124,16 @@ msgstr ""
 msgid "Character set and collation"
 msgstr ""
 
-#: admin/dbadmin.php:97 admin/dbbackup.php:120 admin/dbrestore.php:68
+#: admin/dbadmin.php:97 admin/dbbackup.php:119 admin/dbrestore.php:68
 #: admin/visitors.php:43
 msgid "User credentials does not match"
 msgstr ""
 
-#: admin/dbbackup.php:78 admin/dbrestore.php:72
+#: admin/dbbackup.php:77 admin/dbrestore.php:72
 msgid "Database backup"
 msgstr ""
 
-#: admin/dbbackup.php:85
+#: admin/dbbackup.php:84
 msgid "Select tables to backup"
 msgstr ""
 
@@ -1149,12 +1155,12 @@ msgstr ""
 msgid "List"
 msgstr ""
 
-#: admin/dbequalize.php:96 menufunctions.php:834
+#: admin/dbequalize.php:96 menufunctions.php:839
 msgid "Clubs"
 msgstr ""
 
 #: admin/dbequalize.php:98 admin/seasonadmin.php:63 admin/seasonpools.php:12
-#: admin/seasonseries.php:107 menufunctions.php:900 poolstatus.php:57
+#: admin/seasonseries.php:107 menufunctions.php:905 poolstatus.php:57
 #: restful/seasons/series.php:29
 msgid "Pools"
 msgstr ""
@@ -1199,7 +1205,7 @@ msgstr ""
 
 #: admin/delete.php:34 admin/delete.php:129 admin/locations.php:299
 #: admin/locations.php:396 admin/poolmoves.php:178 admin/poolmoves.php:246
-#: admin/users.php:38 menufunctions.php:1011 mobile/deletescore.php:24
+#: admin/users.php:38 menufunctions.php:1016 mobile/deletescore.php:24
 #: mobile/deletescore.php:44 scorekeeper/deletescore.php:51
 #: user/teamplayers.php:168
 msgid "Delete"
@@ -1244,8 +1250,8 @@ msgid "Game played"
 msgstr ""
 
 #: admin/editgame.php:197 cust/bula/pdfprinter.php:1025
-#: cust/default/pdfprinter.php:1026 cust/dfv/pdfprinter.php:976
-#: cust/gummis/pdfprinter.php:1144 cust/slkl/pdfprinter.php:960
+#: cust/default/pdfprinter.php:1097 cust/dfv/pdfprinter.php:950
+#: cust/gummis/pdfprinter.php:1097 cust/slkl/pdfprinter.php:960
 #: cust/wfdf/pdfprinter.php:989 cust/windmill/pdfprinter.php:984
 #: user/adddefensesheet.php:304 user/addscoresheet.php:483
 msgid "Final score"
@@ -1277,7 +1283,7 @@ msgid "Add media"
 msgstr ""
 
 #: admin/editgame.php:215 cust/bula/pdfprinter.php:49
-#: cust/dfv/pdfprinter.php:48 cust/slkl/pdfprinter.php:49
+#: cust/dfv/pdfprinter.php:43 cust/slkl/pdfprinter.php:49
 #: cust/wfdf/pdfprinter.php:43 cust/windmill/pdfprinter.php:49
 #: user/adddefensesheet.php:205 user/addscoresheet.php:384
 msgid "Home team"
@@ -1339,70 +1345,78 @@ msgid ""
 "protected"
 msgstr ""
 
-#: admin/eventdataimport.php:119 plugins/import_csv_wu23c2010.php:211
-#: plugins/import_csv_wucc2010.php:154 plugins/import_csv_wujc2012.php:177
-#: plugins/import_slkl_old_data.php:278 plugins/import_xml_ffindr.php:58
-msgid "Data imported!"
+#: admin/eventdataimport.php:97
+#, php-format
+msgid "Successfully imported %s."
 msgstr ""
 
-#: admin/eventdataimport.php:128
+#: admin/eventdataimport.php:99
+#, php-format
+msgid "Error while importing %s:"
+msgstr ""
+
+#: admin/eventdataimport.php:134
 msgid ""
 "This operation inserts one or more new series in the database with the "
 "content of the file. It will only add, not alter any data or change user "
 "rights."
 msgstr ""
 
-#: admin/eventdataimport.php:130
+#: admin/eventdataimport.php:136
 msgid ""
 "This operation updates and adds event data in the database with the content "
 "of the file. It will not delete any data or change user rights."
 msgstr ""
 
-#: admin/eventdataimport.php:133
+#: admin/eventdataimport.php:139
 msgid "Confirm or replace event data:"
 msgstr ""
 
-#: admin/eventdataimport.php:135 admin/eventdataimport.php:138
+#: admin/eventdataimport.php:141 admin/eventdataimport.php:144
 msgid "Event ID"
 msgstr ""
 
-#: admin/eventdataimport.php:136 admin/eventdataimport.php:139
+#: admin/eventdataimport.php:142 admin/eventdataimport.php:145
 msgid "Event Name"
 msgstr ""
 
-#: admin/eventdataimport.php:143
+#: admin/eventdataimport.php:149
 msgid "Change reservations?"
 msgstr ""
 
-#: admin/eventdataimport.php:149
+#: admin/eventdataimport.php:155
 #, php-format
 msgid "Reservation %d, Location %s map to"
 msgstr ""
 
-#: admin/eventdataimport.php:153
+#: admin/eventdataimport.php:159
 msgid "Reservation Group"
 msgstr ""
 
-#: admin/eventdataimport.php:164
+#: admin/eventdataimport.php:170
 msgid "Change series or teams?"
 msgstr ""
 
-#: admin/eventdataimport.php:166
+#: admin/eventdataimport.php:172
 msgid "Series Name"
 msgstr ""
 
-#: admin/eventdataimport.php:172
+#: admin/eventdataimport.php:178
 msgid "Team Name"
 msgstr ""
 
-#: admin/eventdataimport.php:180 plugins/import_csv_players.php:91
+#: admin/eventdataimport.php:181
+msgid "Mock (test only)"
+msgstr ""
+
+#: admin/eventdataimport.php:187 plugins/import_csv_players.php:91
 #: plugins/import_csv_teams.php:93 plugins/import_csv_wu23c2010.php:234
 #: plugins/import_csv_wucc2010.php:177 plugins/import_csv_wujc2012.php:200
 #: plugins/import_slkl_old_data.php:300 plugins/import_xml_ffindr.php:65
 msgid "Select file to import"
 msgstr ""
 
-#: admin/eventdataimport.php:186
+#: admin/eventdataimport.php:193
 msgid "Check file ..."
 msgstr ""
 
@@ -1478,7 +1492,7 @@ msgstr ""
 msgid "Run"
 msgstr ""
 
-#: admin/help.php:9 menufunctions.php:653
+#: admin/help.php:9 menufunctions.php:658
 msgid "Helps"
 msgstr ""
 
@@ -1503,13 +1517,13 @@ msgstr ""
 msgid "indoors"
 msgstr ""
 
-#: admin/locations.php:330 admin/seasonpools.php:288 admin/seasonseries.php:159
+#: admin/locations.php:330 admin/seasonpools.php:297 admin/seasonseries.php:159
 #: admin/seasonteams.php:205 admin/select_userrole.php:28
 #: admin/select_userrole.php:51 admin/select_userrole.php:54
 #: admin/select_userrole.php:57 admin/select_userrole.php:60
 #: admin/select_userrole.php:63 admin/select_userrole.php:66
 #: admin/select_userrole.php:69 admin/select_userrole.php:72
-#: admin/translations.php:138 mobile/addscoresheet.php:215 result.php:79
+#: admin/translations.php:138 mobile/addscoresheet.php:215 result.php:72
 #: scorekeeper/addscoresheet.php:280 scorekeeper/result.php:83
 #: user/adddefensesheet.php:346 user/addscoresheet.php:525
 #: user/select_poolselector.php:23 user/select_poolselector.php:26
@@ -1541,17 +1555,18 @@ msgstr ""
 
 #: admin/locations.php:384 cust/bula/pdfprinter.php:133
 #: cust/bula/pdfprinter.php:143 cust/bula/pdfprinter.php:255
-#: cust/default/pdfprinter.php:172 cust/default/pdfprinter.php:180
-#: cust/default/pdfprinter.php:266 cust/dfv/pdfprinter.php:252
-#: cust/fpudd/pdfprinter.php:276 cust/gummis/pdfprinter.php:188
-#: cust/gummis/pdfprinter.php:196 cust/gummis/pdfprinter.php:282
+#: cust/default/pdfprinter.php:189 cust/default/pdfprinter.php:197
+#: cust/default/pdfprinter.php:283 cust/dfv/pdfprinter.php:245
+#: cust/fpudd/pdfprinter.php:276 cust/gummis/pdfprinter.php:189
+#: cust/gummis/pdfprinter.php:197 cust/gummis/pdfprinter.php:283
 #: cust/slkl/pdfprinter.php:138 cust/slkl/pdfprinter.php:148
 #: cust/slkl/pdfprinter.php:245 cust/wfdf/pdfprinter.php:126
 #: cust/wfdf/pdfprinter.php:136 cust/wfdf/pdfprinter.php:250
 #: cust/windmill/pdfprinter.php:132 cust/windmill/pdfprinter.php:142
 #: cust/windmill/pdfprinter.php:254
+#, fuzzy
 msgid "Info"
-msgstr ""
+msgstr "INFO"
 
 #: admin/locations.php:389
 msgid "Indoor pitch"
@@ -1574,8 +1589,8 @@ msgstr ""
 #: defensestatus.php:59 defensestatus.php:61 ext/countrystatus.php:47
 #: ext/eventpools.php:44 ext/poolscoreboard.php:34 ext/poolstatus.php:36
 #: ext/teamscoreboard.php:42 gamecard.php:89 gamecard.php:207 gamecard.php:211
-#: lib/search.functions.php:740 menufunctions.php:760 menufunctions.php:780
-#: menufunctions.php:902 menufunctions.php:920 playercard.php:156
+#: lib/search.functions.php:740 menufunctions.php:765 menufunctions.php:785
+#: menufunctions.php:907 menufunctions.php:925 playercard.php:156
 #: playercard.php:209 playercard.php:286 playercard.php:384 playercard.php:453
 #: playerlist.php:23 poolstatus.php:57 poolstatus.php:125 poolstatus.php:158
 #: poolstatus.php:193 poolstatus.php:225 poolstatus.php:259 poolstatus.php:331
@@ -1654,7 +1669,7 @@ msgstr ""
 msgid "Show games"
 msgstr ""
 
-#: admin/poolgames.php:204 admin/seasonpools.php:293 admin/seriesgames.php:105
+#: admin/poolgames.php:204 admin/seasonpools.php:302 admin/seriesgames.php:105
 msgid "Generate all games"
 msgstr ""
 
@@ -1776,8 +1791,9 @@ msgid "Schedule selected"
 msgstr ""
 
 #: admin/reservations.php:103 lib/search.functions.php:739
+#, fuzzy
 msgid "Group"
-msgstr ""
+msgstr "GROUP"
 
 #: admin/reservations.php:105 lib/search.functions.php:741
 msgid "Scoresheets"
@@ -1848,29 +1864,29 @@ msgstr ""
 msgid "Rankings saved"
 msgstr ""
 
-#: admin/schedule.php:10 menufunctions.php:632 menufunctions.php:901
+#: admin/schedule.php:10 menufunctions.php:637 menufunctions.php:906
 msgid "Scheduling"
 msgstr ""
 
-#: admin/schedule.php:88
+#: admin/schedule.php:90
 #, php-format
 msgid "Pause: %s&thinsp;min."
 msgstr ""
 
-#: admin/schedule.php:112
+#: admin/schedule.php:114
 #, php-format
 msgid "%d&thinsp;min."
 msgstr ""
 
-#: admin/schedule.php:151 admin/schedule.php:442
+#: admin/schedule.php:153 admin/schedule.php:444
 msgid "Field "
 msgstr ""
 
-#: admin/schedule.php:286
+#: admin/schedule.php:288
 msgid "Unscheduled"
 msgstr ""
 
-#: admin/schedule.php:289 ext/export.php:36 ext/index.php:64
+#: admin/schedule.php:291 ext/export.php:36 ext/index.php:64
 #: plugins/generate_players.php:50 plugins/generate_teams.php:48
 #: plugins/import_csv_players.php:70 plugins/import_csv_teams.php:82
 #: plugins/import_csv_wu23c2010.php:222 plugins/import_csv_wucc2010.php:165
@@ -1880,36 +1896,36 @@ msgstr ""
 msgid "Select event"
 msgstr ""
 
-#: admin/schedule.php:303
+#: admin/schedule.php:305
 msgid "All divisions"
 msgstr ""
 
-#: admin/schedule.php:317 ext/index.php:218
+#: admin/schedule.php:319 ext/index.php:218
 msgid "All pools"
 msgstr ""
 
-#: admin/schedule.php:354
+#: admin/schedule.php:356
 msgid "Add pause"
 msgstr ""
 
-#: admin/schedule.php:483
+#: admin/schedule.php:485
 #, php-format
 msgid ""
 "Warning: Games with duration 0 found. They can not be scheduled. Edit the "
 "game duration or the time slot length of pool %s ..."
 msgstr ""
 
-#: admin/schedule.php:587
+#: admin/schedule.php:589
 msgid "Save changes?"
 msgstr ""
 
-#: admin/schedule.php:592
+#: admin/schedule.php:594
 msgid ""
 "Do you want to leave anyway? If you select Yes, you will lose all your "
 "changes."
 msgstr ""
 
-#: admin/schedule.php:703
+#: admin/schedule.php:705
 msgid "Unknown error."
 msgstr ""
 
@@ -1938,8 +1954,8 @@ msgid "not visible"
 msgstr ""
 
 #: admin/seasonadmin.php:36 cust/bula/pdfprinter.php:929
-#: cust/default/pdfprinter.php:920 cust/dfv/pdfprinter.php:845
-#: cust/gummis/pdfprinter.php:1038 cust/slkl/pdfprinter.php:863
+#: cust/default/pdfprinter.php:991 cust/dfv/pdfprinter.php:824
+#: cust/gummis/pdfprinter.php:991 cust/slkl/pdfprinter.php:863
 #: cust/wfdf/pdfprinter.php:899 cust/windmill/pdfprinter.php:888
 #: gameplay.php:497 mobile/addscoresheet.php:205
 #: scorekeeper/addscoresheet.php:273 seriesstatus.php:170 seriesstatus.php:172
@@ -1961,13 +1977,13 @@ msgid "Enrollment"
 msgstr ""
 
 #: admin/seasonadmin.php:58 admin/seasonseries.php:11 admin/seasonseries.php:53
-#: menufunctions.php:898
+#: menufunctions.php:903
 msgid "Divisions"
 msgstr ""
 
 #: admin/seasonadmin.php:73 admin/seasonstats.php:19 admin/seasonstats.php:33
 #: admin/stats.php:55 clubcard.php:136 clubcard.php:160 countrycard.php:29
-#: countrycard.php:54 menufunctions.php:832 mobile/respgames.php:167
+#: countrycard.php:54 menufunctions.php:837 mobile/respgames.php:167
 #: scorekeeper/addscoresheet.php:271 scorekeeper/respgames.php:144
 #: user/adddefensesheet.php:61 user/addplayerlists.php:127
 #: user/addresult.php:51 user/addscoresheet.php:174 user/addspirit.php:45
@@ -2020,7 +2036,7 @@ msgstr ""
 msgid "No divisions defined. Define at least one division first."
 msgstr ""
 
-#: admin/seasongames.php:108 admin/seasonpools.php:87
+#: admin/seasongames.php:108 admin/seasonpools.php:94
 #: admin/seasonstandings.php:167 admin/seasonteams.php:102
 #: admin/seasonteams.php:168 user/respgames.php:69
 msgid "..."
@@ -2063,7 +2079,7 @@ msgstr ""
 msgid "Spirit"
 msgstr ""
 
-#: admin/seasongames.php:220 admin/seasonpools.php:241
+#: admin/seasongames.php:220 admin/seasonpools.php:250
 #: admin/seasonteams.php:174
 msgid "edit details"
 msgstr ""
@@ -2097,62 +2113,63 @@ msgstr ""
 msgid "Undo"
 msgstr ""
 
-#: admin/seasonpools.php:98 admin/seasonseries.php:59
+#: admin/seasonpools.php:105 admin/seasonseries.php:59
 msgid "V"
 msgstr ""
 
-#: admin/seasonpools.php:99
+#: admin/seasonpools.php:106
 msgid "Continuing"
 msgstr ""
 
-#: admin/seasonpools.php:99 admin/seasonpools.php:243
+#: admin/seasonpools.php:106 admin/seasonpools.php:252
 msgid "C"
 msgstr ""
 
-#: admin/seasonpools.php:100 ext/countrystatus.php:221 ext/eventpools.php:181
+#: admin/seasonpools.php:107 ext/countrystatus.php:221 ext/eventpools.php:181
 #: ext/poolstatus.php:168 poolstatus.php:638 poolstatus.php:641 teams.php:214
 msgid "Placement"
 msgstr ""
 
-#: admin/seasonpools.php:102 admin/seasons.php:97 admin/seasonseries.php:60
+#: admin/seasonpools.php:109 admin/seasons.php:97 admin/seasonseries.php:60
 msgid "Operations"
 msgstr ""
 
-#: admin/seasonpools.php:205 admin/seasonpools.php:207 admin/serieteams.php:132
+#: admin/seasonpools.php:214 admin/seasonpools.php:216 admin/serieteams.php:132
 msgid "Select teams"
 msgstr ""
 
-#: admin/seasonpools.php:214 admin/seasonpools.php:216
+#: admin/seasonpools.php:223 admin/seasonpools.php:225
 msgid "Move teams"
 msgstr ""
 
-#: admin/seasonpools.php:219 admin/seasonstandings.php:493
+#: admin/seasonpools.php:228 admin/seasonstandings.php:493
 #: admin/serieteams.php:224
 msgid "Manage moves"
 msgstr ""
 
-#: admin/seasonpools.php:226 admin/seasonpools.php:228
+#: admin/seasonpools.php:235 admin/seasonpools.php:237
 msgid "Play-off games"
 msgstr ""
 
-#: admin/seasonpools.php:233 admin/seasonpools.php:235
+#: admin/seasonpools.php:242 admin/seasonpools.php:244
 msgid "Game management"
 msgstr ""
 
-#: admin/seasonpools.php:243
+#: admin/seasonpools.php:252
+#, fuzzy
 msgid "clone"
-msgstr ""
+msgstr "clone"
 
-#: admin/seasonpools.php:245
+#: admin/seasonpools.php:254
 msgid "remove"
 msgstr ""
 
-#: admin/seasonpools.php:292
+#: admin/seasonpools.php:301
 msgid "Show all moves"
 msgstr ""
 
-#: admin/seasons.php:10 admin/seasonstats.php:17 menufunctions.php:624
-#: menufunctions.php:831 playerlist.php:22
+#: admin/seasons.php:10 admin/seasonstats.php:17 menufunctions.php:629
+#: menufunctions.php:836 playerlist.php:22
 msgid "Events"
 msgstr ""
 
@@ -2396,10 +2413,10 @@ msgstr ""
 #: admin/seasonteams.php:122 admin/seasonteams.php:171 clubcard.php:133
 #: clubcard.php:157 countrycard.php:26 countrycard.php:51
 #: cust/bula/pdfprinter.php:106 cust/bula/pdfprinter.php:228
-#: cust/default/pdfprinter.php:148 cust/default/pdfprinter.php:246
-#: cust/dfv/pdfprinter.php:125 cust/dfv/pdfprinter.php:225
-#: cust/fpudd/pdfprinter.php:249 cust/gummis/pdfprinter.php:164
-#: cust/gummis/pdfprinter.php:262 cust/slkl/pdfprinter.php:110
+#: cust/default/pdfprinter.php:165 cust/default/pdfprinter.php:263
+#: cust/dfv/pdfprinter.php:120 cust/dfv/pdfprinter.php:218
+#: cust/fpudd/pdfprinter.php:249 cust/gummis/pdfprinter.php:165
+#: cust/gummis/pdfprinter.php:263 cust/slkl/pdfprinter.php:110
 #: cust/slkl/pdfprinter.php:218 cust/wfdf/pdfprinter.php:99
 #: cust/wfdf/pdfprinter.php:223 cust/windmill/pdfprinter.php:105
 #: cust/windmill/pdfprinter.php:227 playerlist.php:12 playerlist.php:17
@@ -2511,7 +2528,7 @@ msgstr ""
 msgid "Rule Templates"
 msgstr ""
 
-#: admin/serieformats.php:23 menufunctions.php:625
+#: admin/serieformats.php:23 menufunctions.php:630
 msgid "Rule templates"
 msgstr ""
 
@@ -2703,8 +2720,8 @@ msgid "Create SMS"
 msgstr ""
 
 #: admin/smsmoves.php:40 cust/bula/pdfprinter.php:51
-#: cust/default/pdfprinter.php:72 cust/dfv/pdfprinter.php:50
-#: cust/gummis/pdfprinter.php:85 cust/slkl/pdfprinter.php:51
+#: cust/default/pdfprinter.php:89 cust/dfv/pdfprinter.php:45
+#: cust/gummis/pdfprinter.php:89 cust/slkl/pdfprinter.php:51
 #: cust/wfdf/pdfprinter.php:45 cust/windmill/pdfprinter.php:51
 #: lib/season.functions.php:721 plugins/update_pool_colors.php:73 teams.php:152
 #: teams.php:154
@@ -2771,7 +2788,7 @@ msgstr ""
 msgid "Save rankings"
 msgstr ""
 
-#: admin/translations.php:6 admin/translations.php:91 menufunctions.php:637
+#: admin/translations.php:6 admin/translations.php:91 menufunctions.php:642
 msgid "Translations"
 msgstr ""
 
@@ -2792,8 +2809,9 @@ msgid "The key is case insensitive"
 msgstr ""
 
 #: admin/translations.php:98
+#, fuzzy
 msgid "Key"
-msgstr ""
+msgstr "key"
 
 #: admin/twitterconf.php:7
 msgid "Twitter configuration"
@@ -2857,7 +2875,7 @@ msgstr ""
 msgid "HTTP Error"
 msgstr ""
 
-#: admin/users.php:5 menufunctions.php:641
+#: admin/users.php:5 menufunctions.php:646
 msgid "Users"
 msgstr ""
 
@@ -2908,7 +2926,7 @@ msgstr ""
 msgid "ALL"
 msgstr ""
 
-#: allcountries.php:4 allcountries.php:9 menufunctions.php:837
+#: allcountries.php:4 allcountries.php:9 menufunctions.php:842
 msgid "Countries"
 msgstr ""
 
@@ -2933,12 +2951,12 @@ msgstr ""
 msgid "Founded"
 msgstr ""
 
-#: clubcard.php:46 lib/url.functions.php:67 menufunctions.php:441
-#: menufunctions.php:445 menufunctions.php:451
+#: clubcard.php:46 lib/url.functions.php:67 menufunctions.php:446
+#: menufunctions.php:450 menufunctions.php:456
 msgid "Homepage"
 msgstr ""
 
-#: clubcard.php:56 menufunctions.php:996 user/clubprofile.php:149
+#: clubcard.php:56 menufunctions.php:1001 user/clubprofile.php:149
 #: user/contacts.php:4 user/contacts.php:18
 msgid "Contacts"
 msgstr ""
@@ -2984,36 +3002,36 @@ msgstr ""
 msgid "Beach Ultimate Lovers Association"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:37 cust/default/pdfprinter.php:62
-#: cust/dfv/pdfprinter.php:36 cust/gummis/pdfprinter.php:75
+#: cust/bula/pdfprinter.php:37 cust/default/pdfprinter.php:79
+#: cust/dfv/pdfprinter.php:31 cust/gummis/pdfprinter.php:79
 #: cust/wfdf/pdfprinter.php:31 cust/windmill/pdfprinter.php:37
 msgid "Game Record"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:48 cust/default/pdfprinter.php:71
-#: cust/dfv/pdfprinter.php:47 cust/gummis/pdfprinter.php:84
+#: cust/bula/pdfprinter.php:48 cust/default/pdfprinter.php:88
+#: cust/dfv/pdfprinter.php:42 cust/gummis/pdfprinter.php:88
 #: cust/slkl/pdfprinter.php:48 cust/wfdf/pdfprinter.php:42
 #: cust/windmill/pdfprinter.php:48
 msgid "Game #"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:50 cust/dfv/pdfprinter.php:49
+#: cust/bula/pdfprinter.php:50 cust/dfv/pdfprinter.php:44
 #: cust/slkl/pdfprinter.php:50 cust/wfdf/pdfprinter.php:44
 #: cust/windmill/pdfprinter.php:50 user/adddefensesheet.php:207
 #: user/addscoresheet.php:386
 msgid "Away team"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:53 cust/default/pdfprinter.php:78
-#: cust/dfv/pdfprinter.php:52 cust/gummis/pdfprinter.php:91
+#: cust/bula/pdfprinter.php:53 cust/default/pdfprinter.php:95
+#: cust/dfv/pdfprinter.php:47 cust/gummis/pdfprinter.php:95
 #: cust/slkl/pdfprinter.php:53 cust/wfdf/pdfprinter.php:47
 #: cust/windmill/pdfprinter.php:53 user/adddefensesheet.php:211
 #: user/addscoresheet.php:390
 msgid "Scheduled start date and time"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:54 cust/default/pdfprinter.php:74
-#: cust/dfv/pdfprinter.php:53 cust/gummis/pdfprinter.php:87
+#: cust/bula/pdfprinter.php:54 cust/default/pdfprinter.php:91
+#: cust/dfv/pdfprinter.php:48 cust/gummis/pdfprinter.php:91
 #: cust/slkl/pdfprinter.php:54 cust/wfdf/pdfprinter.php:48
 #: cust/windmill/pdfprinter.php:54 gameplay.php:263 mobile/addofficial.php:21
 #: mobile/addscoresheet.php:199 mobile/gameplay.php:81
@@ -3022,21 +3040,21 @@ msgstr ""
 msgid "Game official"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:64 cust/default/pdfprinter.php:83
-#: cust/dfv/pdfprinter.php:63 cust/gummis/pdfprinter.php:96
+#: cust/bula/pdfprinter.php:64 cust/default/pdfprinter.php:100
+#: cust/dfv/pdfprinter.php:58 cust/gummis/pdfprinter.php:100
 #: cust/wfdf/pdfprinter.php:58 cust/windmill/pdfprinter.php:64
 msgid "Half time ends"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:107 cust/default/pdfprinter.php:149
-#: cust/dfv/pdfprinter.php:126 cust/gummis/pdfprinter.php:165
+#: cust/bula/pdfprinter.php:107 cust/default/pdfprinter.php:166
+#: cust/dfv/pdfprinter.php:121 cust/gummis/pdfprinter.php:166
 #: cust/wfdf/pdfprinter.php:100 cust/windmill/pdfprinter.php:106
 msgid "for game"
 msgstr ""
 
 #: cust/bula/pdfprinter.php:132 cust/bula/pdfprinter.php:142
-#: cust/default/pdfprinter.php:171 cust/default/pdfprinter.php:179
-#: cust/gummis/pdfprinter.php:187 cust/gummis/pdfprinter.php:195
+#: cust/default/pdfprinter.php:188 cust/default/pdfprinter.php:196
+#: cust/gummis/pdfprinter.php:188 cust/gummis/pdfprinter.php:196
 #: cust/wfdf/pdfprinter.php:125 cust/wfdf/pdfprinter.php:135
 #: cust/windmill/pdfprinter.php:131 cust/windmill/pdfprinter.php:141
 #: user/addplayerlists.php:147 user/addplayerlists.php:189
@@ -3044,44 +3062,50 @@ msgid "Jersey#"
 msgstr ""
 
 #: cust/bula/pdfprinter.php:195 cust/bula/pdfprinter.php:199
-#: cust/default/pdfprinter.php:225 cust/default/pdfprinter.php:229
-#: cust/gummis/pdfprinter.php:241 cust/gummis/pdfprinter.php:245
+#: cust/default/pdfprinter.php:242 cust/default/pdfprinter.php:246
+#: cust/gummis/pdfprinter.php:242 cust/gummis/pdfprinter.php:246
 #: cust/wfdf/pdfprinter.php:187 cust/wfdf/pdfprinter.php:191
 #: cust/windmill/pdfprinter.php:194 cust/windmill/pdfprinter.php:198
 #: user/addplayerlists.php:180 user/addplayerlists.php:222
 msgid "Total number of players:"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:206 cust/gummis/pdfprinter.php:30
-#: cust/wfdf/pdfprinter.php:198 cust/windmill/pdfprinter.php:205
+#: cust/bula/pdfprinter.php:206 cust/default/pdfprinter.php:32
+#: cust/gummis/pdfprinter.php:32 cust/wfdf/pdfprinter.php:198
+#: cust/windmill/pdfprinter.php:205
 msgid "Scoresheet filling instructions:"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:207 cust/gummis/pdfprinter.php:31
-#: cust/wfdf/pdfprinter.php:199 cust/windmill/pdfprinter.php:206
+#: cust/bula/pdfprinter.php:207 cust/default/pdfprinter.php:33
+#: cust/gummis/pdfprinter.php:33 cust/wfdf/pdfprinter.php:199
+#: cust/windmill/pdfprinter.php:206
 msgid "Officials fill in their names."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:208 cust/gummis/pdfprinter.php:33
-#: cust/wfdf/pdfprinter.php:201 cust/windmill/pdfprinter.php:207
+#: cust/bula/pdfprinter.php:208 cust/default/pdfprinter.php:35
+#: cust/gummis/pdfprinter.php:35 cust/wfdf/pdfprinter.php:201
+#: cust/windmill/pdfprinter.php:207
 msgid ""
 "Captains confirm roster by crossing out injured players, and adjusting "
 "jersey numbers if necessary."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:209 cust/gummis/pdfprinter.php:34
-#: cust/wfdf/pdfprinter.php:202 cust/windmill/pdfprinter.php:208
+#: cust/bula/pdfprinter.php:209 cust/default/pdfprinter.php:36
+#: cust/gummis/pdfprinter.php:36 cust/wfdf/pdfprinter.php:202
+#: cust/windmill/pdfprinter.php:208
 msgid "After the toss, officials check the team that will start on offence."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:210 cust/gummis/pdfprinter.php:35
-#: cust/wfdf/pdfprinter.php:203 cust/windmill/pdfprinter.php:209
+#: cust/bula/pdfprinter.php:210 cust/default/pdfprinter.php:37
+#: cust/gummis/pdfprinter.php:37 cust/wfdf/pdfprinter.php:203
+#: cust/windmill/pdfprinter.php:209
 msgid ""
 "When half time starts, fill in time it ends (the second half start time)."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:211 cust/gummis/pdfprinter.php:38
-#: cust/wfdf/pdfprinter.php:206 cust/windmill/pdfprinter.php:210
+#: cust/bula/pdfprinter.php:211 cust/default/pdfprinter.php:40
+#: cust/gummis/pdfprinter.php:40 cust/wfdf/pdfprinter.php:206
+#: cust/windmill/pdfprinter.php:210
 msgid ""
 "During the game, fill in which team has scored, the jersey numbers of the "
 "player who threw the goal (Assist) and the player who caught the goal "
@@ -3089,76 +3113,68 @@ msgid ""
 "If a player scores an intercept goal (Callahan), then mark XX as assist."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:212 cust/gummis/pdfprinter.php:40
-#: cust/wfdf/pdfprinter.php:208 cust/windmill/pdfprinter.php:211
+#: cust/bula/pdfprinter.php:212 cust/default/pdfprinter.php:42
+#: cust/gummis/pdfprinter.php:42 cust/wfdf/pdfprinter.php:208
+#: cust/windmill/pdfprinter.php:211
 msgid ""
 "When a team takes a time-out, mark the time in the \"Time-outs\" section."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:213 cust/gummis/pdfprinter.php:41
-#: cust/wfdf/pdfprinter.php:209 cust/windmill/pdfprinter.php:212
+#: cust/bula/pdfprinter.php:213 cust/default/pdfprinter.php:43
+#: cust/gummis/pdfprinter.php:43 cust/wfdf/pdfprinter.php:209
+#: cust/windmill/pdfprinter.php:212
 msgid ""
 "After the game, each captain signs the scoresheet to confirm the final score."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:214 cust/gummis/pdfprinter.php:42
-#: cust/wfdf/pdfprinter.php:210 cust/windmill/pdfprinter.php:213
+#: cust/bula/pdfprinter.php:214 cust/default/pdfprinter.php:44
+#: cust/gummis/pdfprinter.php:44 cust/wfdf/pdfprinter.php:210
+#: cust/windmill/pdfprinter.php:213
 msgid "Officials return the completed scoresheet to the results headquarters."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:253 cust/default/pdfprinter.php:264
-#: cust/dfv/pdfprinter.php:151 cust/dfv/pdfprinter.php:161
-#: cust/dfv/pdfprinter.php:250 cust/fpudd/pdfprinter.php:274
-#: cust/gummis/pdfprinter.php:280 cust/slkl/pdfprinter.php:136
+#: cust/bula/pdfprinter.php:253 cust/default/pdfprinter.php:281
+#: cust/dfv/pdfprinter.php:146 cust/dfv/pdfprinter.php:156
+#: cust/dfv/pdfprinter.php:243 cust/fpudd/pdfprinter.php:274
+#: cust/gummis/pdfprinter.php:281 cust/slkl/pdfprinter.php:136
 #: cust/slkl/pdfprinter.php:146 cust/slkl/pdfprinter.php:243
 #: cust/wfdf/pdfprinter.php:248 cust/windmill/pdfprinter.php:252
 msgid "Play"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:254 cust/default/pdfprinter.php:265
-#: cust/dfv/pdfprinter.php:152 cust/dfv/pdfprinter.php:162
-#: cust/dfv/pdfprinter.php:251 cust/fpudd/pdfprinter.php:275
-#: cust/gummis/pdfprinter.php:281 cust/wfdf/pdfprinter.php:249
+#: cust/bula/pdfprinter.php:254 cust/default/pdfprinter.php:282
+#: cust/dfv/pdfprinter.php:147 cust/dfv/pdfprinter.php:157
+#: cust/dfv/pdfprinter.php:244 cust/fpudd/pdfprinter.php:275
+#: cust/gummis/pdfprinter.php:282 cust/wfdf/pdfprinter.php:249
 #: cust/windmill/pdfprinter.php:253
 msgid "Game#"
 msgstr ""
 
 #: cust/bula/pdfprinter.php:293 cust/bula/pdfprinter.php:294
-#: cust/bula/pdfprinter.php:295 cust/default/pdfprinter.php:303
-#: cust/default/pdfprinter.php:305 cust/default/pdfprinter.php:307
-#: cust/dfv/pdfprinter.php:290 cust/dfv/pdfprinter.php:291
-#: cust/dfv/pdfprinter.php:292 cust/fpudd/pdfprinter.php:314
+#: cust/bula/pdfprinter.php:295 cust/fpudd/pdfprinter.php:314
 #: cust/fpudd/pdfprinter.php:315 cust/fpudd/pdfprinter.php:316
-#: cust/gummis/pdfprinter.php:319 cust/gummis/pdfprinter.php:321
-#: cust/gummis/pdfprinter.php:323 cust/wfdf/pdfprinter.php:288
-#: cust/wfdf/pdfprinter.php:290 cust/wfdf/pdfprinter.php:292
-#: cust/windmill/pdfprinter.php:292 cust/windmill/pdfprinter.php:293
-#: cust/windmill/pdfprinter.php:294
+#: cust/wfdf/pdfprinter.php:288 cust/wfdf/pdfprinter.php:290
+#: cust/wfdf/pdfprinter.php:292 cust/windmill/pdfprinter.php:292
+#: cust/windmill/pdfprinter.php:293 cust/windmill/pdfprinter.php:294
 msgid "NOTICE"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:293 cust/default/pdfprinter.php:304
-#: cust/dfv/pdfprinter.php:290 cust/fpudd/pdfprinter.php:314
-#: cust/gummis/pdfprinter.php:320 cust/wfdf/pdfprinter.php:289
-#: cust/windmill/pdfprinter.php:292
+#: cust/bula/pdfprinter.php:293 cust/fpudd/pdfprinter.php:314
+#: cust/wfdf/pdfprinter.php:289 cust/windmill/pdfprinter.php:292
 msgid ""
 "For new players added, accreditation id or date of birth must be written "
 "down."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:294 cust/default/pdfprinter.php:306
-#: cust/dfv/pdfprinter.php:291 cust/fpudd/pdfprinter.php:315
-#: cust/gummis/pdfprinter.php:322 cust/wfdf/pdfprinter.php:291
-#: cust/windmill/pdfprinter.php:293
+#: cust/bula/pdfprinter.php:294 cust/fpudd/pdfprinter.php:315
+#: cust/wfdf/pdfprinter.php:291 cust/windmill/pdfprinter.php:293
 msgid ""
 "The team is responsible for the accreditation of <u>all</u> players on the "
 "list."
 msgstr ""
 
-#: cust/bula/pdfprinter.php:295 cust/default/pdfprinter.php:309
-#: cust/dfv/pdfprinter.php:292 cust/fpudd/pdfprinter.php:316
-#: cust/gummis/pdfprinter.php:325 cust/wfdf/pdfprinter.php:294
-#: cust/windmill/pdfprinter.php:294
+#: cust/bula/pdfprinter.php:295 cust/fpudd/pdfprinter.php:316
+#: cust/wfdf/pdfprinter.php:294 cust/windmill/pdfprinter.php:294
 msgid ""
 "<b><i>Bold italic</i></b> printed players has problems with license. They "
 "are <u>not</u> allowed to play until problems are solved (= payment recipe "
@@ -3166,13 +3182,13 @@ msgid ""
 msgstr ""
 
 #: cust/bula/pdfprinter.php:878 cust/bula/pdfprinter.php:969
-#: cust/bula/pdfprinter.php:994 cust/default/pdfprinter.php:887
-#: cust/default/pdfprinter.php:947 cust/default/pdfprinter.php:967
-#: cust/default/pdfprinter.php:998 cust/dfv/pdfprinter.php:794
-#: cust/dfv/pdfprinter.php:885 cust/dfv/pdfprinter.php:909
-#: cust/dfv/pdfprinter.php:944 cust/gummis/pdfprinter.php:1005
-#: cust/gummis/pdfprinter.php:1065 cust/gummis/pdfprinter.php:1085
-#: cust/gummis/pdfprinter.php:1116 cust/slkl/pdfprinter.php:810
+#: cust/bula/pdfprinter.php:994 cust/default/pdfprinter.php:958
+#: cust/default/pdfprinter.php:1018 cust/default/pdfprinter.php:1038
+#: cust/default/pdfprinter.php:1069 cust/dfv/pdfprinter.php:777
+#: cust/dfv/pdfprinter.php:862 cust/dfv/pdfprinter.php:885
+#: cust/dfv/pdfprinter.php:919 cust/gummis/pdfprinter.php:958
+#: cust/gummis/pdfprinter.php:1018 cust/gummis/pdfprinter.php:1038
+#: cust/gummis/pdfprinter.php:1069 cust/slkl/pdfprinter.php:810
 #: cust/slkl/pdfprinter.php:905 cust/slkl/pdfprinter.php:929
 #: cust/wfdf/pdfprinter.php:852 cust/wfdf/pdfprinter.php:936
 #: cust/wfdf/pdfprinter.php:960 cust/windmill/pdfprinter.php:837
@@ -3183,13 +3199,13 @@ msgid "Home"
 msgstr ""
 
 #: cust/bula/pdfprinter.php:890 cust/bula/pdfprinter.php:977
-#: cust/bula/pdfprinter.php:995 cust/default/pdfprinter.php:897
-#: cust/default/pdfprinter.php:954 cust/default/pdfprinter.php:968
-#: cust/default/pdfprinter.php:999 cust/dfv/pdfprinter.php:806
-#: cust/dfv/pdfprinter.php:893 cust/dfv/pdfprinter.php:910
-#: cust/dfv/pdfprinter.php:945 cust/gummis/pdfprinter.php:1015
-#: cust/gummis/pdfprinter.php:1072 cust/gummis/pdfprinter.php:1086
-#: cust/gummis/pdfprinter.php:1117 cust/slkl/pdfprinter.php:822
+#: cust/bula/pdfprinter.php:995 cust/default/pdfprinter.php:968
+#: cust/default/pdfprinter.php:1025 cust/default/pdfprinter.php:1039
+#: cust/default/pdfprinter.php:1070 cust/dfv/pdfprinter.php:788
+#: cust/dfv/pdfprinter.php:870 cust/dfv/pdfprinter.php:886
+#: cust/dfv/pdfprinter.php:920 cust/gummis/pdfprinter.php:968
+#: cust/gummis/pdfprinter.php:1025 cust/gummis/pdfprinter.php:1039
+#: cust/gummis/pdfprinter.php:1070 cust/slkl/pdfprinter.php:822
 #: cust/slkl/pdfprinter.php:913 cust/slkl/pdfprinter.php:930
 #: cust/wfdf/pdfprinter.php:863 cust/wfdf/pdfprinter.php:944
 #: cust/wfdf/pdfprinter.php:961 cust/windmill/pdfprinter.php:849
@@ -3205,29 +3221,29 @@ msgstr ""
 msgid "Starting offensive team"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:963 cust/default/pdfprinter.php:942
-#: cust/dfv/pdfprinter.php:879 cust/gummis/pdfprinter.php:1060
+#: cust/bula/pdfprinter.php:963 cust/default/pdfprinter.php:1013
+#: cust/dfv/pdfprinter.php:856 cust/gummis/pdfprinter.php:1013
 #: cust/slkl/pdfprinter.php:897 cust/wfdf/pdfprinter.php:930
 #: cust/windmill/pdfprinter.php:922
 msgid "Captains' signatures"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:989 cust/default/pdfprinter.php:962
-#: cust/dfv/pdfprinter.php:904 cust/gummis/pdfprinter.php:1080
+#: cust/bula/pdfprinter.php:989 cust/default/pdfprinter.php:1033
+#: cust/dfv/pdfprinter.php:880 cust/gummis/pdfprinter.php:1033
 #: cust/slkl/pdfprinter.php:924 cust/wfdf/pdfprinter.php:955
 #: cust/windmill/pdfprinter.php:948
 msgid "Scoring team"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:990 cust/default/pdfprinter.php:963
-#: cust/dfv/pdfprinter.php:905 cust/gummis/pdfprinter.php:1081
+#: cust/bula/pdfprinter.php:990 cust/default/pdfprinter.php:1034
+#: cust/dfv/pdfprinter.php:881 cust/gummis/pdfprinter.php:1034
 #: cust/slkl/pdfprinter.php:925 cust/wfdf/pdfprinter.php:956
 #: cust/windmill/pdfprinter.php:949
 msgid "Jersey numbers"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:996 cust/default/pdfprinter.php:969
-#: cust/dfv/pdfprinter.php:911 cust/gummis/pdfprinter.php:1087
+#: cust/bula/pdfprinter.php:996 cust/default/pdfprinter.php:1040
+#: cust/dfv/pdfprinter.php:887 cust/gummis/pdfprinter.php:1040
 #: cust/slkl/pdfprinter.php:931 cust/wfdf/pdfprinter.php:962
 #: cust/windmill/pdfprinter.php:955 gameplay.php:178
 #: mobile/addscoresheet.php:185 scorekeeper/addscoresheet.php:192
@@ -3235,15 +3251,15 @@ msgstr ""
 msgid "Assist"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:997 cust/default/pdfprinter.php:970
-#: cust/dfv/pdfprinter.php:912 cust/gummis/pdfprinter.php:1088
+#: cust/bula/pdfprinter.php:997 cust/default/pdfprinter.php:1041
+#: cust/dfv/pdfprinter.php:888 cust/gummis/pdfprinter.php:1041
 #: cust/slkl/pdfprinter.php:932 cust/wfdf/pdfprinter.php:963
 #: cust/windmill/pdfprinter.php:956 gameplay.php:178
 #: mobile/addscoresheet.php:187 user/addscoresheet.php:545
 msgid "Goal"
 msgstr ""
 
-#: cust/bula/pdfprinter.php:999 cust/dfv/pdfprinter.php:914
+#: cust/bula/pdfprinter.php:999 cust/dfv/pdfprinter.php:890
 #: cust/slkl/pdfprinter.php:934 cust/wfdf/pdfprinter.php:965
 #: cust/windmill/pdfprinter.php:958 gameplay.php:178
 msgid "Scores"
@@ -4127,30 +4143,29 @@ msgstr ""
 msgid "Accredit"
 msgstr ""
 
-#: cust/default/pdfprinter.php:27 cust/default/pdfprinter.php:128
-#: cust/dfv/pdfprinter.php:34 cust/dfv/pdfprinter.php:94
-#: cust/dfv/pdfprinter.php:123 cust/gummis/pdfprinter.php:141
-msgid "Organization"
-msgstr ""
-
-#: cust/default/pdfprinter.php:99 cust/gummis/pdfprinter.php:112
+#: cust/default/pdfprinter.php:116 cust/gummis/pdfprinter.php:116
 msgid ""
 "After the match has ended, update result:\n"
 "\n"
 msgstr ""
 
-#: cust/default/pdfprinter.php:130 cust/dfv/pdfprinter.php:96
-#: cust/gummis/pdfprinter.php:143
+#: cust/default/pdfprinter.php:145 cust/dfv/pdfprinter.php:29
+#: cust/dfv/pdfprinter.php:89 cust/gummis/pdfprinter.php:145
+msgid "Organization"
+msgstr ""
+
+#: cust/default/pdfprinter.php:147 cust/dfv/pdfprinter.php:91
+#: cust/gummis/pdfprinter.php:147
 msgid "Defenses record"
 msgstr ""
 
-#: cust/default/pdfprinter.php:907 cust/dfv/pdfprinter.php:821
-#: cust/gummis/pdfprinter.php:1025 cust/slkl/pdfprinter.php:837
+#: cust/default/pdfprinter.php:978 cust/dfv/pdfprinter.php:801
+#: cust/gummis/pdfprinter.php:978 cust/slkl/pdfprinter.php:837
 #: scorekeeper/addfirstoffence.php:32
 msgid "First Offence"
 msgstr ""
 
-#: cust/default/pdfprinter.php:972 cust/gummis/pdfprinter.php:1090
+#: cust/default/pdfprinter.php:1043 cust/gummis/pdfprinter.php:1043
 #: mobile/addscoresheet.php:158 mobile/addscoresheet.php:170
 #: mobile/deletescore.php:29 mobile/deletescore.php:41
 #: scorekeeper/addscoresheet.php:144 scorekeeper/addscoresheet.php:161
@@ -4158,18 +4173,18 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: cust/default/pdfprinter.php:1001 cust/dfv/pdfprinter.php:947
-#: cust/gummis/pdfprinter.php:1119 user/adddefensesheet.php:369
+#: cust/default/pdfprinter.php:1072 cust/dfv/pdfprinter.php:922
+#: cust/gummis/pdfprinter.php:1072 user/adddefensesheet.php:369
 msgid "Touched"
 msgstr ""
 
-#: cust/default/pdfprinter.php:1002 cust/dfv/pdfprinter.php:948
-#: cust/gummis/pdfprinter.php:1120 user/adddefensesheet.php:368
+#: cust/default/pdfprinter.php:1073 cust/dfv/pdfprinter.php:923
+#: cust/gummis/pdfprinter.php:1073 user/adddefensesheet.php:368
 msgid "Caught"
 msgstr ""
 
-#: cust/default/pdfprinter.php:1003 cust/dfv/pdfprinter.php:949
-#: cust/fpudd/pdfprinter.php:973 cust/gummis/pdfprinter.php:1121
+#: cust/default/pdfprinter.php:1074 cust/dfv/pdfprinter.php:924
+#: cust/fpudd/pdfprinter.php:973 cust/gummis/pdfprinter.php:1074
 #: user/adddefensesheet.php:369
 msgid "Callahan"
 msgstr ""
@@ -4180,7 +4195,7 @@ msgid "Name must be at least 2 letters long!"
 msgstr ""
 
 #: cust/default/teamplayers.functions.php:52
-#: cust/slkl/teamplayers.functions.php:50 result.php:78
+#: cust/slkl/teamplayers.functions.php:50 result.php:71
 #: scorekeeper/result.php:82 user/enrollteam.php:114
 msgid "Confirm"
 msgstr ""
@@ -4232,7 +4247,7 @@ msgstr ""
 msgid "DFV Logo"
 msgstr ""
 
-#: cust/dfv/pdfprinter.php:153 cust/dfv/pdfprinter.php:163
+#: cust/dfv/pdfprinter.php:148 cust/dfv/pdfprinter.php:158
 msgid "License ok"
 msgstr ""
 
@@ -4305,8 +4320,9 @@ msgid "Número"
 msgstr ""
 
 #: cust/fpudd/pdfprinter.php:171
+#, fuzzy
 msgid "Number"
-msgstr ""
+msgstr "NUMBER"
 
 #: cust/fpudd/pdfprinter.php:818 cust/fpudd/pdfprinter.php:909
 #: cust/fpudd/pdfprinter.php:933 cust/fpudd/pdfprinter.php:968
@@ -4524,12 +4540,14 @@ msgid "Juniors"
 msgstr ""
 
 #: cust/slkl/translations.inc.php:6
+#, fuzzy
 msgid "Winter"
-msgstr ""
+msgstr "winter"
 
 #: cust/slkl/translations.inc.php:7
+#, fuzzy
 msgid "Summer"
-msgstr ""
+msgstr "summer"
 
 #: cust/slkl/translations.inc.php:8
 msgid "Final"
@@ -4641,7 +4659,7 @@ msgstr ""
 msgid "Warning: missing team"
 msgstr ""
 
-#: ext/export.php:9 menufunctions.php:849
+#: ext/export.php:9 menufunctions.php:854
 msgid "Data export"
 msgstr ""
 
@@ -4665,7 +4683,7 @@ msgstr ""
 msgid "Player statistics"
 msgstr ""
 
-#: ext/export.php:32 menufunctions.php:922
+#: ext/export.php:32 menufunctions.php:927
 msgid "Pool rankings"
 msgstr ""
 
@@ -4689,13 +4707,14 @@ msgstr ""
 msgid "No image"
 msgstr ""
 
-#: ext/index.php:10 menufunctions.php:848
+#: ext/index.php:10 menufunctions.php:853
 msgid "Ultiorganizer links"
 msgstr ""
 
 #: ext/index.php:28
+#, fuzzy
 msgid "default"
-msgstr ""
+msgstr "DEFAULT"
 
 #: ext/index.php:28
 msgid "black and white"
@@ -4937,7 +4956,7 @@ msgid "Result"
 msgstr ""
 
 #: gameplay.php:15 lib/timetable.functions.php:565 mobile/gameplay.php:11
-#: poolstatus.php:774 scorekeeper/gameplay.php:10 scorekeeper/respgames.php:134
+#: poolstatus.php:779 scorekeeper/gameplay.php:10 scorekeeper/respgames.php:134
 #: user/addscoresheet.php:359
 msgid "Game play"
 msgstr ""
@@ -5019,13 +5038,13 @@ msgstr ""
 msgid "Callahan defense"
 msgstr ""
 
-#: gameplay.php:633 result.php:50 scorekeeper/result.php:54
+#: gameplay.php:633 result.php:43 scorekeeper/result.php:54
 msgid "on field"
 msgstr ""
 
 #: games.php:48 games.php:52 games.php:56 games.php:61 games.php:65
 #: games.php:70 poolstatus.php:316 poolstatus.php:454 poolstatus.php:691
-#: poolstatus.php:816
+#: poolstatus.php:821
 msgid "Schedule"
 msgstr ""
 
@@ -5069,15 +5088,15 @@ msgstr ""
 msgid "All groupings"
 msgstr ""
 
-#: games.php:180
+#: games.php:182
 msgid "iCalendar (.ical)"
 msgstr ""
 
-#: games.php:181
+#: games.php:183
 msgid "Grid (PDF)"
 msgstr ""
 
-#: games.php:182
+#: games.php:184
 msgid "List (PDF)"
 msgstr ""
 
@@ -5128,26 +5147,26 @@ msgstr ""
 msgid "Sat"
 msgstr ""
 
-#: lib/data.functions.php:368
+#: lib/data.functions.php:369
 msgid "Invalid XML file (no 'uo_season' element)."
 msgstr ""
 
-#: lib/data.functions.php:437
+#: lib/data.functions.php:438
 #, php-format
 msgid "uo_team without uo_series (%s)"
 msgstr ""
 
-#: lib/data.functions.php:641
+#: lib/data.functions.php:652
 #, php-format
 msgid "Event to insert (%s) doesn't exist."
 msgstr ""
 
-#: lib/data.functions.php:864
+#: lib/data.functions.php:878
 #, php-format
 msgid "Target event %s is not the same as in the file (%s)."
 msgstr ""
 
-#: lib/data.functions.php:867
+#: lib/data.functions.php:881
 #, php-format
 msgid "Event to replace (%s) doesn't exist."
 msgstr ""
@@ -5234,8 +5253,9 @@ msgid "Total points"
 msgstr ""
 
 #: lib/pool.functions.php:231 lib/pool.functions.php:258
+#, fuzzy
 msgid "Unknown"
-msgstr ""
+msgstr "unknown units"
 
 #: lib/pool.functions.php:260 statistics.php:40 teams.php:232
 msgid "Gold"
@@ -5286,7 +5306,7 @@ msgid "Live Broadcasting"
 msgstr ""
 
 #: lib/timetable.functions.php:572 lib/timetable.functions.php:574
-#: poolstatus.php:781 poolstatus.php:783 scorekeeper/respgames.php:132
+#: poolstatus.php:786 poolstatus.php:788 scorekeeper/respgames.php:132
 msgid "Ongoing"
 msgstr ""
 
@@ -5454,7 +5474,7 @@ msgid ""
 "receive an email with further instructions."
 msgstr ""
 
-#: logout.php:2 menufunctions.php:220 menufunctions.php:375
+#: logout.php:2 menufunctions.php:225 menufunctions.php:380
 #: scorekeeper/index.php:102
 msgid "Logout"
 msgstr ""
@@ -5463,145 +5483,145 @@ msgstr ""
 msgid "You have logged out"
 msgstr ""
 
-#: menufunctions.php:205 menufunctions.php:356 mobile/index.php:15
+#: menufunctions.php:206
+msgid "New user?"
+msgstr ""
+
+#: menufunctions.php:211 menufunctions.php:361 mobile/index.php:15
 #: scorekeeper/login.php:23
 msgid "Login"
 msgstr ""
 
-#: menufunctions.php:216
-msgid "New user?"
-msgstr ""
-
-#: menufunctions.php:285
+#: menufunctions.php:290
 msgid "Printable version"
 msgstr ""
 
-#: menufunctions.php:287
+#: menufunctions.php:292
 msgid "Screen version"
 msgstr ""
 
-#: menufunctions.php:360 menufunctions.php:373
+#: menufunctions.php:365 menufunctions.php:378
 msgid "Back to the Ultiorganizer"
 msgstr ""
 
-#: menufunctions.php:517
+#: menufunctions.php:522
 msgid "Go"
 msgstr ""
 
-#: menufunctions.php:535 menufunctions.php:664
+#: menufunctions.php:540 menufunctions.php:669
 msgid "Administration"
 msgstr ""
 
-#: menufunctions.php:626
+#: menufunctions.php:631
 msgid "Clubs & Countries"
 msgstr ""
 
-#: menufunctions.php:627
+#: menufunctions.php:632
 msgid "Field locations"
 msgstr ""
 
-#: menufunctions.php:628
+#: menufunctions.php:633
 msgid "Field reservations"
 msgstr ""
 
-#: menufunctions.php:642
+#: menufunctions.php:647
 msgid "Logs"
 msgstr ""
 
-#: menufunctions.php:644
+#: menufunctions.php:649
 msgid "Database"
 msgstr ""
 
-#: menufunctions.php:645
+#: menufunctions.php:650
 msgid "Settings"
 msgstr ""
 
-#: menufunctions.php:682
+#: menufunctions.php:687
 msgid "Create new event"
 msgstr ""
 
-#: menufunctions.php:692
+#: menufunctions.php:697
 msgid "Team registration"
 msgstr ""
 
-#: menufunctions.php:705
+#: menufunctions.php:710
 msgid "Player profiles"
 msgstr ""
 
-#: menufunctions.php:723
+#: menufunctions.php:728
 msgid "No seasons created"
 msgstr ""
 
-#: menufunctions.php:741
+#: menufunctions.php:746
 msgid "Final ranking"
 msgstr ""
 
-#: menufunctions.php:764 seriesstatus.php:31 seriesstatus.php:256
+#: menufunctions.php:769 seriesstatus.php:31 seriesstatus.php:256
 msgid "Show all pools"
 msgstr ""
 
-#: menufunctions.php:773
+#: menufunctions.php:778
 msgid "All Games"
 msgstr ""
 
-#: menufunctions.php:790 teams.php:110
+#: menufunctions.php:795 teams.php:110
 msgid "Pools not yet created"
 msgstr ""
 
-#: menufunctions.php:799
+#: menufunctions.php:804
 msgid "Event Links"
 msgstr ""
 
-#: menufunctions.php:813
+#: menufunctions.php:818
 msgid "Result Feed"
 msgstr ""
 
-#: menufunctions.php:820
+#: menufunctions.php:825
 msgid "Result Twitter"
 msgstr ""
 
-#: menufunctions.php:839
+#: menufunctions.php:844
 msgid "All time"
 msgstr ""
 
-#: menufunctions.php:846
+#: menufunctions.php:851
 msgid "Client access"
 msgstr ""
 
-#: menufunctions.php:850
+#: menufunctions.php:855
 msgid "Mobile Administration"
 msgstr ""
 
-#: menufunctions.php:851
+#: menufunctions.php:856
 msgid "Scorekeeper"
 msgstr ""
 
-#: menufunctions.php:856
+#: menufunctions.php:861
 msgid "Links"
 msgstr ""
 
-#: menufunctions.php:874 user_guide.php:2
+#: menufunctions.php:879 user_guide.php:2
 msgid "User Guide"
 msgstr ""
 
-#: menufunctions.php:875
+#: menufunctions.php:880
 msgid "Admin Help"
 msgstr ""
 
-#: menufunctions.php:876 privacy.php:5 register.php:52
+#: menufunctions.php:881 privacy.php:5 register.php:52
 msgid "Privacy Policy"
 msgstr ""
 
-#: menufunctions.php:903
+#: menufunctions.php:908
 msgid "Rankings"
 msgstr ""
 
-#: menufunctions.php:947 menufunctions.php:971 user/respteams.php:7
+#: menufunctions.php:952 menufunctions.php:976 user/respteams.php:7
 #: user/respteams.php:17
 msgid "Team responsibilities"
 msgstr ""
 
-#: menufunctions.php:995 mobile/respgames.php:7 user/respgames.php:8
+#: menufunctions.php:1000 mobile/respgames.php:7 user/respgames.php:8
 msgid "Game responsibilities"
 msgstr ""
 
@@ -5866,8 +5886,9 @@ msgid "cm"
 msgstr ""
 
 #: playercard.php:79 user/playerprofile.php:291
+#, fuzzy
 msgid "Weight"
-msgstr ""
+msgstr "stones per"
 
 #: playercard.php:80 user/playerprofile.php:292
 msgid "kg"
@@ -5980,6 +6001,12 @@ msgstr ""
 msgid "Import WU23C2010 data from CSV file"
 msgstr ""
 
+#: plugins/import_csv_wu23c2010.php:211 plugins/import_csv_wucc2010.php:154
+#: plugins/import_csv_wujc2012.php:177 plugins/import_slkl_old_data.php:278
+#: plugins/import_xml_ffindr.php:58
+msgid "Data imported!"
+msgstr ""
+
 #: plugins/import_csv_wucc2010.php:27
 msgid "Import WUCC2010 data from CSV file"
 msgstr ""
@@ -6066,11 +6093,11 @@ msgstr ""
 msgid "???"
 msgstr ""
 
-#: poolstatus.php:793
+#: poolstatus.php:798
 msgid "Winners continues in:"
 msgstr ""
 
-#: poolstatus.php:804
+#: poolstatus.php:809
 msgid "Losers continues in:"
 msgstr ""
 
@@ -6132,39 +6159,39 @@ msgstr ""
 msgid "Valid divisions"
 msgstr ""
 
-#: result.php:32 scorekeeper/result.php:39
-msgid "Result not saved!"
-msgstr ""
-
-#: result.php:34
+#: result.php:4 result.php:112
 msgid "Add result"
 msgstr ""
 
-#: result.php:63 scorekeeper/result.php:67
+#: result.php:26 scorekeeper/result.php:39
+msgid "Result not saved!"
+msgstr ""
+
+#: result.php:56 scorekeeper/result.php:67
 msgid "Game is already played. Result:"
 msgstr ""
 
-#: result.php:65 scorekeeper/result.php:69
+#: result.php:58 scorekeeper/result.php:69
 msgid "Change result to"
 msgstr ""
 
-#: result.php:71 scorekeeper/result.php:75
+#: result.php:64 scorekeeper/result.php:75
 msgid "Winner is"
 msgstr ""
 
-#: result.php:85
+#: result.php:78
 msgid "Scoresheet #"
 msgstr ""
 
-#: result.php:89
+#: result.php:82
 msgid "Home Goals"
 msgstr ""
 
-#: result.php:93
+#: result.php:86
 msgid "Away Goals"
 msgstr ""
 
-#: result.php:102 seasonlist.php:28
+#: result.php:95 seasonlist.php:28
 msgid "Played games"
 msgstr ""
 
@@ -6240,8 +6267,9 @@ msgid "Scorer"
 msgstr ""
 
 #: scorekeeper/addscoresheet.php:228
+#, fuzzy
 msgid "In time"
-msgstr ""
+msgstr "Double Time"
 
 #: scorekeeper/addscoresheet.php:257
 msgid "Additional game data"
@@ -6528,8 +6556,9 @@ msgstr ""
 
 #: user/adddefensesheet.php:122 user/adddefensesheet.php:127
 #: user/adddefensesheet.php:159 user/adddefensesheet.php:170
+#, fuzzy
 msgid "Defense"
-msgstr ""
+msgstr "defense"
 
 #: user/adddefensesheet.php:122 user/addscoresheet.php:283
 msgid "time can not be the same as half-time ending"
@@ -6904,8 +6933,9 @@ msgid "Publish event"
 msgstr ""
 
 #: user/facebookpublishing.php:85 user/facebookpublishing.php:92
+#, fuzzy
 msgid "Message"
-msgstr ""
+msgstr "MESSAGE"
 
 #: user/facebookpublishing.php:89
 msgid "Publish player card"
@@ -7171,12 +7201,14 @@ msgid "Show administration responsibilities"
 msgstr ""
 
 #: user/userinfo.php:329
+#, fuzzy
 msgid "Hide"
-msgstr ""
+msgstr "HIDE"
 
 #: user/userinfo.php:330
+#, fuzzy
 msgid "Show"
-msgstr ""
+msgstr "SHOW"
 
 #: user/userinfo.php:343
 msgid "Show pools"
@@ -7199,8 +7231,9 @@ msgid "Unpublish"
 msgstr ""
 
 #: user/userinfo.php:489
+#, fuzzy
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: user/userinfo.php:491
 msgid "Publish the game events of this player on my Facebook feed"
