@@ -97,6 +97,7 @@ leftMenu($LAYOUT_ID);
 contentStart();
 
 foreach($series as $row){
+  // FIXME does not work as intended for series with identical names
   $menutabs[U_($row['name'])]="?view=admin/seasonteams&season=".$season."&series=".$row['series_id'];
 }
 $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
@@ -185,7 +186,7 @@ $html .= "<td style='padding-top:15px'><input class='input' size='2' maxlength='
 $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='name0' id='name0' value=''/></td>";
 $html .= "<td style='padding-top:15px'><input class='input' size='4' maxlength='15' name='abbrev0' value=''/></td>";
 if(!intval($seasonInfo['isnationalteams'])){
-  $html .= "<td style='padding-top:15px'><input class='input' size='25' maxlength='50' name='club0' value=''/></td>";
+  $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='club0' value=''/></td>";
 }
 if(intval($seasonInfo['isinternational'])){
   if(!intval($seasonInfo['isnationalteams'])){

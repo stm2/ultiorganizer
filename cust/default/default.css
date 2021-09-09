@@ -10,7 +10,6 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
   margin: 0;
   padding: 0;
   border: 0;
-  font: inherit;
   vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -142,7 +141,7 @@ a:visited {
 }
 
 a:hover, a:focus {
-  color: var(--hlinkcolor, #inherit);
+  color: var(--hlinkcolor, inherit);
   text-decoration: underline;
 }
 
