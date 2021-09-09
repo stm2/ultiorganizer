@@ -17,7 +17,6 @@ if (isset($_GET['reservations'])) {
   $reservations = array_flip($_SESSION['userproperties']['userrole']['resadmin']);
 }
 $reservationData = ReservationInfoArray($reservations);
-$numOfreservations = count($reservations);
 
 define("MIN_HEIGHT", 1.0);
 $MAX_COLUMNS = 4;
@@ -84,11 +83,25 @@ function jsSecure($string) {
   return str_replace(array('"', "\n"), array('\"', ''), $string);
 }
 
-function pauseEntry($height, $duration, $gameId) {
-  $html = "<li class='schedule_item' id='pause" . $gameId . "' style='min-height:" . $height . "px'>";
-  $html .= "<input type='hidden' id='ptime" . $gameId . "' name='ptimes[]' value='" . $duration . "'/>";
+function pauseEntry($height, $duration, $gameId, $editable = true) {
+  if ($gameId >= 0) {
+    $id = "pause$gameId";
+    $tid = "ptime$gameId";
+    $names = "ptimes[]";
+  } else {
+    $id = "fixed" . (-$gameId);
+    $tid = "tfixed" . (-$gameId);
+    $names = "tfixeds[]";
+  }
+  $html = "<li class='schedule_item' id='$id' style='min-height:" . $height . "px'>";
+  $html .= "<input type='hidden' id='$tid' name='$names' value='" . $duration . "'/>";
   $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
-  $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"pause" . $gameId . "\");'>x</a></span></li>\n";
+  if ($editable) {
+    $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"$id\");'>x</a></span></li>\n";
+  } else {
+    $html .= "<span style='align:right;float:right;'>#</span>";
+  }
+  
   return $html;
 }
 
@@ -144,17 +157,19 @@ function gamePoolName($gameInfo) {
 function tableStart($dayArray, $skip, $max) {
   echo "<table class='scheduling'><tr>\n";
   $index = 0;
-  foreach ($dayArray as $reservationId => $reservationArray) {
+  $firstStart = PHP_INT_MAX;
+  foreach ($dayArray as $reservationArray) {
     if (++$index <= $skip)
       continue;
       if ($index > $skip + $max)
         break;
         $startTime = strtotime($reservationArray['starttime']);
+        $firstStart = min($firstStart, $startTime);
         echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field ") . " " . $reservationArray['fieldname'] .
         " " . date("H:i", $startTime) . "</th>\n";
   }
   echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";
-  return $startTime;
+  return $firstStart;
 }
 
 function tableEnd($firstStart, $lastEnd) {
@@ -360,25 +375,30 @@ $reservedPauses = array();
 
 $MINTOP = 30;
 
-if(count($reservationData)>0){
-  foreach ($reservationData as $day => $dayArray) {
+{
+  foreach ($reservationData as $dayArray) {
     $lastEnd = 0;
     $columnCount = $lastBreak = 0;
-    tableStart($dayArray, 0, $MAX_COLUMNS);
+    $firstStart = tableStart($dayArray, 0, $MAX_COLUMNS);
     
     foreach ($dayArray as $reservationId => $reservationArray) {
-      if (!isset($firstStart)) {
-        $firstStart = strtotime($reservationArray['starttime']);
-      }
       echo "<td class='scheduling_column'>\n";
       $offset = intval((strtotime($reservationArray['starttime']) - $firstStart) / 60) + $MINTOP;
       $lastEnd = max($lastEnd, strtotime($reservationArray['endtime']));
       $startTime = strtotime($reservationArray['starttime']);
       $endTime =  strtotime($reservationArray['endtime']);
-      $duration = ($endTime - $startTime) / 60;
+      $duration = ($endTime - $firstStart) / 60;
 
       echo "<div class='workarea' >\n";
       echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
+      
+      $duration = ($startTime - $firstStart) / 60;
+      $height = pauseHeight($duration);
+      if ($firstStart < $startTime) {
+        echo pauseEntry($height, $duration, -$reservationId, false);
+        //$reservedPauses[] = "fixed".$reservationId;
+      }
+      
       $nextStart = $startTime;
       foreach ($reservationArray['games'] as $gameId => $gameInfo) {
         $gameStart = strtotime($gameInfo['time']);
@@ -406,12 +426,12 @@ if(count($reservationData)>0){
       echo "</div>\n</td>\n";
       
       ++$columnCount;
-      if (count($dayArray) > $MAX_COLUMNS && ($columnCount-$lastBreak >= $MAX_COLUMNS)) {
+      if (count($dayArray) > $MAX_COLUMNS && ($columnCount - $lastBreak >= $MAX_COLUMNS)) {
         tableEnd($firstStart, $lastEnd);
         unset($firstStart);
-        $lastEnd=0;
+        $lastEnd = 0;
         if ($columnCount < count($dayArray))
-          tableStart($dayArray, $columnCount, $MAX_COLUMNS);
+          $firstStart = tableStart($dayArray, $columnCount, $MAX_COLUMNS);
         $lastBreak = $columnCount;
       }
     }
@@ -421,62 +441,8 @@ if(count($reservationData)>0){
     unset($firstStart);
     $lastEnd=0;
   }
-}else{
-  foreach ($reservationData as $day => $dayArray) {
-    $rowcount=2;
-
-    foreach ($dayArray as $reservationId => $reservationArray) {
-
-      if(($rowcount%2)==0){
-        echo "<table><tr>\n";
-      }
-      $rowcount++;
-      if (!isset($firstStart)) {
-        $firstStart = strtotime($reservationArray['starttime']);
-      }
-      echo "<td style='vertical-align:top;padding:5px'>\n";
-      $offset = intval((strtotime($reservationArray['starttime']) - $firstStart) / 60) + $MINTOP;
-      $startTime = strtotime($reservationArray['starttime']);
-      $endTime =  strtotime($reservationArray['endtime']);
-      $duration = ($endTime - $startTime) / 60;
-
-      echo "<div style='vertical-align:bottom;min-height:".max(10,intval($offset * MIN_HEIGHT))."px'>";
-      echo "<h3>".$reservationArray['name']." "._("Field ")." ".$reservationArray['fieldname']." ".date("H:i", $startTime)."</h3></div>\n";
-      echo "<div class='workarea' >\n";
-      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
-      $nextStart = $startTime;
-      foreach ($reservationArray['games'] as $gameId => $gameInfo) {
-        $gameStart = strtotime($gameInfo['time']);
-        if ($gameStart > $nextStart) {
-          $duration = ($gameStart - $nextStart) / 60;
-          $height = pauseHeight($duration);
-          echo pauseEntry($height, $duration, $gameId);
-          $reservedPauses[] = "pause".$gameId;
-        }
-        $duration = gameDuration($gameInfo);
-        if ($duration <= 0) {
-          $zeroGames[] = count($zeroGames) == 0?$gameInfo:$gameId;
-        }
-        $nextStart = $gameStart + (max($duration, 60) * 60);
-        $height = gameHeight($duration);
-        $gametitle = getGameName($gameInfo);
-        $pooltitle = gamePoolName($gameInfo);
-        if ($duration > 0 && hasEditGamesRight($gameInfo['series'])) {
-          echo gameEntry($gameInfo, $height, $duration, $pooltitle);
-        } else {
-          echo gameEntry($gameInfo, $height, $duration, $pooltitle, false);
-        }
-      }
-      echo "</ul>\n";
-      echo "</div>\n</td>\n";
-      if(($rowcount%2)==0){
-        echo "</tr>\n</table>\n";
-      }
-
-    }
-  }
-
 }
+
 echo "<table><tr>";
 echo "<td id='user_actions' padding: 10px'>";
 echo "<input type='button' id='showButton' value='" . _("Save") . "' /></td>";
@@ -664,11 +630,14 @@ foreach ($reservedPauses as $pauseId) {
       var offset = 0;
       for (i=0;i<items.length;i=i+1) {
         var duration =  parseInt(items[i].firstChild.value);
-        var nextId = items[i].id.substring(4);
-        if (!isNaN(nextId)) {
+        const nextId = /[0-9]+/.exec(items[i].id)[0];
+        const type = /[^0-9]+/.exec(items[i].id)[0];
+        if (type == "game") {
           out += ":" + nextId + "/" + offset;
+          offset += duration;
+        } else if (type  == "pause") {
+          offset += duration;
         }
-        offset += duration;
       }
       return out;
     };

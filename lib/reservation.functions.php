@@ -9,8 +9,8 @@ include_once $include_prefix.'lib/user.functions.php';
 function ReservationInfo($id) {
 	$locale = str_replace(".", "_", getSessionLocale());
 	$query = sprintf("SELECT res.id, res.location, res.fieldname, res.reservationgroup, 
-		res.date, res.starttime, res.endtime, res.timeslots, loc.name, 
-		inf.info as info, loc.address, res.season, count(game_id) as games  
+		res.date, res.starttime, res.endtime, res.timeslots, ANY_VALUE(loc.name) as name, 
+		inf.info as info, ANY_VALUE(loc.address) as address, res.season, count(game_id) as games  
 		FROM uo_reservation as res 
 	    left join uo_location as loc on (res.location=loc.id)
 	    LEFT JOIN uo_location_info inf on (loc.id = inf.location_id AND inf.locale='%s' ) 
@@ -228,7 +228,7 @@ function ReservationInfoArray($reservations) {
 	}
 	$fetchStr = implode(",", $fetch);
 	$query = "SELECT DATE_FORMAT(starttime, '%Y%m%d') as gameday, id FROM uo_reservation WHERE id IN (".$fetchStr.") 
-		ORDER BY starttime ASC, location, fieldname +0, id";
+		ORDER BY location, fieldname +0, starttime ASC, id";
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
