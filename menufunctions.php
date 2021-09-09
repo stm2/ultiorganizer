@@ -417,6 +417,52 @@ function localeSelection() {
   return $ret;
 }
 
+function nav_clear() {
+  unset($_SESSION['navigation']);
+}
+
+function nav_initialize() {
+  nav_clear();
+  nav_add("view=frontpage", _("Homepage"));
+}
+
+function nav_size() {
+  return count($_SESSION['navigation']);
+}
+
+function nav_add($query, $title) {
+  if (!isset($_SESSION['navigation']))
+    $_SESSION['navigation'] = array();
+
+  $n = nav_size();
+  if ($n > 0 && $_SESSION['navigation'][$n]['title'] == $title) {
+    --$n;
+  }
+
+  $_SESSION['navigation'][$n + 1]['query'] = $query;
+  $_SESSION['navigation'][$n + 1]['title'] = $title;
+}
+
+function nav_goto(int $index) {
+  for ($i = nav_size(); $i > $index; --$i)
+    unset($_SESSION['navigation'][$i]);
+}
+
+function nav_check_index($index) {
+  if (!isset($_SESSION['navigation']) || !isset($_SESSION['navigation'][$index]))
+    throw new Exception("Invalid navigation index");
+}
+
+function nav_query(int $index) {
+  nav_check_index($index);
+  return $_SESSION['navigation'][$index]['query'];
+}
+
+function nav_title(int $index) {
+  nav_check_index($index);
+  return $_SESSION['navigation'][$index]['title'];
+}
+
 /**
  * Navigation bar functionality and html-code.
  *
@@ -424,75 +470,46 @@ function localeSelection() {
  *          - page title
  */
 function navigationBar($title) {
-  $ret = "";
-  $ptitle = "";
+  $max_len = 300;
+  $max_size = 4;
+
   if (isset($_SERVER['QUERY_STRING']))
     $query_string = $_SERVER['QUERY_STRING'];
   else
     $query_string = "";
-  
-  if (isset($_GET['goindex']) && $_GET['goindex'] > 1 && isset($_SESSION['navigation'])) {
-    $goindex = $_GET['goindex'];
-    $count = count($_SESSION['navigation']);
-    $i = 0;
-    foreach ($_SESSION['navigation'] as $pview => $ptitle) {
-      
-      if ($i >= $goindex) {
-        unset($_SESSION['navigation'][$pview]);
-      }
-      $i++;
-    }
-  } else if (isset($_GET['goindex']) && $_GET['goindex'] <= 1) {
-    $_SESSION['navigation'] = array("view=frontpage" => _("Homepage"));
-  } else {
-    if (!isset($_SESSION['navigation'])) {
-      if (strlen($query_string) == 0 || (isset($_GET['view']) && $_GET['view'] == 'logout')) {
-        $_SESSION['navigation'] = array("view=frontpage" => _("Homepage"));
-      } elseif (!empty($title)) {
-        $_SESSION['navigation'] = array($query_string => $title);
-      }
-    } else {
-      if (strlen($query_string) == 0) {
-        $_SESSION['navigation']["view=frontpage"] = _("Homepage");
-      } elseif (!empty($title)) {
-        unset($_SESSION['navigation'][$query_string]);
-        
-        // if previous view was having same title, remove it. e.g. when navigating back and forth in profiles or in case of sorting pages trough url parameter
-        $lastvalue = end($_SESSION['navigation']);
-        if ($lastvalue) {
-          if ($lastvalue == $title) {
-            $tmp_keys = array_keys($_SESSION['navigation']);
-            $lastkey = end($tmp_keys);
-            unset($_SESSION['navigation'][$lastkey]);
-          }
-        }
-        $_SESSION['navigation'][$query_string] = $title;
-      }
-    }
-  }
-  
-  $i = 1;
-  $needsdots = false;
-  if (isset($_SESSION['navigation'])) {
-    foreach ($_SESSION['navigation'] as $view => $ptitle) {
-      $first = $view;
-      break;
-    }
-    foreach (array_reverse($_SESSION['navigation'], true) as $view => $ptitle) {
 
+  $goindex = isset($_GET['goindex']) ? $_GET['goindex'] : 0;
+  unset($_GET['goindex']);
+  if ($goindex >= 1) {
+    nav_goto($goindex);
+  } else if ($goindex < 0) {
+    nav_initialize();
+  } else if (isset($_GET['view']) && $_GET['view'] == 'logout') {
+    nav_initialize();
+  } else if (strlen($query_string) == 0) {
+    nav_add("view=frontpage", _("Homepage"));
+  } else if (!empty($title)) {
+    nav_add($query_string, $title);
+  }
+
+  $n = nav_size();
+  $ret = '';
+  $ellips = '';
+  for ($i = $n; $i >= 1; --$i) {
+    $ptitle = nav_title($i);
+    $query = nav_query($i);
+    if (empty($ret))
+      $ret = $ptitle;
+    else if ($i > 1 && $i < $n && ($i < $n - $max_size || strlen($ptitle) + strlen($ret) + strlen(nav_title(1)) > $max_len)) {
+      $ellips = "&hellip;&nbsp;&raquo;";
+    } else {
+      $current = "<a href='?" . utf8entities($query) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; ";
       if ($i == 1)
-        $ret = $ptitle;
-      else if ($i>3 || strlen($ptitle) + strlen($ret) + strlen($_SESSION['navigation'][$first]) > 300) {
-        $ret = "&hellip;&nbsp;&raquo;" . $ret;
-        break;
-      } else {
-        $ret = "<a href='?" . utf8entities($view) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; " .$ret;
-      }
-      $i++;
+        $current .= $ellips;
+      $ret = $current . $ret;
     }
   }
-  $ret = "<a href='?" . utf8entities($first) . "&amp;goindex=" . $i . "'>" . $_SESSION['navigation'][$first] . "</a> &raquo; " . $ret;
-  
+
   return $ret;
 }
 
