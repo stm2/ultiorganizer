@@ -116,7 +116,7 @@ addHeaderCallback(
     global $location;
     echo yuiLoad(array("utilities", "datasource", "autocomplete"));
 
-    echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng', 'address');
+    echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng');
   });
 
 $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";

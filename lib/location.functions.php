@@ -205,7 +205,7 @@ Fetch${id} = function(){
 </script>";
 }
 
-function MapScript(string $elementId, float $lat, float $lng, string $latElem = null, string $lngElem = null, string $searchElem = '') {
+function MapScript(string $elementId, float $lat, float $lng, string $latElem = null, string $lngElem = null) {
   $key = GetGoogleMapsAPIKey();
   if (!empty($latElem) && !empty($lngElem)) {
     $drag = 'true';
@@ -213,7 +213,7 @@ function MapScript(string $elementId, float $lat, float $lng, string $latElem = 
     $drag = 'false';
   }
   return <<<HEREDOC
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=$key&libraries=places"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&key=$key"></script>
 
 <script type="text/javascript">
 //<![CDATA[
@@ -237,10 +237,6 @@ simpleGoogleMapsApiExample.map = function (mapDiv, latitude, longitude) {
     var coordinates = new google.maps.LatLng(latitude, longitude);
     var map = createMap(mapDiv, coordinates);
     var marker = addMarker(map, coordinates);
-    //if ('$searchElem' != '') {
-      const input = document.getElementById("$searchElem");
-      var search = bindSearch(map, input);
-    //} 
   };
   
   var addMarker = function (map, coordinates) {
@@ -262,71 +258,6 @@ simpleGoogleMapsApiExample.map = function (mapDiv, latitude, longitude) {
     }
     return marker;
   }
-
-  var bindSearch = function(map, input) {
-    const options = {
-      // bounds: defaultBounds,
-      //componentRestrictions: { country: "us" },
-      fields: ["address_components", "geometry", "icon", "name"],
-      strictBounds: false
-      // types: ["establishment"],
-    };
-
-    var searchBox =  new google.maps.places.SearchBox(input);
- 
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-  searchBox.addListener("places_changed", () => {
-    const places = searchBox.getPlaces();
-
-    if (places.length == 0) {
-      return;
-    }
-
-    // Clear out the old markers.
-    markers.forEach((marker) => {
-      marker.setMap(null);
-    });
-    markers = [];
-
-    // For each place, get the icon, name and location.
-    const bounds = new google.maps.LatLngBounds();
-
-    places.forEach((place) => {
-      if (!place.geometry || !place.geometry.location) {
-        console.log("Returned place contains no geometry");
-        return;
-      }
-
-      const icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25),
-      };
-
-      // Create a marker for each place.
-      markers.push(
-        new google.maps.Marker({
-          map,
-          icon,
-          title: place.name,
-          position: place.geometry.location,
-        })
-      );
-      if (place.geometry.viewport) {
-        // Only geocodes have viewport.
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
-      }
-    });
-    map.fitBounds(bounds);
-  });
-  return searchBox;
-    
-  };
 
   initialize(mapDiv, latitude, longitude);
 };
