@@ -107,85 +107,89 @@ if (isset($_POST['save'])) {
 // common page
 $title = _("Game locations");
 $LAYOUT_ID = LOCATIONS;
-pageTopHeadOpen($title);
+$html = '';
 
 include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities", "datasource", "autocomplete"));
 
-pageTopHeadClose($title, false);
-leftMenu($LAYOUT_ID);
-contentStart();
+addHeaderCallback(
+  function () {
+    global $location;
+    echo yuiLoad(array("utilities", "datasource", "autocomplete"));
 
-echo "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
-echo _("Name or address") . ": <input class='input' name='search' value=''/>\n";
-echo "<input class='button' type='submit' name='searchbutton' value='" . _("Search") . "'/>\n"; // searchByNameandaddress
-echo "<input class='button' type='submit' name='addbutton' value='" . _('Add') . "'/>"; // addLocation
-echo "</form>\n";
-echo "<br/><br/>";
+    echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng', 'address');
+  });
 
-echo $message;
+$html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
+$html .= _("Name or address") . ": <input class='input' name='search' value=''/>\n";
+$html .= "<input class='button' type='submit' name='searchbutton' value='" . _("Search") . "'/>\n"; // searchByNameandaddress
+$html .= "<input class='button' type='submit' name='addbutton' value='" . _('Add') . "'/>"; // addLocation
+$html .= "</form>\n";
+$html .= "<br/><br/>";
+
+$html .= $message;
 
 if ($mode == 'search') {
   $result = GetLocations('search', $_POST['search']);
-  echo "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
-  echo "<table><tr><th>name</th><th>address</th><th></th></tr>\n";
+  $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
+  $html .= "<table><tr><th>name</th><th>address</th><th></th></tr>\n";
   $savedId = null;
   while ($row = @mysqli_fetch_assoc($result)){
     if ($row['id'] !== $savedId) {
-      echo "<td>" . U_($row['name']) . "</td><td>". $row['address'] . "</td>";
+      $html .= "<td>" . U_($row['name']) . "</td><td>". $row['address'] . "</td>";
       // FIXME season = ?? 
-      echo "<td><a href='?view=admin/locations&amp;location=" . $row['id'] . "'><img class='deletebutton' src='images/settings.png' alt='E' title='"._("edit details")."'/></a></td>";
-      echo "</tr>\n";
+      $html .= "<td><a href='?view=admin/locations&amp;location=" . $row['id'] . "'><img class='deletebutton' src='images/settings.png' alt='E' title='"._("edit details")."'/></a></td>";
+      $html .= "</tr>\n";
     }
     $savedId = $row['id'];
   }
-  echo "</form>\n";
+  $html .= "</form>\n";
 } else if ($mode == 'add' || $mode == 'edit') {
   if ($mode == 'add') {
     $location['new'] = 1;
     $location['name'] = $new_name;
   } else {
-    
+    $html .= "<div id='map'></div>\n";    
   }
   
-  echo "<div id='editPlace'>\n";
-  echo "<form method='post' action='?view=admin/locations&season=$season'>\n<div>\n";
+  $html .= "<div id='editPlace'>\n";
+  $html .= "<form method='post' action='?view=admin/locations&season=$season'>\n<div>\n";
   if ($location['new'])
-    echo "<input type='hidden' name='isnew' id='isnew' value='". $location['new'] . "'/>\n";
-  echo "<input type='hidden' name='id' id='place_id' value='$id'/>\n";
+    $html .= "<input type='hidden' name='isnew' id='isnew' value='". $location['new'] . "'/>\n";
+  if (isset($id))
+    $html .= "<input type='hidden' name='id' id='place_id' value='$id'/>\n";
 
-  echo "<table><tbody>\n";
-  echo "  <tr><th>" . _("Name") . ":</th>";
-  echo "  <td>" . TranslatedField("name", $location['name'], 200, 45) . "</td></tr>\n";
-  echo "  <tr><th>" . _("Address") . "</th>";
-  echo "  <td><input class='input' style='width:100%' name='address' id='address' value='" . $location['address'] . "'/>&nbsp;</tr>\n";
+  $html .= "<table><tbody>\n";
+  $html .= "  <tr><th>" . _("Name") . ":</th>";
+  $html .= "  <td>" . TranslatedField("name", $location['name'], 200, 45) . "</td></tr>\n";
+  $html .= "  <tr><th>" . _("Address") . "</th>";
+  $html .= "  <td><input class='controls' type='text' style='width:100%' name='address' id='address' value='" . $location['address'] . "'/>&nbsp;</tr>\n";
 
   foreach ($locales as $locale => $name) {
     $locale = str_replace(".", "_", $locale);
-    echo "<tr><th>" . _("Info") . " (" . $name . ")";
-    echo ":</th><td><textarea rows='3' style='width:100%' name='info_" . $locale . "' id='info_" . $locale . "'>" .
+    $html .= "<tr><th>" . _("Info") . " (" . $name . ")";
+    $html .= ":</th><td><textarea rows='3' style='width:100%' name='info_" . $locale . "' id='info_" . $locale . "'>" .
       $location['info'][$locale] . "</textarea></td></tr>";
   }
 
-  echo "<tr><th>" . _("Fields") . ":</th><td><input type='text' style='width:100%;' name='fields' id='fields' value='" . $location['fields'] ."'/></td></tr>\n";
+  $html .= "<tr><th>" . _("Fields") . ":</th><td><input type='text' style='width:100%;' name='fields' id='fields' value='" . $location['fields'] ."'/></td></tr>\n";
   $is_indoor = intval($location['indoor'])?"checked='checked'":"";
-  echo "<tr><th>" . _("Indoor pitch") . ":</th><td><input type='checkbox' name='indoor' id='indoor' $is_indoor/></td></tr>\n";
-  echo "<tr><th>" . _("Latitude") .
+  $html .= "<tr><th>" . _("Indoor pitch") . ":</th><td><input type='checkbox' name='indoor' id='indoor' $is_indoor/></td></tr>\n";
+  $html .= "<tr><th>" . _("Latitude") .
   ":</th><td><input type='text' style='width:100%;' name='lat' id='lat' value='" . $location['lat'] ."'/></td></tr>\n";
-  echo "<tr><th>" . _("Longitude") .
+  $html .= "<tr><th>" . _("Longitude") .
   ":</th><td><input type='text' style='width:100%;' name='lng' id='lng' value='" . $location['lng'] ."'/></td></tr>\n"; 
-  echo "</tbody></table>\n";
-  echo "<p>";
-  echo "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";
+  $html .= "</tbody></table>\n";
+  $html .= "<p>";
+  $html .= "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";
   if (!isset($location['new'])) {
-    echo "<input type='submit' id='delete' name='delete' value='" . _("Delete") . "'/>\n";
+    $html .= "<input type='submit' id='delete' name='delete' value='" . _("Delete") . "'/>\n";
   }
-  echo "</p>\n";
-  echo "</form>";
-  echo "</div>\n";
+  $html .= "</p>\n";
+  $html .= "</form>";
+  $html .= "</div>\n";
 }
 
-echo TranslationScript("name");
-contentEnd();
-pageEnd();
+$html .= TranslationScript("name");
+
+showPage($title, $html);
 ?>

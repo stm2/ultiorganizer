@@ -487,3 +487,13 @@ div.tabcell {
   width: 500px;
   height: 500px;
 }
+
+#map {
+  width: 100%;
+  height: 400px;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  border: 1px solid black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
