@@ -4,31 +4,29 @@ include_once 'lib/game.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/common.functions.php';
 
-$backurl = utf8entities(empty($_SERVER['HTTP_REFERER'])?"":$_SERVER['HTTP_REFERER']);
+$backurl = utf8entities(empty($_SERVER['HTTP_REFERER']) ? "" : $_SERVER['HTTP_REFERER']);
 $gameId = $_GET["game"];
 $info = GameResult($gameId);
 
-if(!empty($_GET["season"]))
-	$season = $_GET["season"];
+if (!empty($_GET["season"]))
+  $season = $_GET["season"];
 
 $title = _("Game") . " $gameId";
 $html = "";
 $warning = "";
 
-//game parameters
+// game parameters
 $gp = array(
-	"hometeam"=>"",
-	"visitorteam"=>"",
-	"scheduling_name_home"=>"",
-	"scheduling_name_visitor"=>"",
-	"reservation"=>"",
-	"time"=>"",
-	"pool"=>$info['pool'],
-	"valid"=>1,
-	"respteam"=>0,
-	"name"=>""
-	);
-	
+  "hometeam" => "",
+  "visitorteam" => "",
+  "scheduling_name_home" => "",
+  "scheduling_name_visitor" => "",
+  "reservation" => "",
+  "time" => "",
+  "valid" => 1,
+  "respteam" => 0,
+  "name" => "");
+
 //process itself on submit
 if (!empty($_POST['save'])) {
   $backurl = $_POST['backurl'];
@@ -49,8 +47,6 @@ if (!empty($_POST['save'])) {
     // Chris: I don't see why we want to do that
     // $gp['time'] = ToInternalTimeFormat($res['starttime']);
   }
-  
-  $gp['pool'] = $_POST['pool'];
   
   if (!empty($_POST['valid']))
     $gp['valid'] = 1;
@@ -188,9 +184,7 @@ addHeaderText($headerText);
 $html .= "<h2>"._("Edit game")."</h2>\n";	
 $html .= "<form method='post' action='?view=admin/editgame&amp;season=$season&amp;game=$gameId'>";
 $info = GameResult($gameId);
-$pool_info = PoolInfo($info['pool']);
-$seriesId = $pool_info['series'];
-$poolId=$info['pool'];
+$poolId = $info['pool'];
 
 if(GameHasStarted($info))
 	{
@@ -211,6 +205,9 @@ $html .= "</ul>\n";
 
 $html .= "<table class='formtable'>";
 
+$html .= "<tr><td class='infocell'>"._("Pool").":</td><td>";
+$html .= utf8entities(PoolName($info['pool']));
+$html .= "</td></tr>\n";
 
 $html .= "<tr><td class='infocell'>"._("Home team").":</td><td>";
 $html .= TeamSelectionList('home', $info['hometeam'], $info['scheduling_name_home'], $poolId);
@@ -244,19 +241,6 @@ $html .= "</select></td></tr>\n";
 
 $html .= "<tr><td class='infocell'>"._("Starting time")." (hh:mm):</td>
 <td><input class='input' id='time' name='time' value='".DefHourFormat($info['time'])."'/></td></tr>\n";
-
-
-$html .= "<tr><td class='infocell'>"._("Division").":</td><td><select class='dropdown' name='pool'>\n";
-$html .= "<option class='dropdown' value='0'></option>";
-
-$pools = SeasonPools($season);
-foreach($pools as $row){
-	if($row['pool_id'] == $info['pool'])
-		$html .= "<option class='dropdown' selected='selected' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
-	else
-		$html .= "<option class='dropdown' value='".utf8entities($row['pool_id'])."'>". utf8entities(U_($row['seriesname'])).", ". utf8entities(U_($row['poolname'])) ."</option>";
-}
-$html .= "</select></td></tr>\n";	
 
 $html .= "<tr><td class='infocell'>"._("Responsible team").":</td><td>";
 $html .= TeamSelectionList('respteam', $info['respteam'],$info['respteam'], $poolId);
