@@ -292,14 +292,14 @@ form table th+th {
   color: var(--negvaluecolor, #6b1a1a);
 }
 
-tr.rankingtop {
+tr.rankingtop, td.rankingtop {
   font-weight: bold;
   border-bottom-style: dashed;
   border-bottom-width: 1px;
   border-bottom-color: var(--lightbordercolor, #e0e0e0);
 }
 
-tr.ranking {
+tr.ranking, td.ranking {
   border-bottom-style: dashed;
   border-bottom-width: 1px;
   border-bottom-color: var(--lightbordercolor, #e0e0e0)

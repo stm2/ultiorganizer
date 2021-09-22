@@ -69,12 +69,12 @@ foreach ($teams as $team) {
 $rankedteams  = SeriesRanking($seriesinfo['series_id']);
 
 $rank = 0;
-foreach($rankedteams as $rteam) {
+foreach ($rankedteams as $rteam) {
   if ($rteam) {
     $rank++;
     foreach ($allteams as &$ateam) {
       if ($ateam['team_id'] == $rteam['team_id'])
-        $ateam['ranking'] = $rank;
+        $ateam['ranking'] = $rteam['placement'];
     }
   }
 }
@@ -194,7 +194,7 @@ foreach($allteams as $stats){
 
   {
     $rank = $stats['ranking'];
-    if ($rank == null)
+    if ($rank === null)
       $rank = "-";
     else
       $rank = intval($rank);

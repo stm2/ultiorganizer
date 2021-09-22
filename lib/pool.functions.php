@@ -760,16 +760,16 @@ function PoolGetFromPoolByTeamId($poolId,$teamId){
 }
 
 /**
- * Get teem from given position from given pool.
- * returns team ranked $activerank from pool $poolId if $countbye=true
- * if $countbye=false, $activerank is corrected by one if BYE team is ranked ahead in this pool
+ * Get all teams from given position from given pool.
+ * Returns teams ranked $activerank from pool $poolId if $countbye=true.
+ * If $countbye=false, $activerank is corrected by one if BYE team is ranked ahead in this pool
  *
  * @param int $poolId
  * @param int $activerank
  * @param boolean $countbye
- * @return array PHP array row
+ * @return array PHP array
  */
-function PoolTeamFromStandings($poolId, $activerank, $countbye=true) {
+function PoolTeamsFromStandings($poolId, $activerank, $countbye=true) {
   if($countbye) {
     $query = sprintf("SELECT j.team_id, j.name, js.activerank, c.flagfile
               FROM uo_team AS j
@@ -793,7 +793,24 @@ function PoolTeamFromStandings($poolId, $activerank, $countbye=true) {
               (int)$poolId,
               (int)$activerank);
   }
-  return DBQueryToRow($query);
+  return DBQueryToArray($query);
+}
+
+/**
+ * Get the first team from given position from given pool.
+ * Returns team ranked $activerank from pool $poolId if $countbye=true.
+ * If $countbye=false, $activerank is corrected by one if BYE team is ranked ahead in this pool.
+ *
+ * @param int $poolId
+ * @param int $activerank
+ * @param boolean $countbye
+ * @return array PHP array row
+ */
+function PoolTeamFromStandings($poolId, $activerank, $countbye=true) {
+  $teams = PoolTeamsFromStandings($poolId, $activerank, $countbye);
+  if (empty($teams))
+    return null;
+  return $teams[0];
 }
 
 /**
@@ -2373,8 +2390,9 @@ function PoolsToCsv($season,$separator){
 }
 
 function SeriesRanking($series_id) {
-  $ranking = array ();
+  $ranking = array();
   $ppools = SeriesPlacementPoolIds($series_id);
+  $ranked_before=0;
   foreach ($ppools as $ppool) {
     $teams = PoolTeams($ppool['pool_id']);
     $steams = PoolSchedulingTeams($ppool['pool_id']);
@@ -2383,26 +2401,30 @@ function SeriesRanking($series_id) {
     } else {
       $totalteams = count($teams);
     }
-    
+    $ranked_current = 0;
     for ($i = 1; $i <= $totalteams; $i++) {
       $moved = PoolMoveExist($ppool['pool_id'], $i);
       if (!$moved) {
-        $team = PoolTeamFromStandings($ppool['pool_id'], $i);
-        if ($team == null) {
+        $rankteams = PoolTeamsFromStandings($ppool['pool_id'], $i);
+        if (empty($rankteams)) {
           $ranking[] = null;
         } else {
-          $gamesleft = TeamPoolGamesLeft($team['team_id'], $ppool['pool_id']);
-          if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0)) {
-            $team['placement'] = $i;
-            $ranking[] = $team;
-          } else {
-            $ranking[] = null;
+          foreach ($rankteams as $team) {
+            $gamesleft = TeamPoolGamesLeft($team['team_id'], $ppool['pool_id']);
+            if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0)) {
+              $team['placement'] = $ranked_before + $i;
+              ++$ranked_current;
+              $ranking[] = $team;
+            } else {
+              $ranking[] = null;
+            }
           }
         }
       }
     }
+    $ranked_before += $ranked_current;
   }
-  
+
   return $ranking;
 }
 
