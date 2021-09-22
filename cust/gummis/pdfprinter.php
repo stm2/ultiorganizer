@@ -430,15 +430,15 @@ class PDF extends FPDF {
   function findSlotLength($games) {
     $slotlength = 30 * 60;
     foreach ($games as $game) {
-      if ($game['timeslot'] > 0) {
-        $slotlength = $game['timeslot'] * 60;
+      if (gameDuration($game) > 0) {
+        $slotlength = gameDuration($game) * 60;
         break;
       }
     }
     
     foreach ($games as $game) {
-      if ($game['timeslot'] > 0)
-        $slotlength = min($slotlength, $game['timeslot'] * 60);
+      if (gameDuration($game) > 0)
+        $slotlength = min($slotlength, gameDuration($game) * 60);
     }
     return $slotlength;
   }
@@ -464,7 +464,7 @@ class PDF extends FPDF {
       $this->fitCell($width, $fontsize * 4 / 10, $txt, 'LRTB', 0, 'L', false);
     }
     
-    $height = ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60 * $yscale;
+    $height = (gameDuration($game) == 0 ? 30 : gameDuration($game)) * 60 * $yscale;
     
     $this->SetTextColor(0);
     $this->SetFillColor(255);
@@ -591,7 +591,7 @@ class PDF extends FPDF {
         // print games between $timestart and $timeend on current horizontal page
         while ($currentGame < count($gameArray) && strtotime($game['time']) - $pause < $timeend) {
           $gamestart = strtotime($game['time']);
-          $gameend = $gamestart + ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60;
+          $gameend = $gamestart + (gameDuration($game) == 0 ? 30 : gameDuration($game)) * 60;
           if ($lastend + $minslotlength < $gamestart) {
             $pause += $gamestart - $lastend - $minslotlength;
           }

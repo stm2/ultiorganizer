@@ -512,7 +512,7 @@ class PDF extends FPDF {
       $this->SetFillColor(230);
       $this->SetDrawColor(0);
       
-      $height = ($game['timeslot'] / 30) * 5;
+      $height = (gameDuration($game) / 30) * 5;
       $this->Cell($gridx, $height, "", 'LRBT', 0, 'C', true);
       
       $this->SetXY($field_offset, $time_offset + $timeslots[$slot]);

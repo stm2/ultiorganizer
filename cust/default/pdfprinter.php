@@ -430,15 +430,15 @@ class PDF extends FPDF {
   function findSlotLength($games) {
     $slotlength = 30 * 60;
     foreach ($games as $game) {
-      if ($game['timeslot'] > 0) {
-        $slotlength = $game['timeslot'] * 60;
+      if (gameDuration($game) > 0) {
+        $slotlength = gameDuration($game) * 60;
         break;
       }
     }
     
     foreach ($games as $game) {
-      if ($game['timeslot'] > 0)
-        $slotlength = min($slotlength, $game['timeslot'] * 60);
+      if (gameDuration($game) > 0)
+        $slotlength = min($slotlength, gameDuration($game) * 60);
     }
     return $slotlength;
   }
@@ -464,7 +464,7 @@ class PDF extends FPDF {
       $this->fitCell($width, $fontsize * 4 / 10, $txt, 'LRTB', 0, 'L', false);
     }
     
-    $height = ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60 * $yscale;
+    $height = (gameDuration($game) == 0 ? 30 : gameDuration($game)) * 60 * $yscale;
     
     $this->SetTextColor(0);
     $this->SetFillColor(255);
@@ -514,18 +514,18 @@ class PDF extends FPDF {
     $columns = 4;
     $cellwidth = ($xarea - 2 * $left_margin - $xtimetitle) / $columns - 1;
     $cellheight = min($yarea, $cellwidth / 3, $teamfont * 1.5);
-    
+
     // event title
     $this->SetAutoPageBreak(false, $top_margin);
     $this->SetMargins($left_margin, $top_margin);
-    
+
     $this->SetTextColor(255);
     $this->SetFillColor(0);
     $this->SetDrawColor(0);
-    
+
     if (!empty($title))
       $this->SetTitle($title, true);
-    
+
     // print all games in order
     while (($gameArray[] = mysqli_fetch_assoc($games)) || array_pop($gameArray));
 
@@ -537,16 +537,16 @@ class PDF extends FPDF {
         $diff = strcmp($a["fieldname"], $b["fieldname"]);
       return $diff;
     }
-    
+
     usort($gameArray, "cmp");
-    
+
     $numGames = count($gameArray);
     if ($numGames == 0)
       return 0;
     $start0 = $gameArray[0]['time'];
-    
+
     // debug_to_apache(print_r($gameArray, TRUE));
-    
+
     $gamesPrinted = 0;
     $daycount = 0;
     $trycount = 0;
@@ -559,12 +559,12 @@ class PDF extends FPDF {
       $yscale = $cellheight / $minslotlength;
       $timestart = strtotime($gameArray[$pagestartgame]['time']);
       $timeend = $timestart + ($yarea - 2 * $top_margin - $yfieldtitle - $ypagetitle) / $cellheight * $minslotlength;
-      
+
       $places = array();
       $horizontal_page = 0;
       $page_done = false;
       // debug_to_apache("pagestart $gamesPrinted\n");
-      
+
       while (!$page_done) {
         if ($gamesPrinted == $lastPrinted) {
           $this->SetXY($left_margin, $top_margin);
@@ -585,23 +585,23 @@ class PDF extends FPDF {
         $this->Cell(20, 0, "$title", 0, 2, 'L', false);
         $this->SetXY($xarea - $left_margin - 20, $top_margin);
         $this->Cell(20, 0, "$daycount, $pagecount ", 0, 2, 'R', false);
-        
+
         $page_done = true;
         $lastday = "";
         // print games between $timestart and $timeend on current horizontal page
         while ($currentGame < count($gameArray) && strtotime($game['time']) - $pause < $timeend) {
           $gamestart = strtotime($game['time']);
-          $gameend = $gamestart + ($game['timeslot'] == 0 ? 30 : $game['timeslot']) * 60;
+          $gameend = $gamestart + (gameDuration($game) == 0 ? 30 : gameDuration($game)) * 60;
           if ($lastend + $minslotlength < $gamestart) {
             $pause += $gamestart - $lastend - $minslotlength;
           }
-          
+
           if (!isset($places[$game['place_id'] . $game['fieldname']])) {
             $places[$game['place_id'] . $game['fieldname']] = array('num' => count($places), 'lastpage' => -1);
           }
           $gamefield = &$places[$game['place_id'] . $game['fieldname']];
           $field = $gamefield['num'] - $horizontal_page * $columns;
-          
+
           if ($field >= $columns) {
             $page_done = false;
           } else if ($field >= 0) {
@@ -614,10 +614,10 @@ class PDF extends FPDF {
             $gameend - $pause > $timeend, //
             $lastday != JustDate($game['time']), //
             $pagecount > $gamefield['lastpage']);
-            
+
             $lastday = JustDate($game['time']);
             $gamefield['lastpage'] = $pagecount;
-            
+
             if ($gameend - $pause <= $timeend)
               $gamesPrinted++;
           }

@@ -28,11 +28,8 @@ foreach ($places as $placeGameStr) {
 			$season = $gameInfo['season'];
 			$serieses[$gameInfo['series']] = 1;
 			$time = $firstStart + (60 * $gameArr[1]);
-			if(!empty($gameInfo['gametimeslot'])){
-				$gameEnd = $time + ($gameInfo['gametimeslot'] * 60);
-			}else{
-				$gameEnd = $time + ($gameInfo['timeslot'] * 60);
-			}
+			$duration = gameDuration($gameInfo);
+			$gameEnd += $duration * 60;
 			if ($gameEnd > $resEnd) {
 			  $response .= "<p>" .sprintf(_("Game %s exceeds reserved time %s."), GameName($gameInfo), ShortTimeFormat($resInfo['endtime'])) ."</p>";
 			}
