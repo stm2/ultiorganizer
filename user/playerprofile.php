@@ -248,7 +248,7 @@ $pp = array(
 	if($pp['gender']=="O"){
 	  $html .= "<option class='dropdown' selected='selected' value='O'>"._("Other")."</option>";
 	} else {
-	  $html .= "<option class='dropdown' value='o'>"._("Other")."</option>";
+	  $html .= "<option class='dropdown' value='O'>"._("Other")."</option>";
 	}
 	
 
@@ -269,16 +269,15 @@ $pp = array(
 
 	$html .= "<tr><td class='infocell'>"._("Hand").":</td>";
 	$html .= "<td><select class='dropdown' name='throwing_hand'>\n";
-	$types = array("","right","left","both");
-	
-	/* for gettext */
-	_("left"); _("right"); _("both");
 
-	foreach($types as $type){
+     /* for gettext */
+     $types = array("" => "", "left" => _("left"), "right" => _("right"), "both" => _("both"));
+
+	foreach($types as $type => $name){
 	  if($pp['throwing_hand']==$type)
-			$html .= "<option class='dropdown' selected='selected' value='$type'>".U_($type)."</option>\n";
-			else
-			$html .= "<option class='dropdown' value='$type'>".U_($type)."</option>\n";
+	    $html .= "<option class='dropdown' selected='selected' value='$type'>" . $name . "</option>\n";
+	  else
+	    $html .= "<option class='dropdown' value='$type'>". $name ."</option>\n";
 	}
 
 	$html .= "</select></td>";
