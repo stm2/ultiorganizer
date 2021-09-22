@@ -5,8 +5,8 @@ class Teams extends Restful {
 		FROM uo_team team LEFT JOIN uo_pool pool ON (team.pool=pool.pool_id)
 		LEFT JOIN uo_series series ON (team.series=series.series_id)
 		LEFT JOIN uo_season season ON (series.season=season.season_id)";
-		$this->itemsql = "SELECT team.name, team.club, club.name AS clubname, team.pool, pool.name AS poolname, ser.name AS seriesname, 
-		team.series, ser.type, ser.season, team.abbreviation, team.country, c.name AS countryname, c.flagfile
+		$this->itemsql = "SELECT team.name, team.club, team.pool, pool.name AS poolname, series.name AS seriesname, 
+		team.series, series.type, series.season, team.abbreviation, team.country, country.name AS countryname, country.flagfile
 		FROM uo_team team LEFT JOIN uo_pool pool ON (team.pool=pool.pool_id) 
 		LEFT JOIN uo_series series ON (team.series=series.series_id)
 		LEFT JOIN uo_club club ON (team.club=club.club_id)
@@ -21,6 +21,7 @@ class Teams extends Restful {
 		$this->filters["active"] = $active_seasons;
 		$this->filters["my-editable"] = $editable_teams;
 		$this->filters["my-editing"] = $editing_teams;
+		$this->linkfields["club"] = "clubs";
 		$this->linkfields["pool"] = "pools";
 		$this->linkfields["series"] = "series";
 		$this->linkfields["season"] = "seasons";

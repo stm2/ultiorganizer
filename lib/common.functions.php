@@ -762,6 +762,10 @@ function ResultsetToCsv($result, $separator){
     return $out;
 }
 
+function encode_json($result){
+  return json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES |JSON_UNESCAPED_UNICODE| JSON_NUMERIC_CHECK);
+}
+
 function ArrayToCsv($result, $separator){
     $csv_terminated = "\n";
     $csv_separator = $separator;
