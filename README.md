@@ -18,7 +18,7 @@ The files are organized as follows:
   * **ext** Contains pages to be embedded in external pages. See ?view=ext/index
   * **plugins** Mainly tools for maintenance, export, import. Some are rather experimental!
   * **sql** database utilities
-  * **restful** ???!!!
+  * **ext/restful** RESTful API
 
 
 # Installation
