@@ -304,5 +304,8 @@ function CanDeleteReservation($reservationId) {
 	return $row[0] == 0;
 }
 
-	
+function gameDuration($gameInfo) {
+  return empty($gameInfo['gametimeslot']) ? $gameInfo['timeslot'] : $gameInfo['gametimeslot'];
+}
+
 ?>

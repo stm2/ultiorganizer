@@ -1,6 +1,7 @@
 <?php
 include_once 'lib/fpdf/fpdf.php';
 include_once 'lib/HSVClass.php';
+include_once $include_prefix . 'lib/reservation.functions.php';
 
 class PDF extends FPDF {
 

@@ -66,10 +66,6 @@ foreach($pools as $tmppool){
   $poolfilter[] = array('id'=>$tmppool['pool_id'],'name'=>U_($tmppool['name']));
 }
 
-function gameDuration($gameInfo) {
-  return empty($gameInfo['gametimeslot'])?$gameInfo['timeslot']:$gameInfo['gametimeslot'];
-}
-
 function gameHeight($duration) {
   return max(intval($duration * MIN_HEIGHT), intval(15 * MIN_HEIGHT)) -2;
 }
