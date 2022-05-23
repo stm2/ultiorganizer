@@ -249,7 +249,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
   // prints Swiss draw standing
 
   $ret = "";
-  $style = "class='admintable";
+  $style = "class='admintable'";
 
   if($poolinfo['played']){
     $style = "class='admintable tablelowlight'";
