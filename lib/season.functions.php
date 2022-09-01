@@ -481,7 +481,7 @@ function SeasonGameAdmins($seasonId) {
  * @param string $seasonId uo_season.season_id
  * @return array php array of users
  */
-function SeasonSeriesAdmins($seasonId, $group=false) {
+function SeasonSeriesAdmins($seasonId, $group=false, $order=null) {
   $seasonrights = getEditSeasons($_SESSION['uid']);
   if (isset($seasonrights[$seasonId])) {
     if($group){
@@ -490,12 +490,16 @@ function SeasonSeriesAdmins($seasonId, $group=false) {
     }else{
       $namefield = "sr.series_id, sr.name";
       $groupclause = "";
+      if ($order=='series')
+        $orderclause =' ORDER BY sr.ordering ASC, sr.series_id ASC ';
+        else
+          $orderclause = '';
     }
     $query = sprintf("SELECT u.userid, u.name, u.email, $namefield as seriesname FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
   			LEFT JOIN uo_series sr ON (SUBSTRING_INDEX(up.value, ':', -1)=sr.series_id)
   			WHERE sr.season = '%s' AND up.value LIKE 'seriesadmin:%%'
-  			$groupclause",
+  			$groupclause $orderclause",
       mysql_adapt_real_escape_string($seasonId));
     
     return DBQueryToArray($query);
