@@ -672,7 +672,7 @@ function ConfirmEnrolledTeam($seriesId, $id) {
 
     //update team/country info if available
     if($countryId){
-      DBQuery(sprintf("UPDATE uo_team SET country=%d WHERE team_id=%d", (int) $countryId), (int) $teamId);
+      DBQuery(sprintf("UPDATE uo_team SET country=%d WHERE team_id=%d", (int) $countryId, (int) $teamId));
     }
     if($clubId){
       DBQuery(sprintf("UPDATE uo_team SET club=%d WHERE team_id=%d", (int) $clubId, (int) $teamId));
@@ -721,7 +721,7 @@ function ConfirmEnrolledTeam($seriesId, $id) {
 
     Log1("enrolment","confirm",$seriesId,$teamId);
     return $teamId;
-  } else die("Insufficient rights to delete enrolled teams for other users");
+  } else die("Insufficient rights to confirm enrolled teams");
 }
 
 /**
