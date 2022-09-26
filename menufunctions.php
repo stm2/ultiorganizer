@@ -521,8 +521,8 @@ function seasonSelection() {
   if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
-    echo "<div><select class='seasondropdown' name='selseason'
-			onchange='changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
+    echo "<div><select class='seasondropdown' name='selseason' id='selseason'
+			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
     while ($row = mysqli_fetch_assoc($seasons)) {
       $selected = "";
       if (isset($_SESSION['userproperties']['selseason']) && $_SESSION['userproperties']['selseason'] ==
