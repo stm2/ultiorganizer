@@ -67,7 +67,7 @@ function upgrade53() {
 		`delivered` DATETIME NULL DEFAULT NULL,
 		PRIMARY KEY (`sms_id`)
 		)
-		COLLATE='latin1_swedish_ci'
+		COLLATE='utf8_general_ci'
 		ENGINE=MyISAM
 		ROW_FORMAT=DEFAULT
 		AUTO_INCREMENT=1000
@@ -396,7 +396,7 @@ function upgrade68() {
 		`cat5` TINYINT(2) NOT NULL DEFAULT 0,
 		PRIMARY KEY (game_id,team_id)
 		)
-		COLLATE='latin1_swedish_ci'
+		COLLATE='utf8_general_ci'
 		ENGINE=MyISAM
 		ROW_FORMAT=DEFAULT
 		");
@@ -723,7 +723,7 @@ function upgrade81() {
       `email` varchar(100) NOT NULL,
       `token` varchar(100) NOT NULL,
       `time` datetime NOT NULL
-      ) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
     
     runQuery ("ALTER TABLE `uo_recoverrequest`
     ADD PRIMARY KEY (`userid`,`token`),
@@ -731,6 +731,50 @@ function upgrade81() {
     ADD KEY `idx_token` (`token`)");
   }
   addColumn('uo_extraemailrequest', 'time', 'datetime DEFAULT NULL');
+}
+
+function upgrade82() {
+  if(!hasTable("uo_team_poll")){
+    runQuery("CREATE TABLE `uo_team_poll` (
+	`poll_id` int(10) NOT NULL AUTO_INCREMENT,
+	`series_id` int(10) NOT NULL,
+     `description` varchar(255) DEFAULT NULL,
+	`status` tinyint(1) DEFAULT 0,
+	PRIMARY KEY (`poll_id`),
+	INDEX `idx_series` (`series_id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
+  }
+  if(!hasTable("uo_poll_team")){
+    runQuery("CREATE TABLE `uo_poll_team` (
+	`pt_id` int(10) NOT NULL AUTO_INCREMENT,
+	`poll_id` int(10) NOT NULL,
+	`user_id` int(10) DEFAULT NULL,
+     `name` varchar(255) NOT NULL,
+     `mentor` varchar(255) DEFAULT NULL,
+     `description` varchar(255) DEFAULT NULL,
+	`status` tinyint(1) DEFAULT 0,
+	PRIMARY KEY (`pt_id`),
+	INDEX `idx_mentor` (`mentor`),
+	INDEX `idx_poll` (`poll_id`),
+	INDEX `idx_user` (`user_id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
+  }
+  if(!hasTable("uo_poll_vote")){
+    runQuery("CREATE TABLE `uo_poll_vote` (
+	`vote_id` int(10) NOT NULL AUTO_INCREMENT,
+	`poll_id` int(10) NOT NULL,
+	`user_id` int(10) DEFAULT NULL,
+     `user` varchar(255) NOT NULL,
+     `team_id` varchar(255) DEFAULT NULL,
+	`score` int(3) DEFAULT 0,
+	PRIMARY KEY (`vote_id`),
+	INDEX `idx_pollid` (`poll_id`),
+	INDEX `idx_userid` (`user_id`),
+	INDEX `idx_user` (`user`),
+	INDEX `idx_teamid` (`team_id`)
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
+  }
+  
 }
 
 function runQuery($query) {

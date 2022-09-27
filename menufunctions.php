@@ -721,6 +721,22 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "</table>\n";
     }
   }
+
+  if (true) {
+    $pollSeasons = PollSeasons();
+    if (count($pollSeasons) > 0) {
+      echo "<table class='leftmenulinks'>\n";
+      echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Team polls")) . "</th></tr>\n";
+      echo "<tr><td>\n";
+      foreach ($pollSeasons as $spoll) {
+        echo "<a class='subnav' href='?view=user/teampolls&amp;season=" . $spoll['season_id'] . "'>&raquo; " .
+          utf8entities(U_($spoll['name'])) . "</a>\n";
+      }
+      echo "</td></tr>\n";
+      echo "</table>\n";
+    }
+  }
+  
   // Player profiles
   if (hasPlayerAdminRights()) {
     echo "<table class='leftmenulinks'>\n";

@@ -719,6 +719,58 @@ function SpiritTotal($points, $categories) {
     return null;
 }
 
+function AddPolls($seasonId) {
+  $series = SeasonSeries($seasonId);
+
+  foreach ($series as $seriesRow) {
+    $poll = SeriesPoll($seriesRow['series_id']);
+    if (!empty($poll))
+      SetPollActive($poll['poll_id'], $seriesRow['series_id'], $seasonId);
+    else
+      AddPoll($poll['poll_id'], $seriesRow['series_id'], $seasonId);
+  }
+}
+
+function HidePolls($seasonId) {
+  $series = SeasonSeries($seasonId);
+
+  foreach ($series as $seriesRow) {
+    $poll = SeriesPoll($seriesRow['series_id']);
+    if (!empty($poll))
+      SetPollInactive($poll['poll_id'], $seriesRow['series_id'], $seasonId);
+  }
+}
+
+
+function HasPolls($seasonId) {
+  $series = SeasonSeries($seasonId);
+  
+  foreach ($series as $seriesRow) {
+    $poll = SeriesPoll($seriesRow['series_id']);
+    return !empty($poll) && $poll['status'] > 0;
+  }
+  return false;
+}
+
+function PollInfo($pollId) {
+  $query = sprintf("SELECT * FROM uo_team_poll
+                    WHERE poll_id=%d", (int) $pollId);
+  return DBQueryToRow($query);
+}
+
+/**
+ * Returns all seasons having enrollment open.
+ *
+ * @return array php-array with uo_season.season_id as key and name as value.
+ */
+function PollSeasons() {
+  $query = sprintf("SELECT sn.season_id, sn.name, sr.series_id, pl.poll_id
+    FROM uo_season sn, uo_series sr, uo_team_poll pl
+    WHERE sn.season_id = sr.season AND pl.series_id = sr.series_id
+    ORDER BY starttime DESC");
+  return DBQueryToArray($query);
+}
+
 function SeasonPoolGamesTable($formId, $seasonId, $series = null, $disableunfinished=false) {
   $html = "<table>";
   $html .= "<tr><th class='left'><input type='checkbox' onclick='checkAll(\"pools[]\");'/></th>";

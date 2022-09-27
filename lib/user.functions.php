@@ -94,6 +94,18 @@ function UserInfo($user_id) {
 	} else { die ('Insufficient rights to get user info'); }
 }
 
+function UserId($username) {
+    $query = sprintf("SELECT id FROM uo_users WHERE userid='%s'",
+      mysql_adapt_real_escape_string($username));
+    return DBQueryToValue($query);
+}
+
+function UserName($id) {
+    $query = sprintf("SELECT userid FROM uo_users WHERE id='%d'",
+      (int) $id);
+    return DBQueryToValue($query);
+}
+
 function UserIdForMail($mail) {
 	$query = sprintf("SELECT userid FROM uo_users WHERE email='%s'",
 			mysql_adapt_real_escape_string($mail));

@@ -794,4 +794,94 @@ function SeriesCopyTeams($to, $from) {
     }
   } else { die('Insufficient rights'); }
 }
+
+function SeriesPoll($seriesId) {
+  $query = sprintf("
+		SELECT *
+		FROM uo_team_poll
+		WHERE series_id=%d",
+    (int) $seriesId);
+  
+  return DBQueryToRow($query);
+}
+
+function set_poll_active($pollId, $seriesId, $seasonId, $val) {
+  if (hasEditSeasonSeriesRight($seasonId)) {
+    $query = sprintf("
+               UPDATE uo_team_poll SET
+               status = %d
+               WHERE poll_id=%d", (int) $val, (int) $pollId);
+
+    return DBQuery($query);
+  } else
+    die("Insufficient rights to edit series");
+}
+
+function SetPollActive($pollId, $seriesId, $seasonId) {
+  set_poll_active($pollId, $seriesId, $seasonId, 1);
+}
+
+function SetPollInactive($pollId, $seriesId, $seasonId) {
+  set_poll_active($pollId, $seriesId, $seasonId, 0);
+}
+
+function AddPoll($polldId, $seriesId, $seasonId) {
+  if (hasEditSeasonSeriesRight($seasonId)) {
+    $query = sprintf("
+               INSERT INTO uo_team_poll 
+               (series_id, status)
+               VALUES (%d, 1)", (int) $seriesId);
+    return DBQuery($query);
+  } else
+    die("Insufficient rights to edit series");
+}
+
+function PollTeams($teamPollId) {
+  $query = sprintf("
+		SELECT *
+		FROM uo_poll_team
+		WHERE poll_id=%d",
+    (int) $teamPollId);
+  
+  return DBQueryToArray($query);
+}
+
+function AddPollTeam($params) {
+  $query = sprintf("
+               INSERT INTO uo_poll_team
+               (poll_id, user_id, name, mentor, description, status )
+               VALUES (%d, %d, '%s', '%s', '%s', %d)", 
+               (int) $params['poll_id'],
+               (int) $params['user_id'],
+               mysql_adapt_real_escape_string($params['name']),
+               mysql_adapt_real_escape_string($params['mentor']),
+               mysql_adapt_real_escape_string($params['description']),
+               (int) $params['status']);
+  return DBQueryInsert($query);
+}
+
+function SetPollTeam($ptId, $params) {
+  $query = sprintf("
+               UPDATE uo_poll_team SET
+               user_id='%d', name='%s', mentor='%s', description='%s'
+               WHERE pt_id=%d",
+               (int) $params['user_id'],
+               mysql_adapt_real_escape_string($params['name']),
+               mysql_adapt_real_escape_string($params['mentor']),
+               mysql_adapt_real_escape_string($params['description']),
+              (int) $ptId);
+  return DBQuery($query);
+}
+
+function PollTeam($teamId) {
+  $query = sprintf("
+		SELECT *
+		FROM uo_poll_team
+		WHERE pt_id=%d",
+    (int) $teamId);
+  
+  return DBQueryToRow($query);
+}
+
+
 ?>
