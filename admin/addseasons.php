@@ -23,15 +23,14 @@ $sp = array(
   "showspiritpoints"=>0,
   "iscurrent"=>0,
   "enrollopen"=>0,
-  "haspoll" => 0,
   "enroll_deadline"=>"",
   "timezone"=>GetDefTimeZone()
   );
 
-if(!empty($_GET["season"]))
+if (!empty($_GET["season"]))
   $seasonId = $_GET["season"];
 
-//process itself on submit
+// process itself on submit
 if (!empty($_POST['add'])) {
   $backurl = utf8entities($_POST['backurl']);
   $sp['season_id'] = $_POST['season_id'];
@@ -64,11 +63,6 @@ if (!empty($_POST['add'])) {
     AddSeason($sp['season_id'], $sp, $comment);
     $seasonId = $sp['season_id'];
 
-    if(!empty($_POST['haspoll'])) {
-      AddPolls($seasonId);
-      $sp['haspoll'] = 1;
-    }
-    
     // add rights for season creator
     AddEditSeason($_SESSION['uid'],$sp['season_id']);
     AddUserRole($_SESSION['uid'], 'seasonadmin:'.$sp['season_id']);
@@ -78,7 +72,7 @@ if (!empty($_POST['add'])) {
     }else{
       $_SESSION['title'] = _("New season added") .":";
     }
-    
+
     /* FIXME Does anybody need this? I don't get it ... */
     $_SESSION["var0"] = _("Name").": ".utf8entities($sp['name']);
     $_SESSION["var1"] = _("Type").": ".utf8entities($sp['type']);
@@ -105,7 +99,6 @@ if (!empty($_POST['add'])) {
     $sp['starttime'] = ToInternalTimeFormat($_POST['seasonstarttime']);
     $sp['endtime'] = ToInternalTimeFormat($_POST['seasonendtime']);
     $sp['enrollopen'] = !empty($_POST['enrollopen']);
-    $sp['haspoll'] = !empty($_POST['haspoll']);
     $sp['enroll_deadline'] = ToInternalTimeFormat($_POST['enrollendtime']);
     $sp['iscurrent'] = !empty($_POST['iscurrent']);
     $sp['spiritmode'] = $_POST['spiritmode'];
@@ -113,12 +106,6 @@ if (!empty($_POST['add'])) {
     $sp['timezone'] = $_POST['timezone'];
     $comment=$_POST['comment'];
     SetSeason($sp['season_id'], $sp, $comment);
-    
-    if ($sp['haspoll']) {
-      AddPolls($seasonId);
-    } else {
-      HidePolls($seasonId);
-    }
   }
 }
 
@@ -147,8 +134,6 @@ if($seasonId){
   $sp['showspiritpoints'] = $info['showspiritpoints'];
   $sp['timezone'] = $info['timezone'];
   $comment = CommentRaw(1, $info['season_id']);
-  
-  $sp['haspoll'] = HasPolls($seasonId);
 } else {
   $comment = "";
 }
@@ -374,11 +359,6 @@ $html .= "<tr><td class='infocell'>"._("Enrolling ends")."<br/>("._("only inform
 $html .= "<td><input class='input' size='12' maxlength='10' id='enrollendtime' name='enrollendtime'  value='".ShortDate($sp['enroll_deadline'])."'/>&nbsp;&nbsp;";
 $html .= "<button type='button' class='button' id='showcal3'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>";
 $html .= "<tr><td></td><td><div id='calContainer3'></div></td></tr>";
-$html .= "<tr><td class='infocell'>"._("Team poll").": </td><td><input class='input' type='checkbox' name='haspoll' ";
-if ($sp['haspoll']) {
-  $html .= "checked='checked'";
-}
-$html .= "/></td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Shown in main menu").": </td><td><input class='input' type='checkbox' name='iscurrent' ";
 if ($sp['iscurrent']) {

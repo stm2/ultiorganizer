@@ -440,6 +440,81 @@ ul.timelist li {
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
+/* ranking */
+table.ranking {
+  margin: 0px;
+}
+
+table.ranking * td.score {
+  text-align: center;
+}
+
+table.ranking * td.score,th.score {
+  text-align: center;
+  padding: 1px 5px 1px 5px;
+}
+
+table.ranking * td.details,th.details {
+  padding: 1px 5px 5px 5px;
+}
+
+div.workarea {
+  padding: 0px;
+  float: left;
+  min-width: 180px;
+  /* min-width:150px; */
+}
+
+td.ranking_column {
+  vertical-align: top;
+  padding: 0px;
+  font-size: .8rem;
+}
+
+ul.ranking, ol.ranking {
+  font-size: .8rem;
+  position: relative;
+  width: 100%;
+  background-color: var(--draglistcolor, #f7f7f7);
+  border: 1px solid var(--softbordercolor, #464646);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.ranking li, ol.ranking li {
+  margin: 0px;
+  cursor: move;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--draglistitemcolor, #d1e6ec);
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
+}
+
+ul.ranking, ol.ranking {
+  font-size: .8rem;
+  position: relative;
+  width: 100%;
+  background-color: var(--draglistcolor, #f7f7f7);
+  border: 1px solid var(--softbordercolor, #464646);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+li.rank_item {
+  background-color: var(--scheduleitemcolor, #aaaaaa);
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
+}
+
+span.rank_item_name {
+  font-weight: bold;
+}
+
+span.rank_item_name {
+  font-style: italic;
+}
+
 .radioselect * {
   vertical-align: middle;
 }

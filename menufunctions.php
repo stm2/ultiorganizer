@@ -1,5 +1,6 @@
 <?php
 include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/poll.functions.php';
 include_once $include_prefix . 'lib/game.functions.php';
 include_once $include_prefix . 'lib/statistical.functions.php';
 
@@ -934,6 +935,7 @@ function getEditSeasonLinks() {
       if (isSeasonAdmin($season)) {
         $links['?view=admin/seasonadmin&amp;season=' . $season] = _("Event");
         $links['?view=admin/seasonseries&amp;season=' . $season] = _("Divisions");
+        $links['?view=admin/seasonpolls&amp;season=' . $season] = _("Polls");
         $links['?view=admin/seasonteams&amp;season=' . $season] = _("Teams");
         $links['?view=admin/seasonpools&amp;season=' . $season] = _("Pools");
         $links['?view=admin/reservations&amp;season=' . $season] = _("Scheduling");
