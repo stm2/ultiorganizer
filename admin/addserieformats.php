@@ -105,7 +105,7 @@ if($poolId){
 
 $html .= "<table class='formtable'>
 			<tr><td class='infocell'>"._("Name").":</td>
-			<td>".TranslatedField("name", $pp['name'], "150", "30")."</td><td></td></tr>\n";
+			<td colspan='2'>".TranslatedField2("name", $pp['name'])."</td></tr>\n";
 
 $html .= "<tr><td class='infocell'>"._("Game points").":</td>
 		<td><input class='input' id='gameto' name='gameto' value='".utf8entities($pp['winningscore'])."'/></td>

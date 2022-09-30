@@ -74,8 +74,13 @@ if (!count($serieses)) {
       $html .= "<tr><td class='infocell'>" . _("Teams") . "</td><td>" . count($teams) . "</td></tr>\n";
     }
     $html .= "</table>\n";
-    if ($pollId > 0 && HasResults($pollId)) {
+    if ($pollId > 0) {
+      if (HasResults($pollId) || hasEditSeriesRight($series)) {
       $html .= "<p><a href='?view=user/pollresult&season=$season&poll=$pollId'>" . _("View results") . "<a></p>";
+      }
+      if (CanVote(null, null, $pollId) || hasEditSeriesRight($series)) {
+        $html .= "<p><a href=?view=user/votepoll&season=$season&poll=$pollId>" . _("Vote") . "</a></p>\n";
+      }
     }
   }
 

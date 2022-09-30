@@ -270,9 +270,9 @@ if(empty($seasonId)){
 }
 
 $html .= "<table class='formtable'>";
-$html .= "<tr><td class='infocell'>"._("Event id").": </td><td><input class='input' name='season_id' $disabled value='".utf8entities($sp['season_id'])."'/></td></tr>";
+$html .= "<tr><td class='infocell'>"._("Event id").": </td><td><input class='input' size='30'name='season_id' $disabled value='".utf8entities($sp['season_id'])."'/></td></tr>";
 $html .= "<tr rowspan='2'><td class='infocell'>"._("Name").": </td>
-      <td>".TranslatedField("seasonname", $sp['name'])."</td>
+      <td>".TranslatedField2("seasonname", $sp['name'], '')."</td>
     </tr>\n";
 $html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
 

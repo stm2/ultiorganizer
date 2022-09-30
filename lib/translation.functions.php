@@ -252,11 +252,30 @@ function autocompleteTranslate($name, $translation_array) {
 }
 
 function TranslatedField($fieldName, $value, $width="200", $size="30") {
-	return "
-	<div style='width:".$width."px; height:20px' id='".$fieldName."Autocomplete' class='yui-skin-sam'>
-		<input class='input' size='".$size."' maxlength='".$size."' style='width:".$width."px' id='".$fieldName.
-		"' name='".$fieldName."' value='".utf8entities($value)."'/>
-		<div style='width:".$width."px' id='".$fieldName."Container'>
+  
+  return "
+  	<div style='width:".$width."px; height:20px' id='".$fieldName."Autocomplete' class='yui-skin-sam'>
+  		<input class='input' size='".$size."' maxlength='".$size."' style='width:".$width."px' id='".$fieldName.
+  		"' name='".$fieldName."' value='".utf8entities($value)."'/>
+  		<div style='width:".$width."px' id='".$fieldName."Container'>
+  		</div>
+  	</div>\n";
+}
+
+function TranslatedField2($fieldName, $value, $sWidth = "", $size = "30") {
+  if (!empty($sWidth)) {
+    $style1 = "style='width:$sWidth;'";
+    $style2 = "style='width:$sWidth; height:2em;";
+  } else {
+    $style1 = '';
+    $style2 = "style='height:2em;'";
+  }
+
+  return "
+	<div $style2' id='" . $fieldName . "Autocomplete' class='yui-skin-sam'>
+		<input class='input' size='" . $size . "' maxlength='" . $size . "' $style1 id='" . $fieldName . "' name='" .
+    $fieldName . "' value='" . utf8entities($value) . "'/>
+		<div $style1 id='" . $fieldName . "Container'>
 		</div>
 	</div>\n";
 }

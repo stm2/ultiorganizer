@@ -229,7 +229,7 @@ if (! $poolId || $addmore) {
   echo "<table class='formtable'>
       <tr>
       <td class='infocell'>" . _("Name") . ":</td>
-      <td>" . TranslatedField("name", $pp['name']) . "</td>
+      <td>" . TranslatedField2("name", $pp['name']) . "</td>
       </tr>\n";
   echo "<tr>
       <td class='infocell'>" . _("Order") . " (A,B,C,D ...):</td>

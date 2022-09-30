@@ -131,7 +131,7 @@ foreach($result as $row) {
 		echo "<input class='input' size='15' type='text' name='name".$hiddenIndex."'/></td>\n";
 		echo "<td><div id='orgAutocomplete".$hiddenIndex."' style='width:10em;padding-bottom:2em; margin-right:0.5em'><input class='input' size='15' type='text' id='club".$hiddenIndex."' name='clubname'/><div id='orgContainer".$hiddenIndex."'></div></div></td>";
 	} else {
-		echo TranslatedField("name".$hiddenIndex, "");
+		echo TranslatedField2("name".$hiddenIndex, "", '20em');
 		echo "</td>\n";
 	}
 	if (intval($seasonInfo['isinternational'])){

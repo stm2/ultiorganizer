@@ -100,11 +100,11 @@ else
 	$html .= "<table class='formtable'>
 			<tr>
 			<td class='infocell'>"._("Name").":</td>
-			<td>".TranslatedField("name", $sp['name'])."
+			<td>".TranslatedField2("name", $sp['name'])."
 			</td>
 			</tr>\n";
 	$html .= "<tr><td class='infocell'>"._("Order")." (A,B,C,D..):</td>
-			<td><input class='input' id='ordering' name='ordering' value='".utf8entities($sp['ordering'])."'/></td></tr>";
+			<td><input class='input' size='30' id='ordering' name='ordering' value='".utf8entities($sp['ordering'])."'/></td></tr>";
 
 	$html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
 	

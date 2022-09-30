@@ -221,7 +221,7 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
     echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove('frompool$i','movefrom$i','moveto$i','pteamname$i');\"/></td>\n";
     echo "<td><input class='input' id='moveto$i' name='moveto$i' disabled='disabled' maxlength='3' size='3' value='".($i+1)."'/></td>\n";
     //echo "<td><input class='input' id='pteamname$i' name='pteamname$i' size='50' maxlength='100' value=''/>\n";
-    echo "<td>".TranslatedField("pteamname$i","");
+    echo "<td>".TranslatedField2("pteamname$i","");
 
     echo TranslationScript("pteamname$i");
     echo "</td>";
@@ -301,7 +301,7 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
     }
     echo "</select></td>\n";
     echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\"/></td>\n";
-    echo "<td>".TranslatedField("pteamname$i","");
+    echo "<td>".TranslatedField2("pteamname$i","", '20em');
     echo TranslationScript("pteamname$i");
     echo "</td>";
     echo "</tr>\n";
@@ -321,7 +321,7 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
     }
     echo "</select></td>\n";
     echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\"/></td>\n";
-    echo "<td>".TranslatedField("pteamname$i","");
+    echo "<td>".TranslatedField2("pteamname$i","", '20em');
     echo TranslationScript("pteamname$i");
     echo "</td>";
     echo "</tr>\n";

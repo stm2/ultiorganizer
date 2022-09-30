@@ -158,26 +158,27 @@ if ($mode == 'search') {
   if (isset($id))
     $html .= "<input type='hidden' name='id' id='place_id' value='$id'/>\n";
 
-  $html .= "<table><tbody>\n";
+  $tWidth = '18em';
+  $html .= "<table ><tbody>\n";
   $html .= "  <tr><th>" . _("Name") . ":</th>";
-  $html .= "  <td>" . TranslatedField("name", $location['name'], 200, 45) . "</td></tr>\n";
+  $html .= "  <td>" . TranslatedField2("name", $location['name'], "$tWidth", 45) . "</td></tr>\n";
   $html .= "  <tr><th>" . _("Address") . "</th>";
-  $html .= "  <td><input class='controls' type='text' style='width:100%' name='address' id='address' value='" . $location['address'] . "'/>&nbsp;</tr>\n";
+  $html .= "  <td><input class='controls' type='text' style='width:$tWidth' name='address' id='address' value='" . $location['address'] . "'/>&nbsp;</tr>\n";
 
   foreach ($locales as $locale => $name) {
     $locale = str_replace(".", "_", $locale);
     $html .= "<tr><th>" . _("Info") . " (" . $name . ")";
-    $html .= ":</th><td><textarea rows='3' style='width:100%' name='info_" . $locale . "' id='info_" . $locale . "'>" .
+    $html .= ":</th><td><textarea rows='3' style='width:$tWidth' name='info_" . $locale . "' id='info_" . $locale . "'>" .
       $location['info'][$locale] . "</textarea></td></tr>";
   }
 
-  $html .= "<tr><th>" . _("Fields") . ":</th><td><input type='text' style='width:100%;' name='fields' id='fields' value='" . $location['fields'] ."'/></td></tr>\n";
+  $html .= "<tr><th>" . _("Fields") . ":</th><td><input type='text' style='width:$tWidth;' name='fields' id='fields' value='" . $location['fields'] ."'/></td></tr>\n";
   $is_indoor = intval($location['indoor'])?"checked='checked'":"";
   $html .= "<tr><th>" . _("Indoor pitch") . ":</th><td><input type='checkbox' name='indoor' id='indoor' $is_indoor/></td></tr>\n";
   $html .= "<tr><th>" . _("Latitude") .
-  ":</th><td><input type='text' style='width:100%;' name='lat' id='lat' value='" . $location['lat'] ."'/></td></tr>\n";
+  ":</th><td><input type='text' style='width:$tWidth;' name='lat' id='lat' value='" . $location['lat'] ."'/></td></tr>\n";
   $html .= "<tr><th>" . _("Longitude") .
-  ":</th><td><input type='text' style='width:100%;' name='lng' id='lng' value='" . $location['lng'] ."'/></td></tr>\n"; 
+  ":</th><td><input type='text' style='width:$tWidth;' name='lng' id='lng' value='" . $location['lng'] ."'/></td></tr>\n"; 
   $html .= "</tbody></table>\n";
   $html .= "<p>";
   $html .= "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";

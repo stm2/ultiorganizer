@@ -255,7 +255,7 @@ $html .= _("E-Mail")." <input class='input' size='20' name='email'/>\n";
 $html .= "</td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Name").":</td>";
-$html .= "<td>".TranslatedField("name", $info['gamename']);
+$html .= "<td>".TranslatedField2("name", $info['gamename']);
 $html .= TranslationScript("name");
 $html .= "</td></tr>\n";
 

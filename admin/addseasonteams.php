@@ -147,7 +147,7 @@ $html .= "<table class='formtable yui-skin-sam'><tr><td class='infocell'>"._("Na
 		$html .= "<div id='orgContainer'></div>";
 		$html .= "</div>";		
 	} else {
-		$html .= TranslatedField("name", $tp['name']);
+		$html .= TranslatedField2("name", $tp['name']);
 	}
 	$html .= "</td></tr>";
 
