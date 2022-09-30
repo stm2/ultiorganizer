@@ -174,7 +174,6 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     echo "<div class='page_top'>\n";
     
     echo "<div class='top_banner_space'></div>\n";
-    echo "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
     echo "<table border='0' cellpadding='0' cellspacing='0' style='width:100%;white-space: nowrap;'><tr>\n";
     
     // top header left part can be customized
@@ -201,19 +200,11 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     }
     
     if ($user == 'anonymous') {
-      echo "<label for='myusername'>"._("Username")." </label></td><td><input class='input' type='text' id='myusername' name='myusername' size='10' style='border:1px solid #555555'/>&nbsp;";
-      echo "</td><td>";
-      if ($user == 'anonymous') {
-        echo "<span class='topheadertext'><a class='topheaderlink' href='?view=register'>" . utf8entities(_("New user?")) .
-        "</a></span>";
-      }
-      echo "</td></tr><tr><td class='left' style='padding-top:5px'>";
-      echo "<label for='myusername'>"._("Password")." </label></td><td><input class='input' type='password' id='mypassword' name='mypassword' size='10' style='border:1px solid #555555'/>&nbsp;</td>";
-      echo "<td><input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
-         "' style='border:1px solid #000000'/>";
+      echo "</td><td class='right'><span class='topheadertext'>" . 
+      "<a class='topheaderlink' href='?view=login&query=".urlencode($query_string)."'>" . utf8entities(_("Login")) . "</a></span>";
     } else {
       $userinfo = UserInfo($user);
-      echo "</td><td colspan='2' class='right' style='padding-top:5px'><span class='topheadertext'>" . utf8entities(_("User")) .
+      echo "</td><td class='right'><span class='topheadertext'>" . utf8entities(_("User")) .
          ": <a class='topheaderlink' href='?view=user/userinfo'>" . utf8entities($userinfo['name']) . "</a></span>";
     }
     
@@ -228,7 +219,6 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     echo "</td></tr>\n";
     echo "</table>";
     echo "</td></tr></table>";
-    echo "</form>\n";
     echo "</div><!--page_top-->\n";
     
     // navigation bar
@@ -1120,4 +1110,28 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
   }
   return $html;
 }
+
+
+function loginForm($query_string) {
+  $html = '';
+  
+  $html .= "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
+  $html .= "<table class='formtable'>\n";
+  $html .= "<tr><td class='infocell'>" . _("Username") . ":</td>";
+  $html .= "<td><input class='input' type='text' id='myusername' name='myusername' size='40' value='$userId'/>&nbsp;</td>";
+  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=register'>" . utf8entities(_("New user?")) .
+  "</a></span></td>\n";
+  $html .= "</tr>\n";
+  $html .= "<tr><td class='infocell'>" . _("Password") . ":</td>";
+  $html .= "<td><input type='password' class='input' size='40' maxlength='20' name='mypassword' value=''/></td></tr>";
+  
+  $html .= "</table>\n";
+  
+  $html .= "<p><input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
+  "' style='border:1px solid #000000'/></p>";
+  $html .= "</form>";
+  
+  return $html;  
+}
 ?>
+

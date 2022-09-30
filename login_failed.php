@@ -89,13 +89,16 @@ if (!empty($_POST['changepw']) && !empty($userId)) {
 }
 
 if (empty($html)) {
-  // 1. recover request
-  $html .= "<form method='post' action='?view=login_failed&amp;user=" . urlencode($userId) . "'>\n";
   if (empty($warning)) {
     $html .= "<p class='warning'>" . _("Username/password did not match. Try again or request to recover a lost password.") . "</p>\n";
   } else {
     $html .= $warning;
   }
+  
+  $html .= loginForm('');
+  
+  // 1. recover request
+  $html .= "<form method='post' action='?view=login_failed&amp;user=" . urlencode($userId) . "'>\n";
   $html .= "<p>" .
      _(
       "If you have forgotten your password, enter <em>either</em> your username <em>or</em> your email below. If we have your email address, you will receive an email with further instructions.") .
