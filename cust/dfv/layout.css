@@ -1,19 +1,5 @@
-.breadcrumbs {
-  margin-left: 1px;
-}
-
-.content {
-  width: 60em;
-}
-
-.nomenu {
-  width: 80em;
-}
-
-.infotable td {
-  padding-right: 5px;
-  padding-top: 1px;
-  padding-bottom: 1px;
+.leftmenulogo {
+  display: none;
 }
 
 #map {

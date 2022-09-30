@@ -11,7 +11,7 @@ td {
 }
 
 .header_text:link, .header_text:visited, .header_text:active,
-  .header_text:hover, .header_text:focus, div.header_text {
+  .header_text:hover, .header_text:focus, .header_text {
   color: var(--headercolor, #006699);
   font-size: 2rem;
   margin-left: 8px;
@@ -28,6 +28,7 @@ td {
   padding-left: 10px;
   font-weight: normal;
   text-decoration: none;
+  font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
 
 .seasonnav:link, .seasonnav:visited {
@@ -98,13 +99,6 @@ td {
 
 .breadcrumbs_text {
   color: var(--breadcrumbscolor, #000000);
-  padding: 0px;
-  margin: 0px;
-  margin-top: 2px;
-  margin-bottom: 2px;
-  margin-left: 5px;
-  margin-right: 5px;
-  font-size: 1rem;
 }
 
 .menuseasonlevel {

@@ -21,22 +21,22 @@ if (!isset($styles_prefix)) {
 
 $cssFiles = array();
 $cssFiles[] = "cust/default/colors.css";
-if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/colors.css')) {
+if (CUSTOMIZATIONS != 'default' && is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/colors.css')) {
   $cssFiles[] = "cust/".CUSTOMIZATIONS."/colors.css";
 }
 
 $cssFiles[] = "cust/default/default.css";
-if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/default.css')) {
+if (CUSTOMIZATIONS != 'default' && is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/default.css')) {
   $cssFiles[] = "cust/".CUSTOMIZATIONS."/default.css";
 }
 
 $cssFiles[] = "cust/default/layout.css";
-if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/layout.css')) {
+if (CUSTOMIZATIONS != 'default' && is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/layout.css')) {
   $cssFiles[] = "cust/".CUSTOMIZATIONS."/layout.css";
 }
 
 $cssFiles[] = "cust/default/font.css";
-if (is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/font.css')) {
+if (CUSTOMIZATIONS != 'default' && is_file($include_prefix.'cust/'.CUSTOMIZATIONS.'/font.css')) {
   $cssFiles[] = "cust/".CUSTOMIZATIONS."/font.css";
 }
 

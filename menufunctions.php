@@ -19,13 +19,9 @@ if (is_file('cust/' . CUSTOMIZATIONS . '/head.php')) {
  *          page's content
  */
 function showPage($title, $html) {
-  if (false) {
-    showPageMobile($title, $html);
-  } else {
-    preContent($title);
-    echo $html;
-    postContent();
-  }
+  preContent($title);
+  echo $html;
+  postContent();
 }
 
 function showPageMobile($title, $html) {
@@ -129,9 +125,12 @@ function pageTopHeadOpen($title) {
   echo "<meta http-equiv=\"Pragma\" content=\"no-cache\"/>";
   echo "<meta http-equiv=\"Expires\" content=\"-1\"/>";
   
+  echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
+  
   echo "<link rel='icon' type='image/png' href='$icon' />
 		<title>" . GetPageTitle() . "" . $title . "</title>\n";
   echo styles();
+  
   include $include_prefix . 'script/common.js.inc';
   global $include_prefix;
   include_once $include_prefix . 'script/help.js.inc';
@@ -175,18 +174,15 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
   echo "<div class='page'>\n";
   
   if (!$printable) {
-    echo "<div class='page_top'>\n";
-    
-    echo "<div class='top_banner_space'></div>\n";
-    echo "<table border='0' cellpadding='0' cellspacing='0' style='width:100%;white-space: nowrap;'><tr>\n";
+    echo "<header class='page_top'>\n";
     
     // top header left part can be customized
-    echo "<td class='topheader_left'>\n";
+    echo "<div class='topheader_left'>\n";
     echo pageHeader();
-    echo "</td><!--topheader_left-->";
+    echo "</div><!--topheader_left-->";
     
     // top header right part contains common elements
-    echo "<td class='topheader_right'>";
+    echo "<div class='topheader_right'>";
     echo "<table border='0' cellpadding='0' cellspacing='0' style='width:95%;white-space: nowrap;'>\n";
     
     // 1st row: Locale selection
@@ -210,27 +206,20 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
       $userinfo = UserInfo($user);
       echo "</td><td class='right'><span class='topheadertext'>" . utf8entities(_("User")) .
          ": <a class='topheaderlink' href='?view=user/userinfo'>" . utf8entities($userinfo['name']) . "</a></span>";
-    }
-    
-    // echo "&nbsp;";
-    
-    if ($user == 'anonymous') {
-      // 
-    } else {
       echo "<span class='topheadertext'><a class='topheaderlink' href='?view=logout'>&raquo; " .
          utf8entities(_("Logout")) . "</a></span>";
     }
     echo "</td></tr>\n";
     echo "</table>";
-    echo "</td></tr></table>";
-    echo "</div><!--page_top-->\n";
+    echo "</div><!--topheader_right-->";
+    echo "</header><!--page_top-->\n";
     
     // navigation bar
     echo "<div class='breadcrumbs'><p class='breadcrumbs_text'>";
     echo navigationBar($title) . "</p></div>";
   }
   
-  echo "<div class='page_middle'>\n";
+  // echo "<div class='page_middle'>\n";
 }
 
 /**
@@ -240,12 +229,11 @@ function contentStart() {
   if (getPrintMode())
     contentStartWide();
   else
-    echo "\n<div align='left' valign='top' class='tdcontent'><div class='content'>\n";
+    echo "\n<main class='content'>\n";
 }
 
 function contentStartWide() {
-  // TODO div
-  echo "\n<td align='left' valign='top' class='tdcontent'><div class='content nomenu'>\n";
+  echo "\n<main class='content nomenu'>\n";
 }
 
 $footers = array();
@@ -271,6 +259,8 @@ function contentEnd() {
   $querystring = $_SERVER['QUERY_STRING'];
   $querystring = preg_replace("/&print=[^&]/", "", $querystring);
   
+  echo "</main><!--content-->";
+  echo "<footer>\n";
   echo "<hr />";
   $backurl = isset($_SERVER['HTTP_REFERER']) ? ($_SERVER['HTTP_REFERER']) : "";
   if ($backurl) {
@@ -288,11 +278,11 @@ function contentEnd() {
     echo " <a href='?" . utf8entities($querystring) . "'>" . _("Screen version") .
        "</a></div>\n";
   }
+  echo "</footer>";
   
-  echo "</div><!--content-->";
 //   echo "</td></tr></table>";
-  echo "</div>";
-  echo "</div><!--page_middle-->\n";
+//   echo "</div>";
+//   echo "</div><!--page_middle-->\n";
 }
 
 /**
@@ -312,8 +302,9 @@ function pageEnd() {
       });
     </script>";
   }
-  echo "<div class='page_bottom'></div>";
-  echo "</div></body></html>";
+//   echo "<div class='page_bottom'></div>";
+  echo "</div><!--page-->";
+  echo "</body></html>";
 }
 
 /**
@@ -554,10 +545,10 @@ function seasonSelection() {
 function pageMainStart($printable = false) {
   if ($printable) {
 //     echo "<table class='main_page print'><tr>\n";
-    echo "<div class='main_page print'>\n";
+    // echo "<div class='main_page print'>\n";
   } else {
 //     echo "<table class='main_page'><tr>\n";
-     echo "<div class='main_page'>\n";
+     // echo "<div class='main_page'>\n";
   }
 }
 
@@ -587,6 +578,8 @@ function SetCurrentSeries($seriesId) {
 
 function leftMenuScript() {
   global $currentSeries;
+  $hidemenu = _("Hide menu");
+  $showmenu = _("Show menu");
   echo <<<EOG
 <script type="text/javascript">
 <!--
@@ -598,6 +591,7 @@ class LeftMenu {
        elements[i].style.display = collapse?"none":"";
     }
   }
+
   static hide() {
     LeftMenu.hide2(document, "menulevel2", true);
     LeftMenu.hide2(document, "menulevel3", true);
@@ -620,12 +614,37 @@ class LeftMenu {
        LeftMenu.hide2(parent, "uncollapse", collapsed);
      }
   }
+ 
+  static toggleMenu(link) {
+     var menu = document.getElementById('left_menu');
+     var hidden=menu.style.display === "none";
+     if (!hidden)
+        menu.style.display = "none";
+     else 
+        menu.style.display = "";
+
+     if (hidden) {
+       link.href = link.href.replace("show_navigation=1", "show_navigation=0");
+       link.text = "$hidemenu";
+     } else {
+       link.href = link.href.replace("show_navigation=0", "show_navigation=1");
+       link.text = "$showmenu";  
+     }
+     return false;
+  }
 }
 
 YAHOO.util.Event.onDOMReady(function() { LeftMenu.hide(); LeftMenu.toggle("seriesNav$currentSeries"); });
 //-->
 </script>
 EOG;
+}
+
+function menuLink($view, $heading, $showNavigation=1) {
+  $navi = '';
+  if ($showNavigation)
+    $navi='&show_navigation=0';
+  echo "<a class='subnav' href='?view=$view$navi'>&raquo; " . utf8entities($heading) . "</a>\n";
 }
 
 /**
@@ -640,6 +659,9 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   $showNav = 1;
   if (isset($_GET['show_navigation'])) {
     $showNav = $_GET['show_navigation'];
+    $_SESSION['show_navigation'] = $showNav;
+  } else if (isset($_SESSION['show_navigation'])) {
+    $showNav = $_SESSION['show_navigation'];
   }
   $url = MakeUrl($_GET, array('show_navigation' => 1 - $showNav));
   if ($showNav) {
@@ -649,7 +671,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     $toggle = utf8entities(_("Show Menu"));
     $show = " style='display:none'";
   }
-  echo "<div class='menu_toggle'><a href='$url'>$toggle</a></div>\n";
+  echo "<div id='menu_toggle'><a href='$url' onclick='return LeftMenu.toggleMenu(this);'>$toggle</a></div>\n";
+  $showPar = '&show_navigation=0';
   
   
   
@@ -663,8 +686,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     return;
   }
     
-  //   echo "<td class='menu_left'>";
-  echo "<div class='menu_left'$show>\n";
+  //   echo "<td id='left_menu' class='menu_left'>";
+  echo "<aside id='left_menu' class='menu_left'$show>\n";
   
   // Administration menu
   if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {}
@@ -672,7 +695,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   $heading = _("Administration");
   if (isSuperAdmin()) {
     startTable($leftmenu, $heading);
-    echo "<a class='subnav' href='?view=admin/seasons'>&raquo; " . utf8entities(_("Events")) . "</a>\n";
+    menuLink("admin/seasons", _("Events"));
+    
     echo "<a class='subnav' href='?view=admin/serieformats'>&raquo; " . utf8entities(_("Rule templates")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/clubs'>&raquo; " . utf8entities(_("Clubs & Countries")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/locations'>&raquo; " . utf8entities(_("Field locations")) . "</a>\n";
@@ -939,7 +963,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   // draw customizable logo if any
   echo "<div class='leftmenulogo'>" . logo() . "</div>\n";
   
-  echo "<table style='width:90%'>\n";
+  echo "<table class='leftmenulinks'>\n";
   echo "<tr><td class='guides'>";
   echo "<a href='?view=user_guide'>" . utf8entities(_("User Guide")) . "</a> | \n";
   echo "<a href='?view=admin/help'>" . utf8entities(_("Admin Help")) . "</a> | \n";
@@ -948,7 +972,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "</table>";
   
 //   echo "</td>\n";
-  echo "</div>\n";
+  // echo "</div>\n";
+  echo "</aside>\n";
 }
 
 /**

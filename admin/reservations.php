@@ -139,7 +139,7 @@ if(empty($season)){
     $i++;
   }
     
-  $html .= "<table class='admintable'><tr><th>"._("from\\to")."</th>";
+  $html .= "<table class='admintable transfertable'><tr><th>"._("from\\to")."</th>";
   $i=0;
   foreach ($locations as $location) {
     $html .=  "<th>".($i+1)."</th>";
@@ -152,7 +152,7 @@ if(empty($season)){
     $j = 0;
     foreach ($locations as $location2) {
       
-      $html .= "<td><input type='text' size='4' maxlength='5' value='" 
+      $html .= "<td><input type='text' size='3' maxlength='5' value='" 
           . (TimeTableMoveTime($movetimes, $location1['location'], $location1['fieldname'], $location2['location'], $location2['fieldname'])/60) 
           . "' id='move".$i."_".$j."' name='move[$i][$j]' onkeypress='ChgTime(" . $i .",".$j . ")'/></td>";
       $j++;
