@@ -200,12 +200,16 @@ if ($continuation && $SwissOK==-1) {
 //   		die('yay! '.$team['team_id']);
 //    }
     echo "<td class='center'>".intval($row['fromplacing'])."</td>";
+    if (empty($team)) {
+      echo "<td></td>";
+    } else {
     if(TeamPoolCountBYEs($team['team_id'],$row['frompool'])>0){
       echo "<td class='highlight'><b>".utf8entities($team['name'])."</b></td>";
       $BYEs=true;
     }else{
       echo "<td class='highlight'>".utf8entities($team['name'])."</td>";
       $BYEs=false;
+    }
     }
     echo "<td class='center'>".intval($row['torank'])."</td>";
     echo "<td style='white-space: nowrap'>".utf8entities(PoolName($poolId))."</td>";

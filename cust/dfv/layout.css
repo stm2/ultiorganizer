@@ -3,11 +3,11 @@
 }
 
 .content {
-  width: 685px;
+  width: 60em;
 }
 
 .nomenu {
-  width: 860px;
+  width: 80em;
 }
 
 .infotable td {
@@ -18,7 +18,7 @@
 
 #map {
   width: 100%;
-  height: 400px;
+  height: 35em;
   font-family: Arial, sans-serif;
   font-size: 11px;
   border: 1px solid black;

@@ -298,7 +298,7 @@ if($poolId){
 echo "<table class='scheduling'><tr><td class='scheduling_column'>\n";
 echo "<h3>"._("Unscheduled")."</h3>\n";
 echo "<form action='' method='get'>";
-echo "<p><select class='dropdown' style='width:100%' name='eventfilter' onchange='OnEventSelect(this);'>\n";
+echo "<p><select class='dropdown' name='eventfilter' onchange='OnEventSelect(this);'>\n";
 echo "<option class='dropdown' value=''>"._("Select event")."</option>";
 foreach($seasonfilter as $season){
   if($seasonId==$season['id']){
@@ -312,7 +312,7 @@ $disabled = "";
 if(empty($seasonId)){
   $disabled = "disabled='disabled'";
 }
-echo "<select class='dropdown' $disabled style='width:100%' name='seriesfilter' onchange='OnSeriesSelect(this);'>\n";
+echo "<select class='dropdown' $disabled name='seriesfilter' onchange='OnSeriesSelect(this);'>\n";
 echo "<option class='dropdown' value='0'>"._("All divisions")."</option>";
 foreach($seriesfilter as $series){
   if($seriesId==$series['id']){
@@ -326,7 +326,7 @@ $disabled = "";
 if(!$seriesId){
   $disabled = "disabled='disabled'";
 }
-echo "<select class='dropdown' $disabled style='width:100%' name='poolfilter' onchange='OnPoolSelect(this);'>\n";
+echo "<select class='dropdown' $disabled name='poolfilter' onchange='OnPoolSelect(this);'>\n";
 echo "<option class='dropdown' value='0'>"._("All pools")."</option>";
 foreach($poolfilter as $pool){
   if($poolId==$pool['id']){

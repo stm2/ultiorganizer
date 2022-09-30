@@ -23,7 +23,7 @@ body {
 }
 
 li {
-  margin-left: 1ex;
+/*  margin-left: 1ex;*/
   list-style-position: inside;
 }
 

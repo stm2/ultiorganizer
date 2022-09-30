@@ -19,9 +19,13 @@ if (is_file('cust/' . CUSTOMIZATIONS . '/head.php')) {
  *          page's content
  */
 function showPage($title, $html) {
-  preContent($title);
-  echo $html;
-  postContent();
+  if (false) {
+    showPageMobile($title, $html);
+  } else {
+    preContent($title);
+    echo $html;
+    postContent();
+  }
 }
 
 function showPageMobile($title, $html) {
@@ -236,10 +240,11 @@ function contentStart() {
   if (getPrintMode())
     contentStartWide();
   else
-    echo "\n<td align='left' valign='top' class='tdcontent'><div class='content'>\n";
+    echo "\n<div align='left' valign='top' class='tdcontent'><div class='content'>\n";
 }
 
 function contentStartWide() {
+  // TODO div
   echo "\n<td align='left' valign='top' class='tdcontent'><div class='content nomenu'>\n";
 }
 
@@ -284,7 +289,10 @@ function contentEnd() {
        "</a></div>\n";
   }
   
-  echo "</div><!--content--></td></tr></table></div><!--page_middle-->\n";
+  echo "</div><!--content-->";
+//   echo "</td></tr></table>";
+  echo "</div>";
+  echo "</div><!--page_middle-->\n";
 }
 
 /**
@@ -316,7 +324,8 @@ function pageEnd() {
  */
 function onPageHelpAvailable($html) {
   return "<div style='float:right;'>
-	<input type='image' class='helpbutton' id='helpbutton' src='images/help-icon.png'/></div>\n
+	<input type='image' alt='" . utf8entities(_("Help")) .
+    "' class='helpbutton' id='helpbutton' src='images/help-icon.png'/></div>\n
 	<div id='helptext' class='yui-pe-content'>$html<hr/></div>";
 }
 
@@ -330,6 +339,8 @@ function mobilePageTop($title) {
   pageTopHeadOpen($title);
   
   echo "</head><body style='overflow-y:scroll;'>\n";
+  leftMenu(0, false);
+  
   echo "<div class='mobile_page'>\n";
 }
 
@@ -454,6 +465,12 @@ function nav_title(int $index) {
   return $_SESSION['navigation'][$index]['title'];
 }
 
+function nav_current() {
+  if (!isset($_SESSION['navigation']) || empty($_SESSION['navigation']))
+    nav_initialize();
+  return $_SESSION['navigation'][nav_size()];
+}
+
 /**
  * Navigation bar functionality and html-code.
  *
@@ -536,16 +553,20 @@ function seasonSelection() {
 
 function pageMainStart($printable = false) {
   if ($printable) {
-    echo "<table class='main_page print'><tr>\n";
+//     echo "<table class='main_page print'><tr>\n";
+    echo "<div class='main_page print'>\n";
   } else {
-    echo "<table class='main_page'><tr>\n";
+//     echo "<table class='main_page'><tr>\n";
+     echo "<div class='main_page'>\n";
   }
 }
 
-function startTable(&$status) {
+function startTable(&$status, $heading='') {
   if (!$status) {
     echo "<table class='leftmenulinks'>\n";
-    echo "<tr class='level1'><th class='menuseasonlevel'>" . utf8entities(_("Administration")) . "</th></tr>\n";
+    if (!empty($heading)) {
+      echo "<tr class='level1'><th class='menuseasonlevel'>" . utf8entities($heading) . "</th></tr>\n";
+    }
     echo "<tr class='level2'><td>\n";
   }
   $status = true;
@@ -616,24 +637,41 @@ EOG;
  *          - if true, menu is not drawn.
  */
 function leftMenu($id = 0, $pagestart = true, $printable = false) {
+  $showNav = 1;
+  if (isset($_GET['show_navigation'])) {
+    $showNav = $_GET['show_navigation'];
+  }
+  $url = MakeUrl($_GET, array('show_navigation' => 1 - $showNav));
+  if ($showNav) {
+    $toggle = utf8entities(_("Hide Menu")); 
+    $show = "";
+  } else {
+    $toggle = utf8entities(_("Show Menu"));
+    $show = " style='display:none'";
+  }
+  echo "<div class='menu_toggle'><a href='$url'>$toggle</a></div>\n";
+  
+  
+  
   $printable |= getPrintMode();
   if ($pagestart) {
     pageMainStart($printable);
   }
   
   leftMenuScript();
-  
   if ($printable) {
     return;
   }
     
-  echo "<td class='menu_left'>";
+  //   echo "<td class='menu_left'>";
+  echo "<div class='menu_left'$show>\n";
   
   // Administration menu
   if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {}
   $leftmenu = 0;
+  $heading = _("Administration");
   if (isSuperAdmin()) {
-    startTable($leftmenu);
+    startTable($leftmenu, $heading);
     echo "<a class='subnav' href='?view=admin/seasons'>&raquo; " . utf8entities(_("Events")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/serieformats'>&raquo; " . utf8entities(_("Rule templates")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/clubs'>&raquo; " . utf8entities(_("Clubs & Countries")) . "</a>\n";
@@ -641,16 +679,16 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     echo "<a class='subnav' href='?view=admin/reservations'>&raquo; " . utf8entities(_("Field reservations")) . "</a>\n";
   }
   if (hasScheduleRights()) {
-    startTable($leftmenu);
+    startTable($leftmenu, $heading);
     echo "<a class='subnav' href='?view=admin/schedule'>&raquo; " . utf8entities(_("Scheduling")) . "</a>";
   }
   
   if (hasTranslationRight()) {
-    startTable($leftmenu);
+    startTable($leftmenu, $heading);
     echo "<a class='subnav' href='?view=admin/translations'>&raquo; " . utf8entities(_("Translations")) . "</a>\n";
   }
   if (isSuperAdmin()) {
-    startTable($leftmenu);
+    startTable($leftmenu, $heading);
     echo "<a class='subnav' href='?view=admin/users'>&raquo; " . utf8entities(_("Users")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/eventviewer'>&raquo; " . utf8entities(_("Logs")) . "</a>\n";
     // echo "<a class='subnav' href='?view=admin/sms'>&raquo; ".utf8entities(_("SMS"))."</a>\n";
@@ -660,12 +698,15 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   
   endTable($leftmenu);
   
+  $leftmenu = 0;
   if ($_SESSION['uid'] != 'anonymous') {
-    echo "<table class='leftmenulinks'>\n";
-    echo "<tr><td>\n";
+    startTable($leftmenu, '');
+//     echo "<table class='leftmenulinks'>\n";
+//     echo "<tr><td>\n";
     echo "<a class='subnav' href='?view=admin/help'>&raquo; " . utf8entities(_("Helps")) . "</a>\n";
-    echo "</td></tr>\n";
-    echo "</table>\n";
+//     echo "</td></tr>\n";
+//     echo "</table>\n";
+    endTable($leftmenu);
   }
   
   // Event administration menu
@@ -896,7 +937,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "</table>";
   
   // draw customizable logo if any
-  echo logo();
+  echo "<div class='leftmenulogo'>" . logo() . "</div>\n";
   
   echo "<table style='width:90%'>\n";
   echo "<tr><td class='guides'>";
@@ -906,7 +947,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "</td></tr>";
   echo "</table>";
   
-  echo "</td>\n";
+//   echo "</td>\n";
+  echo "</div>\n";
 }
 
 /**
