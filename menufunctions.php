@@ -550,7 +550,8 @@ function seasonSelection() {
     }
     echo "</select>";
     foreach ($_GET as $name => $value) {
-      echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />";
+      if ($name != 'selseason')
+        echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />";
     }
     echo "<noscript><div><input type='submit' value='" . utf8entities(_("Go")) .
       "' name='selectseason'/></div></noscript>";
