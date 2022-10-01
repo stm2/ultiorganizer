@@ -1186,7 +1186,10 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
   return $html;
 }
 
-function loginForm($query_string) {
+function loginForm($query_string, $userId = '') {
+  if (empty($query_string))
+    $query_string='view=login';
+  $userId = utf8entities($userId);
   $html = '';
 
   $html .= "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
@@ -1197,12 +1200,13 @@ function loginForm($query_string) {
     utf8entities(_("New user?")) . "</a></span></td>\n";
   $html .= "</tr>\n";
   $html .= "<tr><td class='infocell'>" . _("Password") . ":</td>";
-  $html .= "<td><input type='password' class='input' size='40' maxlength='20' name='mypassword' value=''/></td></tr>";
-
+  $html .= "<td><input type='password' class='input' size='40' maxlength='20' name='mypassword' value=''/></td>";
+  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=login&recover=1'>" .
+    utf8entities(_("Recover lost password?")) . "</a></span></td>\n";
+  $html .= "</tr>";
   $html .= "</table>\n";
-
-  $html .= "<p><input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) .
-    "' style='border:1px solid #000000'/></p>";
+  $html .= "<input type='hidden' name='query' value='" . urlencode($query_string) . "' />";
+  $html .= "<p><input class='button' type='submit' name='login' value='" . utf8entities(_("Login")) . "' /></p>";
   $html .= "</form>";
 
   return $html;

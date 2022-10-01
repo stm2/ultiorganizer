@@ -7,15 +7,17 @@ include_once $include_prefix . 'lib/logging.functions.php';
 include_once $include_prefix . 'lib/common.functions.php';
 
 // include_once $include_prefix.'lib/configuration.functions.php';
-function FailRedirect($user) {
+function FailRedirect($user, $query='') {
   SetUserSessionData('anonymous');
-  header("location:?view=login_failed&user=" . urlencode($user));
+  $query = urlencode($query);
+  header("location:?view=login&failed=1&query=$query&user=" . urlencode($user));
   exit();
 }
 
-function FailRedirectMobile($user) {
+function FailRedirectMobile($user, $query='') {
   SetUserSessionData('anonymous');
-  header("location:?view=mobile/login_failed&user=" . urlencode($user));
+  $query = urlencode($query);
+  header("location:?view=mobile/login&failed=1&query=$query&user=" . urlencode($user));
   exit();
 }
 
@@ -79,7 +81,8 @@ function UserAuthenticate($user, $passwd, $failcallback) {
   } else {
     LogUserAuthentication($user, "failed");
     if (!empty($failcallback)) {
-      $failcallback($user);
+      $query = $_SERVER['QUERY_STRING'];
+      $failcallback($user, $query);
     } else {
       return false;
     }
@@ -1501,7 +1504,7 @@ function UserRecoverPasswordRequest($userId) {
   if (!empty($email)) {
     Log1("user", "change", $userId, "", "recover mail");
     $token = uuidSecure();
-    $url = GetURLBase() . "?view=login_failed&user=" . urlencode($userId) . "&token=" . urlencode($token);
+    $url = GetURLBase() . "?view=login&user=" . urlencode($userId) . "&token=" . urlencode($token);
     $query = sprintf("INSERT INTO uo_recoverrequest (userid, email, token, time) 
        VALUES ('%s', '%s', '%s', NOW())", mysql_adapt_real_escape_string($userId),
       mysql_adapt_real_escape_string($email), mysql_adapt_real_escape_string($token));
