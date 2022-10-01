@@ -300,7 +300,7 @@ if ($_SESSION['uid'] != "anonymous") {
 
   $html .= "</select></td></tr>";
 
-  $html .= "<tr><td colspan = '2' align='right'><br/>
+  $html .= "<tr><td colspan = '2'><br/>
 		  <input type='hidden' id='deleteExtraEmail' name='deleteExtraEmail'/>
 		  <input type='hidden' id='toPrimaryEmailVal' name='toPrimaryEmailVal'/>
 		  <input class='button' type='submit' name='save' value='"._("Save")."' />
@@ -326,8 +326,8 @@ if ($_SESSION['uid'] != "anonymous") {
     $html .= "<option value='".utf8entities($id)."'>".utf8entities(SeasonName($season))."</option>";
   }
   $html .= "</select></td><td>\n";
-  $html .= "<input class='button' type='submit' name='remeditseasons' value='"._("Hide")." &raquo;' /><br />
-	      <input class='button' type='submit' name='addeditseasons' value='&laquo; "._("Show")."' /></td><td>\n";
+  $html .= "<p><input class='button' type='submit' name='remeditseasons' value='"._("Hide")." &raquo;' /><br />
+	      <input class='button' type='submit' name='addeditseasons' value='&laquo; "._("Show")."' /></p></td><td>\n";
 
   $html .= "<select multiple='multiple' name='addeditseasonslist[]' id='addeditseasonslist' style='height:200px;width:250px'>\n";
   $seasons = Seasons();

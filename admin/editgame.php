@@ -245,7 +245,7 @@ $html .= "<tr><td class='infocell'>"._("Starting time")." (hh:mm):</td>
 $html .= "<tr><td class='infocell'>"._("Responsible team").":</td><td>";
 $html .= TeamSelectionList('respteam', $info['respteam'],$info['respteam'], $poolId);
 $html .= "</td></tr>";
-$html .= "<tr><td class='infocell' style='vertical-align:text-top;'>"._("Responsible person").":</td><td>";
+$html .= "<tr><td class='infocell'>"._("Responsible person").":</td><td>";
 $users = GameAdmins($gameId);
 foreach($users as $user){
   $html .= utf8entities($user['name'])."<br/>";

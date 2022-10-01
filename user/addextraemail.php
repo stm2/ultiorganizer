@@ -78,7 +78,7 @@ if (!$confirmed && !$mailsent) {
 	if (isset($_POST['Email'])) $html .= $_POST['Email'];
 	$html .= "'/></td></tr>";
 	
-	$html .= "<tr><td colspan = '2' align='right'><br/>
+	$html .= "<tr><td colspan = '2'><br/>
 	      <input class='button' type='submit' name='add' value='"._("Add")."' />
 	      </td></tr>\n";	
 			

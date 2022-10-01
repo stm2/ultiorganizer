@@ -146,7 +146,7 @@ if (empty($title)) {
 
   $html .= "<tr><td class='infocell'>" . _("Mentor") . ": </td><td><input class='input' name='mentor' value='" .
     utf8entities($info['mentor']) . "'/></td></tr>";
-  $html .= "<tr><td class='infocell' style='vertical-align:top'>" .
+  $html .= "<tr><td class='infocell''>" .
     htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) .
     ":</td>
     <td><textarea class='input' rows='10' cols='70' id='description' name='description'>" .

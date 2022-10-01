@@ -39,7 +39,7 @@ $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/
 
 $html .= "<input type='hidden' name='season' value='" .utf8entities($seasonId). "'/>\n";
 
-$html .= "<table class='formtable'><tr><td class='infocell' style='vertical-align:top'>" . _("Exported series:") . "</td>\n";
+$html .= "<table class='formtable'><tr><td class='infocell'>" . _("Exported series:") . "</td>\n";
 
 $html .= "<td><select multiple='multiple' name='searchseries[]' id='searchseries' style='height:200px'>\n";
 

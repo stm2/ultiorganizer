@@ -89,7 +89,7 @@ foreach ($teams as $team) {
 
 $html .= "</select></td></tr>";
 
-$html .= "<tr><td colspan = '2' align='right'><br/>
+$html .= "<tr><td colspan = '2'><br/>
 	      <input class='button' type='submit' name='save' value='" . _("Add") . "' />
 	      </td></tr>\n";
 

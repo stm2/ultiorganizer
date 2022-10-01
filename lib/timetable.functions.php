@@ -452,17 +452,17 @@ function SeriesAndPoolHeaders($info, &$lines=null){
 }
 
 function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true){
-  $datew = 'width:60px';
-  $timew = 'width:40px';
-  $fieldw = 'width:60px';
-  $teamw = 'width:120px';
-  $againstmarkw = 'width:5px';
-  $seriesw = 'width:80px';
-  $poolw = 'width:130px';
-  $scoresw = 'width:15px';
-  $infow = 'width:80px';
-  $gamenamew = 'width:50px';
-  $mediaw='width:40px';
+  $datew = 'max-width:60px';
+  $timew = 'max-width:40px';
+  $fieldw = 'max-width:60px';
+  $teamw = 'max-width:120px';
+  $againstmarkw = 'max-width:5px';
+  $seriesw = 'max-width:80px';
+  $poolw = 'max-width:130px';
+  $scoresw = 'max-width:15px';
+  $infow = 'max-width:80px';
+  $gamenamew = 'max-width:50px';
+  $mediaw='max-width:40px';
 
   $ret = "<tr style='width:100%'>\n";
   
