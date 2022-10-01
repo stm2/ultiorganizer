@@ -730,14 +730,11 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
 
   endTable($leftmenu);
 
-  $leftmenu = 0;
   if ($_SESSION['uid'] != 'anonymous') {
+    $leftmenu = 0;
     startTable($leftmenu, '');
-    // echo "<table class='leftmenulinks'>\n";
-    // echo "<tr><td>\n";
     echo "<a class='subnav' href='?view=admin/help'>&raquo; " . utf8entities(_("Helps")) . "</a>\n";
-    // echo "</td></tr>\n";
-    // echo "</table>\n";
+    echo "<a class='subnav' href='?view=user/userinfo'>&raquo; " . utf8entities(_("Missing menu?")) . "</a>\n";
     endTable($leftmenu);
   }
 
