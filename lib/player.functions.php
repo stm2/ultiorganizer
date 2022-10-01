@@ -38,7 +38,7 @@ function SetPlayer($playerId, $number, $fname, $lname, $accrId, $profileId) {
  */
 function CreatePlayerProfile($playerId) {
   $playerInfo = PlayerInfo($playerId);
-  if (hasEditPlayersRight($playerInfo['team'])) {
+  if (hasEditPlayersRight($playerInfo['team']) && !empty($playerInfo)) {
 
     $query = sprintf("INSERT INTO uo_player_profile (firstname,lastname,accreditation_id,num) VALUES
 				('%s','%s','%s','%s')",
