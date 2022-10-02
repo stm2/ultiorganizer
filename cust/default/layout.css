@@ -85,7 +85,7 @@ div.hamburger_inner {
     width: 1.5em;
     height: 0;
     -webkit-box-shadow: .05em .3em .05em .05em #69737d,.05em .9em .05em .05em #69737d,.05em 1.5em .05em .05em #69737d;
-    box-shadow: 0 .3em 0 .05em #69737d,0 .9em 0 .05em #69737d,0 1.5em 0 .05em #69737d;
+    box-shadow: 0 .3em 0 .1em #69737d,0 .9em 0 .1em #69737d,0 1.5em 0 .1em #69737d;
 }
 
 .menu_left {
@@ -540,72 +540,57 @@ ul.timelist li {
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
-/* ranking */
-table.ranking {
+/* poll */
+table.poll_options td {
+  max-width: 15em;
+}
+
+table.poll_vote {
   margin: 0px;
 }
 
-table.ranking * td.score {
+table.poll_vote td.score {
   text-align: center;
 }
 
-table.ranking * td.score,th.score {
+table.poll_vote td.score, table.poll_vote th.score {
   text-align: center;
-  padding: 1px 5px 1px 5px;
 }
 
-table.ranking * td.details,th.details {
-  padding: 1px 5px 5px 5px;
-}
-
-td.ranking_column {
-  vertical-align: top;
-  padding: 0px;
-  font-size: .8rem;
-}
-
-ul.ranking, ol.ranking {
-  font-size: .8rem;
-  position: relative;
-  width: 100%;
-  background-color: var(--draglistcolor, #f7f7f7);
-  border: 1px solid var(--softbordercolor, #464646);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-ul.ranking li, ol.ranking li {
-  margin: 0px;
-  cursor: move;
-  text-align: center;
-  vertical-align: middle;
-  background-color: var(--draglistitemcolor, #d1e6ec);
-  border: 1px solid var(--draglistbordercolor, #7ea6b2);
-}
-
-ul.ranking, ol.ranking {
-  font-size: .8rem;
-  position: relative;
-  width: 100%;
-  background-color: var(--draglistcolor, #f7f7f7);
-  border: 1px solid var(--softbordercolor, #464646);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-li.rank_item {
-  background-color: var(--scheduleitemcolor, #aaaaaa);
-  border: 1px solid var(--draglistbordercolor, #7ea6b2);
+table.ranking td.details {
+  max-width: 20em;
 }
 
 span.rank_item_name {
   font-weight: bold;
 }
 
-span.rank_item_name {
+span.rank_item_mentor {
   font-style: italic;
+}
+
+table.ranking td {
+  min-width: 1em;
+}
+
+table.ranking th {
+  min-width: 1em;
+}
+
+table.ranking th.sorter {
+  text-decoration: underline;
+}
+
+table.ranking td.sorter {
+  font-weight: bold;
+}
+
+table.ranking, table.ranking + form {
+  margin-bottom: 1em;
+}
+
+.poll_description {
+  margin-bottom: 1em;
 }
 
 .radioselect * {

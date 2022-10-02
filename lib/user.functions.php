@@ -627,11 +627,11 @@ function hasEditSeasonSeriesRight($season) {
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
 }
 
-function hasEditSeriesRight($series) {
-  $season = SeriesSeasonId($series);
+function hasEditSeriesRight($seriesId) {
+  $season = SeriesSeasonId($seriesId);
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
-    isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]);
+    isset($_SESSION['userproperties']['userrole']['seriesadmin'][$seriesId]);
 }
 
 function hasEditPlacesRight($season) {

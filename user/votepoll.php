@@ -2,28 +2,32 @@
 include_once $include_prefix . 'lib/series.functions.php';
 include_once $include_prefix . 'lib/poll.functions.php';
 
-function compareTeams($t1, $t2) {
-  global $ranks;
+function compareOptions($t1, $t2) {
   global $info;
 
-  $r1 = $info['rank'][$t1['pt_id']];
-  $r2 = $info['rank'][$t2['pt_id']];
+  $r1 = $info['rank'][$t1['option_id']];
+  $r2 = $info['rank'][$t2['option_id']];
   return $r2 - $r1;
 }
 
-if (empty($_GET['season']) || empty($_GET['poll'])) {
-  die(_("Season and poll mandatory"));
+if (empty($_GET['series']) || empty($_GET['poll'])) {
+  die(_("Series and poll mandatory"));
 }
-$season = $_GET['season'];
+$seriesId = $_GET['series'];
 $pollId = $_GET['poll'];
 
 $poll = PollInfo($pollId);
+
+if ($seriesId != $poll['series_id'])
+  die("Invalid series and poll");
+
 $series = SeriesInfo($poll['series_id']);
 $info = array();
 
 $title = _("Vote") . ": " . utf8entities($series['name']);
 $html = "";
 $error = "";
+$feedback = "";
 
 $name = "";
 
@@ -39,30 +43,27 @@ if (isset($_SESSION['uid'])) {
   $user = "anonymous";
 }
 
-print_r($_POST);
-print_r($name);
-
-if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
+if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
   $html .= "<h2>$title</h2>";
   $html .= "<p>" . _("You cannot vote for this poll") . "</p>";
 } else if (empty($name)) {
   $html .= "<h2>$title</h2>";
-  $html .= "<form method='post' action='?view=user/votepoll&season=$season&poll=$pollId'>";
+  $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
   $html .= "<p>" . _("Enter your name (public)") . ": <input class='input' type='text' name='name'/></p>\n";
   $html .= "<input id='doname' class='button' name='doname' type='submit' value='" . _("Vote") . "'/></form>\n";
 } else {
-  $teams = PollTeams($pollId);
+  $options = PollOptions($pollId);
 
   if (!empty($_POST['vote'])) {
     $info['poll_id'] = $pollId;
     $info['name'] = $name;
     $info['rank'] = array();
-    foreach ($teams as $team) {
-      $teamId = $team['pt_id'];
-      if (!isset($_POST["rank$teamId"])) {
-        $error .= sprintf(_("Missing vote for %s"), $team['name']);
+    foreach ($options as $option) {
+      $optionId = $option['option_id'];
+      if (!isset($_POST["rank$optionId"])) {
+        $error .= sprintf(_("Missing vote for %s"), $option['name']);
       } else {
-        $info['rank'][$teamId] = $_POST["rank$teamId"];
+        $info['rank'][$optionId] = (int) $_POST["rank$optionId"];
       }
     }
 
@@ -70,7 +71,7 @@ if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
     $votePassword = empty($_POST['votepassword']) ? null : $_POST['votepassword'];
 
     if (!empty($oldPassword) && $votePassword != $oldPassword) {
-      if (empty($_POST['override']) || !hasEditSeriesRight($series)) {
+      if (empty($_POST['override']) || !hasEditSeriesRight($seriesId)) {
         $error .= _("Wrong password");
       }
     }
@@ -81,48 +82,50 @@ if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
     $info['user_id'] = $user == 'anonymous' ? -1 : UserId($user);
 
     if (empty($error)) {
-      InsertVote($pollId, $user, $name, $votePassword, $info['rank']);
+      InsertVote($pollId, $info['user_id'], $name, $votePassword, $info['rank']);
+      $feedback .= _("Vote has been saved");
     }
   } else if (!empty($_POST['delete'])) {
     $oldPassword = VotePassword($pollId, $name);
     $votePassword = empty($_POST['votepassword']) ? null : $_POST['votepassword'];
-    
+
     if (!empty($oldPassword) && $votePassword != $oldPassword) {
       $error .= _("Wrong password");
     }
     if (empty($error)) {
       DeleteVote($pollId, UserId($user), $name, $votePassword);
+      $feedback .= _("Vote has been deleted.");
     }
-    $info['rank'] = PollRanks($pollId, $name, $teams);
-    foreach ($teams as $team) {
-      if ($info['rank'][$team['pt_id']] === null) {
-        $info['rank'][$team['pt_id']] = ""; // random_int(1, 2 * count($team));
+    $info['rank'] = PollRanks($pollId, $name, $options);
+    foreach ($options as $option) {
+      if ($info['rank'][$option['option_id']] === null) {
+        $info['rank'][$option['option_id']] = ""; // random_int(1, 2 * count($option));
       }
     }
   } else {
     $oldPassword = VotePassword($pollId, $name);
-    $info['rank'] = PollRanks($pollId, $name, $teams);
-    foreach ($teams as $team) {
-      if ($info['rank'][$team['pt_id']] === null) {
-        $info['rank'][$team['pt_id']] = ""; // random_int(1, 2 * count($team));
+    $info['rank'] = PollRanks($pollId, $name, $options);
+    foreach ($options as $option) {
+      if ($info['rank'][$option['option_id']] === null) {
+        $info['rank'][$option['option_id']] = ""; // random_int(1, 2 * count($option));
       }
     }
   }
 
-  // $error .= "p" . print_r($_POST, true);
-  // $error .= "i" . print_r($info, true);
-
   if (!empty($error))
     $html .= "<div class='warning'>" . _("Error") . ": $error</div>";
 
+  if (!empty($feedback))
+    $html .= "<div class='warning'>" . $feedback . "</div>";
+
   $html .= "<h2>$title</h2>\n";
   if (!empty($poll['description'])) {
-    $html .= "<div id='series_description'><p>" . $poll['description'] . "</p></div>";
+    $html .= "<div id='poll_description'><p>" . $poll['description'] . "</p></div>";
   }
 
-  $html .= "<form method='post' action='?view=user/votepoll&season=$season&poll=$pollId'>";
+  $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
 
-  if (hasEditSeriesRight($series)) {
+  if (hasEditSeriesRight($seriesId)) {
     $html .= "<table>";
     $html .= "<tr><td class='infocell'>" . _("Name") . "</td>";
     $html .= "<td><input class='input' type='text' name='name' value='$name'/></td></tr></table>\n";
@@ -130,41 +133,45 @@ if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
     $html .= "<input type='hidden' name='name' value='$name'/>";
   }
 
-  $html .= "<table class='ranking'><tr><td class='ranking_column'><div class='worklist'><table class='ranking'><tbody id='ranking'>";
+  $html .= "<table class='poll_vote'><tbody id='poll_vote'>";
 
   $maxl = 60;
-  $rank = 0;
-  $max = 5 * count($teams);
+  $min = 0;
+  $max = Math . max(2 * count($options), 100);
 
-  mergesort($teams, 'compareTeams');
+  mergesort($options, 'compareOptions');
 
-  foreach ($teams as $team) {
-    $teamId = $team['pt_id'];
-    $rank++;
-    $rank = $info['rank'][$teamId];
-    $html .= "<tr class='rank_item' id='rank_item$teamId'><td>";
-    $html .= "<span class='rank_item_name'>" . utf8entities($team['name']) . "</span>";
-    $html .= " <span class='rank_item_mentor'>" . utf8entities($team['mentor']) . "</span><br />";
+  foreach ($options as $option) {
+    $optionId = $option['option_id'];
+    $rank = $info['rank'][$optionId];
+    if (empty($rank))
+      $rank = 0;
+    $html .= "<tr class='rank_item' id='rank_item$optionId'><td>";
+    $html .= "<span class='rank_item_name'>" . utf8entities($option['name']) . "</span>";
+    $html .= " <span class='rank_item_mentor'>" . utf8entities($option['mentor']) . "</span><br />";
 
-    $html .= "<span class='rank_item_description'>";
-    if (strlen($team['description']) > $maxl)
-      $html .= utf8entities(substr($team['description'], 0, $maxl)) . "...</span>";
-    else
-      $html .= utf8entities($team['description']) . "</span>";
-    $html .= " <a href='?view=user/addpollteam&pt_id=$teamId' rel='noopener' target='_blank'>" . _("Details") . "</a>";
+    if (!empty($option['description'])) {
+      $html .= "<span class='rank_item_description'>";
+      if (strlen($option['description']) > $maxl)
+        $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</span>";
+      else
+        $html .= utf8entities($option['description']) . "</span>";
+    }
+    $html .= " <a href='?view=user/addpolloption&series=$seriesId&option_id=$optionId' rel='noopener' target='_blank'>" .
+      _("Details") . "</a>";
 
-    $html .= " </td><td><input style='text-align:right;' class='input' type='number' size='2' maxlength='3' min='-1' max='$max' id='rank$teamId' name='rank$teamId'";
-    $html .= "  onchange='changeRank(this, $rank, $teamId); this.oldvalue = this.value;'";
+    $html .= " </td><td><input style='text-align:right;' class='input' type='number' size='2' maxlength='3' min='$min' max='$max' id='rank$optionId' name='rank$optionId'";
+    $html .= "  onchange='changeRank(this, \"$rank\", \"$optionId\"); this.oldvalue = this.value;'";
     $html .= "  value='" . $rank . "'/>\n";
 
     $html .= '</td></tr>';
   }
 
-  $html .= "</tbody></table></div></td></tr></table>\n";
+  $html .= "</tbody></table>\n";
   if ($user == 'anonymous' || !empty($oldPassword)) {
     $html .= "<p>" . sprintf(_("Enter a password for %s's vote (needed if you change your vote later)"), $name) .
       ": <input class='input' type='password' name='votepassword' value='" . utf8entities($votePassword) . "'/>&nbsp;\n";
-    if (hasEditSeriesRight($series)) {
+    if (hasEditSeriesRight($seriesId)) {
       $html .= "<input class='input' type='checkbox' name='override'/>" . _("Override") . "</p>";
     }
   }
@@ -184,9 +191,9 @@ if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
    return elm;
   }
 
-  function changeRank(elem, original, teamId){
+  function changeRank(elem, original, optionId){
     if (elem.oldvalue == null) elem.oldvalue = original;
-    var list = document.getElementById('ranking');
+    var list = document.getElementById('poll_vote');
     var items = list.childNodes;
     var itemsArr = [];
     for (var i in items) {
@@ -202,20 +209,14 @@ if (!CanVote($user, $name, $pollId) && !isSeasonAdmin($season)) {
       var idB = b.id.substring(9); // rank_itemID
       var rankB = document.getElementById('rank' + idB);
       var vB = parseInt(rankB.value);
-      /*if (vA == vB && a != b) {
-        if (teamId == idA)
-          return vA > parseInt(rankA.oldvalue) ? -1 : 1;
-        if (teamId == idB)
-          return vB > parseInt(rankB.oldvalue) ? 1 : -1;
-      }*/
+      if (!isFinite(vA)) vA = 0;
+      if (!isFinite(vB)) vB = 0;
       return vB - vA;
     });
 
     for (i = 0; i < itemsArr.length; ++i) {
       var id = itemsArr[i].id.substring(9); // rank_itemID
       var rank = document.getElementById('rank' + id)
-      // rank.value = i + 1;
-      // rank.oldvalue = i + 1;
       rank.oldvalue = rank.value; 
       list.appendChild(itemsArr[i]);
     }

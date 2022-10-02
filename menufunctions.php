@@ -788,10 +788,10 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     $pollSeasons = PollSeasons();
     if (count($pollSeasons) > 0) {
       echo "<table class='leftmenulinks'>\n";
-      echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Team polls")) . "</th></tr>\n";
+      echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Polls")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($pollSeasons as $spoll) {
-        echo "<a class='subnav' href='?view=user/teampolls&amp;season=" . $spoll['season_id'] . "'>&raquo; " .
+        echo "<a class='subnav' href='?view=user/polls&amp;season=" . $spoll['season_id'] . "'>&raquo; " .
           utf8entities(U_($spoll['name'])) . "</a>\n";
       }
       echo "</td></tr>\n";
@@ -998,12 +998,12 @@ function getEditSeasonLinks() {
       if (isSeasonAdmin($season)) {
         $links['?view=admin/seasonadmin&amp;season=' . $season] = _("Event");
         $links['?view=admin/seasonseries&amp;season=' . $season] = _("Divisions");
-        $links['?view=admin/seasonpolls&amp;season=' . $season] = _("Polls");
         $links['?view=admin/seasonteams&amp;season=' . $season] = _("Teams");
         $links['?view=admin/seasonpools&amp;season=' . $season] = _("Pools");
         $links['?view=admin/reservations&amp;season=' . $season] = _("Scheduling");
         $links['?view=admin/seasongames&amp;season=' . $season] = _("Games");
         $links['?view=admin/seasonstandings&amp;season=' . $season] = _("Rankings");
+        $links['?view=admin/seasonpolls&amp;season=' . $season] = _("Polls");
         $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
         $respgamesset[$season] = "set";
         $deleteset[$season] = "set";

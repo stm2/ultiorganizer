@@ -2,7 +2,7 @@
 include_once $include_prefix . 'lib/debug.functions.php';
 
 function PollStatuses() {
-  return array(0 => _("no poll"), 2 => _("team entry"), 4 => _("voting"), 6 => _("closed"));
+  return array(0 => _("no poll"), 2 => _("option entry"), 4 => _("voting"), 6 => _("closed"));
 }
 
 function HasPolls($seasonId) {
@@ -16,9 +16,18 @@ function HasPolls($seasonId) {
 }
 
 function PollInfo($pollId) {
-  $query = sprintf("SELECT * FROM uo_team_poll
+  $query = sprintf("SELECT * FROM uo_poll
                     WHERE poll_id=%d", (int) $pollId);
   return DBQueryToRow($query);
+}
+
+function CanSuggest($user, $name, $pollId) {
+  $info = PollInfo($pollId);
+  $status = 0;
+  if (!empty($info['status']))
+    $status = $info['status'];
+
+  return $status == 2; // || ($status > 0 && isSuperAdmin());
 }
 
 function CanVote($user, $name, $pollId) {
@@ -45,7 +54,7 @@ function HasResults($pollId) {
 function PollSeasons() {
   $query = sprintf(
     "SELECT sn.season_id, sn.name
-    FROM uo_season sn, uo_series sr, uo_team_poll pl
+    FROM uo_season sn, uo_series sr, uo_poll pl
     WHERE sn.season_id = sr.season AND pl.series_id = sr.series_id AND pl.status > 0
     GROUP BY sn.season_id
     ORDER BY starttime DESC");
@@ -55,7 +64,7 @@ function PollSeasons() {
 function SeriesPoll($seriesId) {
   $query = sprintf("
 		SELECT *
-		FROM uo_team_poll
+		FROM uo_poll
 		WHERE series_id=%d", (int) $seriesId);
 
   return DBQueryToRow($query);
@@ -64,7 +73,7 @@ function SeriesPoll($seriesId) {
 function AddPoll($seriesId, $seasonId, $params) {
   if (hasEditSeasonSeriesRight($seasonId)) {
     $query = sprintf("
-               INSERT INTO uo_team_poll
+               INSERT INTO uo_poll
                (series_id, password, description, status)
                VALUES (%d, '%s', '%s', 2)", (int) $seriesId, mysql_adapt_real_escape_string($params['password']),
       mysql_adapt_real_escape_string($params['description']));
@@ -76,7 +85,7 @@ function AddPoll($seriesId, $seasonId, $params) {
 function SetPoll($id, $seriesId, $seasonId, $params) {
   if (hasEditSeasonSeriesRight($seasonId)) {
     $query = sprintf("
-               UPDATE uo_team_poll SET password='%s', description='%s', status = %d
+               UPDATE uo_poll SET password='%s', description='%s', status = %d
                WHERE poll_id = %d", mysql_adapt_real_escape_string($params['password']),
       mysql_adapt_real_escape_string($params['description']), (int) $params['status'], (int) $id);
     return DBQuery($query);
@@ -84,27 +93,27 @@ function SetPoll($id, $seriesId, $seasonId, $params) {
     die("Insufficient rights to edit series");
 }
 
-function PollTeams($teamPollId) {
+function PollOptions($pollId) {
   $query = sprintf("
 		SELECT *
-		FROM uo_poll_team
-		WHERE poll_id=%d", (int) $teamPollId);
+		FROM uo_poll_option
+		WHERE poll_id=%d", (int) $pollId);
 
   return DBQueryToArray($query);
 }
 
-function PollTeam($teamId) {
+function PollOption($optionId) {
   $query = sprintf("
 		SELECT *
-		FROM uo_poll_team
-		WHERE pt_id=%d", (int) $teamId);
+		FROM uo_poll_option
+		WHERE option_id=%d", (int) $optionId);
 
   return DBQueryToRow($query);
 }
 
-function AddPollTeam($params) {
+function AddPollOption($params) {
   $query = sprintf(
-    "INSERT INTO uo_poll_team
+    "INSERT INTO uo_poll_option
       (poll_id, user_id, name, mentor, description, status )
       VALUES (%d, %d, '%s', '%s', '%s', %d)", (int) $params['poll_id'], (int) $params['user_id'],
     mysql_adapt_real_escape_string($params['name']), mysql_adapt_real_escape_string($params['mentor']),
@@ -112,19 +121,32 @@ function AddPollTeam($params) {
   return DBQueryInsert($query);
 }
 
-function SetPollTeam($ptId, $params) {
-  $query = sprintf("UPDATE uo_poll_team SET
+function SetPollOption($ptId, $params) {
+  $query = sprintf(
+    "UPDATE uo_poll_option SET
       user_id='%d', name='%s', mentor='%s', description='%s'
-      WHERE pt_id=%d", (int) $params['user_id'], mysql_adapt_real_escape_string($params['name']),
+      WHERE option_id=%d", (int) $params['user_id'], mysql_adapt_real_escape_string($params['name']),
     mysql_adapt_real_escape_string($params['mentor']), mysql_adapt_real_escape_string($params['description']),
     (int) $ptId);
   return DBQuery($query);
 }
 
-function HasPollTeam($teamName) {
+function DeletePollOption($ptId) {
+  $query = sprintf("DELETE FROM uo_poll_option
+     WHERE option_id='%d'", (int) ($ptId));
+  $ret = DBQuery($query);
+  if ($ret !== -1) {
+    $query = sprintf("DELETE FROM uo_poll_vote
+     WHERE option_id='%d'", (int) ($ptId));
+    return DBQuery($query);
+  }
+  return -1;
+}
+
+function HasPollOption($optionName) {
   $query = sprintf("SELECT count(*)
-    FROM uo_poll_team
-    WHERE name='%s'", mysql_adapt_real_escape_string($teamName));
+    FROM uo_poll_option
+    WHERE name='%s'", mysql_adapt_real_escape_string($optionName));
 
   return DBQueryToValue($query) > 0;
 }
@@ -153,20 +175,26 @@ function VoteName($poll, $userId) {
   return $val;
 }
 
-function PollRanks($poll, $name, $teams) {
-  $query = sprintf("SELECT team_id, score
+function PollVoters($poll) {
+  $query = sprintf("SELECT count(distinct name) as voters FROM uo_poll_vote WHERE poll_id='%d'", (int) $poll);
+
+  return DBQueryToValue($query);
+}
+
+function PollRanks($poll, $name, $options) {
+  $query = sprintf("SELECT option_id, score
     FROM uo_poll_vote
     WHERE poll_id='%d' AND name='%s'", (int) $poll, mysql_adapt_real_escape_string($name));
 
   $result = mysql_adapt_query($query);
   $votes = array();
   while ($row = mysqli_fetch_assoc($result)) {
-    $votes[$row['team_id']] = $row['score'];
+    $votes[$row['option_id']] = $row['score'];
   }
 
   $ranks = array();
-  foreach ($teams as $team) {
-    $ranks[$team['pt_id']] = $votes[$team['pt_id']];
+  foreach ($options as $option) {
+    $ranks[$option['option_id']] = $votes[$option['option_id']];
   }
 
   return $ranks;
@@ -180,12 +208,12 @@ function InsertVote($poll, $user, $name, $password, $ranks) {
 
   DBQuery($query);
 
-  foreach ($ranks as $team => $rank) {
+  foreach ($ranks as $option => $rank) {
     $query = sprintf(
       "INSERT INTO uo_poll_vote
-        (poll_id, user_id, name, password, team_id, score)
+        (poll_id, user_id, name, password, option_id, score)
         VALUES (%d, %d, '%s', '%s', %d, %d)", intval($poll), intval($user), mysql_adapt_real_escape_string($name),
-      mysql_adapt_real_escape_string($password), (int) ($team), (int) $rank, (int) $rank);
+      mysql_adapt_real_escape_string($password), (int) ($option), (int) $rank, (int) $rank);
     $res = DBQueryInsert($query);
   }
   return $res;
@@ -199,66 +227,82 @@ function DeleteVote($pollId, $userId, $name, $votePassword) {
 }
 
 /**
- * Converts an array into a map by team id.
+ * Converts an array into a map by option id.
  */
-function mapByTeam($array, $column = '') {
+function mapByOption($array, $column = '') {
   $map = array();
   foreach ($array as $row) {
-    $map[$row['team_id']] = (float) (empty($column) ? $row : $row[$column]);
+    $map[$row['option_id']] = (float) (empty($column) ? $row : $row[$column]);
   }
   return $map;
 }
 
 /**
- * Ranks teams by sum of (unmodified) scores.
+ * Returns the number of voters for each option.
+ *
+ * @param int $pollId
+ * @return number[]
+ */
+function PollVotesRanking($pollId) {
+  $query = sprintf(
+    "SELECT v1.option_id, COUNT(*) AS `score` FROM uo_poll_vote v1
+     WHERE `v1`.`poll_id` = %d
+     GROUP BY v1.option_id", (int) $pollId);
+
+  return mapByOption(DBQueryToArray($query), 'score');
+}
+
+/**
+ * Ranks options by sum of (unmodified) scores.
  *
  * @param int $pollId
  * @return
  */
 function PollSumRanking($pollId) {
   $query = sprintf(
-    "SELECT `team_id`, SUM(`vote`.`score`) AS `score`
+    "SELECT `option_id`, SUM(`vote`.`score`) AS `score`
     FROM `uo_poll_vote` `vote`
     WHERE `vote`.`poll_id` = '%d'
-    GROUP BY `team_id`
+    GROUP BY `option_id`
     ORDER BY `score` DESC", (int) $pollId);
-  return mapByTeam(DBQueryToArray($query), 'score');
+  return mapByOption(DBQueryToArray($query), 'score');
 }
 
 /**
- * Ranks teams by average of scores.
+ * Ranks options by average of scores.
  *
  * @param int $pollId
  * @return
  */
 function PollRangeRanking($pollId) {
   $query = sprintf(
-    "SELECT `team_id`, AVG(`vote`.`score`) AS `score`
+    "SELECT `option_id`, AVG(`vote`.`score`) AS `score`
     FROM `uo_poll_vote` `vote`
     WHERE `vote`.`poll_id` = '%d' AND `vote`.`score` > 0
-    GROUP BY `team_id`
+    GROUP BY `option_id`
     ORDER BY `score` DESC", (int) $pollId);
-  return mapByTeam(DBQueryToArray($query, true), 'score');
+  return mapByOption(DBQueryToArray($query, true), 'score');
 }
 
 /**
- * Ranks teams by average of scores.
+ * Ranks options by average of scores.
  *
  * @param int $pollId
  * @return
  */
 function pollArithmeticRanking($pollId, $normalize = false, $ignoreZero = false, $average = false) {
   $votes = PollVotes($pollId, array('voter'));
-  // $teams = PollTeams($pollId);
+  // $options = PollOptions($pollId);
 
   $count = 0;
   $voter = '';
   $stats = array();
 
   foreach ($votes as $vote) {
-    $result[vote['team_id']] += 1;
     if ($vote['name'] != $voter) {
       if ($count > 0) {
+        if (!isset($max))
+          die('internal logic error');
         $stats[$voter] = array('max' => $max, 'count' => $count);
       }
       $voter = $vote['name'];
@@ -268,7 +312,7 @@ function pollArithmeticRanking($pollId, $normalize = false, $ignoreZero = false,
     }
     $voter = $vote['name'];
     $score = $vote['score'];
-    // $scores[$vote['team_id']] = $score;
+    // $scores[$vote['option_id']] = $score;
     if (!$ignoreZero || $score != 0) {
       if ($score < $min)
         $min = $score;
@@ -281,22 +325,20 @@ function pollArithmeticRanking($pollId, $normalize = false, $ignoreZero = false,
     $stats[$voter] = array('max' => $max, 'count' => $count);
   }
 
-  // var_dump($stats);
-
-  $votes = PollVotes($pollId, array('team'));
+  $votes = PollVotes($pollId, array('option'));
   $result = array();
   $count = 0;
-  $team = null;
+  $option = null;
   foreach ($votes as $vote) {
-    if ($team != $vote['team_id']) {
+    if ($option != $vote['option_id']) {
       if ($count > 0) {
         if ($average)
           $sum /= $count;
-        $result[$team] = $sum;
+        $result[$option] = $sum;
       }
       $sum = 0;
       $count = 0;
-      $team = $vote['team_id'];
+      $option = $vote['option_id'];
     }
     $score = $vote['score'];
     if ($normalize) {
@@ -312,20 +354,20 @@ function pollArithmeticRanking($pollId, $normalize = false, $ignoreZero = false,
   if ($count > 0) {
     if ($average)
       $sum /= $count;
-    $result[$team] = $sum;
+    $result[$option] = $sum;
   }
   return $result;
 }
 
 /**
- * Ranks teams by number of votes who had this team as (a) first preference (highest score).
+ * Ranks options by number of votes who had this option as (a) first preference (highest score).
  *
  * @param int $pollId
  * @return
  */
 function PollFirstPreferenceRanking($pollId) {
   $query = sprintf(
-    "SELECT v1.team_id, COUNT(*) AS `score` FROM uo_poll_vote v1 INNER JOIN
+    "SELECT v1.option_id, COUNT(*) AS `score` FROM uo_poll_vote v1 INNER JOIN
   (SELECT vote.name,  MAX(`vote`.score) AS `score`
     FROM `uo_poll_vote` `vote`
     WHERE `vote`.`poll_id` = %d
@@ -333,30 +375,30 @@ function PollFirstPreferenceRanking($pollId) {
     ORDER BY `score` DESC) max
     ON max.name = v1.name AND max.score = v1.score
     WHERE v1.`poll_id` = %d
-    GROUP BY v1.team_id", (int) $pollId, (int) $pollId);
+    GROUP BY v1.option_id", (int) $pollId, (int) $pollId);
 
-  return mapByTeam(DBQueryToArray($query), 'score');
+  return mapByOption(DBQueryToArray($query), 'score');
 }
 
 /**
- * Ranks teams by number of votes who had this team as (a) first preference (highest score).
+ * Ranks options by number of votes who had this option as (a) first preference (highest score).
  *
  * @param int $pollId
  * @return
  */
 function PollApproveRanking($pollId) {
   $query = sprintf(
-    "SELECT v1.team_id, COUNT(*) AS `score` FROM uo_poll_vote v1 
+    "SELECT v1.option_id, COUNT(*) AS `score` FROM uo_poll_vote v1 
      WHERE `v1`.`poll_id` = %d AND v1.score > 0
-     GROUP BY v1.team_id", (int) $pollId);
+     GROUP BY v1.option_id", (int) $pollId);
 
-  return mapByTeam(DBQueryToArray($query), 'score');
+  return mapByOption(DBQueryToArray($query), 'score');
 }
 
 function getSort($selector) {
   switch ($selector) {
-  case 'team':
-    return "team_id";
+  case 'option':
+    return "option_id";
   case 'voter':
     return "name";
   case 'score':
@@ -381,7 +423,7 @@ function PollVotes($pollId, $sort = array('voter', 'score DESC')) {
     $sortclause = "ORDER BY " . $sortclause;
 
   $query = sprintf(
-    "SELECT vote.team_id, vote.name, score FROM uo_poll_vote vote
+    "SELECT vote.option_id, vote.name, score FROM uo_poll_vote vote
     WHERE `vote`.`poll_id` = %d
     $sortclause", (int) $pollId);
 
@@ -389,16 +431,16 @@ function PollVotes($pollId, $sort = array('voter', 'score DESC')) {
 }
 
 /**
- * Returns the number of voters having a team among the first $position preferences.
+ * Returns the number of voters having a option among the first $position preferences.
  *
  * @param int $pollId
  * @return
  */
 function PollAllPreferences($pollId, $position) {
   $votes = PollVotes($pollId, array('voter', 'score'));
-  $teams = PollTeams($pollId);
-  $count = count($teams);
-  $team = '';
+  $options = PollOptions($pollId);
+  $count = count($options);
+  $option = '';
   $voter = '';
   $score = 0;
   $pref = array();
@@ -407,67 +449,76 @@ function PollAllPreferences($pollId, $position) {
       $voter = $vote['name'];
       $score = 1;
     }
-    $team = $vote['team_id'];
-    if (!isset($pref[$team])) {
-      $pref[$team] = 0;
+    $option = $vote['option_id'];
+    if (!isset($pref[$option])) {
+      $pref[$option] = 0;
     }
 
     // for ($s = $score; $s <= $count; ++$s) {
     if ($position >= $score && $position <= $count) {
-      ++$pref[$team];
+      ++$pref[$option];
     }
     ++$score;
   }
   return $pref;
 }
 
+function copeEvaluate(&$games, $scores, $options) {
+  if (!empty($scores)) {
+    foreach ($options as $t1) {
+      foreach ($options as $t2) {
+        $c1 = isset($scores[$t1]) ? $scores[$t1] : 0;
+        $c2 = isset($scores[$t2]) ? $scores[$t2] : 0;
+        $cc = $c1 - $c2;
+        if ($cc > 0)
+          $games[$t1][$t2] += 2;
+        else if ($cc == 0)
+          $games[$t1][$t2] += 1;
+      }
+    }
+  }
+}
+
 /**
- * Ranks the teams according to their copeland score, which simulates the results of a round-robin tournament where
- * a team wins if the majority of voters prefers it to the opposing team.
+ * Ranks the options according to their copeland score, which simulates the results of a round-robin tournament where
+ * a option wins if the majority of voters prefers it to the opposing option.
  *
  * @param int $pollId
  * @return
  */
 function PollCopelandRanking($pollId) {
   $votes = PollVotes($pollId, array('voter', 'score'));
-  $tt = PollTeams($pollId);
-  $teams = array();
+  $tt = PollOptions($pollId);
+  $options = array();
   foreach ($tt as $t1) {
-    $teams[] = $t1['pt_id'];
+    $options[] = $t1['option_id'];
   }
-  $count = count($teams);
   $games = array();
-  foreach ($teams as $t1) {
+  foreach ($options as $t1) {
 
     $games[$t1] = array();
-    foreach ($teams as $t2) {
+    foreach ($options as $t2) {
       $games[$t1][$t2] = 0;
     }
   }
 
   $voter = '';
+  $scores = array();
   foreach ($votes as $vote) {
     if ($vote['name'] != $voter) {
+      copeEvaluate($games, $scores, $options);
       $voter = $vote['name'];
       $scores = array();
     }
-    $scores[$vote['team_id']] = $vote['score'];
-    if (count($scores) == $count) {
-      foreach ($teams as $t1) {
-        foreach ($teams as $t2) {
-          $cc = $scores[$t1] - $scores[$t2];
-          if ($cc > 0)
-            $games[$t1][$t2] += 2;
-          else if ($cc == 0)
-            $games[$t1][$t2] += 1;
-        }
-      }
-    }
+    $scores[$vote['option_id']] = $vote['score'];
   }
+
+  copeEvaluate($games, $scores, $options);
+
   $scores = array();
-  foreach ($teams as $t1) {
+  foreach ($options as $t1) {
     $score = 0;
-    foreach ($teams as $t2) {
+    foreach ($options as $t2) {
       $score += $games[$t1][$t2];
     }
     $scores[$t1] = $score;
@@ -487,8 +538,8 @@ class BordaDistribution {
 
   var $lastScore;
 
-  function init($votes, $teams) {
-    $this->count = count($teams);
+  function init($votes, $options) {
+    $this->count = count($options);
   }
 
   function points($score, $pos) {
@@ -515,7 +566,7 @@ class GeometricDistribution {
 
   var $lastScore;
 
-  function init($votes, $teams) {
+  function init($votes, $options) {
     //
   }
 
@@ -543,7 +594,7 @@ class HarmonicDistribution {
 
   var $lastScore;
 
-  function init($votes, $teams) {
+  function init($votes, $options) {
     //
   }
 
@@ -567,7 +618,7 @@ class PluralityDistribution {
 
   var $hiScore;
 
-  function init($votes, $teams) {
+  function init($votes, $options) {
     //
   }
 
@@ -584,14 +635,14 @@ class PluralityDistribution {
 
 function positionalRanking($pollId, $distribution) {
   $votes = PollVotes($pollId, array('voter', 'score'));
-  $teams = PollTeams($pollId);
+  $options = PollOptions($pollId);
 
-  $distribution->init($votes, $teams);
+  $distribution->init($votes, $options);
 
   $lastVoter = '';
   $scores = array();
-  foreach ($teams as $team) {
-    $scores[$team['pt_id']] = 0;
+  foreach ($options as $option) {
+    $scores[$option['option_id']] = 0;
   }
   foreach ($votes as $vote) {
     if ($vote['name'] != $lastVoter) {
@@ -600,7 +651,7 @@ function positionalRanking($pollId, $distribution) {
     }
 
     $points = $distribution->points($vote['score'], $pos++);
-    $scores[$vote['team_id']] += $points;
+    $scores[$vote['option_id']] += $points;
   }
 
   asort($scores);
@@ -609,8 +660,8 @@ function positionalRanking($pollId, $distribution) {
 }
 
 /**
- * Ranks the teams according to their copeland score, which simulates the results of a round-robin tournament where
- * a team wins if the majority of voters prefers it to the opposing team.
+ * Ranks the options according to their copeland score, which simulates the results of a round-robin tournament where
+ * a option wins if the majority of voters prefers it to the opposing option.
  *
  * @param int $pollId
  * @return

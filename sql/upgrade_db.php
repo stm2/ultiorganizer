@@ -730,9 +730,9 @@ function upgrade81() {
 }
 
 function upgrade82() {
-  if (!hasTable("uo_team_poll")) {
+  if (!hasTable("uo_poll")) {
     runQuery(
-      "CREATE TABLE `uo_team_poll` (
+      "CREATE TABLE `uo_poll` (
 	`poll_id` int(10) NOT NULL AUTO_INCREMENT,
 	`series_id` int(10) NOT NULL,
      `password` varchar(100) DEFAULT NULL,
@@ -742,17 +742,17 @@ function upgrade82() {
 	INDEX `idx_series` (`series_id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
   }
-  if (!hasTable("uo_poll_team")) {
+  if (!hasTable("uo_poll_option")) {
     runQuery(
-      "CREATE TABLE `uo_poll_team` (
-	`pt_id` int(10) NOT NULL AUTO_INCREMENT,
+      "CREATE TABLE `uo_poll_option` (
+	`option_id` int(10) NOT NULL AUTO_INCREMENT,
 	`poll_id` int(10) NOT NULL,
 	`user_id` int(10) DEFAULT NULL,
      `name` varchar(255) NOT NULL,
      `mentor` varchar(255) DEFAULT NULL,
      `description` varchar(255) DEFAULT NULL,
 	`status` tinyint(1) DEFAULT 0,
-	PRIMARY KEY (`pt_id`),
+	PRIMARY KEY (`option_id`),
 	INDEX `idx_mentor` (`mentor`),
 	INDEX `idx_poll` (`poll_id`),
 	INDEX `idx_user` (`user_id`)
@@ -765,13 +765,13 @@ function upgrade82() {
 	`user_id` int(10) DEFAULT NULL,
      `name` varchar(255) NOT NULL,
      `password` varchar(255) DEFAULT NULL,
-     `team_id` int(10) NOT NULL,
+     `option_id` int(10) NOT NULL,
 	`score` int(3) DEFAULT 0,
-	PRIMARY KEY (`poll_id`, `name`, `team_id`),
+	PRIMARY KEY (`poll_id`, `name`, `option_id`),
 	INDEX `idx_pollid` (`poll_id`),
 	INDEX `idx_userid` (`user_id`),
 	INDEX `idx_name` (`name`),
-	INDEX `idx_teamid` (`team_id`)
+	INDEX `idx_optionid` (`option_id`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci");
   }
 }
