@@ -73,11 +73,11 @@ function confirmLeave(element, confirm, text) {
     }
   else
     window.onbeforeunload = null;
-};
+}
 
 function validTime(field) 
 {
-  field.value=field.value.replace(/[^0-9]/g, '.')
+  field.value=field.value.replace(/[^0-9]/g, '.');
 }
 
 //-->

@@ -1495,7 +1495,7 @@ function ResultsToCsv($season,$separator){
 
 function SpiritTable($gameinfo, $points, $categories, $home, $wide=true) {
   $home = $home?"home":"vis";
-  $html = "<table>\n";
+  $html = "<table class='spirit_table'>\n";
   $html .= "<tr>";
   if ($wide)
     $html .= "<th style='width:70%;text-align: right;'></th>";
@@ -1528,7 +1528,7 @@ function SpiritTable($gameinfo, $points, $categories, $home, $wide=true) {
         else
           $html .= "</td></tr>\n<tr>";
 
-        $html .= "<td><fieldset id='".$home."cat'".$id."_0' data-role='controlgroup' data-type='horizontal' >";
+        $html .= "<td><fieldset id='".$home."cat".$id."_x' data-role='controlgroup' data-type='horizontal' >";
         for($i=$vmin; $i<= $vmax; ++$i){
           if ($i < $cat['min']) {
             // $html .= "<td></td>";

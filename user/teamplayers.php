@@ -223,7 +223,7 @@ if(CUSTOMIZATIONS=="slkl"){
   if(!empty($playerInfo['accreditation_id'])){
       echo "<td class='center' style='white-space: nowrap'>".$playerInfo['accreditation_id']."</td>";
     }else{
-      echo "<td class='center attention'><a id='showAccrId". $player['player_id'] ."' onclick=\"ChgPlayer(".$player['player_id'].");\" href='javascript:checkProfileId(\"". $player['player_id']  . ", " . $teamId ."\");'>". _("Search")."</a></td>\n";
+      echo "<td class='center attention'><a id='showAccrId". $player['player_id'] ."' onclick=\"ChgPlayer(".$player['player_id'].");\" href='javascript:checkProfileId(\"". $player['player_id']  . "\",\"" . $teamId ."\");'>". _("Search")."</a></td>\n";
     }
 
     $query = sprintf("SELECT membership, license, external_type, external_validity FROM uo_license WHERE accreditation_id=%d",(int)$playerInfo['accreditation_id']);
@@ -241,7 +241,7 @@ if(CUSTOMIZATIONS=="slkl"){
      }
     
 }else{
-  echo "<td class='center'><a id='showAccrId". $player['player_id'] ."' onclick=\"ChgPlayer(".$player['player_id'].");\" href='javascript:checkProfileId(\"". $player['player_id'] . ", " . $teamId ."\");'>".$player['profile_id']." </a></td>\n";
+  echo "<td class='center'><a id='showAccrId". $player['player_id'] ."' onclick=\"ChgPlayer(".$player['player_id'].");\" href='javascript:checkProfileId(\"". $player['player_id'] . "\",\"" . $teamId ."\");'>".$player['profile_id']." </a></td>\n";
 }
   if(CanDeletePlayer($player['player_id'])){
     echo "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' name='remove' value='X' alt='X' onclick=\"setId(".$player['player_id'].");\"/></td>";

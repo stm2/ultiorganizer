@@ -182,7 +182,7 @@ if(!count($pools)){
   $html .= "<p>"._("Add pools first")."</p>\n";
 }
 
-$html .= "<h2><a name='Tasks' id='TasksHeading'>" . _("Tasks") . "</a></h2>";
+$html .= "<h2><a name='Tasks' id='Tasks'>" . _("Tasks") . "</a></h2>";
 
 $firstTask = false;
 $missingresults = "";
@@ -224,7 +224,7 @@ if ($firstTask) {
 } else if ($missingresults) {
   $html .= "<p>" . _("Games results missing for") . $missingresults . "</p>";  
 } else {
-  $html .= "<p>" . _("Division completed.") ."</p>";
+  $html .= "<p>" . _("Division completed.") ."</p>\n";
 }
 
 $teamNum = 0;
@@ -242,7 +242,7 @@ foreach ($pools as $spool) {
   
   if ($poolNum>0)
     $html .= "<div class='right pagemenu_container'><a href='#Tasks'>" . _("Go to top") . "</a></div>\n";
-  $html .= "<h2><a name='P" . $poolId . "'>" . utf8entities(U_($poolinfo['name'])) . "</a>
+  $html .= "<h2><a name='P" . $poolId . "' id='P" . $poolId . "'>" . utf8entities(U_($poolinfo['name'])) . "</a>
     <a href='?view=admin/addseasonpools&amp;pool=$poolId'><img class='button' src='images/settings.png' alt='E' title='"._("edit pool")."'/></a></h2>";
   
   $style = "class='admintable'";
@@ -484,10 +484,10 @@ function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId) {
       } else {
         if ($poolinfo['visible'])
           $html .= "<input class='button' type='submit' name='setInvisible' value='" . _("Hide pool") .
-               "' title='". _("Don't show pool in public menus") . " onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
+               "' title='". utf8entities(_("Don't show pool in public menus")) . "' onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
         else
           $html .= "<input class='button' type='submit' name='setVisible' value='" . _("Show pool") .
-               "' title='". _("Show pool in public menus") . " onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
+          "' title='". utf8entities(_("Show pool in public menus")) . "' onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
       }
     }
     $html .= "<a href='?view=admin/serieteams&amp;season=$seasonId&amp;series=". $seriesId ."&amp;pool=". $poolId ."'>". _("Manage moves") ."</a>";

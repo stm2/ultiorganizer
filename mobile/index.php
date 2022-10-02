@@ -1,5 +1,6 @@
 <?php
-include_once 'lib/common.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
+
 $html = "";
 
 if (isset($_POST['login'])) {

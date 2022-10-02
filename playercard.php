@@ -83,7 +83,7 @@ if($profile){
     $html .= "<tr><td class='profileheader'>"._("Position").":</td>";
     $html .= "<td>".utf8entities($profile['position'])."</td></tr>\n";
   }
-  $html .= "</table>";
+  $html .= "</table>\n";
   $html .= "</td></tr>";
 
   if(!empty($profile['story']) && in_array("story",$publicfields)){
@@ -97,13 +97,13 @@ if($profile){
     $achievements = someHTML($profile['achievements']);
     $html .= "<tr><td colspan='2'>".$achievements."</td></tr>\n";
   }
-  $html .= "</table>";
+  $html .= "</table>\n";
 }
 
 $urls = GetUrlList("player", $player['profile_id']);
 if(count($urls)){
   $html .= "<table class='infotable'>";
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Player pages").":</td></tr>";
+  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Player pages").":</td></tr>\n";
   foreach($urls as $url){
     $html .= "<tr>";
     $html .= "<td style='width:18px'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
@@ -114,15 +114,15 @@ if(count($urls)){
       $html .="<a href='". $url['url']."'>". $url['url']."</a>";
     }
     $html .= "</td>";
-    $html .= "</tr>";
+    $html .= "</tr>\n";
   }
-  $html .= "</table>";
+  $html .= "</table>\n";
 }
 
 $urls = GetMediaUrlList("player", $player['profile_id']);
 if(count($urls)){
   $html .= "<table class='infotable'>";
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Photos and Videos").":</td></tr>";
+  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Photos and Videos").":</td></tr>\n";
   foreach($urls as $url){
     $html .= "<tr>";
     $html .= "<td style='width:18px'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
@@ -136,9 +136,9 @@ if(count($urls)){
       $html .=" "._("from")." ". $url['mediaowner'];
     }
     $html .= "</td>";
-    $html .= "</tr>";
+    $html .= "</tr>\n";
   }
-  $html .= "</table>";
+  $html .= "</table>\n";
 }
 
 $games = PlayerSeasonPlayedGames($playerId, $curseason);
@@ -526,7 +526,7 @@ if(ShowDefenseStats()){
 }
 $html .= $html_tmp;
 
-$html .= "<p></p>\n";
+$html .= "<br />\n";
 
 //Current season stats
 

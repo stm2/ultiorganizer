@@ -108,10 +108,10 @@ $html .= "<td><input class='input' maxlength='100' size='50' name='coach' value=
 $html .= "<tr><td class='infocell'>"._("Captain").":</td>";
 $html .= "<td><input class='input' maxlength='100' size='50' name='captain' value='".utf8entities($tp['captain'])."'/></td></tr>\n";
 	
-$html .= "<tr><td class='infocell''>"._("Description").":</td>";
+$html .= "<tr><td class='infocell'>"._("Description").":</td>";
 $html .= "<td><textarea class='input' rows='10' cols='80' name='story'>".utf8entities($tp['story'])."</textarea> </td></tr>\n";
 
-$html .= "<tr><td class='infocell''>"._("Achievements").":</td>";
+$html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
 $html .= "<td><textarea class='input' rows='10' cols='80' name='achievements'>".utf8entities($tp['achievements'])."</textarea> </td></tr>\n";
 
 $html .= "<tr><td class='infocell' colspan='2'>"._("Web pages (homepage, blogs, images, videos)").":</td></tr>";
@@ -164,7 +164,7 @@ $html .= "</table>";
 $html .= "</td></tr>\n";
 
 
-$html .= "<tr><td class='infocell''>"._("Current image").":</td>";
+$html .= "<tr><td class='infocell'>"._("Current image").":</td>";
 if(!empty($tp['profile_image'])){
 	$html .= "<td><a href='".UPLOAD_DIR."teams/$teamId/".$tp['profile_image']."'>";
 	$html .= "<img src='".UPLOAD_DIR."teams/$teamId/thumbs/".$tp['profile_image']."' alt='"._("Profile image")."'/></a></td></tr>";

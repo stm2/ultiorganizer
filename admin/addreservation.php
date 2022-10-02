@@ -193,7 +193,7 @@ $html .= "<table class='formtable'>\n";
 $html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>";
 $html .= "<input type='text' class='input' name='date' id='date' value='".utf8entities(ShortDate($res['date']))."'/>&nbsp;\n";
 $html .= "<button type='button' class='button' id='showcal1'>
-		<img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>\n";
+		<img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>\n";
 $html .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>\n";
 
 $html .= "<tr><td>"._("Start time")." ("._("hh:mm")."):</td><td>";

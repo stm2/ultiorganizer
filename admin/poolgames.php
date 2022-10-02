@@ -25,7 +25,7 @@ pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
 
-$html .= "<h2>".U_(PoolName($poolId))."<h2>";
+$html .= "<h2>".U_(PoolName($poolId))."</h2>";
 
 //process itself on submit
 if(!empty($_POST['remove_x'])) {
@@ -241,7 +241,7 @@ foreach($reservations as $res){
 			$html .= "<h2>".utf8entities($res['reservationgroup'])."</h2>";
 			$tour = $res['reservationgroup'];
 		}
-		$html .= "<table border='0' cellpadding='4px' width='400px'>\n";
+		$html .= "<table border='0'>\n";
 		$html .= "<tr><th colspan='4'>".utf8entities($location['name'])." ";
 		$html .= " ". DefWeekDateFormat($res['starttime']) ." ". DefHourFormat($res['starttime'])."-";
 		$html .= DefHourFormat($res['endtime']) ."</th>";
@@ -285,7 +285,7 @@ foreach($reservations as $res){
 $games = PoolGamesNotScheduled($poolId);
 if(count($games)){
 	$html .= "<h2>"._("No schedule")."</h2>\n";
-	$html .= "<table border='0' cellpadding='4px' width='400px'>\n";
+	$html .= "<table border='0'>\n";
 
 	foreach($games as $row){
 		++$totalgames;
@@ -321,7 +321,7 @@ if(count($games)){
 $games = PoolMovedGames($poolId);
 if(count($games)){
 	$html .= "<h2>"._("Moved games")."</h2>\n";
-	$html .= "<table border='0' cellpadding='2px' width='400px'>\n";
+	$html .= "<table border='0'>\n";
 	foreach($games as $row){
 		++$totalgames;
 		$html .= "<tr>";
@@ -354,7 +354,7 @@ if(!$poolInfo['played']){
 	}
 	$html .="/></p>";
 	
-	$html .= "<table border='0' cellpadding='4px' width='400px'>\n";
+	$html .= "<table border='0'>\n";
 	$html .= "<tr>";
 	$html .= "<td style='width:30%'><select class='dropdown' style='width:100%' name='newhome'>";
 	$pseudoteams = false;

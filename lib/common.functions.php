@@ -1424,9 +1424,9 @@ function getHiddenInput($id = 'hiddenDeleteId') {
 
 function mailto_address($email, $name = null) {
   if (!is_null($name))
-    return utf8entities($name) . "<" . utf8entities($email) . ">";
+    return utf8entities(rawurlencode($name . "<" . $email . ">"));
   else
-    return utf8entities($email);
+    return utf8entities(rawurlencode($email));
 }
 
 function mailto_encode($email, $nameOrmailtag = null, $nametag = null, $subject = null) {
@@ -1450,7 +1450,7 @@ function mailto_encode($email, $nameOrmailtag = null, $nametag = null, $subject 
 }
 
 function mailto_link($email, $name = null, $text = null, $subject = null) {
-  $encode = (mailto_encode($email, $name, null, $subject));
+  $encode = (mailto_encode($email, $name, null, $subject)); // "mailto:".utf8entities(rawurlencode("Steffen Mecke<stm@gmx.de>"))
   $text = is_null($text) ? is_null($name) ? utf8entities($email) : utf8entities($name) : utf8entities($text);
   return "<a href='$encode'>$text</a>";
 }

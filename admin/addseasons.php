@@ -270,8 +270,9 @@ if(empty($seasonId)){
 }
 
 $html .= "<table class='formtable'>";
-$html .= "<tr><td class='infocell'>"._("Event id").": </td><td><input class='input' size='30'name='season_id' $disabled value='".utf8entities($sp['season_id'])."'/></td></tr>";
-$html .= "<tr rowspan='2'><td class='infocell'>"._("Name").": </td>
+$html .= "<tr><td class='infocell'>"._("Event id").": </td>\n";
+$html .= "<td><input class='input' size='30'name='season_id' $disabled value='".utf8entities($sp['season_id'])."'></input></td></tr>\n";
+$html .= "<tr><td class='infocell'>"._("Name").": </td>
       <td>".TranslatedField2("seasonname", $sp['name'], '')."</td>
     </tr>\n";
 $html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
@@ -345,10 +346,10 @@ $html .= "</select>\n";
 $html .= "</td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Starts")." ("._("dd.mm.yyyy")."): </td><td><input class='input' size='12' maxlength='10' id='seasonstarttime' name='seasonstarttime' value='".ShortDate($sp['starttime'])."'/>&nbsp;&nbsp;";
-$html .= "<button type='button' class='button' id='showcal1'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>";
+$html .= "<button type='button' class='button' id='showcal1'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>";
 $html .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Ends")." ("._("dd.mm.yyyy")."): </td><td><input class='input' size='12' maxlength='10' id='seasonendtime' name='seasonendtime' value='".ShortDate($sp['endtime'])."'/>&nbsp;&nbsp;";
-$html .= "<button type='button' class='button' id='showcal2'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>";
+$html .= "<button type='button' class='button' id='showcal2'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>";
 $html .= "<tr><td></td><td><div id='calContainer2'></div></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Open for enrollment").": </td><td><input class='input' type='checkbox' name='enrollopen' ";
 if ($sp['enrollopen']) {
@@ -357,7 +358,7 @@ if ($sp['enrollopen']) {
 $html .= "/></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Enrolling ends")."<br/>("._("only informational")."): </td>";
 $html .= "<td><input class='input' size='12' maxlength='10' id='enrollendtime' name='enrollendtime'  value='".ShortDate($sp['enroll_deadline'])."'/>&nbsp;&nbsp;";
-$html .= "<button type='button' class='button' id='showcal3'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button></td></tr>";
+$html .= "<button type='button' class='button' id='showcal3'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>";
 $html .= "<tr><td></td><td><div id='calContainer3'></div></td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Shown in main menu").": </td><td><input class='input' type='checkbox' name='iscurrent' ";

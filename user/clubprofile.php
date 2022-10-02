@@ -31,7 +31,12 @@ $backurl = utf8entities($_SERVER['HTTP_REFERER']);
 else
 $backurl = "?view=user/teamplayers&team=$teamId";
 
+if ($clubId <= 0) {
+  $title = _("Club");
+  $html .= "<p>" . _("This team has no club") . "</p>";
 
+  showPage($title, $html);
+}
 
 //club profile
 $op = array(
@@ -146,13 +151,13 @@ $op = array(
 	$html .= "<td><input class='input' maxlength='4' size='5' name='founded' value='".utf8entities($op['founded'])."'/></td></tr>\n";
 
 
-	$html .= "<tr><td class='infocell''>"._("Contacts").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Contacts").":</td>";
 	$html .= "<td><textarea class='input' rows='10' cols='50' name='contacts'>".utf8entities($op['contacts'])."</textarea> </td></tr>\n";
 
-	$html .= "<tr><td class='infocell''>"._("Description").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Description").":</td>";
 	$html .= "<td><textarea class='input' rows='10' cols='80' name='story'>".utf8entities($op['story'])."</textarea> </td></tr>\n";
 
-	$html .= "<tr><td class='infocell''>"._("Achievements").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
 	$html .= "<td><textarea class='input' rows='10' cols='80' name='achievements'>".utf8entities($op['achievements'])."</textarea> </td></tr>\n";
 
 	$html .= "<tr><td class='infocell' colspan='2'>"._("Web pages (homepage, blogs, images, videos)").":</td></tr>";
@@ -204,7 +209,7 @@ $op = array(
 	$html .= "</td></tr>\n";
 
 
-	$html .= "<tr><td class='infocell''>"._("Current image").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Current image").":</td>";
 	if(!empty($club['profile_image'])){
 	  $html .= "<td><a href='".UPLOAD_DIR."clubs/$clubId/".$club['profile_image']."'>";
 	  $html .= "<img src='".UPLOAD_DIR."clubs/$clubId/thumbs/".$club['profile_image']."' alt='"._("Profile image")."'/></a></td>";

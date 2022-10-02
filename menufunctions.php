@@ -633,27 +633,30 @@ class LeftMenu {
  
   static toggleMenu(elem) {
      var menu = document.getElementById('left_menu');
-     var show = document.getElementById('show_menu_link');
-     var hide = document.getElementById('hide_menu_link');
-     var toggle = document.getElementById('menu_toggle');
      var hidden=menu.style.display === "none";
+     hidden = menu.offsetParent === null;
      if (!hidden) {
         menu.style.display = "none";
-        // show.style.display = "block";
-        // hide.style.display = "none";
      } else { 
         menu.style.display = "block";
-        // show.style.display = "none";
-        // hide.style.display = "block";
      }
-     show.style.display = "none";
-     hide.style.display = "none";
-     toggle.style.display = "block";
      return false;
+  }
+
+  static init() {
+    LeftMenu.hide(); 
+    LeftMenu.toggle("seriesNav$currentSeries"); 
+    var menu = document.getElementById('left_menu');
+    var show = document.getElementById('show_menu_link');
+    var hide = document.getElementById('hide_menu_link');
+    var toggle = document.getElementById('menu_toggle');
+    show.style.display = "none";
+    hide.style.display = "none";
+    toggle.style.display = "block";
   }
 }
 
-YAHOO.util.Event.onDOMReady(function() { LeftMenu.hide(); LeftMenu.toggle("seriesNav$currentSeries"); LeftMenu.toggleMenu(); LeftMenu.toggleMenu();});
+YAHOO.util.Event.onDOMReady(function() { LeftMenu.init(); });
 //-->
 </script>
 EOG;

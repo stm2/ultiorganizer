@@ -142,7 +142,7 @@ if ($mode == 'search') {
     }
     $savedId = $row['id'];
   }
-  $html .= "</form>\n";
+  $html .= "</table></form>\n";
 } else if ($mode == 'add' || $mode == 'edit') {
   if ($mode == 'add') {
     $location['new'] = 1;

@@ -26,8 +26,9 @@ if(!empty($_POST['save'])) {
     else
       $missing = sprintf(_("Missing score for %s. "), $game_result['hometeamname']);
   }
+
   GameSetSpiritPoints($gameId, $game_result['hometeam'], 1, $points, $categories);
-  
+
   $points = array();
   foreach ($_POST['visvalueId'] as $cat) {
     if (isset($_POST['viscat'.$cat]))
@@ -35,8 +36,9 @@ if(!empty($_POST['save'])) {
     else
       $missing = sprintf(_("Missing score for %s. "), $game_result['visitorteamname']);
   }
+
   GameSetSpiritPoints($gameId,$game_result['visitorteam'],0,$points, $categories);
-  
+
   $game_result = GameResult($gameId);
 }
 

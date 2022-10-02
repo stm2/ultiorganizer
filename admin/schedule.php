@@ -440,7 +440,7 @@ $MINTOP = 30;
 }
 
 echo "<table><tr>";
-echo "<td id='user_actions' padding: 10px'>";
+echo "<td id='user_actions'>";
 echo "<input type='button' id='showButton' value='" . _("Save") . "' /></td>";
 echo "<td class='center'><div id='responseStatus'></div>";
 if (!empty($zeroGames)) {

@@ -222,7 +222,7 @@ $pp = array(
 	$html .= "<td><input class='input' size='50' maxlength='100' name='email' value='".utf8entities($pp['email'])."'/></td>";
 	$html .= "<td class='center'><input type='checkbox' name='public[]' disabled='disabled' value='email'/></td></tr>\n";
 
-	$html .= "<tr><td class='infocell''>"._("Additional information").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Additional information").":</td>";
 	$html .= "<td><textarea class='input' rows='2' cols='70' name='info'>".utf8entities($pp['info'])."</textarea></td>";
 	$html .= "<td class='center'><input type='checkbox' name='public[]' disabled='disabled' value='info'/></td></tr>\n";
 
@@ -295,11 +295,11 @@ $pp = array(
 	$html .= "<td><input class='input' size='50' maxlength='50' name='position' value='".utf8entities($pp['position'])."'/></td>";
 	$html .= privacyselection("position",$publicfields);
 
-	$html .= "<tr><td class='infocell''>"._("Description").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Description").":</td>";
 	$html .= "<td><textarea class='input' rows='10' cols='70' name='story'>".utf8entities($pp['story'])."</textarea> </td>";
 	$html .= privacyselection("story",$publicfields);
 
-	$html .= "<tr><td class='infocell''>"._("Achievements").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
 	$html .= "<td><textarea class='input' rows='10' cols='70' name='achievements'>".utf8entities($pp['achievements'])."</textarea> </td>";
 	$html .= privacyselection("achievements",$publicfields);
 
@@ -354,7 +354,7 @@ $pp = array(
 	$html .= "</td></tr>\n";
 
 
-	$html .= "<tr><td class='infocell''>"._("Current image").":</td>";
+	$html .= "<tr><td class='infocell'>"._("Current image").":</td>";
 	if(!empty($pp['profile_image'])){
 	  $html .= "<td><a href='".UPLOAD_DIR."players/".$player['profile_id']."/".utf8entities($pp['profile_image'])."'>";
 	  $html .= "<img src='".UPLOAD_DIR."players/".$player['profile_id']."/thumbs/".utf8entities($pp['profile_image'])."' alt='"._("Profile image")."'/></a></td>";

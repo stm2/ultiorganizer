@@ -122,12 +122,14 @@ if ($poolinfo['type']==2){
 $moved = PoolIsAllMoved($poolId);
 $moves = count(PoolMovingsToPool($poolId));
 
+$pstart = 0;
 if ($continuation && $SwissOK==-1) {
   echo "<p>Ties detected in previous pool. Swissdraw moves only make sense if there are no ties in the previous pools. ";
   echo "Do you want to automatically resolve these ties?</p>";
-  echo "<p><input class='button' name='ties' type='submit' value='"._("Resolve Ties")."'/>";
+  echo "<p><input class='button' name='ties' type='submit' value='"._("Resolve Ties")."'/>\n";
+  $pstart = 1;
 }elseif($continuation && $SwissOK==-2) {
-  echo "<p>Swissdraw moves cannot be determined, because the previous pool has not been played yet.</p>";
+  echo "<p>Swissdraw moves cannot be determined, because the previous pool has not been played yet.</p>\n";
 }elseif(!$continuation || ($moved && $moves>0)) {
   echo "<h2>"._("Select teams").":</h2>\n";
   echo "<table class='admintable'>\n";
@@ -172,6 +174,7 @@ if ($continuation && $SwissOK==-1) {
 
   echo "</table>";
   echo "<p><input class='button' name='save' type='submit' value='"._("Save")."'/>";
+  $pstart = 1;
 }else{
   $playoffpool = false;
 
@@ -250,9 +253,12 @@ if ($continuation && $SwissOK==-1) {
 
   echo "<p><input class='input' type='checkbox' id='visible' name='visible' checked='checked'/>";
   echo _("Make this pool visible on menu")."</p>";
+  
   echo "<p><input class='button' name='move' type='submit' value='"._("Confirm moves")."'/>";
+  $pstart = 1;
 }
-
+if ($pstart == 0)
+  echo "<p>";
 echo "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
 echo "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
 echo "</form>\n";

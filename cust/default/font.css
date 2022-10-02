@@ -286,6 +286,7 @@ ul.pagemenu li a.right {
   text-decoration: none;
   font-weight: bold;
   font-variant: small-caps;
+  vertical-align: top;
 }
 
 .headerlink {

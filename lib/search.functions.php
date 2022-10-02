@@ -250,7 +250,7 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= date('d.m.Y');
   }
   $ret .= "'/>\n";
-  $ret .= "&nbsp;<button type='button' class='button' id='showcal1'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button>\n";
+  $ret .= "&nbsp;<button type='button' class='button' id='showcal1'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button>\n";
   $ret .= "</td></tr>\n";
   $ret .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>\n";
   $ret .= "<tr><td>"._("End time")." ("._("dd.mm.yyyy")."):</td><td>";
@@ -259,7 +259,7 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= $_POST['searchend'];
   } 
   $ret .= "'/>\n";
-  $ret .= "&nbsp;<button type='button' class='button' id='showcal2'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button>\n";
+  $ret .= "&nbsp;<button type='button' class='button' id='showcal2'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button>\n";
   $ret .= "</td></tr>\n";
   $ret .= "<tr><td></td><td><div id='calContainer2'></div></td></tr>\n";
   $ret .= "<tr><td>"._("Grouping name").":</td><td>";
@@ -320,7 +320,7 @@ function SearchGame($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= date('d.m.Y');;
   }
   $ret .= "'/>\n";
-  $ret .= "&nbsp;<button type='button' class='button' id='showcal1'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button>\n";
+  $ret .= "&nbsp;<button type='button' class='button' id='showcal1'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button>\n";
   $ret .= "</td></tr>\n";
   $ret .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>\n";
   $ret .= "<tr><td>"._("End time")." ("._("dd.mm.yyyy")."):</td><td>";
@@ -330,7 +330,7 @@ function SearchGame($resultTarget, $hiddenProperties, $submitbuttons) {
   }
   
   $ret .= "'/>\n";
-  $ret .= "&nbsp;<button type='button' class='button' id='showcal2'><img width='12px' height='10px' src='images/calendar.gif' alt='cal'/></button>\n";
+  $ret .= "&nbsp;<button type='button' class='button' id='showcal2'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button>\n";
   $ret .= "</td></tr>\n";
   $ret .= "<tr><td></td><td><div id='calContainer2'></div></td></tr>\n";
   $ret .= "<tr><td>"._("Tournament").":</td><td>";

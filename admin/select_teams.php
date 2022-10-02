@@ -84,7 +84,7 @@ echo "<tr><td colspan=4>\n";
 function modeSelect($group, $id, $description, $cells, $checked = false) {
   $checked = $checked ? " checked='checked'" : "";
   echo "      <div class='tabcell'><input type='radio'$checked id='$group$id' name='$group' value='$group$id' /></div>\n";
-  echo "      <label for='$group$id'><div class='tabcell'>$description&nbsp;</div><div class='tabcell'><div class='tabular'>";
+  echo "     <div class='tabcell'><label for='$group$id'>$description</label>&nbsp;</div><div class='tabcell'><div class='tabular'>";
   foreach ($cells as $row) {
     echo "<div class='tabrow'>";
     foreach ($row as $number) {
@@ -92,7 +92,7 @@ function modeSelect($group, $id, $description, $cells, $checked = false) {
     }
     echo "</div>";
   }
-  echo "</div></div></label>\n";
+  echo "</div></div>\n";
 }
 
 // save button

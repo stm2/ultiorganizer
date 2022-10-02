@@ -265,16 +265,16 @@ function TranslatedField($fieldName, $value, $width="200", $size="30") {
 function TranslatedField2($fieldName, $value, $sWidth = "", $size = "30") {
   if (!empty($sWidth)) {
     $style1 = "style='width:$sWidth;'";
-    $style2 = "style='width:$sWidth; height:2em;";
+    $style2 = "style='width:$sWidth; height:2em;'";
   } else {
     $style1 = '';
     $style2 = "style='height:2em;'";
   }
 
   return "
-	<div $style2' id='" . $fieldName . "Autocomplete' class='yui-skin-sam'>
+	<div $style2 id='" . $fieldName . "Autocomplete' class='yui-skin-sam'>
 		<input class='input' size='" . $size . "' maxlength='" . $size . "' $style1 id='" . $fieldName . "' name='" .
-    $fieldName . "' value='" . utf8entities($value) . "'/>
+    $fieldName . "' value='" . utf8entities($value) . "'></input>
 		<div $style1 id='" . $fieldName . "Container'>
 		</div>
 	</div>\n";

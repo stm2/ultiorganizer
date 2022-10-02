@@ -298,7 +298,7 @@ if (! $poolId || $addmore) {
   
   echo "<tr><td class='infocell'>" . _("Special playoff template") . ":</td>";
   
-  echo "<td><input class='input type='text' id='playoff_template' name='playoff_template' list='template_choices' value='" . utf8entities($pp['playoff_template']) . "' />\n";
+  echo "<td><input class='input' type='text' id='playoff_template' name='playoff_template' list='template_choices' value='" . utf8entities($pp['playoff_template']) . "' />\n";
   echo "<datalist id='template_choices'>\n";
   foreach (PlayoffTemplates() as $key => $template) {
     $selected = $template === $pp['playoff_template'] ? "selected='selected'" : "";

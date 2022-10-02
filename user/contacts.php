@@ -45,16 +45,20 @@ foreach ($series as $row) {
     $seriesName = U_($row['name']);
     $html .= "<li><b>" . utf8entities($seriesName) . "</b>\n";
     $admins = SeriesAdmins($row['series_id']);
-    $html .= "  <ul>";
     $all = "";
+    $found=0;
     foreach ($admins as $user) {
       if (!empty($user['email'])) {
+        if ($found++ == 0)
+          $html .= "  <ul>";
         $html .= "  <li>" . mailto_link($user['email'], $user['name'], null, $seriesName) . " (" . utf8entities($user['name']) . ")</li>\n";
         $all .= mailto_address($user['email'], $user['name']) . ";";
         $seasonAdmins[$user['email']] = $user;
       }
     }
-    $html .= "</ul></li>\n";
+    if ($found)
+      $html .= "</ul>";
+    $html .= "</li>\n";
     if (empty($all)) {
       $html .= "<li>" . _("No admins known") . "</li>\n";
     } else {
@@ -85,8 +89,10 @@ foreach ($series as $row) {
     $html .= "<p><b>" . utf8entities(U_($row['name'])) . "</b></p>\n";
     
     $teams = SeriesTeams($row['series_id']);
-    $html .= "<ul>";
+    $found = 0;
     foreach ($teams as $team) {
+      if ($found++ == 0) 
+        $html .= "<ul>";
       $html .= "<li>" . utf8entities($team['name']) . ": ";
       $admins = GetTeamAdmins($team['team_id']);
       if (empty($admins)) {
@@ -104,10 +110,13 @@ foreach ($series as $row) {
     }
     
     $resp = SeriesTeamResponsibles($row['series_id']);
-    if (!empty($resp))
+    if (!empty($resp)) {
+      if ($found++ == 0)
+        $html .= "<ul>";
       $html .= "<li><a href='" . mailto_encode($resp, 'email', 'name', U_($row['name'])) . "'>" . _("Mail to teams in") . " " . U_($row['name']) . "</a></li>";
-    
-    $html .= "</ul>\n";
+    }
+    if ($found > 0)
+      $html .= "</ul>\n";
   }
 }
 

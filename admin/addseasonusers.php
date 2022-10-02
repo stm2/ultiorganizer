@@ -228,7 +228,7 @@ $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="gameadmin"){
   $html .= "<table class='formtable'>\n";
   $html .= "<tr><td>"._("User Id (s)")."</td><td><input class='input' size='20' name='userids'/></td><td>"._("or")."</td>\n";
-  $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/</td>\n";
+  $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/></td>\n";
   $html .= "<td>" . _("or") . " <a href='?view=admin/adduser&amp;season=".$seasonId."' target='_blank'>"._("Add new user")."</a></td></tr>\n";
   
   $reservations = SeasonReservations($seasonId);
@@ -274,7 +274,7 @@ $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="accradmin"){
   $html .= "<table class='formtable'>\n";
   $html .= "<tr><td>"._("User Id(s)")."</td><td><input class='input' size='20' name='userids'/></td><td>"._("or")."</td>\n";
-  $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/</td>\n";
+  $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/></td>\n";
   $html .= "<td>" . _("or") . " <a href='?view=admin/adduser&amp;season=".$seasonId."' target='_blank'>"._("Add new user")."</a></td></tr>\n";
   
   $teams = SeasonTeams($seasonId);
