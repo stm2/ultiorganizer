@@ -101,7 +101,7 @@ if (isset($_POST['save'])) {
 } else if (isset($_POST['addbutton'])) {
   $new_name =  $_POST['search'];
   $mode = 'add';
-  $message = "<p>" . _("New location not saved. Plese edit the details and save.") . "</p>\n";
+  $message = "<p>" . _("New location not saved. Please edit the details and save.") . "</p>\n";
 }
 
 // common page

@@ -177,7 +177,7 @@ if(GameHasStarted($game_result)){
     $html .= "<table border='1' cellpadding='2' width='100%'>\n";
     $html .= "<tr><th>"._("Scores")."</th><th>"._("Assist")."</th><th>"._("Goal")."</th><th>"._("Time")."</th><th>"._("Dur.")."</th>";
     if($columns > 5){
-      $html .= "<th>"._("Game events ")."</th>";
+      $html .= "<th>"._("Game events")."</th>";
     }
     $html .= "</tr>\n";
 

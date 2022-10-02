@@ -161,7 +161,7 @@ function tableStart($dayArray, $skip, $max) {
         break;
         $startTime = strtotime($reservationArray['starttime']);
         $firstStart = min($firstStart, $startTime);
-        echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field ") . " " . $reservationArray['fieldname'] .
+        echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field") . " " . $reservationArray['fieldname'] .
         " " . date("H:i", $startTime) . "</th>\n";
   }
   echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";

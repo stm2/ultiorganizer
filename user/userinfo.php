@@ -170,34 +170,42 @@ if ($userid != "anonymous") {
       $selector = 'useradmin';
       AddUserRole($userid, $selector);
     } elseif ($_POST['userrole'] == 'teamadmin') {
+      if (isset($_POST['teams']))
       foreach ($_POST['teams'] as $teamid) {
         AddUserRole($userid, 'teamadmin:'.$teamid);
       }
     } elseif ($_POST['userrole'] == 'accradmin') {
+      if (isset($_POST['teams']))
       foreach ($_POST['teams'] as $teamid) {
         AddUserRole($userid, 'accradmin:'.$teamid);
       }
     } elseif ($_POST['userrole'] == 'seasonadmin') {
+      if (isset($_POST['searchseasons']))
       foreach ($_POST['searchseasons'] as $seasonid) {
         AddUserRole($userid, 'seasonadmin:'.$seasonid);
       }
     } elseif ($_POST['userrole'] == 'seriesadmin') {
+      if (isset($_POST['series']))
       foreach ($_POST['series'] as $seriesid) {
         AddUserRole($userid, 'seriesadmin:'.$seriesid);
       }
     } elseif ($_POST['userrole'] == 'resadmin') {
+      if (isset($_POST['reservations']))
       foreach ($_POST['reservations'] as $reservationId) {
         AddUserRole($userid, 'resadmin:'.$reservationId);
       }
     } elseif ($_POST['userrole'] == 'resgameadmin') {
+      if (isset($_POST['reservations']))
       foreach ($_POST['reservations'] as $reservationId) {
         AddUserRole($userid, 'resgameadmin:'.$reservationId);
       }
     } elseif ($_POST['userrole'] == 'gameadmin') {
+      if (isset($_POST['gamses']))
       foreach ($_POST['games'] as $gameId) {
         AddUserRole($userid, 'gameadmin:'.$gameId);
       }
     } elseif ($_POST['userrole'] == 'playeradmin') {
+      if (isset($_POST['players']))
       foreach ($_POST['players'] as $playerId) {
         AddUserRole($userid, 'playeradmin:'.$playerId);
       }

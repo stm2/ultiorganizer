@@ -1213,4 +1213,3 @@ function loginForm($query_string, $userId = '') {
   return $html;
 }
 ?>
-
