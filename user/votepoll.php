@@ -5,8 +5,8 @@ include_once $include_prefix . 'lib/poll.functions.php';
 function compareOptions($t1, $t2) {
   global $info;
 
-  $r1 = $info['rank'][$t1['option_id']];
-  $r2 = $info['rank'][$t2['option_id']];
+  $r1 = (int) $info['rank'][$t1['option_id']];
+  $r2 = (int) $info['rank'][$t2['option_id']];
   return $r2 - $r1;
 }
 
@@ -43,9 +43,11 @@ if (isset($_SESSION['uid'])) {
   $user = "anonymous";
 }
 
-if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
+$canVote = CanVote($user, $name, $pollId);
+
+if (!$canVote && !hasEditSeriesRight($seriesId)) {
   $html .= "<h2>$title</h2>";
-  $html .= "<p>" . _("You cannot vote for this poll") . "</p>";
+  $html .= "<p>" . _("You cannot vote for this poll.") . "</p>";
 } else if (empty($name)) {
   $html .= "<h2>$title</h2>";
   $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
@@ -83,7 +85,7 @@ if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
 
     if (empty($error)) {
       InsertVote($pollId, $info['user_id'], $name, $votePassword, $info['rank']);
-      $feedback .= _("Vote has been saved");
+      $feedback .= _("Vote has been saved.");
     }
   } else if (!empty($_POST['delete'])) {
     $oldPassword = VotePassword($pollId, $name);
@@ -118,6 +120,10 @@ if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
   if (!empty($feedback))
     $html .= "<div class='warning'>" . $feedback . "</div>";
 
+  if (!$canVote) {
+    $html .= "<p>" . _("Voting has not started yet.") . "</p>";
+  }
+
   $html .= "<h2>$title</h2>\n";
   if (!empty($poll['description'])) {
     $html .= "<div id='poll_description'><p>" . $poll['description'] . "</p></div>";
@@ -137,7 +143,7 @@ if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
 
   $maxl = 60;
   $min = 0;
-  $max = Math . max(2 * count($options), 100);
+  $max = max(2 * count($options), 100);
 
   mergesort($options, 'compareOptions');
 
@@ -157,7 +163,7 @@ if (!CanVote($user, $name, $pollId) && !hasEditSeriesRight($seriesId)) {
       else
         $html .= utf8entities($option['description']) . "</span>";
     }
-    $html .= " <a href='?view=user/addpolloption&series=$seriesId&option_id=$optionId' rel='noopener' target='_blank'>" .
+    $html .= " <a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=$optionId' rel='noopener' target='_blank'>" .
       _("Details") . "</a>";
 
     $html .= " </td><td><input style='text-align:right;' class='input' type='number' size='2' maxlength='3' min='$min' max='$max' id='rank$optionId' name='rank$optionId'";

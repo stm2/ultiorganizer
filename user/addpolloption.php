@@ -2,8 +2,8 @@
 include_once $include_prefix . 'lib/series.functions.php';
 include_once $include_prefix . 'lib/poll.functions.php';
 
-if (empty($_GET['series'])) {
-  die(_("Series mandatory"));
+if (empty($_GET['series']) || (empty($_GET['poll']) && empty($_POST['poll']))) {
+  die(_("Series and poll mandatory"));
 }
 $seriesId = $_GET['series'];
 
@@ -74,7 +74,7 @@ if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
     $info['status'] = 0;
     if (empty($info['name']))
       $error .= "<p>" . _('Name cannot be empty.') . "</p>";
-    if (HasPollOption($info['name']))
+    if (HasPollOption($pollId, $info['name']))
       $error .= "<p>" . _('Name already exists.') . "</p>";
     if (empty($info['mentor']))
       $error .= "<p>" . _('Mentor cannot be empty.') . "</p>";
@@ -85,8 +85,10 @@ if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
       $optionId = AddPollOption($info);
       if (empty($optionId))
         $error .= "Could not add option " . $info['name'];
-      else
-        header("location:?view=user/polls&series=$seriesId");
+      else {
+        $seasonId = SeriesSeasonId($seriesId);
+        header("location:?view=user/polls&season=$seasonId");
+      }
     }
   } else if ($edit && !empty($_POST['save'])) {
     // TODO rights
@@ -111,7 +113,7 @@ if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
 
     if (empty($info['name']))
       $error .= _('Name cannot be empty.');
-    if ($info['name'] != $option['name'] && HasPollOption($info['name']))
+    if ($info['name'] != $option['name'] && HasPollOption($pollId, $info['name']))
       $error .= "<p>" . _('Name already exists.') . "</p>";
     if (empty($info['mentor']))
       $error .= _('Mentor cannot be empty.');
@@ -186,11 +188,11 @@ if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
     $html .= "<input type='hidden' name='option_id' value='$optionId'/>\n";
     $html .= "<input type='hidden' name='poll' value='$pollId'/>\n";
     $html .= "<table class='formtable'>\n";
-    
+
     $disabled = $edit ? "" : "disabled='disabled'";
-    
-    $html .= "<tr><td class='infocell'>" . _("Option Name") . ": </td><td><input class='input' name='name' $disabled value='" .
-      utf8entities($info['name']) . "'/></td></tr>\n";
+
+    $html .= "<tr><td class='infocell'>" . _("Option Name") .
+      ": </td><td><input class='input' name='name' $disabled value='" . utf8entities($info['name']) . "'/></td></tr>\n";
     if (hasEditSeriesRight($poll['series_id']) && $edit)
       $disabled = "";
     else
@@ -205,7 +207,8 @@ if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
     $disabled = $edit ? "" : "disabled='disabled'";
 
     $html .= "<tr><td class='infocell'>" . _("Mentor (public)") .
-      ": </td><td><input class='input' name='mentor' $disabled value='" . utf8entities($info['mentor']) . "'/></td></tr>\n";
+      ": </td><td><input class='input' name='mentor' $disabled value='" . utf8entities($info['mentor']) .
+      "'/></td></tr>\n";
     $html .= "<tr><td class='infocell'>" . htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) .
       ":</td>
     <td><textarea class='input' maxlength='255' rows='10' cols='70' id='description' name='description'  $disabled>" .

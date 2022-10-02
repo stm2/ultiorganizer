@@ -7,6 +7,8 @@ function compareOptions($t1, $t2) {
   global $ranker;
   $r1 = getScore($columns, $ranker, $t1['option_id']);
   $r2 = getScore($columns, $ranker, $t2['option_id']);
+  if (!is_numeric($r1)) $r1 = 0;
+  if (!is_numeric($r2)) $r2 = 0;
   return $r2 - $r1 > 0 ? 1 : ($r2 - $r1 < 0 ? -1 : 0);
 }
 
@@ -32,7 +34,7 @@ if ($seriesId != $poll['series_id'])
   die("Invalid poll and series");
 $series = SeriesInfo($poll['series_id']);
 
-$title = _("Results") . ": " . utf8entities($series['name']);
+$title = sprintf(_("Poll Results for %s"), $series['name']);
 $html = "";
 
 $hasResults = HasResults($pollId);
@@ -62,7 +64,7 @@ if (!$hasResults && !hasEditSeriesRight($seriesId)) {
   $avg2 = pollArithmeticRanking($pollId, true, true, true);
 
   if (!$hasResults) {
-    $html .= "<p>" . _("Results not published yet") . "</p>";
+    $html .= "<p>" . _("Results not published yet.") . "</p>";
   }
   $html .= "<h2>$title</h2>\n";
   if (!empty($poll['description'])) {
@@ -133,7 +135,7 @@ if (!$hasResults && !hasEditSeriesRight($seriesId)) {
       else
         $html .= utf8entities($option['description']) . "</span>";
     }
-    $html .= " <a href='?view=user/addpolloption&series=$seriesId&option_id=$optionId&edit=0' rel='noopener' target='_blank'>" .
+    $html .= " <a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=$optionId&edit=0' rel='noopener' target='_blank'>" .
       _("Details") . "</a>";
 
     $html .= " </td>\n";

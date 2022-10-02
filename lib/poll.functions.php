@@ -131,22 +131,22 @@ function SetPollOption($ptId, $params) {
   return DBQuery($query);
 }
 
-function DeletePollOption($ptId) {
+function DeletePollOption($optionId) {
   $query = sprintf("DELETE FROM uo_poll_option
-     WHERE option_id='%d'", (int) ($ptId));
+     WHERE option_id='%d'", (int) ($optionId));
   $ret = DBQuery($query);
   if ($ret !== -1) {
     $query = sprintf("DELETE FROM uo_poll_vote
-     WHERE option_id='%d'", (int) ($ptId));
+     WHERE option_id='%d'", (int) ($optionId));
     return DBQuery($query);
   }
   return -1;
 }
 
-function HasPollOption($optionName) {
+function HasPollOption($pollId, $optionName) {
   $query = sprintf("SELECT count(*)
     FROM uo_poll_option
-    WHERE name='%s'", mysql_adapt_real_escape_string($optionName));
+    WHERE poll_id='%d' AND name='%s'", (int) $pollId, mysql_adapt_real_escape_string($optionName));
 
   return DBQueryToValue($query) > 0;
 }

@@ -28,8 +28,7 @@ if (!count($serieses)) {
       $html .= "<div class='poll_description'><p>" . $poll['description'] . "</p></div>";
 
       $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") . "</th>";
-      $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>" . _("State") .
-        "</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
+      $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
       $options = PollOptions($pollId);
       $maxl = 20;
 
@@ -43,7 +42,7 @@ if (!count($serieses)) {
         else
           $html .= utf8entities($option['description']) . "</td>";
 
-        $html .= "<td>" . $option['status'] . "</td>";
+        // $html .= "<td>" . $option['status'] . "</td>";
 
         $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" . $option['option_id'] . "'>" .
           _("Details") . "</a>";
