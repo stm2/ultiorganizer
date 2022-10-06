@@ -20,14 +20,15 @@ if (!empty($_POST['save'])) {
       $poll = emptyPoll($seriesId);
     }
 
-    $poll['status'] = isset($_POST["status$seriesId"]) ? $_POST["status$seriesId"] : 0;
+    foreach (PollStatuses() as $flag => $name) {
+      $poll[$name] = isset($_POST[$name . $seriesId]) ? 1 : 0;
+    }
+
     $poll['password'] = !empty($_POST["password$seriesId"]) ? $_POST["password$seriesId"] : NULL;
     $poll['description'] = !empty($_POST["description$seriesId"]) ? $_POST["description$seriesId"] : NULL;
 
     if ($poll['poll_id'] == -1) {
-      // $html .= "add " . $poll['poll_id'];
-      if ($poll['status'] > 0)
-        AddPoll($seriesId, $season, $poll);
+      AddPoll($seriesId, $season, $poll);
     } else {
       SetPoll($poll['poll_id'], $seriesId, $season, $poll);
     }
@@ -35,7 +36,11 @@ if (!empty($_POST['save'])) {
 }
 
 function emptyPoll($seriesId) {
-  return array("poll_id" => -1, "password" => NULL, "series_id" => $seriesId, 'description' => '', 'status' => 0);
+  $x = array("poll_id" => -1, "password" => NULL, "series_id" => $seriesId, 'description' => '');
+  foreach (PollStatuses() as $flag => $name) {
+    $x[$name] = 0;
+  }
+  return $x;
 }
 
 if (!count($serieses)) {
@@ -52,21 +57,22 @@ if (!count($serieses)) {
     $pollId = $poll['poll_id'];
     $html .= "<input type='hidden' name='poll$seriesId' value='$pollId'/>";
     $html .= "<table class='formtable'>";
-    $html .= "<tr><td class='infocell'>" . _("Status") . "</td><td><select class='dropdown' name='status$seriesId'>\n";
-    foreach (PollStatuses() as $status => $name) {
-      $selected = $poll['status'] == $status ? "selected='selected'" : "";
-      $html .= "<option class='dropdown' $selected value='$status'>" . utf8entities($name) . "</option>\n";
+    foreach (PollStatuses() as $key => $value) {
+      $html .= "<tr><td class='infocell'>" . PollStatusName($key) .
+        ": </td><td><input class='input' type='checkbox' name='$value$seriesId' ";
+      if ($poll[$value]) {
+        $html .= "checked='checked'";
+      }
+      $html .= "/></td></tr>\n";
     }
-    $html .= "</select>\n";
-    $html .= "</td></tr>\n";
     $html .= "<tr><td class='infocell'>" . _("Password") .
       "</td><td><input class='input' name='password$seriesId' value='" . utf8entities($poll['password']) .
       "'/></td></tr>\n";
 
     $options = PollOptions($pollId);
     $html .= "<tr><td class='infocell'>" . _("Description") . "</td><td>" .
-      "<textarea class='input' rows='5' cols='70' name='description$seriesId'>" .
-      htmlentities($poll['description']) . "</textarea></td></tr>\n";
+      "<textarea class='input' rows='5' cols='70' name='description$seriesId'>" . htmlentities($poll['description']) .
+      "</textarea></td></tr>\n";
     if ($pollId > 0) {
       $html .= "<tr><td class='infocell'>" . _("Options") . "</td><td>" . count($options) . "</td></tr>\n";
     }

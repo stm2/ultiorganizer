@@ -2,17 +2,20 @@
 include_once $include_prefix . 'lib/debug.functions.php';
 
 function PollStatuses() {
-  return array(0 => _("no poll"), 2 => _("option entry"), 4 => _("voting"), 6 => _("closed"));
+  return array(1 => _("visible"), 2 => _("option_entry"), 4 => _("voting"), 8 => _("results"));
 }
 
-function HasPolls($seasonId) {
-  $series = SeasonSeries($seasonId);
-
-  foreach ($series as $seriesRow) {
-    $poll = SeriesPoll($seriesRow['series_id']);
-    return !empty($poll) && $poll['status'] > 0;
+function PollStatusName($statusId) {
+  switch ($statusId) {
+  case 1:
+    return _("Visible");
+  case 2:
+    return _("Option suggestion");
+  case 4:
+    return _("Voting");
+  case 8:
+    return _("Results");
   }
-  return false;
 }
 
 function PollInfo($pollId) {
@@ -21,31 +24,49 @@ function PollInfo($pollId) {
   return DBQueryToRow($query);
 }
 
-function CanSuggest($user, $name, $pollId) {
-  $info = PollInfo($pollId);
-  $status = 0;
-  if (!empty($info['status']))
-    $status = $info['status'];
+function poll_tags_to_flags($params) {
+  $flags = 0;
+  foreach (PollStatuses() as $flag => $name) {
+    if ($params[$name])
+      $flags |= $flag;
+  }
+  return $flags;
+}
 
-  return $status == 2; // || ($status > 0 && isSuperAdmin());
+function poll_status_to_tags($params) {
+  if (empty($params))
+    return $params;
+  $status = $params['status'];
+  foreach (PollStatuses() as $flag => $name) {
+    if ($status & $flag)
+      $params[$name] = 1;
+    else
+      $params[$name] = 0;
+  }
+  unset($params['status']);
+  return $params;
+}
+
+function poll_is_status_flag($pollId, $flag) {
+  $info = PollInfo($pollId);
+
+  return ($info['status'] & $flag) == $flag;
+}
+
+function IsVisible($pollId) {
+  return poll_is_status_flag($pollId, 1);
+}
+
+function CanSuggest($user, $name, $pollId) {
+  return poll_is_status_flag($pollId, 2);
 }
 
 function CanVote($user, $name, $pollId) {
-  $info = PollInfo($pollId);
-  $status = 0;
-  if (!empty($info['status']))
-    $status = $info['status'];
-
-  return $status == 4; // || ($status > 0 && isSuperAdmin());
+  return poll_is_status_flag($pollId, 4);
 }
 
 function HasResults($pollId) {
-  $info = PollInfo($pollId);
-  $status = 0;
-  if (!empty($info['status']))
-    $status = $info['status'];
-
-  return $status == 6; // || ($status > 0 && isSuperAdmin());
+  return poll_is_status_flag($pollId, 8);
 }
 
 /**
@@ -55,7 +76,7 @@ function PollSeasons() {
   $query = sprintf(
     "SELECT sn.season_id, sn.name
     FROM uo_season sn, uo_series sr, uo_poll pl
-    WHERE sn.season_id = sr.season AND pl.series_id = sr.series_id AND pl.status > 0
+    WHERE sn.season_id = sr.season AND pl.series_id = sr.series_id AND (pl.status & 1) = 1
     GROUP BY sn.season_id
     ORDER BY starttime DESC");
   return DBQueryToArray($query);
@@ -67,16 +88,17 @@ function SeriesPoll($seriesId) {
 		FROM uo_poll
 		WHERE series_id=%d", (int) $seriesId);
 
-  return DBQueryToRow($query);
+  return poll_status_to_tags(DBQueryToRow($query));
 }
 
 function AddPoll($seriesId, $seasonId, $params) {
   if (hasEditSeasonSeriesRight($seasonId)) {
+
     $query = sprintf("
                INSERT INTO uo_poll
                (series_id, password, description, status)
-               VALUES (%d, '%s', '%s', 2)", (int) $seriesId, mysql_adapt_real_escape_string($params['password']),
-      mysql_adapt_real_escape_string($params['description']));
+               VALUES (%d, '%s', '%s', '%d')", (int) $seriesId, mysql_adapt_real_escape_string($params['password']),
+      mysql_adapt_real_escape_string($params['description']), (int) poll_tags_to_flags($params));
     return DBQueryInsert($query);
   } else
     die("Insufficient rights to edit series");
@@ -87,7 +109,7 @@ function SetPoll($id, $seriesId, $seasonId, $params) {
     $query = sprintf("
                UPDATE uo_poll SET password='%s', description='%s', status = %d
                WHERE poll_id = %d", mysql_adapt_real_escape_string($params['password']),
-      mysql_adapt_real_escape_string($params['description']), (int) $params['status'], (int) $id);
+      mysql_adapt_real_escape_string($params['description']), (int) poll_tags_to_flags($params), (int) $id);
     return DBQuery($query);
   } else
     die("Insufficient rights to edit series");
@@ -112,6 +134,7 @@ function PollOption($optionId) {
 }
 
 function AddPollOption($params) {
+  // FIXME rights?
   $query = sprintf(
     "INSERT INTO uo_poll_option
       (poll_id, user_id, name, mentor, description, status )
@@ -122,6 +145,7 @@ function AddPollOption($params) {
 }
 
 function SetPollOption($ptId, $params) {
+  // FIXME rights?
   $query = sprintf(
     "UPDATE uo_poll_option SET
       user_id='%d', name='%s', mentor='%s', description='%s'
@@ -132,13 +156,19 @@ function SetPollOption($ptId, $params) {
 }
 
 function DeletePollOption($optionId) {
-  $query = sprintf("DELETE FROM uo_poll_option
+  $option = PollOption($optionId);
+  if (!empty($option)) {
+    $pollSeries = PollInfo($option['poll_id'])['series_id'];
+    if (hasEditSeriesRight($pollSeries)) {
+      $query = sprintf("DELETE FROM uo_poll_option
      WHERE option_id='%d'", (int) ($optionId));
-  $ret = DBQuery($query);
-  if ($ret !== -1) {
-    $query = sprintf("DELETE FROM uo_poll_vote
+      $ret = DBQuery($query);
+      if ($ret !== -1) {
+        $query = sprintf("DELETE FROM uo_poll_vote
      WHERE option_id='%d'", (int) ($optionId));
-    return DBQuery($query);
+        return DBQuery($query);
+      }
+    }
   }
   return -1;
 }
@@ -469,11 +499,15 @@ function copeEvaluate(&$games, $scores, $options) {
       foreach ($options as $t2) {
         $c1 = isset($scores[$t1]) ? $scores[$t1] : 0;
         $c2 = isset($scores[$t2]) ? $scores[$t2] : 0;
-        $cc = $c1 - $c2;
-        if ($cc > 0)
-          $games[$t1][$t2] += 2;
-        else if ($cc == 0)
-          $games[$t1][$t2] += 1;
+        if ($c1 == 0 || $c2 == 0)
+          $games[$t1][$t2] += 0;
+        else {
+          $cc = $c1 - $c2;
+          if ($cc > 0)
+            $games[$t1][$t2] += 1;
+          else if ($cc == 0)
+            $games[$t1][$t2] += 0;
+        }
       }
     }
   }
@@ -553,6 +587,8 @@ class BordaDistribution {
       ++$this->buffer;
     }
     $this->lastScore = $score;
+    if ($score == 0)
+      return 0;
 
     return $this->points;
   }
@@ -582,6 +618,9 @@ class GeometricDistribution {
     }
     $this->lastScore = $score;
 
+    if ($score == 0)
+      return 0;
+
     return 1 / 2 ** $this->points;
   }
 }
@@ -609,8 +648,10 @@ class HarmonicDistribution {
       ++$this->buffer;
     }
     $this->lastScore = $score;
+    if ($score == 0)
+      return 0;
 
-    return 1 / $this->points;
+    return $this->points > 0 ? 1 / $this->points : 0;
   }
 }
 
@@ -633,7 +674,7 @@ class PluralityDistribution {
   }
 }
 
-function positionalRanking($pollId, $distribution) {
+function positionalRanking($pollId, $distribution, $average = false) {
   $votes = PollVotes($pollId, array('voter', 'score'));
   $options = PollOptions($pollId);
 
@@ -643,6 +684,7 @@ function positionalRanking($pollId, $distribution) {
   $scores = array();
   foreach ($options as $option) {
     $scores[$option['option_id']] = 0;
+    $counts[$option['option_id']] = 0;
   }
   foreach ($votes as $vote) {
     if ($vote['name'] != $lastVoter) {
@@ -651,7 +693,16 @@ function positionalRanking($pollId, $distribution) {
     }
 
     $points = $distribution->points($vote['score'], $pos++);
-    $scores[$vote['option_id']] += $points;
+    if ($points > 0) {
+      $scores[$vote['option_id']] += $points;
+      ++$counts[$vote['option_id']];
+    }
+  }
+
+  if ($average) {
+    foreach ($options as $option) {
+      $scores[$option['option_id']] /= $counts[$option['option_id']] / count($options);
+    }
   }
 
   asort($scores);
@@ -666,8 +717,8 @@ function positionalRanking($pollId, $distribution) {
  * @param int $pollId
  * @return
  */
-function PollBordaRanking($pollId) {
-  return positionalRanking($pollId, new BordaDistribution());
+function PollBordaRanking($pollId, $average = false) {
+  return positionalRanking($pollId, new BordaDistribution(), $average);
 }
 
 function PollPluralityRanking($pollId) {

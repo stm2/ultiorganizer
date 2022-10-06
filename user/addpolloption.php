@@ -51,10 +51,9 @@ if (empty($pollId) && !empty($_POST['poll']))
 
 $suggestive = CanSuggest($user, $name, $pollId);
 
-if ($edit && !$suggestive && !hasEditSeriesRight($seriesId)) {
+if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   $title = _("Add option");
   $html .= "<h2>$title</h2>";
-  // FIXME works different for edit and add!
   $html .= "<p>" . _("You cannot suggest options for this poll.") . "</p>";
 } else {
 

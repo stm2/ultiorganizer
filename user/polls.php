@@ -21,7 +21,7 @@ if (!count($serieses)) {
     $seriesId = $series['series_id'];
     $html .= "<h2>" . utf8entities(U_($series['name'])) . "</h2>\n";
     $poll = SeriesPoll($seriesId);
-    if (empty($poll)) {
+    if (empty($poll) || !IsVisible($poll['poll_id'])) {
       $html .= "<p>" . _("No poll") . "</p>";
     } else {
       $pollId = $poll['poll_id'];
@@ -41,8 +41,6 @@ if (!count($serieses)) {
           $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</td>";
         else
           $html .= utf8entities($option['description']) . "</td>";
-
-        // $html .= "<td>" . $option['status'] . "</td>";
 
         $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" . $option['option_id'] . "'>" .
           _("Details") . "</a>";

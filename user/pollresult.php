@@ -39,7 +39,7 @@ $html = "";
 
 $hasResults = HasResults($pollId);
 
-if (!$hasResults && !hasEditSeriesRight($seriesId)) {
+if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   $html .= "<h2>$title</h2>";
   $html .= "<p>" . _("No results yet") . "</p>";
 } else {
