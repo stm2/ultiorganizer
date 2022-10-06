@@ -40,6 +40,8 @@ if (!isset($_SESSION['VISIT_COUNTER'])) {
 if (!isset($_SESSION['uid'])) {
   $_SESSION['uid'] = "anonymous";
   SetUserSessionData("anonymous");
+} else if ($_SESSION['uid'] === "anonymous") {
+  // loadUserProperties("anonymous");
 }
 
 require_once $include_prefix . 'lib/configuration.functions.php';

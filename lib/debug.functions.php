@@ -37,8 +37,8 @@ function debugMsg ($msg) {
   }
 } 
 
-function debug_to_apache($msg) {
-  file_put_contents('php://stderr', $msg);
+function debug_to_apache($msg, $newline=true) {
+  file_put_contents('php://stderr', $msg . ($newline?"\n":''));
 }
 
 ?>

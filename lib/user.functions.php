@@ -271,6 +271,10 @@ function SetUserSessionData($user_id) {
   unset($_SESSION['dbversion']);
   $_SESSION['uid'] = $user_id;
 
+  loadUserProperties($user_id);
+}
+ 
+function loadUserProperties($user_id) {
   $query = sprintf("SELECT prop_id, name, value FROM uo_userproperties WHERE userid='%s'",
     mysql_adapt_real_escape_string($user_id));
   $result = mysql_adapt_query($query);
@@ -435,6 +439,15 @@ function setSelectedSeason() {
   }
 }
 
+function and_or($counter) {
+  if ($counter == 0) {
+    return " AND (";
+  } else {
+    return " OR ";
+  }
+  
+}
+
 function getViewPools($selSeasonId) {
   $numselectors = 0;
   $query = "SELECT seas.season_id as season, seas.name as season_name, ser.series_id as series, ser.name as series_name, pool.pool_id as pool, pool.name as pool_name ";
@@ -442,27 +455,27 @@ function getViewPools($selSeasonId) {
 		left outer join uo_series ser on (pool.series = ser.series_id)
 		left outer join uo_season seas on (ser.season = seas.season_id) ";
   $query .= "WHERE pool.visible=1";
+
   if (isset($_SESSION['userproperties']['poolselector'])) {
     foreach ($_SESSION['userproperties']['poolselector'] as $selector => $param) {
-      if ($numselectors == 0) {
-        $query .= " AND (";
-      }
-      if ($numselectors > 0) {
-        $query .= "OR ";
-      }
       if ($selector == 'currentseason') {
-        $query .= sprintf("seas.season_id='%s' ", mysql_adapt_real_escape_string($selSeasonId));
-      } elseif ($selector == 'team') {
-        $query .= sprintf("pool.pool_id in (SELECT pool FROM uo_team WHERE team_id=%d) ", (int) key($param));
-        $query .= sprintf("OR pool.pool_id in (SELECT pool FROM uo_team_pool WHERE team=%d) ", (int) key($param));
-      } elseif ($selector == 'season') {
-        $query .= sprintf("seas.season_id='%s' ", mysql_adapt_real_escape_string(key($param)));
-      } elseif ($selector == 'series') {
-        $query .= sprintf("ser.series_id=%d ", (int) key($param));
-      } elseif ($selector == 'pool') {
-        $query .= sprintf("pool.pool_id=%d ", (int) key($param));
+        $query .= and_or($numselectors++);
+        $query .= sprintf("seas.season_id='%s'", mysql_adapt_real_escape_string($selSeasonId));
+      } else {
+        foreach ($param as $subject => $prop_id) {
+          $query .= and_or($numselectors++);
+          if ($selector == 'team') {
+            $query .= sprintf("pool.pool_id in (SELECT pool FROM uo_team WHERE team_id=%d)", (int) $subject);
+            $query .= sprintf("OR pool.pool_id in (SELECT pool FROM uo_team_pool WHERE team=%d)", (int) $subject);
+          } elseif ($selector == 'season') {
+            $query .= sprintf("seas.season_id='%s'", mysql_adapt_real_escape_string($subject));
+          } elseif ($selector == 'series') {
+            $query .= sprintf("ser.series_id=%d", (int) $subject);
+          } elseif ($selector == 'pool') {
+            $query .= sprintf("pool.pool_id=%d", (int) $subject);
+          }
+        }
       }
-      $numselectors++;
     }
   }
 
@@ -859,6 +872,13 @@ function ToPrimaryEmail($userid, $extraEmail) {
 
 function AddPoolSelector($userid, $selector) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight()) {
+    $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='poolselector' AND value='%s'",
+      mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($selector));
+    $result = DBQuery($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+    
     $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'poolselector', '%s')",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($selector));
     $result = mysql_adapt_query($query);
@@ -1619,6 +1639,90 @@ function UserCreateRandomPassword() {
   }
   $pass .= rchar(true);
   return $pass;
+}
+
+function restore_db_error($log, $result) {
+  if ($result == -1)
+    $log[] = sprintf(_("Error running query, error '%s'"), mysql_adapt_error());
+
+  return array('result' => $result, 'log' => $log);
+}
+
+function RestoreAnonymousUser($override = 0) {
+  $log = array();
+
+  $query = sprintf("SELECT id FROM uo_users WHERE userid='anonymous'");
+  $log[] = $query;
+
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    return restore_db_error($log, -1);
+  }
+  $count = mysqli_num_rows($result);
+
+  if ($count == 1) {
+    $row = mysqli_fetch_row($result);
+    $userId = $row[0];
+  } else {
+    $list = implode(", ", DBResourceToArray($result, true));
+    $log[] = sprintf(_("No or too many anonymous users (%s). Additional users will be deleted."), $list);
+
+    if ($override < 101)
+      return restore_db_error($log, 101);
+    
+    if ($count > 0) {
+      $query = sprintf("DELETE FROM uo_users WHERE userid='anonymous'");
+      $log[] = $query;
+      $result = DBQuery($query);
+      if (!$result) {
+        return restore_db_error($log, -1);
+      }
+    }
+    $query = "INSERT INTO `uo_users` (`userid`, `password`, `name`, `email`, `last_login`) " .
+      "VALUES ('anonymous', NULL, NULL, NULL, NULL)";
+    
+    $log[] = $query;
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      return restore_db_error($log, -1);
+    }
+    $userId = mysql_adapt_insert_id();
+  }
+
+  if ($userId != 1) {
+    $log[] = sprintf(_("Anonymous userid is %d instead of 1. This may be okay."), $userId);
+    if ($override < 102)
+      return restore_db_error($log, 102);
+  }
+
+  $query = sprintf("SELECT 1 FROM uo_userproperties WHERE userid='anonymous'");
+  $log[] = $query;
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    return restore_db_error($log, -1);
+  }
+  $count = mysqli_num_rows($result);
+  if ($count > 1) {
+    $log[] = _("Found $count properties in uo_userproperties, expected 1. Additional entries will be deleted.");
+    if ($override < 103)
+      return restore_db_error($log, 103);
+  }
+
+  $query = "DELETE FROM `uo_userproperties` WHERE userid='anonymous'";
+  $log[] = $query;
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    return restore_db_error($log, -1);
+  }
+
+  $query = "INSERT INTO `uo_userproperties` (`prop_id`, `userid`, `name`, `value`) VALUES (1, 'anonymous', 'poolselector', 'currentseason')";
+  $log[] = $query;
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    return restore_db_error($log, -1);
+  }
+
+  return restore_db_error($log, 1);
 }
 
 ?>

@@ -15,6 +15,7 @@ if(isSuperAdmin()){
 	$html .= "<a href='?view=admin/dbbackup'>&raquo; "._("Backup")."</a><br/>\n";
 	$html .= "<a href='?view=admin/dbrestore'>&raquo; "._("Restore")."</a><br/>\n";
 	$html .= "<a href='?view=admin/dbequalize'>&raquo; "._("Equalization")."</a><br/>\n";
+	$html .= "<a href='?view=admin/dbanonymous'>&raquo; "._("Restore anonymous user settings")."</a><br/>\n";
 	$html .= "</p>\n";
 	
 	$types = array("import","updater","simulator","generator");

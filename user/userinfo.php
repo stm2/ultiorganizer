@@ -357,27 +357,30 @@ if ($_SESSION['uid'] != "anonymous") {
     }
     $html .= "'>\n<table cellpadding='2'>\n";
     foreach ($poolselectors as $selector => $param) {
-      $html .= "<tr><td>";
       if ($selector == 'currentseason') {
-        $html .= _("Current event");
-      } elseif ($selector == 'team') {
-        $html .= _("Team pools");
-        $html .= " (".utf8entities(getTeamName(key($param))).")";
-        $param = current($param);
-      } elseif ($selector == 'season') {
-        $html .= _("Event");
-        $html .= " (".utf8entities(SeasonName(key($param))).")";
-        $param = current($param);
-      } elseif ($selector == 'series') {
-        $html .= _("Division");
-        $html .= " (".utf8entities(getSeriesName(key($param))).")";
-        $param = current($param);
-      } elseif ($selector == 'pool') {
-        $html .= _("Division");
-        $html .= " (".utf8entities(U_(PoolSeriesName(key($param))).", ".U_(PoolName(key($param)))).")";
-        $param = current($param);
+        $html .= "<tr><td>" . _("Current event");
+        $html .= "</td><td><input class='deletebutton' src='images/remove.png' type='image' name='rempoolselector' value='X' alt='X' onclick='setId(" .
+          $param . ", \"deleteSelectorId\");'/></td></tr>\n";
+      } else {
+        foreach ($param as $subject => $propertyId) {
+          $html .= "<tr><td>";
+          if ($selector == 'team') {
+            $html .= _("Team pools");
+            $html .= " (" . utf8entities(getTeamName($subject)) . ")";
+          } elseif ($selector == 'season') {
+            $html .= _("Event");
+            $html .= " (" . utf8entities(SeasonName($subject)) . ")";
+          } elseif ($selector == 'series') {
+            $html .= _("Division");
+            $html .= " (" . utf8entities(getSeriesName($subject)) . ")";
+          } elseif ($selector == 'pool') {
+            $html .= _("Pool");
+            $html .= " (" . utf8entities(U_(PoolSeriesName($subject)) . ", " . U_(PoolName($subject))) . ")";
+          }
+          $html .= "</td><td><input class='deletebutton' src='images/remove.png' type='image' name='rempoolselector' value='X' alt='X' onclick='setId(" .
+            $propertyId . ", \"deleteSelectorId\");'/></td></tr>\n";
+        }
       }
-      $html .= "</td><td><input class='deletebutton' src='images/remove.png' type='image' name='rempoolselector' value='X' alt='X' onclick='setId(".$param.", \"deleteSelectorId\");'/></td></tr>\n";
     }
     $html .= "<tr><td><input type='hidden' id='deleteSelectorId' name='deleteSelectorId'/></td><td></td></tr>";
     $html .= "</table></form>";
@@ -392,7 +395,7 @@ if ($_SESSION['uid'] != "anonymous") {
   $html .= "<option value='team'>". _("Team pools")."</option>\n";
   $html .= "<option value='season'>"._("Event")."</option>\n";
   $html .= "<option value='series'>"._("Division")."</option>\n";
-  $html .= "<option value='pool'>"._("Division")."</option>\n";
+  $html .= "<option value='pool'>"._("Pool")."</option>\n";
   $html .= "</select>\n";
   $html .= "<input type='hidden' name='view' value='user/select_poolselector'/>\n";
   if (!empty($_GET['user'])) {

@@ -3,7 +3,7 @@ include_once 'menufunctions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/reservation.functions.php';
 $html = "";
-if (ENABLE_ADMIN_DB_ACCESS != "enabled") {
+if (!defined ('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
 	$html = "<p>"._("Direct database access is disabled. To enable it, define(ENABLE_ADMIN_DB_ACCESS,'enabled') in the config.inc.php file")."</p>";
 } else {
 if (isset($_POST['restore']) && isSuperAdmin()){

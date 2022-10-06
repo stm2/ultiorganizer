@@ -436,7 +436,9 @@ function nav_initialize() {
 }
 
 function nav_size() {
-  return count($_SESSION['navigation']);
+  if (isset($_SESSION['navigation']))
+    return count($_SESSION['navigation']);
+  return 0;
 }
 
 function nav_add($query, $title) {
