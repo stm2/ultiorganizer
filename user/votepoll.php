@@ -141,7 +141,7 @@ if (!$canVote && !hasEditSeriesRight($seriesId)) {
 
   $html .= "<table class='poll_vote'><tbody id='poll_vote'>";
 
-  $maxl = 60;
+  $maxl = 100;
   $min = 0;
   $max = max(2 * count($options), 100);
 

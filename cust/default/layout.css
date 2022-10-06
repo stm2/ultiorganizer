@@ -543,6 +543,8 @@ ul.timelist li {
 /* poll */
 table.poll_options td {
   max-width: 15em;
+  overflow-wrap:anywhere;
+  word-break: normal;
 }
 
 table.poll_vote {

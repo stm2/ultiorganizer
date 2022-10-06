@@ -30,7 +30,7 @@ if (!count($serieses)) {
       $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") . "</th>";
       $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
       $options = PollOptions($pollId);
-      $maxl = 20;
+      $maxl = 50;
 
       foreach ($options as $option) {
         $html .= "<td>" . utf8entities($option['name']) . "</td>";
