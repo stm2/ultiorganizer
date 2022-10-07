@@ -736,7 +736,7 @@ function upgrade82() {
 	`poll_id` int(10) NOT NULL AUTO_INCREMENT,
 	`series_id` int(10) NOT NULL,
      `password` varchar(100) DEFAULT NULL,
-     `description` varchar(255) DEFAULT NULL,
+     `description` varchar(8000) DEFAULT NULL,
 	`status` tinyint(1) DEFAULT 0,
 	PRIMARY KEY (`poll_id`),
 	INDEX `idx_series` (`series_id`)
