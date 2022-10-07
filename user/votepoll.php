@@ -69,12 +69,16 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
       }
     }
 
+    if (!empty($poll['password']) && $poll['password'] != $_POST['poll_password'] && !hasEditSeriesRight($seriesId)) {
+      $error .= "<p>" . _('Wrong poll password') . "</p>";
+    }
+
     $oldPassword = VotePassword($pollId, $name);
-    $votePassword = empty($_POST['votepassword']) ? null : $_POST['votepassword'];
+    $votePassword = empty($_POST['vote_password']) ? null : $_POST['vote_password'];
 
     if (!empty($oldPassword) && $votePassword != $oldPassword) {
       if (empty($_POST['override']) || !hasEditSeriesRight($seriesId)) {
-        $error .= _("Wrong password");
+        $error .= _("Wrong personal password");
       }
     }
     if ($user == 'anonymous' && empty($votePassword)) {
@@ -88,8 +92,12 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
       $feedback .= _("Vote has been saved.");
     }
   } else if (!empty($_POST['delete'])) {
+    if (!empty($poll['password']) && $poll['password'] != $_POST['poll_password'] && !hasEditSeriesRight($seriesId)) {
+      $error .= "<p>" . _('Wrong poll password') . "</p>";
+    }
+    
     $oldPassword = VotePassword($pollId, $name);
-    $votePassword = empty($_POST['votepassword']) ? null : $_POST['votepassword'];
+    $votePassword = empty($_POST['vote_password']) ? null : $_POST['vote_password'];
 
     if (!empty($oldPassword) && $votePassword != $oldPassword) {
       $error .= _("Wrong password");
@@ -174,9 +182,15 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   }
 
   $html .= "</tbody></table>\n";
+
+  if (!empty($poll['password']) && !hasEditSeriesRight($seriesId)) {
+    $html .= "<tr><td class='infocell'>" . _("Poll Password") .
+      ": </td><td><input class='input' type='password' name='poll_password'/>&nbsp;</td></tr>\n";
+  }
+
   if ($user == 'anonymous' || !empty($oldPassword)) {
-    $html .= "<p>" . sprintf(_("Enter a password for %s's vote (needed if you change your vote later)"), $name) .
-      ": <input class='input' type='password' name='votepassword' value='" . utf8entities($votePassword) . "'/>&nbsp;\n";
+    $html .= "<p>" . sprintf(_("Enter a personal password for %s's vote (needed if you change your vote later)"), $name) .
+      ": <input class='input' type='password' name='vote_password' value='" . utf8entities($votePassword) . "'/>&nbsp;\n";
     if (hasEditSeriesRight($seriesId)) {
       $html .= "<input class='input' type='checkbox' name='override'/>" . _("Override") . "</p>";
     }
