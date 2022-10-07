@@ -13,6 +13,14 @@ $html = "";
 
 $serieses = SeasonSeries($seasonId);
 
+// view=user/polls&season=$seasonId&poll=$pollId&deleteoption=".
+if (isset($_GET['deleteoption']) && hasEditSeriesRight($_GET['series'])) {
+  $deleted = DeletePollOption($_GET['deleteoption']);
+  $html .= "<p>" . _("Poll option has been deleted.") . "</p>";
+}
+
+
+
 if (!count($serieses)) {
   $html .= "<p>" . _("No divisions.") . "</p>\n";
 } else {
@@ -27,7 +35,8 @@ if (!count($serieses)) {
       $pollId = $poll['poll_id'];
       $html .= "<div class='poll_description'><p>" . $poll['description'] . "</p></div>";
 
-      $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") . "</th>";
+      $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") .
+        "</th>";
       $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
       $options = PollOptions($pollId);
       $maxl = 50;
@@ -42,11 +51,12 @@ if (!count($serieses)) {
         else
           $html .= utf8entities($option['description']) . "</td>";
 
-        $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" . $option['option_id'] . "'>" .
-          _("Details") . "</a>";
+        $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" . $option['option_id'] .
+          "'>" . _("Details") . "</a>";
         if (hasEditSeriesRight($seriesId)) {
-          $html .= "<td><input class='button' type='image' name='rempoll' src='images/remove.png' value='X' alt='X' onclick='setId(" .
-            $option['option_id'] . ", \"deletePollId" . $option['option_id'] . "\");'/></td>";
+          $html .= "<td><a href='?view=user/polls&season=$seasonId&poll=$pollId&series=$seriesId&deleteoption=" . $option['option_id'] .
+            "'" . "onclick='return confirm(\"" . sprintf(_("Do you want to delete %s?"), $option['name']) . "\");'" . // "onclick='return deletePollOption($pollId, " . $option['option_id'] . ");' .
+            "/><img src='images/remove.png' class='delete_icon' alt='X' /></a> </td>";
         }
 
         $html .= "</tr>\n";
