@@ -64,23 +64,23 @@ if (!$confirmed && !$mailsent) {
   $html.= "<form method='post' action='?view=register";
   $html.= "'>\n";
   $html.= "<table class='formtable'>
-		<tr><td class='infocell'>"._("Name").":</td>
+		<tr><td class='infocell'><label for='Name'>"._("Name")."</label>:</td>
 			<td><input type='text' class='input' maxlength='256' id='Name' name='Name' value='";
   if (isset($_POST['Name'])) $html.= utf8entities($_POST['Name']);
   $html.= "'/></td></tr>
-		<tr><td class='infocell'>"._("Username").":</td>
+		<tr><td class='infocell'><label for='UserName'>"._("Username")."</label>:</td>
 			<td><input type='text' class='input' maxlength='20' id='UserName' name='UserName' value='";
   if (isset($_POST['UserName'])) $html.= utf8entities($_POST['UserName']);
   $html.= "'/></td></tr>
-		<tr><td class='infocell'>"._("Password").":</td>
+		<tr><td class='infocell'><label for='Password'>"._("Password")."</label>:</td>
 			<td><input type='password' class='input' maxlength='20' id='Password' name='Password' value='";
   if (isset($_POST['Password'])) $html.= utf8entities($_POST['Password']);
   $html.= "'/></td></tr>
-		<tr><td class='infocell'>"._("Repeat password").":</td>
+		<tr><td class='infocell'><label for='Password2'>"._("Repeat password")."</label>:</td>
 			<td><input type='password' class='input' maxlength='20' id='Password2' name='Password2' value='";
   if (isset($_POST['Password'])) $html.= utf8entities($_POST['Password']);
   $html.= "'/></td></tr>
-		<tr><td class='infocell'>"._("Email").":</td>
+		<tr><td class='infocell'><label for='Email'>"._("Email")."</label>:</td>
 			<td><input type='text' class='input' maxlength='100' id='Email' name='Email' size='40' value='";
   if (isset($_POST['Email'])) $html.= utf8entities($_POST['Email']);
   $html.= "'/></td></tr>";

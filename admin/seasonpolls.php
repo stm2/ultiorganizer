@@ -35,8 +35,7 @@ if (!count($serieses)) {
   $html .= "<form method='post' action='?view=admin/seasonpolls&season=$season'>";
   $html .= "<table class='admintable'>\n";
 
-
-  $html .= "<tr><th></th><th>" . _("Name") . "</th>
+  $html .= "<tr><th>" . _("Name") . "</th>
       <th>" . _("Division") . "</th>
       <th class='center' title='" . _("Visible") . "'>" . _("poll_v") . "</th>
       <th class='center' title='" . _("Option entry") . "'>" . _("poll_o") . "</th>

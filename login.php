@@ -11,6 +11,7 @@ if (!$userId && isset($_GET['user']) && $_GET['user'])
   $userId = $_GET['user'];
 
 $html = "";
+$warning = "";
 
 function getResetForm($userId, $token) {
   $html .= "<p>" . _("Please enter your new password below.") . "</p>\n";
@@ -18,11 +19,11 @@ function getResetForm($userId, $token) {
   $html .= "<table class='formtable'>
 		<tr><td class='infocell'>" . _("Username") . ":</td>
 			<td>" . $userId . "</td></tr>
-		<tr><td class='infocell'>" . _("Password") .
-    ":</td>
+		<tr><td class='infocell'><label for='Password'>" . _("Password") .
+    "</label>:</td>
 			<td><input type='password' class='input' size='40' maxlength='20' id='Password' name='Password' value=''/></td></tr>
-		<tr><td class='infocell'>" . _("Repeat password") .
-    ":</td>
+		<tr><label for='Password2'><td class='infocell'>" . _("Repeat password") .
+    "</label>:</td>
 			<td><input type='password' class='input' size='40' maxlength='20' id='Password2' name='Password2' value=''/></td></tr>";
 
   $html .= "<tr><td colspan = '2'><br/>
@@ -98,11 +99,11 @@ if (!empty($warning) || isset($_GET['recover'])) { // 1. recover request
     _(
       "If you have forgotten your password, enter <em>either</em> your username <em>or</em> your email below. If we have your email address, you will receive an email with further instructions.") .
     "</p>\n";
-  $html .= "<table class='formtable'><tr><td class='infocell'>" . _("Username") . ":</td>";
-  $html .= "<td><input type='text' class='input' maxlength='20' size='40' name='user' value='" . utf8entities($userId) .
+  $html .= "<table class='formtable'><tr><td class='infocell'><label for='user'>" . _("Username") . "</label>:</td>";
+  $html .= "<td><input type='text' class='input' maxlength='20' size='40' id='user' name='user' value='" . utf8entities($userId) .
     "'/></td></tr>\n";
-  $html .= "<tr><td class='infocell'>" . _("Email") . ":</td>";
-  $html .= "<td><input type='text' class='input' maxlength='100' size='40' name='email' size='40' /></td></tr></table>\n";
+  $html .= "<tr><td class='infocell'><label for='email'>" . _("Email") . "</label>:</td>";
+  $html .= "<td><input type='text' class='input' maxlength='100' size='40' id='email' name='email' size='40' /></td></tr></table>\n";
   $html .= "<p><input class='button' type='submit' name='recoverpassword' value='" . _("Recover password") . "'/></p>\n";
   $html .= "</form>\n";
 }

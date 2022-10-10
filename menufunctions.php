@@ -229,9 +229,9 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
 
   echo "<div id='show_menu_link' class='$showShow'><a href='$showUrl' onclick='LeftMenu.toggleMenu(this);'>$showText</a></div>\n";
   echo "<div id='hide_menu_link' class='$showHide'><a href='$hideUrl' onclick='LeftMenu.toggleMenu(this);'>$hideText</a></div>\n";
-  echo "<div id='menu_toggle' onclick='return LeftMenu.toggleMenu(this);'>";
+  echo "<button id='menu_toggle' class='page_menu' title='Toggle menu' onclick='return LeftMenu.toggleMenu(this);'>";
   echo hamburgerMenu();
-  echo "</div>";
+  echo "</button>";
 
   // navigation bar
   echo "<div class='breadcrumbs'><p class='breadcrumbs_text'>";
@@ -539,7 +539,7 @@ function seasonSelection() {
   if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
-    echo "<div><select class='seasondropdown' name='selseason' id='selseason'
+    echo "<div><label for='selseason'>" . _("Select division") . "<select class='seasondropdown' name='selseason' id='selseason'
 			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
     while ($row = mysqli_fetch_assoc($seasons)) {
       $selected = "";
@@ -550,7 +550,7 @@ function seasonSelection() {
       echo "<option class='dropdown' $selected value='" . utf8entities($row['season_id']) . "'>" .
         SeasonName($row['season_id']) . "</option>";
     }
-    echo "</select>";
+    echo "</select></label>\n";
     foreach ($_GET as $name => $value) {
       if ($name != 'selseason')
         echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />";
@@ -751,7 +751,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<table class='leftmenulinks'>\n";
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(SeasonName($season)) . " " .
         utf8entities(_("Administration")) . "</th>";
-      echo "<td class='menuseasonlevel'><a style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
+      echo "<td class='menuseasonlevel'><a class='hideseason' style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
       echo "</tr><tr><td colspan='2'>\n";
       foreach ($links as $href => $name) {
         if (empty($href))
@@ -857,7 +857,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
           // echo "<a class='subnav' href='?view=poolstatus&amp;series=" . $series . "'>";
           echo utf8entities(U_($row['series_name']));
           echo "</a>";
-          echo "</td><td class='uncollapse' style='display:none;'><a $onclick>&raquo;</a></td><td class='collapse' style='display:none;'><a $onclick>v</a></td></tr>\n";
+          echo "</td><td class='uncollapse' style='display:none;'><a $onclick tabindex='0'>&raquo;</a></td><td class='collapse' style='display:none;'><a $onclick>v</a></td></tr>\n";
           echo "<tr class='menulevel2'><td $colspan class='navpoollink'>\n";
           echo "<a class='subnav' href='?view=seriesstatus&amp;series=" . $series . "'>&raquo; " .
             utf8entities(_("Statistics")) . "</a></td></tr>\n";
@@ -1197,13 +1197,13 @@ function loginForm($query_string, $userId = '') {
 
   $html .= "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
   $html .= "<table class='formtable'>\n";
-  $html .= "<tr><td class='infocell'>" . _("Username") . ":</td>";
+  $html .= "<tr><td class='infocell'><label for='myusername'>" . _("Username") . "</label>:</td>";
   $html .= "<td><input class='input' type='text' id='myusername' name='myusername' size='40' value='$userId'/>&nbsp;</td>";
   $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=register'>" .
     utf8entities(_("New user?")) . "</a></span></td>\n";
   $html .= "</tr>\n";
-  $html .= "<tr><td class='infocell'>" . _("Password") . ":</td>";
-  $html .= "<td><input type='password' class='input' size='40' maxlength='20' name='mypassword' value=''/></td>";
+  $html .= "<tr><td class='infocell'><label for='mypassword'>" . _("Password") . "</label>:</td>";
+  $html .= "<td><input type='password' class='input' size='40' maxlength='20' id='mypassword' name='mypassword' value=''/></td>";
   $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=login&recover=1'>" .
     utf8entities(_("Recover lost password?")) . "</a></span></td>\n";
   $html .= "</tr>";

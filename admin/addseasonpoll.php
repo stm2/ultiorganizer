@@ -63,28 +63,28 @@ $html .= "<h3>" . utf8entities(U_($series['name'])) . "</h3>";
 $html .= "<input type='hidden' name='poll' value='$pollId'/>";
 $html .= "<table class='formtable'>";
 
-$html .= "<tr><td class='infocell'>" . _("Name") . "</td><td><input class='input' name='name' value='" .
+$html .= "<tr><td class='infocell'><label for='name'>" . _("Name") . "</label></td><td><input class='input' id='name' name='name' value='" .
   utf8entities($poll['name']) . "'/></td></tr>\n";
 
 foreach (PollStatuses() as $key => $value) {
-  $html .= "<tr><td class='infocell'>" . PollStatusName($key) .
-    ": </td><td><input class='input' type='checkbox' name='$value' ";
+  $html .= "<tr><td class='infocell'><label for='$value'>" . PollStatusName($key) .
+    "</label>: </td><td><input class='input' type='checkbox' id='$value' name='$value' ";
   if ($poll[$value]) {
     $html .= "checked='checked'";
   }
   $html .= "/></td></tr>\n";
 }
-$html .= "<tr><td class='infocell'>" . _("Password") . "</td><td><input class='input' name='poll_password' value='" .
+$html .= "<tr><td class='infocell'><label for='poll_password'>" . _("Password") . "</label></td><td><input class='input' id='poll_password' name='poll_password' value='" .
   utf8entities($poll['password']) . "'/></td></tr>\n";
 
 $voters = PollVoters($pollId);
 $options = PollOptions($pollId);
-$html .= "<tr><td class='infocell'>" . _("Description") . "</td><td>" .
-  "<textarea class='input' rows='5' cols='70' name='description'>" . htmlentities($poll['description']) .
+$html .= "<tr><td class='infocell'><label for='description'>" . _("Description") . "</label></td><td>" .
+  "<textarea class='input' rows='5' cols='70' id='description' name='description'>" . htmlentities($poll['description']) .
   "</textarea></td></tr>\n";
 if ($pollId > 0) {
   $html .= "<tr><td class='infocell'>" . _("Options") . "</td><td>" . count($options) . "</td></tr>\n";
-  $html .= "<tr><td class='infocell'>" . _("Voters") . "</td><td>" . count($voters) . "</td></tr>\n";
+  $html .= "<tr><td class='infocell'>" . _("Voters") . "</td><td>" . $voters . "</td></tr>\n";
 }
 $html .= "</table>\n";
 

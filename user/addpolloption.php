@@ -189,8 +189,8 @@ if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($series
 
     $disabled = $edit ? "" : "disabled='disabled'";
 
-    $html .= "<tr><td class='infocell'>" . _("Option Name") .
-      ": </td><td><input class='input' name='name' $disabled value='" . utf8entities($info['name']) . "'/></td></tr>\n";
+    $html .= "<tr><td class='infocell'><label for='name'>" . _("Option Name") .
+      "</label>: </td><td><input class='input' id='name' name='name' $disabled value='" . utf8entities($info['name']) . "'/></td></tr>\n";
     if (hasEditSeriesRight($poll['series_id']) && $edit)
       $disabled = "";
     else
@@ -198,22 +198,22 @@ if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($series
 
     $user = UserName($info['user_id']);
     if ($user !== -1) {
-      $html .= "<tr><td class='infocell'>" . _("User") . ": </td><td><input class='input' name='user' $disabled value='" .
+      $html .= "<tr><td class='infocell'><label for='user'>" . _("User") . "</label>: </td><td><input class='input' id='user' name='user' $disabled value='" .
         utf8entities($user) . "'/></td></tr>\n";
     }
 
     $disabled = $edit ? "" : "disabled='disabled'";
 
-    $html .= "<tr><td class='infocell'>" . _("Mentor (public)") .
-      ": </td><td><input class='input' name='mentor' $disabled value='" . utf8entities($info['mentor']) .
+    $html .= "<tr><td class='infocell'><label for='mentor'>" . _("Mentor (public)") .
+      "</label>: </td><td><input class='input' id='mentor' name='mentor' $disabled value='" . utf8entities($info['mentor']) .
       "'/></td></tr>\n";
-    $html .= "<tr><td class='infocell'>" . htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) .
-      ":</td>
+    $html .= "<tr><td class='infocell'><label for='description'>" . htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) .
+      "</label>:</td>
     <td><textarea class='input' maxlength='255' rows='10' cols='70' id='description' name='description'  $disabled>" .
       htmlentities($info['description']) . "</textarea></td></tr>\n";
     if (!empty($poll['password']) && $edit && !hasEditSeriesRight($seriesId)) {
-      $html .= "<tr><td class='infocell'>" . _("Poll Password") .
-        ": </td><td><input class='input' type='password' name='poll_password'/>&nbsp;</td></tr>\n";
+      $html .= "<tr><td class='infocell'><label for='name'>" . _("Poll Password") .
+        "</label>: </td><td><input class='input' type='password' id='poll_password' name='poll_password'/>&nbsp;</td></tr>\n";
     }
     $html .= "<table>\n";
     if ($edit) {

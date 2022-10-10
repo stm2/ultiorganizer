@@ -1520,8 +1520,8 @@ function UserRecoverPasswordRequest($userId) {
   }
   $row = mysqli_fetch_assoc($result);
 
-  $email = $row['email'];
-  if (!empty($email)) {
+  if (!empty($row['email'])) {
+    $email = $row['email'];
     Log1("user", "change", $userId, "", "recover mail");
     $token = uuidSecure();
     $url = GetURLBase() . "?view=login&user=" . urlencode($userId) . "&token=" . urlencode($token);

@@ -162,18 +162,18 @@ if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   $html .= "<form method='post' action='?view=user/pollresult&series=$seriesId&poll=$pollId'>";
   if (hasEditSeriesRight($seriesId)) {
     $html .= "<p><label for=show_votes>" . _("Show votes") . "</label>";
-    $html .= "<input class='input' type='checkbox' name='show_votes' ";
+    $html .= "<input class='input' type='checkbox' id='show_votes' name='show_votes' ";
     if (isset($_POST['show_votes'])) {
       $html .= "checked='checked'";
     }
     $html .= "/></p>\n";
   }
-  $html .= "<p><select class='dropdown' name='rankby'>\n";
+  $html .= "<p><label>" . _("Select metric") . ": <select class='dropdown' name='rankby'>\n";
   for ($i = 2; $i < count($columns); ++$i) {
     $selected = $ranker == $i ? "selected='selected'" : "";
     $html .= "<option class='dropdown' $selected value='$i'>" . utf8entities($columns[$i][0]) . "</option>\n";
   }
-  $html .= "</select>\n";
+  $html .= "</select></label>\n";
 
   $html .= "<input class='button' name='change' type='submit' value='" . _("Rank by") . "'/></p>";
   $html .= "</form>";

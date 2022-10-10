@@ -41,54 +41,79 @@ if (!count($serieses)) {
       $pollId = $poll['poll_id'];
       if (IsVisible($pollId) && !hasEditSeriesRight($seriesId))
         continue;
-
       if (empty($poll['name'])) {
         $html .= "<h3>" . sprintf(_("Poll %d"), $pollNum) . "</h3>";
       } else {
         $html .= "<h3>" . utf8entities($poll['name']) . "</h3>";
       }
-      $html .= "<div class='poll_description'><p>" . $poll['description'] . "</p></div>";
 
-      $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") .
-        "</th>";
-      $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>&nbsp;</th><th>&nbsp;</th></tr>\n";
+      if (!empty($poll['description']))
+        $html .= "<div class='poll_description'><p>" . $poll['description'] . "</p></div>";
+
       $options = PollOptions($pollId);
-      $maxl = 50;
+      if (count($options) == 0) {
+        $html .= "<p>" . _("No options have been defined, yet.") . "</p>";
+      } else {
+        $html .= "<table class='infotable poll_options' style='width:100%' cellpadding='2'><tr><th>" . _("Option") .
+          "</th>";
+        $html .= "<th>" . _("Mentor") . "</th><th>" . _("Description") . "</th><th>" . _("Op") . "</th></tr>\n";
+        $maxl = 50;
 
-      foreach ($options as $option) {
-        $html .= "<td>" . utf8entities($option['name']) . "</td>";
-        $html .= "<td>" . utf8entities($option['mentor']) . "</td>";
-        $html .= "<td>";
+        foreach ($options as $option) {
+          $html .= "<td>" . utf8entities($option['name']) . "</td>";
+          $html .= "<td>" . utf8entities($option['mentor']) . "</td>";
+          $html .= "<td>";
 
-        if (strlen($option['description']) > $maxl)
-          $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</td>";
-        else
-          $html .= utf8entities($option['description']) . "</td>";
+          if (strlen($option['description']) > $maxl)
+            $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</td>";
+          else
+            $html .= utf8entities($option['description']) . "</td>";
 
-        $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" . $option['option_id'] .
-          "'>" . _("Details") . "</a>";
-        if (hasEditSeriesRight($seriesId)) {
-          $html .= "<td><a href='?view=user/polls&poll=$pollId&series=$seriesId&deleteoption=" .
-            $option['option_id'] . "'" . "onclick='return confirm(\"" .
-            sprintf(_("Do you want to delete %s?"), $option['name']) . "\");'" . // "onclick='return deletePollOption($pollId, " . $option['option_id'] . ");' .
-            "/><img src='images/remove.png' class='delete_icon' alt='X' /></a> </td>";
+          $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" .
+            $option['option_id'] . "'><img class='deletebutton' src='images/settings.png' alt='E' title='" .
+            _("Details") . "'/></a>";
+          if (hasEditSeriesRight($seriesId)) {
+            $html .= "&nbsp;<a href='?view=user/polls&poll=$pollId&series=$seriesId&deleteoption=" . $option['option_id'] .
+              "' onclick='return confirm(\"" . utf8entities(sprintf(_("Do you want to delete %s?"), $option['name'])) .
+              "\");'" . // "onclick='return deletePollOption($pollId, " . $option['option_id'] . ");' .
+              "/><img src='images/remove.png' class='deletebutton' alt='X' /></a>";
+          }
+
+          $html .= " </td></tr>\n";
         }
-
-        $html .= "</tr>\n";
+        $html .= "</table>\n";
       }
-      $html .= "</table>\n";
       if ($pollId > 0) {
+        $html .= "<br />";
+        $open = false;
         if (CanSuggest(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= "<p><a href=?view=user/addpolloption&series=$seriesId&poll=$pollId>" . _("Suggest option") .
-            "</a></p>\n";
+          $open = true;
+          $heading = _("Suggest option");
+          $html .= "<p><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId'>" .
+            "<img src='images/options.png' alt='$heading'/>&ensp;$heading</a>\n";
         }
-        if (CanVote(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= "<p><a href=?view=user/votepoll&series=$seriesId&poll=$pollId>" . _("Vote") . "</a></p>\n";
+        if (count($options) > 0) {
+          if (CanVote(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
+            if (!$open)
+              $html .= "<p>";
+            $open = true;
+            $heading = _("Vote");
+            $html .= "&emsp;<a href='?view=user/votepoll&series=$seriesId&poll=$pollId'>" .
+              "<img src='images/vote.png' alt='$heading'/>&ensp;$heading</a>\n";
+          }
+          if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
+            if (!$open)
+              $html .= "<p>";
+            $open = true;
+            $heading = _("View Results");
+            $html .= "&emsp;<a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" .
+              "<img src='images/result.png' alt='$heading'/>&ensp;$heading</a>";
+          }
         }
-        if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= "<p><a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" . _("View results") . "</a></p>";
-        }
+        if ($open)
+          $html .= "</p>\n";
       }
+      $html .= "<br />";
     }
   }
 }

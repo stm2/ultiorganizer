@@ -51,7 +51,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
 } else if (empty($name)) {
   $html .= "<h2>$title</h2>";
   $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
-  $html .= "<p>" . _("Enter your name (public)") . ": <input class='input' type='text' name='name'/></p>\n";
+  $html .= "<p><label>" . _("Enter your name (public)") . ": <input class='input' type='text' name='name'/></label></p>\n";
   $html .= "<input id='doname' class='button' name='doname' type='submit' value='" . _("Vote") . "'/></form>\n";
 } else {
   $options = PollOptions($pollId);
@@ -141,13 +141,15 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
 
   if (hasEditSeriesRight($seriesId)) {
     $html .= "<table>";
-    $html .= "<tr><td class='infocell'>" . _("Name") . "</td>";
-    $html .= "<td><input class='input' type='text' name='name' value='$name'/></td></tr></table>\n";
+    $html .= "<tr><td class='infocell'><label for='name'>" . _("Name") . "</label></td>";
+    $html .= "<td><input class='input' type='text' id='name' name='name' value='$name'/></td></tr></table>\n";
   } else {
     $html .= "<input type='hidden' name='name' value='$name'/>";
   }
 
   $html .= "<table class='poll_vote'><tbody id='poll_vote'>";
+  
+  // $html .= "<tr><th>Option</th><th>Score</th></tr>\n";
 
   $maxl = 100;
   $min = 0;
@@ -184,15 +186,15 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   $html .= "</tbody></table>\n";
 
   if (!empty($poll['password']) && !hasEditSeriesRight($seriesId)) {
-    $html .= "<tr><td class='infocell'>" . _("Poll Password") .
-      ": </td><td><input class='input' type='password' name='poll_password'/>&nbsp;</td></tr>\n";
+    $html .= "<tr><td class='infocell'><label for='poll_password'>" . _("Poll Password") .
+      "</labl>: </td><td><input class='input' type='password' name='poll_password'/>&nbsp;</td></tr>\n";
   }
 
   if ($user == 'anonymous' || !empty($oldPassword)) {
-    $html .= "<p>" . sprintf(_("Enter a personal password for %s's vote (needed if you change your vote later)"), $name) .
-      ": <input class='input' type='password' name='vote_password' value='" . utf8entities($votePassword) . "'/>&nbsp;\n";
+    $html .= "<p><label>" . sprintf(_("Enter a personal password for %s's vote (needed if you change your vote later)"), $name) .
+      ": <input class='input' type='password' name='vote_password' value='" . utf8entities($votePassword) . "'/></label>&nbsp;\n";
     if (hasEditSeriesRight($seriesId)) {
-      $html .= "<input class='input' type='checkbox' name='override'/>" . _("Override") . "</p>";
+      $html .= "<label><input class='input' type='checkbox' name='override'/>" . _("Override") . "</label></p>";
     }
   }
 
