@@ -112,6 +112,26 @@ function AddPoll($seriesId, $params) {
     die("Insufficient rights to edit series");
 }
 
+function DeletePoll($pollId) {
+  $poll = PollInfo($pollId);
+  if (hasEditSeriesRight($poll['series_id'])) {
+    $query = sprintf("DELETE FROM uo_poll
+     WHERE poll_id='%d'", (int) ($pollId));
+    $ret = DBQuery($query);
+    if ($ret !== -1) {
+      $query = sprintf("DELETE FROM uo_poll_option
+     WHERE poll_id='%d'", (int) ($pollId));
+      $ret = DBQuery($query);
+      if ($ret !== -1) {
+        $query = sprintf("DELETE FROM uo_poll_vote
+     WHERE option_id='%d'", (int) ($pollId));
+        return DBQuery($query);
+      }
+    }
+  } else
+    die("Insufficient rights delete poll");
+}
+
 function SetPoll($id, $seriesId, $params) {
   if (hasEditSeriesRight($seriesId)) {
     $query = sprintf("

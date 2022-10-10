@@ -24,8 +24,6 @@ if (!empty($_POST['save'])) {
         $poll[$name] = isset($_POST[$name . $pollId]) ? 1 : 0;
       }
 
-      debug_to_apache(print_r($poll, true));
-      
       SetPoll($poll['poll_id'], $seriesId, $poll);
     }
   }
@@ -56,41 +54,38 @@ if (!count($serieses)) {
       $pollId = $poll['poll_id'];
 
       $html .= "<tr  class='admintablerow'><td>";
-      $html .= "<input type='hidden' name='poll$pollId' value='$pollId'/></td>";
-
-      $html .= "<td>" . $poll['name'] . "</td>";
+      $html .= "<input type='hidden' name='poll$pollId' value='$pollId'/>";
+      $html .= $poll['name'] . "</td>";
       $html .= "<td>" . $series['name'] . "</td>";
 
       foreach ($statuses as $key => $value) {
-        $html .= "<td><input class='input' type='checkbox' name='$value$pollId' ";
+        $name = $html .= "<td><input class='input' type='checkbox' name='$value$pollId' ";
         if ($poll[$value]) {
-          $html .= "checked='checked'";
+          $html .= "checked='checked' ";
         }
+        $html .= "aria-label='" . PollStatusName($key) . "' ";
         $html .= "/></td>\n";
       }
 
       $options = PollOptions($pollId);
       $voters = PollVoters($pollId);
 
-      if ($pollId > 0) {
-        $html .= "<td>" . count($options) . "</td>";
-        $html .= "<td>" . $voters . "</td>";
-      }
+      $html .= "<td>" . count($options) . "</td>";
+      $html .= "<td>" . $voters . "</td>";
 
-      $html .= "<td><a href='?view=admin/addseasonpoll&amp;&series=$seriesId&poll=$pollId'><img class='deletebutton' src='images/settings.png' alt='D' title='" .
-        _("edit details") . "'/></a>";
+      $html .= "<td><a href='?view=admin/addseasonpoll&amp;&series=$seriesId&poll=$pollId'><img class='deletebutton' src='images/settings.png' alt='E' title='" .
+        _("Edit details") . "'/></a>";
 
-      if ($pollId > 0) {
-        if (CanSuggest(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= " | <a href=?view=user/polls&series=$seriesId&poll=$pollId>" . _("Options") . "</a>\n";
-        }
-        if (CanVote(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= " | <a href=?view=user/votepoll&series=$seriesId&poll=$pollId>" . _("Vote") . "</a>\n";
-        }
-        if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
-          $html .= " | <a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" . _("Results") . "</a>\n";
-        }
-      }
+      $html .= "&nbsp;<a href='?view=admin/deletepoll&poll=$pollId&series=$seriesId'/><img class='deletebutton' src='images/remove.png' alt='X' title='" .
+        _("Delete") . "'/></a>";
+
+      $html .= "&nbsp;<a href=?view=user/polls&series=$seriesId&poll=$pollId><img width='16' class='deletebutton' src='images/options.png' alt='O' title='" .
+        _("Options") . "'/></a>\n";
+      $html .= "&nbsp;<a href=?view=user/votepoll&series=$seriesId&poll=$pollId><img width='16' class='deletebutton' src='images/vote.png' alt='V' title='" .
+        _("Vote") . "'/></a>\n";
+      $html .= "&nbsp;<a href='?view=user/pollresult&series=$seriesId&poll=$pollId'><img width='16' class='deletebutton' src='images/result.png' alt='R' title='" .
+        _("Results") . "'/></a>\n";
+
       $html .= "</td></tr>\n";
     }
   }
@@ -103,12 +98,12 @@ if (!count($serieses)) {
 
   $html .= "<form method='post' action='?view=admin/addseasonpoll'>";
 
-  $html .= "<p><select class='dropdown' name='series'>\n";
+  $html .= "<p><label>" . _("Select series") . ": <select class='dropdown' name='series'>\n";
   foreach ($serieses as $series) {
     $seriesId = $series['series_id'];
     $html .= "<option class='dropdown' value='$seriesId'>" . utf8entities(U_($series['name'])) . "</option>\n";
   }
-  $html .= "</select>\n";
+  $html .= "</select></label>\n";
 
   $html .= "<input class='button' name='add' type='submit' value='" . _("Add poll") . "'/></p>\n";
   $html .= "</form>\n";
