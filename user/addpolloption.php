@@ -77,7 +77,7 @@ if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($series
       $error .= "<p>" . _('Name already exists.') . "</p>";
     if (empty($info['mentor']))
       $error .= "<p>" . _('Mentor cannot be empty.') . "</p>";
-    if (!empty($poll['password']) && $poll['password'] != $_POST['poll_password']) // && !hasEditSeriesRight($seriesId))
+    if (!empty($poll['password']) && $poll['password'] != $_POST['poll_password'] && !hasEditSeriesRight($seriesId))
       $error .= "<p>" . _('Wrong poll password') . "</p>";
 
     if (empty($error)) {
@@ -85,8 +85,7 @@ if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($series
       if (empty($optionId))
         $error .= "Could not add option " . $info['name'];
       else {
-        $seasonId = SeriesSeasonId($seriesId);
-        header("location:?view=user/polls&season=$seasonId");
+        header("location:?view=user/polls&series=$seriesId");
       }
     }
   } else if ($edit && !empty($_POST['save'])) {

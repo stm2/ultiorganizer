@@ -12,88 +12,106 @@ $html = "";
 
 $serieses = SeasonSeries($season);
 
+$statuses = PollStatuses();
+
 if (!empty($_POST['save'])) {
   foreach ($serieses as $series) {
     $seriesId = $series['series_id'];
-    $poll = SeriesPoll($seriesId);
-    if (empty($poll)) {
-      $poll = emptyPoll($seriesId);
-    }
+    $polls = SeriesPolls($seriesId);
+    foreach ($polls as $poll) {
+      $pollId = $poll['poll_id'];
+      foreach ($statuses as $flag => $name) {
+        $poll[$name] = isset($_POST[$name . $pollId]) ? 1 : 0;
+      }
 
-    foreach (PollStatuses() as $flag => $name) {
-      $poll[$name] = isset($_POST[$name . $seriesId]) ? 1 : 0;
-    }
-
-    $poll['password'] = !empty($_POST["password$seriesId"]) ? $_POST["password$seriesId"] : NULL;
-    $poll['description'] = !empty($_POST["description$seriesId"]) ? $_POST["description$seriesId"] : NULL;
-
-    if ($poll['poll_id'] == -1) {
-      AddPoll($seriesId, $season, $poll);
-    } else {
-      SetPoll($poll['poll_id'], $seriesId, $season, $poll);
+      debug_to_apache(print_r($poll, true));
+      
+      SetPoll($poll['poll_id'], $seriesId, $poll);
     }
   }
-}
-
-function emptyPoll($seriesId) {
-  $x = array("poll_id" => -1, "password" => NULL, "series_id" => $seriesId, 'description' => '');
-  foreach (PollStatuses() as $flag => $name) {
-    $x[$name] = 0;
-  }
-  return $x;
 }
 
 if (!count($serieses)) {
   $html .= "<p>" . _("No divisions.") . "</p>\n";
 } else {
   $html .= "<form method='post' action='?view=admin/seasonpolls&season=$season'>";
+  $html .= "<table class='admintable'>\n";
+
+
+  $html .= "<tr><th></th><th>" . _("Name") . "</th>
+      <th>" . _("Division") . "</th>
+      <th class='center' title='" . _("Visible") . "'>" . _("poll_v") . "</th>
+      <th class='center' title='" . _("Option entry") . "'>" . _("poll_o") . "</th>
+      <th class='center' title='" . _("Voting") . "'>" . _("poll_t") . "</th>
+      <th class='center' title='" . _("Results") . "'>" . _("poll_r") . "</th>
+      <th>" . _("Options") . "</th>
+      <th>" . _("Voters") . "</th>
+      <th>" . _("Operations") . "</th>
+      </tr>\n";
   foreach ($serieses as $series) {
     $seriesId = $series['series_id'];
-    $html .= "<h2>" . utf8entities(U_($series['name'])) . "</h2>\n";
-    $poll = SeriesPoll($seriesId);
-    if (empty($poll))
-      $poll = emptyPoll($seriesId);
 
-    $pollId = $poll['poll_id'];
-    $html .= "<input type='hidden' name='poll$seriesId' value='$pollId'/>";
-    $html .= "<table class='formtable'>";
-    foreach (PollStatuses() as $key => $value) {
-      $html .= "<tr><td class='infocell'>" . PollStatusName($key) .
-        ": </td><td><input class='input' type='checkbox' name='$value$seriesId' ";
-      if ($poll[$value]) {
-        $html .= "checked='checked'";
-      }
-      $html .= "/></td></tr>\n";
-    }
-    $html .= "<tr><td class='infocell'>" . _("Password") .
-      "</td><td><input class='input' name='password$seriesId' value='" . utf8entities($poll['password']) .
-      "'/></td></tr>\n";
+    $polls = SeriesPolls($seriesId);
+    foreach ($polls as $poll) {
+      $pollId = $poll['poll_id'];
 
-    $options = PollOptions($pollId);
-    $html .= "<tr><td class='infocell'>" . _("Description") . "</td><td>" .
-      "<textarea class='input' rows='5' cols='70' name='description$seriesId'>" . htmlentities($poll['description']) .
-      "</textarea></td></tr>\n";
-    if ($pollId > 0) {
-      $html .= "<tr><td class='infocell'>" . _("Options") . "</td><td>" . count($options) . "</td></tr>\n";
-    }
-    $html .= "</table>\n";
-    if ($pollId > 0) {
-      if (CanSuggest(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-        $html .= "<p><a href=?view=user/addpolloption&series=$seriesId&poll=$pollId>" . _("Suggest option") .
-          "</a></p>\n";
+      $html .= "<tr  class='admintablerow'><td>";
+      $html .= "<input type='hidden' name='poll$pollId' value='$pollId'/></td>";
+
+      $html .= "<td>" . $poll['name'] . "</td>";
+      $html .= "<td>" . $series['name'] . "</td>";
+
+      foreach ($statuses as $key => $value) {
+        $html .= "<td><input class='input' type='checkbox' name='$value$pollId' ";
+        if ($poll[$value]) {
+          $html .= "checked='checked'";
+        }
+        $html .= "/></td>\n";
       }
-      if (CanVote(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
-        $html .= "<p><a href=?view=user/votepoll&series=$seriesId&poll=$pollId>" . _("Vote") . "</a></p>\n";
+
+      $options = PollOptions($pollId);
+      $voters = PollVoters($pollId);
+
+      if ($pollId > 0) {
+        $html .= "<td>" . count($options) . "</td>";
+        $html .= "<td>" . $voters . "</td>";
       }
-      if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
-        $html .= "<p><a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" . _("View results") . "</a></p>\n";
+
+      $html .= "<td><a href='?view=admin/addseasonpoll&amp;&series=$seriesId&poll=$pollId'><img class='deletebutton' src='images/settings.png' alt='D' title='" .
+        _("edit details") . "'/></a>";
+
+      if ($pollId > 0) {
+        if (CanSuggest(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
+          $html .= " | <a href=?view=user/polls&series=$seriesId&poll=$pollId>" . _("Options") . "</a>\n";
+        }
+        if (CanVote(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
+          $html .= " | <a href=?view=user/votepoll&series=$seriesId&poll=$pollId>" . _("Vote") . "</a>\n";
+        }
+        if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
+          $html .= " | <a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" . _("Results") . "</a>\n";
+        }
       }
+      $html .= "</td></tr>\n";
     }
   }
+  $html .= "</table>\n";
 
   $html .= "<p><input id='save' class='button' name='save' type='submit' value='" . _("Save") . "'/></p>\n";
   $html .= "</form>\n";
-  $html .= "<p><a href='?view=user/polls&season=$season'>" . _("View options") . "</a></p>\n";
+
+  $html .= "<br />";
+
+  $html .= "<form method='post' action='?view=admin/addseasonpoll'>";
+
+  $html .= "<p><select class='dropdown' name='series'>\n";
+  foreach ($serieses as $series) {
+    $seriesId = $series['series_id'];
+    $html .= "<option class='dropdown' value='$seriesId'>" . utf8entities(U_($series['name'])) . "</option>\n";
+  }
+  $html .= "</select>\n";
+
+  $html .= "<input class='button' name='add' type='submit' value='" . _("Add poll") . "'/></p>\n";
+  $html .= "</form>\n";
 }
 
 showPage($title, $html);

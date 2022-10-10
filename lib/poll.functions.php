@@ -21,7 +21,8 @@ function PollStatusName($statusId) {
 function PollInfo($pollId) {
   $query = sprintf("SELECT * FROM uo_poll
                     WHERE poll_id=%d", (int) $pollId);
-  return DBQueryToRow($query);
+  $info = DBQueryToRow($query);
+  return poll_status_to_tags($info);
 }
 
 function poll_tags_to_flags($params) {
@@ -33,7 +34,7 @@ function poll_tags_to_flags($params) {
   return $flags;
 }
 
-function poll_status_to_tags($params) {
+function poll_status_to_tags(&$params) {
   if (empty($params))
     return $params;
   $status = $params['status'];
@@ -50,23 +51,23 @@ function poll_status_to_tags($params) {
 function poll_is_status_flag($pollId, $flag) {
   $info = PollInfo($pollId);
 
-  return ($info['status'] & $flag) == $flag;
+  return $info[$flag] > 0;
 }
 
 function IsVisible($pollId) {
-  return poll_is_status_flag($pollId, 1);
+  return poll_is_status_flag($pollId, 'visible');
 }
 
 function CanSuggest($user, $name, $pollId) {
-  return poll_is_status_flag($pollId, 2);
+  return poll_is_status_flag($pollId, 'option_entry');
 }
 
 function CanVote($user, $name, $pollId) {
-  return poll_is_status_flag($pollId, 4);
+  return poll_is_status_flag($pollId, 'voting');
 }
 
 function HasResults($pollId) {
-  return poll_is_status_flag($pollId, 8);
+  return poll_is_status_flag($pollId, 'results');
 }
 
 /**
@@ -82,34 +83,42 @@ function PollSeasons() {
   return DBQueryToArray($query);
 }
 
-function SeriesPoll($seriesId) {
+function SeriesPolls($seriesId) {
   $query = sprintf("
 		SELECT *
 		FROM uo_poll
 		WHERE series_id=%d", (int) $seriesId);
 
-  return poll_status_to_tags(DBQueryToRow($query));
+  $polls = DBQueryToArray($query);
+
+  foreach ($polls as &$poll) {
+    poll_status_to_tags($poll);
+  }
+  return $polls;
 }
 
-function AddPoll($seriesId, $seasonId, $params) {
-  if (hasEditSeasonSeriesRight($seasonId)) {
+function AddPoll($seriesId, $params) {
+  if (hasEditSeriesRight($seriesId)) {
 
-    $query = sprintf("
+    $query = sprintf(
+      "
                INSERT INTO uo_poll
-               (series_id, password, description, status)
-               VALUES (%d, '%s', '%s', '%d')", (int) $seriesId, mysql_adapt_real_escape_string($params['password']),
-      mysql_adapt_real_escape_string($params['description']), (int) poll_tags_to_flags($params));
+               (series_id, name, password, description, status)
+               VALUES (%d, '%s', '%s', '%s', '%d')", (int) $seriesId, mysql_adapt_real_escape_string($params['name']),
+      mysql_adapt_real_escape_string($params['password']), mysql_adapt_real_escape_string($params['description']),
+      (int) poll_tags_to_flags($params));
     return DBQueryInsert($query);
   } else
     die("Insufficient rights to edit series");
 }
 
-function SetPoll($id, $seriesId, $seasonId, $params) {
-  if (hasEditSeasonSeriesRight($seasonId)) {
+function SetPoll($id, $seriesId, $params) {
+  if (hasEditSeriesRight($seriesId)) {
     $query = sprintf("
-               UPDATE uo_poll SET password='%s', description='%s', status = %d
-               WHERE poll_id = %d", mysql_adapt_real_escape_string($params['password']),
-      mysql_adapt_real_escape_string($params['description']), (int) poll_tags_to_flags($params), (int) $id);
+               UPDATE uo_poll SET name='%s', password='%s', description='%s', status = %d
+               WHERE poll_id = %d", mysql_adapt_real_escape_string($params['name']),
+      mysql_adapt_real_escape_string($params['password']), mysql_adapt_real_escape_string($params['description']),
+      (int) poll_tags_to_flags($params), (int) $id);
     return DBQuery($query);
   } else
     die("Insufficient rights to edit series");
@@ -701,7 +710,8 @@ function positionalRanking($pollId, $distribution, $average = false) {
 
   if ($average) {
     foreach ($options as $option) {
-      $scores[$option['option_id']] /= $counts[$option['option_id']] / count($options);
+      if ($scores[$option['option_id']] > 0)
+        $scores[$option['option_id']] /= $counts[$option['option_id']] / count($options);
     }
   }
 

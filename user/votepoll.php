@@ -24,7 +24,7 @@ if ($seriesId != $poll['series_id'])
 $series = SeriesInfo($poll['series_id']);
 $info = array();
 
-$title = _("Vote") . ": " . utf8entities($series['name']);
+$title = _("Vote") . ": " . (empty($poll['name'])?utf8entities($series['name']):$poll['name']);
 $html = "";
 $error = "";
 $feedback = "";
