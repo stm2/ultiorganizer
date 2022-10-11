@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-02 23:05+0200\n"
+"POT-Creation-Date: 2022-10-12 11:32+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -21,8 +21,8 @@ msgstr ""
 "X-Poedit-SearchPath-5: cust\n"
 
 #: admin/accreditation.php:4 admin/accreditation.php:43
-#: admin/accreditation.php:128 menufunctions.php:1010 menufunctions.php:1029
-#: menufunctions.php:1069 menufunctions.php:1078
+#: admin/accreditation.php:128 menufunctions.php:1012 menufunctions.php:1031
+#: menufunctions.php:1071 menufunctions.php:1080
 msgid "Accreditation"
 msgstr "Akkreditierung"
 
@@ -77,8 +77,8 @@ msgstr "Spieler"
 #: lib/search.functions.php:106 lib/search.functions.php:148
 #: lib/search.functions.php:207 lib/search.functions.php:351
 #: lib/search.functions.php:502 lib/search.functions.php:678
-#: lib/swissdraw.functions.php:185 menufunctions.php:1047
-#: menufunctions.php:1068 playercard.php:39 playercard.php:209
+#: lib/swissdraw.functions.php:185 menufunctions.php:1049
+#: menufunctions.php:1070 playercard.php:39 playercard.php:209
 #: playercard.php:384 plugins/reassign_playoffpools.php:49 poolstatus.php:125
 #: poolstatus.php:158 poolstatus.php:193 poolstatus.php:225 poolstatus.php:258
 #: poolstatus.php:330 scorestatus.php:52 scorestatus.php:54
@@ -115,10 +115,10 @@ msgstr "Bestätigen"
 #: lib/search.functions.php:59 lib/search.functions.php:96
 #: lib/search.functions.php:133 lib/search.functions.php:192
 #: lib/search.functions.php:420 lib/search.functions.php:460
-#: lib/search.functions.php:502 menufunctions.php:1002 playercard.php:209
+#: lib/search.functions.php:502 menufunctions.php:1004 playercard.php:209
 #: playercard.php:384 statistics.php:40 statistics.php:84 teamcard.php:218
-#: teamcard.php:381 user/select_poolselector.php:25 user/userinfo.php:368
-#: user/userinfo.php:393
+#: teamcard.php:381 user/select_poolselector.php:25 user/userinfo.php:371
+#: user/userinfo.php:396
 msgid "Event"
 msgstr "Turnier"
 
@@ -142,7 +142,7 @@ msgid "Value"
 msgstr "Wert"
 
 #: admin/accreditation.php:116 admin/eventviewer.php:84 menufunctions.php:207
-#: user/addpolloption.php:203 user/enrollteam.php:88
+#: user/addpolloption.php:201 user/enrollteam.php:88
 msgid "User"
 msgstr "Benutzer"
 
@@ -245,39 +245,40 @@ msgid "Season"
 msgstr "Saison"
 
 #: admin/addreservation.php:254 admin/addseasonlinks.php:115
-#: admin/addseasonpools.php:486 admin/addseasons.php:374
-#: admin/addseasonseries.php:131 admin/addseasonteams.php:208
-#: admin/addserieformats.php:180 admin/clubs.php:78 admin/clubs.php:117
-#: admin/editgame.php:279 admin/locations.php:184 admin/schedule.php:444
-#: admin/seasongames.php:235 admin/seasonmoves.php:216 admin/seasonpolls.php:88
-#: admin/seasonpools.php:296 admin/seasonseries.php:158
-#: admin/seasonstandings.php:511 admin/seasonteams.php:205
-#: admin/select_teams.php:124 admin/serieteams.php:176 admin/serverconf.php:392
-#: admin/translations.php:137 mobile/addfirstoffence.php:45
-#: mobile/addhalftime.php:34 mobile/addofficial.php:25
-#: mobile/addplayerlists.php:126 mobile/addspiritpoints.php:54
-#: mobile/addtimeouts.php:95 mobile/respgames.php:125
-#: plugins/lisence_modifier.php:65 result.php:90
+#: admin/addseasonpoll.php:94 admin/addseasonpools.php:486
+#: admin/addseasons.php:374 admin/addseasonseries.php:131
+#: admin/addseasonteams.php:208 admin/addserieformats.php:180
+#: admin/clubs.php:78 admin/clubs.php:117 admin/editgame.php:279
+#: admin/locations.php:184 admin/schedule.php:444 admin/seasongames.php:235
+#: admin/seasonmoves.php:216 admin/seasonpolls.php:93 admin/seasonpools.php:296
+#: admin/seasonseries.php:158 admin/seasonstandings.php:511
+#: admin/seasonteams.php:205 admin/select_teams.php:124
+#: admin/serieteams.php:176 admin/serverconf.php:392 admin/translations.php:137
+#: mobile/addfirstoffence.php:45 mobile/addhalftime.php:34
+#: mobile/addofficial.php:25 mobile/addplayerlists.php:126
+#: mobile/addspiritpoints.php:54 mobile/addtimeouts.php:95
+#: mobile/respgames.php:125 plugins/lisence_modifier.php:65 result.php:90
 #: scorekeeper/addfirstoffence.php:45 scorekeeper/addhalftime.php:67
 #: scorekeeper/addofficial.php:22 scorekeeper/addplayerlists.php:143
 #: scorekeeper/addspiritpoints.php:57 scorekeeper/addtimeouts.php:203
 #: scorekeeper/result.php:96 user/addmedialink.php:195
-#: user/addplayerlists.php:230 user/addpolloption.php:222 user/addspirit.php:69
+#: user/addplayerlists.php:230 user/addpolloption.php:221 user/addspirit.php:69
 #: user/clubprofile.php:227 user/facebookpublishing.php:88
 #: user/playerprofile.php:372 user/respgames.php:224 user/teamplayers.php:269
 #: user/teamprofile.php:183 user/userinfo.php:314
 msgid "Save"
 msgstr "Speichern"
 
-#: admin/addreservation.php:256 admin/addseasonpools.php:255
-#: admin/addseasons.php:372 admin/addseasonseries.php:133
-#: admin/addseasonteams.php:210 admin/addserieformats.php:182
-#: admin/adduser.php:93 admin/clubs.php:49 admin/clubs.php:87
-#: admin/locations.php:125 admin/poolmoves.php:332 admin/seasonpools.php:292
-#: admin/seasons.php:157 admin/seasonseries.php:151 admin/seasonteams.php:200
-#: admin/serieformats.php:49 admin/translations.php:133
-#: user/addextraemail.php:82 user/addpolloption.php:224 user/enrollteam.php:144
-#: user/teamplayers.php:259 user/userinfo.php:401 user/userinfo.php:537
+#: admin/addreservation.php:256 admin/addseasonpoll.php:92
+#: admin/addseasonpools.php:255 admin/addseasons.php:372
+#: admin/addseasonseries.php:133 admin/addseasonteams.php:210
+#: admin/addserieformats.php:182 admin/adduser.php:93 admin/clubs.php:49
+#: admin/clubs.php:87 admin/locations.php:125 admin/poolmoves.php:332
+#: admin/seasonpools.php:292 admin/seasons.php:157 admin/seasonseries.php:151
+#: admin/seasonteams.php:200 admin/serieformats.php:49
+#: admin/translations.php:133 user/addextraemail.php:82
+#: user/addpolloption.php:223 user/enrollteam.php:144 user/teamplayers.php:259
+#: user/userinfo.php:404 user/userinfo.php:540
 msgid "Add"
 msgstr "Hinzufügen"
 
@@ -286,7 +287,7 @@ msgstr "Hinzufügen"
 #: admin/addseasonseries.php:135 admin/addseasonteams.php:214
 #: admin/addteamadmins.php:85 admin/dbbackup.php:115 admin/dbequalize.php:122
 #: admin/dbrestore.php:64 admin/editgame.php:281 admin/eventdataimport.php:197
-#: admin/executesql.php:132 admin/failed.php:26 admin/poolmoves.php:334
+#: admin/executesql.php:135 admin/failed.php:26 admin/poolmoves.php:334
 #: admin/schedule.php:282 admin/schedule.php:451 admin/seasonmoves.php:217
 #: admin/serieteams.php:262 admin/success.php:26 menufunctions.php:285
 #: plugins/lisence_modifier.php:66 plugins/reassign_playoffpools.php:118
@@ -301,7 +302,7 @@ msgstr "Turnierlinks"
 
 #: admin/addseasonlinks.php:75 admin/serverconf.php:273
 msgid "Facebook Update Page"
-msgstr ""
+msgstr "Facebook Update Page"
 
 #: admin/addseasonlinks.php:85 admin/addseasonpools.php:276
 #: admin/addseasons.php:78 admin/addseasons.php:278
@@ -319,14 +320,15 @@ msgstr "Typ"
 msgid "Order"
 msgstr "Reihenfolge"
 
-#: admin/addseasonlinks.php:85 admin/addseasonpools.php:231
-#: admin/addseasonpools.php:264 admin/addseasonpools.php:390
-#: admin/addseasons.php:77 admin/addseasons.php:275
-#: admin/addseasonseries.php:102 admin/addseasonteams.php:142
-#: admin/addserieformats.php:107 admin/adduser.php:50 admin/clubs.php:52
-#: admin/clubs.php:83 admin/clubs.php:90 admin/dbadmin.php:37
-#: admin/dbbackup.php:87 admin/dbequalize.php:154 admin/dbequalize.php:173
-#: admin/dbequalize.php:193 admin/editgame.php:257 admin/locations.php:163
+#: admin/addseasonlinks.php:85 admin/addseasonpoll.php:66
+#: admin/addseasonpools.php:231 admin/addseasonpools.php:264
+#: admin/addseasonpools.php:390 admin/addseasons.php:77
+#: admin/addseasons.php:275 admin/addseasonseries.php:102
+#: admin/addseasonteams.php:142 admin/addserieformats.php:107
+#: admin/adduser.php:50 admin/clubs.php:52 admin/clubs.php:83
+#: admin/clubs.php:90 admin/dbadmin.php:38 admin/dbbackup.php:87
+#: admin/dbequalize.php:154 admin/dbequalize.php:173 admin/dbequalize.php:193
+#: admin/editgame.php:257 admin/locations.php:163 admin/seasonpolls.php:38
 #: admin/seasonpools.php:103 admin/seasons.php:91 admin/seasonseries.php:59
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasonteams.php:113
 #: admin/serieformats.php:26 admin/serieteams.php:142 admin/serverconf.php:344
@@ -348,8 +350,8 @@ msgstr "Reihenfolge"
 #: statistics.php:114 statistics.php:154 teamcard.php:113 teamcard.php:159
 #: user/addmedialink.php:171 user/addplayerlists.php:147
 #: user/addplayerlists.php:189 user/clubprofile.php:137
-#: user/clubprofile.php:192 user/playerprofile.php:337 user/teamprofile.php:147
-#: user/userinfo.php:242 user/votepoll.php:136
+#: user/clubprofile.php:192 user/playerprofile.php:337 user/pollresult.php:198
+#: user/teamprofile.php:147 user/userinfo.php:242 user/votepoll.php:144
 msgid "Name"
 msgstr "Name"
 
@@ -368,6 +370,46 @@ msgstr "Menü-E-Mail"
 #: admin/addseasonlinks.php:109 admin/serverconf.php:370
 msgid "3rd party API settings"
 msgstr "Einstellungen für fremde APIs"
+
+#: admin/addseasonpoll.php:7
+msgid "Series mandatory"
+msgstr "Turnier erforderlich"
+
+#: admin/addseasonpoll.php:15
+msgid "Series no found"
+msgstr "Klasse/Liga nicht gefunden"
+
+#: admin/addseasonpoll.php:24
+msgid "Manage poll"
+msgstr "Umfrage verwalten"
+
+#: admin/addseasonpoll.php:56 admin/seasonpolls.php:107
+msgid "Add poll"
+msgstr "Umfrage hinzufügen"
+
+#: admin/addseasonpoll.php:58
+msgid "Edit poll"
+msgstr "Umfrage bearbeiten"
+
+#: admin/addseasonpoll.php:77 admin/adduser.php:24 admin/adduser.php:60
+#: login.php:22 menufunctions.php:366 menufunctions.php:1205 register.php:75
+#: scorekeeper/login.php:21
+msgid "Password"
+msgstr "Passwort"
+
+#: admin/addseasonpoll.php:82 admin/eventviewer.php:87 user/clubprofile.php:157
+#: user/playerprofile.php:298 user/polls.php:59 user/teamprofile.php:111
+msgid "Description"
+msgstr "Beschreibung"
+
+#: admin/addseasonpoll.php:86 admin/deletepoll.php:46 admin/seasonpolls.php:44
+#: admin/seasonpolls.php:82 user/userinfo.php:500
+msgid "Options"
+msgstr "Optionen"
+
+#: admin/addseasonpoll.php:87 admin/deletepoll.php:47 admin/seasonpolls.php:45
+msgid "Voters"
+msgstr "Abstimmende"
 
 #: admin/addseasonpools.php:55
 msgid "Pool added"
@@ -397,20 +439,20 @@ msgstr "Gruppe ändern"
 
 #: admin/addseasonpools.php:269 admin/addseasonteams.php:162
 #: admin/dbequalize.php:100 admin/dbequalize.php:131 admin/dbequalize.php:173
-#: admin/seasonstats.php:31 admin/stats.php:57 clubcard.php:126
-#: clubcard.php:148 countrycard.php:19 countrycard.php:71 countrycard.php:79
-#: cust/bula/pdfprinter.php:52 cust/default/pdfprinter.php:90
-#: cust/dfv/pdfprinter.php:45 cust/gummis/pdfprinter.php:90
-#: cust/slkl/pdfprinter.php:51 cust/wfdf/pdfprinter.php:46
-#: cust/windmill/pdfprinter.php:51 gamecard.php:127 lib/search.functions.php:31
-#: lib/search.functions.php:63 lib/search.functions.php:69
-#: lib/search.functions.php:100 lib/search.functions.php:420
-#: lib/search.functions.php:460 lib/search.functions.php:502 playercard.php:209
-#: playercard.php:286 playercard.php:384 playercard.php:453 teamcard.php:199
-#: teamcard.php:219 teamcard.php:382 teamcard.php:543 teams.php:158
-#: user/respteams.php:21 user/select_poolselector.php:28
-#: user/select_poolselector.php:31 user/userinfo.php:372 user/userinfo.php:376
-#: user/userinfo.php:394 user/userinfo.php:395
+#: admin/seasonpolls.php:39 admin/seasonstats.php:31 admin/stats.php:57
+#: clubcard.php:126 clubcard.php:148 countrycard.php:19 countrycard.php:71
+#: countrycard.php:79 cust/bula/pdfprinter.php:52
+#: cust/default/pdfprinter.php:90 cust/dfv/pdfprinter.php:45
+#: cust/gummis/pdfprinter.php:90 cust/slkl/pdfprinter.php:51
+#: cust/wfdf/pdfprinter.php:46 cust/windmill/pdfprinter.php:51 gamecard.php:127
+#: lib/search.functions.php:31 lib/search.functions.php:63
+#: lib/search.functions.php:69 lib/search.functions.php:100
+#: lib/search.functions.php:420 lib/search.functions.php:460
+#: lib/search.functions.php:502 playercard.php:209 playercard.php:286
+#: playercard.php:384 playercard.php:453 teamcard.php:199 teamcard.php:219
+#: teamcard.php:382 teamcard.php:543 teams.php:158 user/respteams.php:21
+#: user/select_poolselector.php:28 user/select_poolselector.php:31
+#: user/userinfo.php:374 user/userinfo.php:397
 msgid "Division"
 msgstr "Klasse"
 
@@ -454,7 +496,8 @@ msgid "Mutual"
 msgstr "Gegenseitig"
 
 #: admin/addseasonpools.php:329 admin/seasonadmin.php:51
-#: admin/seasonpools.php:105 admin/seasons.php:96 admin/seasonseries.php:59
+#: admin/seasonpolls.php:40 admin/seasonpools.php:105 admin/seasons.php:96
+#: admin/seasonseries.php:59 lib/poll.functions.php:11
 msgid "Visible"
 msgstr "Sichtbar"
 
@@ -498,7 +541,7 @@ msgid "Select"
 msgstr "Wähle"
 
 #: admin/addseasonpools.php:380 admin/addseasons.php:329
-#: user/addpolloption.php:212
+#: user/addpolloption.php:210
 msgid "Comment (you can use <b>, <em>, and <br /> tags)"
 msgstr "Kommentar (Sie können <b>, </em> und <br />-Tags benutzen)"
 
@@ -507,8 +550,8 @@ msgstr "Kommentar (Sie können <b>, </em> und <br />-Tags benutzen)"
 #: admin/seasonpools.php:219 admin/seasonseries.php:106
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasonteams.php:14
 #: admin/serieteams.php:22 admin/stats.php:54 lib/season.functions.php:771
-#: menufunctions.php:846 menufunctions.php:886 menufunctions.php:936
-#: menufunctions.php:1004 menufunctions.php:1024 seasonlist.php:27 teams.php:7
+#: menufunctions.php:848 menufunctions.php:888 menufunctions.php:938
+#: menufunctions.php:1006 menufunctions.php:1026 seasonlist.php:27 teams.php:7
 #: teams.php:42
 msgid "Teams"
 msgstr "Teams"
@@ -811,7 +854,7 @@ msgstr "Setzliste"
 msgid "Select contact person"
 msgstr "Kontaktperson wählen"
 
-#: admin/addseasonusers.php:6 menufunctions.php:1108
+#: admin/addseasonusers.php:6 menufunctions.php:1110
 msgid "Event users"
 msgstr "Turnierbenutzer"
 
@@ -922,7 +965,7 @@ msgstr "Benutzer-ID(s)"
 #: lib/search.functions.php:341 lib/search.functions.php:745
 #: lib/search.functions.php:773 lib/timetable.functions.php:285
 #: lib/timetable.functions.php:365 lib/timetable.functions.php:422
-#: lib/timetable.functions.php:479 lib/user.functions.php:1469
+#: lib/timetable.functions.php:479 lib/user.functions.php:1489
 #: mobile/respgames.php:106 mobile/respgames.php:110 reservationinfo.php:11
 #: reservationinfo.php:25 scorekeeper/respgames.php:101
 #: user/adddefensesheet.php:209 user/addscoresheet.php:388
@@ -982,16 +1025,10 @@ msgid "Added new user"
 msgstr "Neuer Benutzer hinzugefügt"
 
 #: admin/adduser.php:23 admin/adduser.php:55 lib/search.functions.php:586
-#: login.php:19 login.php:101 menufunctions.php:362 menufunctions.php:1198
+#: login.php:20 login.php:102 menufunctions.php:362 menufunctions.php:1200
 #: register.php:71 scorekeeper/login.php:19 user/userinfo.php:244
 msgid "Username"
 msgstr "Benutzername"
-
-#: admin/adduser.php:24 admin/adduser.php:60 admin/seasonpolls.php:62
-#: login.php:21 menufunctions.php:366 menufunctions.php:1203 register.php:75
-#: scorekeeper/login.php:21
-msgid "Password"
-msgstr "Passwort"
 
 #: admin/adduser.php:26
 msgid "User has been notified to change password."
@@ -1007,7 +1044,7 @@ msgstr "Korrigieren Sie die Fehler und versuchen Sie es nochmal"
 
 #: admin/adduser.php:67 lib/search.functions.php:154
 #: lib/search.functions.php:213 lib/search.functions.php:586
-#: lib/search.functions.php:678 login.php:104 register.php:83
+#: lib/search.functions.php:678 login.php:105 register.php:83
 #: user/addextraemail.php:76
 msgid "Email"
 msgstr "Email"
@@ -1052,7 +1089,8 @@ msgstr "SQL ausführen"
 msgid "Backup"
 msgstr "Backup"
 
-#: admin/dbadmin.php:16 admin/dbrestore.php:34 admin/dbrestore.php:63
+#: admin/dbadmin.php:16 admin/dbanonymous.php:37 admin/dbrestore.php:34
+#: admin/dbrestore.php:63
 msgid "Restore"
 msgstr "Wiederherstellen"
 
@@ -1060,79 +1098,107 @@ msgstr "Wiederherstellen"
 msgid "Equalization"
 msgstr "Vereinheitlichung"
 
-#: admin/dbadmin.php:25
+#: admin/dbadmin.php:18 admin/dbanonymous.php:2
+msgid "Restore anonymous user settings"
+msgstr "Einstellungen für anonymen Benutzer zurücksetzen"
+
+#: admin/dbadmin.php:26
 msgid "Plugins"
 msgstr "Plugins"
 
-#: admin/dbadmin.php:35
+#: admin/dbadmin.php:36
 msgid "Tables"
 msgstr "Tabellen"
 
-#: admin/dbadmin.php:38 admin/dbbackup.php:90
+#: admin/dbadmin.php:39 admin/dbbackup.php:90
 msgid "Rows"
 msgstr "Zeilen"
 
-#: admin/dbadmin.php:39 admin/dbbackup.php:91
+#: admin/dbadmin.php:40 admin/dbbackup.php:91
 msgid "avg. row length"
 msgstr "Durschn. Zeilenlänge"
 
-#: admin/dbadmin.php:40 admin/dbbackup.php:88
+#: admin/dbadmin.php:41 admin/dbbackup.php:88
 msgid "Data"
 msgstr "Daten"
 
-#: admin/dbadmin.php:41 admin/dbbackup.php:89
+#: admin/dbadmin.php:42 admin/dbbackup.php:89
 msgid "Index"
 msgstr "Index"
 
-#: admin/dbadmin.php:42 admin/dbbackup.php:92
+#: admin/dbadmin.php:43 admin/dbbackup.php:92
 msgid "Auto Increment"
 msgstr "Auto-Inkrement"
 
-#: admin/dbadmin.php:43 admin/dbbackup.php:93
+#: admin/dbadmin.php:44 admin/dbbackup.php:93
 msgid "Updated"
 msgstr "Aktualisiert"
 
-#: admin/dbadmin.php:61 admin/dbadmin.php:75
+#: admin/dbadmin.php:62 admin/dbadmin.php:76
 msgid "Execute"
 msgstr "Ausführen"
 
-#: admin/dbadmin.php:64 admin/dbbackup.php:113
+#: admin/dbadmin.php:65 admin/dbbackup.php:113
 msgid "Database size"
 msgstr "Datenbankgröße"
 
-#: admin/dbadmin.php:64 admin/dbbackup.php:113
+#: admin/dbadmin.php:65 admin/dbbackup.php:113
 msgid "bytes"
 msgstr "Bytes"
 
-#: admin/dbadmin.php:66 menufunctions.php:861 menufunctions.php:932
+#: admin/dbadmin.php:67 menufunctions.php:863 menufunctions.php:934
 #: poolstatus.php:56 seriesstatus.php:9 seriesstatus.php:29 statistics.php:6
 msgid "Statistics"
 msgstr "Statistik"
 
-#: admin/dbadmin.php:78
+#: admin/dbadmin.php:79
 msgid "Client library version"
 msgstr "Client-Library-Version"
 
-#: admin/dbadmin.php:79
+#: admin/dbadmin.php:80
 msgid "Type of connection in use"
 msgstr "Verbindungsart"
 
-#: admin/dbadmin.php:80
+#: admin/dbadmin.php:81
 msgid "Protocol version"
 msgstr "Protokollversion"
 
-#: admin/dbadmin.php:81
+#: admin/dbadmin.php:82
 msgid "Server version"
 msgstr "Serverversion"
 
-#: admin/dbadmin.php:83
+#: admin/dbadmin.php:84
 msgid "Character set and collation"
 msgstr "Zeichensatz und Collation"
 
-#: admin/dbadmin.php:97 admin/dbbackup.php:119 admin/dbrestore.php:68
+#: admin/dbadmin.php:98 admin/dbbackup.php:119 admin/dbrestore.php:68
 #: admin/visitors.php:43
 msgid "User credentials does not match"
 msgstr "Zugangsdaten stimmen nicht überein"
+
+#: admin/dbanonymous.php:23
+msgid "Restoration complete."
+msgstr "Wiederherstellung vollständig."
+
+#: admin/dbanonymous.php:29
+msgid ""
+"This resets the settings needed when there is no logged in user. Doing this "
+"should cause no trouble. Are you sure?"
+msgstr ""
+"Dies sollte die Einstellungen für den Fall zurücksetzen, dass keine Benutzer "
+"eingeloggt ist. Dies sollte keine Probleme verursachen. Sind Sie sicher?"
+
+#: admin/dbanonymous.php:32
+msgid "Override and continue?"
+msgstr "Einstellung erzwingen und weitermachen?"
+
+#: admin/dbanonymous.php:35
+msgid "This looks like a permanent error. Try again?"
+msgstr "Dies scheint ein permanenter Fehler zu sein. Noch mal probieren?"
+
+#: admin/dbanonymous.php:41
+msgid "Take me back"
+msgstr "Ich will zurück"
 
 #: admin/dbbackup.php:77 admin/dbrestore.php:72
 msgid "Database backup"
@@ -1160,12 +1226,12 @@ msgstr "kann nicht löschen"
 msgid "List"
 msgstr "Liste"
 
-#: admin/dbequalize.php:96 menufunctions.php:937
+#: admin/dbequalize.php:96 menufunctions.php:939
 msgid "Clubs"
 msgstr "Vereine"
 
 #: admin/dbequalize.php:98 admin/seasonadmin.php:63 admin/seasonpools.php:12
-#: admin/seasonseries.php:107 menufunctions.php:1005 poolstatus.php:57
+#: admin/seasonseries.php:107 menufunctions.php:1007 poolstatus.php:57
 msgid "Pools"
 msgstr "Gruppen"
 
@@ -1193,11 +1259,13 @@ msgstr "Ausgewähltes löschen"
 msgid "Clear"
 msgstr "Löschen"
 
-#: admin/dbrestore.php:7 admin/executesql.php:13
+#: admin/dbrestore.php:7 admin/executesql.php:15
 msgid ""
 "Direct database access is disabled. To enable it, "
-"define(ENABLE_ADMIN_DB_ACCESS,'enabled') in the config.inc.php file"
+"define('ENABLE_ADMIN_DB_ACCESS','enabled') in the config.inc.php file."
 msgstr ""
+"Direkter Datenbankzugriff nicht aktiv. Um ihn zu aktivieren fügen Sie "
+"define('ENABLE_ADMIN_DB_ACCESS','enabled') in der Datei config.inc.php hinzu."
 
 #: admin/dbrestore.php:59
 msgid "Select backup to restore"
@@ -1207,11 +1275,12 @@ msgstr "Backup zum Wiederherstellen aussuchen"
 msgid "Delete games"
 msgstr "Spiele löschen"
 
-#: admin/delete.php:34 admin/delete.php:129 admin/locations.php:186
-#: admin/poolmoves.php:178 admin/poolmoves.php:246 admin/users.php:38
-#: menufunctions.php:1117 mobile/deletescore.php:24 mobile/deletescore.php:44
-#: scorekeeper/deletescore.php:51 user/addpolloption.php:227
-#: user/teamplayers.php:168 user/votepoll.php:186
+#: admin/delete.php:34 admin/delete.php:129 admin/deletepoll.php:54
+#: admin/locations.php:186 admin/poolmoves.php:178 admin/poolmoves.php:246
+#: admin/seasonpolls.php:79 admin/users.php:38 menufunctions.php:1119
+#: mobile/deletescore.php:24 mobile/deletescore.php:44
+#: scorekeeper/deletescore.php:51 user/addpolloption.php:226
+#: user/teamplayers.php:168 user/votepoll.php:202
 msgid "Delete"
 msgstr "Löschen"
 
@@ -1241,7 +1310,24 @@ msgstr "Pools zum Spielen oder Rückgängigmachen"
 msgid "Reset played games"
 msgstr "Beendete Spiele zurücksetzen"
 
-#: admin/editgame.php:62 user/addpolloption.php:147 user/votepoll.php:118
+#: admin/deletepoll.php:6 user/addpolloption.php:6 user/pollresult.php:29
+#: user/votepoll.php:14
+msgid "Series and poll mandatory"
+msgstr "Turnier und Umfrage erforderlich"
+
+#: admin/deletepoll.php:12
+msgid "Delete poll"
+msgstr "Abstimmung löschen"
+
+#: admin/deletepoll.php:51
+msgid "Do you want to delete the poll and all votes?"
+msgstr "Möchten Sie die Umfrage mit allen Stimmen löschen?"
+
+#: admin/deletepoll.php:53 user/teamplayers.php:218
+msgid "No"
+msgstr "Nein"
+
+#: admin/editgame.php:62 user/addpolloption.php:145 user/votepoll.php:126
 msgid "Error"
 msgstr "Fehler"
 
@@ -1291,7 +1377,7 @@ msgstr "Medien hinzufügen"
 #: cust/gummis/pdfprinter.php:90 cust/slkl/pdfprinter.php:51
 #: cust/wfdf/pdfprinter.php:46 cust/windmill/pdfprinter.php:51
 #: lib/season.functions.php:769 plugins/update_pool_colors.php:73 teams.php:152
-#: teams.php:154
+#: teams.php:154 user/userinfo.php:377 user/userinfo.php:398
 msgid "Pool"
 msgstr "Gruppe"
 
@@ -1477,11 +1563,6 @@ msgstr "ID1"
 msgid "Id2"
 msgstr "ID2"
 
-#: admin/eventviewer.php:87 admin/seasonpolls.php:67 user/clubprofile.php:157
-#: user/playerprofile.php:298 user/polls.php:31 user/teamprofile.php:111
-msgid "Description"
-msgstr "Beschreibung"
-
 #: admin/eventviewer.php:165
 #, php-format
 msgid "Events %d to %d."
@@ -1501,19 +1582,23 @@ msgstr "Nächste %d Ergebnisse"
 msgid "Delete events"
 msgstr "Ereignisse löschen"
 
-#: admin/executesql.php:32
+#: admin/executesql.php:18 user/contacts.php:13
+msgid "Inadequate user rights"
+msgstr "Benutzerrechte reichen nicht aus"
+
+#: admin/executesql.php:39
 msgid "Invalid query:"
 msgstr "Ungültige Abfrage:"
 
-#: admin/executesql.php:128 admin/executesql.php:130
+#: admin/executesql.php:127 admin/executesql.php:131
 msgid "Column information"
 msgstr "Spalteninfo"
 
-#: admin/executesql.php:128 admin/executesql.php:130
+#: admin/executesql.php:129 admin/executesql.php:133
 msgid "Run"
 msgstr "Ausführen"
 
-#: admin/help.php:9 menufunctions.php:740
+#: admin/help.php:9 menufunctions.php:742
 msgid "Helps"
 msgstr "Hilfe"
 
@@ -1594,8 +1679,8 @@ msgstr "Länge"
 #: defensestatus.php:59 defensestatus.php:61 ext/countrystatus.php:47
 #: ext/eventpools.php:44 ext/poolscoreboard.php:34 ext/poolstatus.php:36
 #: ext/teamscoreboard.php:42 gamecard.php:89 gamecard.php:207 gamecard.php:211
-#: lib/search.functions.php:740 menufunctions.php:863 menufunctions.php:883
-#: menufunctions.php:1007 menufunctions.php:1026 playercard.php:156
+#: lib/search.functions.php:740 menufunctions.php:865 menufunctions.php:885
+#: menufunctions.php:1009 menufunctions.php:1028 playercard.php:156
 #: playercard.php:209 playercard.php:286 playercard.php:384 playercard.php:453
 #: playerlist.php:23 poolstatus.php:57 poolstatus.php:125 poolstatus.php:158
 #: poolstatus.php:193 poolstatus.php:225 poolstatus.php:259 poolstatus.php:331
@@ -1870,7 +1955,7 @@ msgstr "Teams gespeichert"
 msgid "Rankings saved"
 msgstr "Platzierungen gespeichert"
 
-#: admin/schedule.php:10 menufunctions.php:719 menufunctions.php:1006
+#: admin/schedule.php:10 menufunctions.php:721 menufunctions.php:1008
 msgid "Scheduling"
 msgstr "Spielplan"
 
@@ -1975,7 +2060,7 @@ msgstr "Spiritpunkte"
 msgid "open"
 msgstr "offen"
 
-#: admin/seasonadmin.php:40 admin/seasons.php:125 lib/poll.functions.php:5
+#: admin/seasonadmin.php:40 admin/seasons.php:125
 msgid "closed"
 msgstr "geschlossen"
 
@@ -1984,13 +2069,13 @@ msgid "Enrollment"
 msgstr "Anmeldung"
 
 #: admin/seasonadmin.php:58 admin/seasonseries.php:11 admin/seasonseries.php:53
-#: menufunctions.php:1003
+#: menufunctions.php:1005
 msgid "Divisions"
 msgstr "Klassen"
 
 #: admin/seasonadmin.php:73 admin/seasonstats.php:19 admin/seasonstats.php:33
 #: admin/stats.php:55 clubcard.php:136 clubcard.php:160 countrycard.php:29
-#: countrycard.php:54 menufunctions.php:935 mobile/respgames.php:167
+#: countrycard.php:54 menufunctions.php:937 mobile/respgames.php:167
 #: scorekeeper/addscoresheet.php:271 scorekeeper/respgames.php:144
 #: user/adddefensesheet.php:61 user/addplayerlists.php:127
 #: user/addresult.php:51 user/addscoresheet.php:174 user/addspirit.php:47
@@ -2115,7 +2200,7 @@ msgstr "Name im Spielplan"
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: admin/seasonpolls.php:6 user/enrollteam.php:9 user/polls.php:6
+#: admin/seasonpolls.php:6 user/enrollteam.php:9
 msgid "Season mandatory"
 msgstr "Saison erforderlich"
 
@@ -2124,34 +2209,55 @@ msgstr "Saison erforderlich"
 msgid "Manage polls for %s"
 msgstr "Umfragen für %s verwalten"
 
-#: admin/seasonpolls.php:42 user/enrollteam.php:73 user/polls.php:17
+#: admin/seasonpolls.php:33 user/enrollteam.php:73 user/polls.php:31
 msgid "No divisions."
 msgstr "Keine Klassen/Ligen."
 
-#: admin/seasonpolls.php:55
-msgid "Status"
-msgstr "Zustand"
+#: admin/seasonpolls.php:40
+msgid "poll_v"
+msgstr "S"
 
-#: admin/seasonpolls.php:71 user/userinfo.php:497
-msgid "Options"
-msgstr "Optionen"
+#: admin/seasonpolls.php:41
+msgid "Option entry"
+msgstr "Vorschlagsphase"
 
-#: admin/seasonpolls.php:76 user/polls.php:59
-msgid "Suggest option"
-msgstr "Auswahlmöglichkeit vorschlagen"
+#: admin/seasonpolls.php:41
+msgid "poll_o"
+msgstr "V"
 
-#: admin/seasonpolls.php:80 user/polls.php:63 user/votepoll.php:27
-#: user/votepoll.php:55 user/votepoll.php:185
+#: admin/seasonpolls.php:42 lib/poll.functions.php:15
+msgid "Voting"
+msgstr "Abstimmungsphase"
+
+#: admin/seasonpolls.php:42
+msgid "poll_t"
+msgstr "A"
+
+#: admin/seasonpolls.php:43 admin/seasonpolls.php:86 lib/poll.functions.php:17
+msgid "Results"
+msgstr "Ergebnisse"
+
+#: admin/seasonpolls.php:43
+msgid "poll_r"
+msgstr "E"
+
+#: admin/seasonpolls.php:46 admin/seasonpools.php:109 admin/seasons.php:97
+#: admin/seasonseries.php:60
+msgid "Operations"
+msgstr "Operationen"
+
+#: admin/seasonpolls.php:76
+msgid "Edit details"
+msgstr "Eigenschaften ändern"
+
+#: admin/seasonpolls.php:84 user/polls.php:100 user/votepoll.php:27
+#: user/votepoll.php:55 user/votepoll.php:201
 msgid "Vote"
 msgstr "Abstimmen"
 
-#: admin/seasonpolls.php:83 user/polls.php:66
-msgid "View results"
-msgstr "Ergebnisse ansehen"
-
-#: admin/seasonpolls.php:90
-msgid "View options"
-msgstr "Wahlmöglichkeiten ansehen"
+#: admin/seasonpolls.php:100
+msgid "Select series"
+msgstr "Klasse/Liga wählen"
 
 #: admin/seasonpools.php:105 admin/seasonseries.php:59
 msgid "V"
@@ -2169,10 +2275,6 @@ msgstr "F"
 #: ext/poolstatus.php:168 poolstatus.php:638 poolstatus.php:641
 msgid "Placement"
 msgstr "Platzierung"
-
-#: admin/seasonpools.php:109 admin/seasons.php:97 admin/seasonseries.php:60
-msgid "Operations"
-msgstr "Operationen"
 
 #: admin/seasonpools.php:214 admin/seasonpools.php:216 admin/serieteams.php:134
 msgid "Select teams"
@@ -2222,8 +2324,8 @@ msgstr "Abbrechen"
 msgid "Show all moves"
 msgstr "Alle Transfers anzeigen"
 
-#: admin/seasons.php:10 admin/seasonstats.php:17 menufunctions.php:711
-#: menufunctions.php:934 playerlist.php:22
+#: admin/seasons.php:10 admin/seasonstats.php:17 menufunctions.php:713
+#: menufunctions.php:936 playerlist.php:22
 msgid "Events"
 msgstr "Turniere"
 
@@ -2533,12 +2635,12 @@ msgstr "Pools wurden nicht gespeichert!"
 msgid "Select user roles"
 msgstr "Benutzerrollen auswählen"
 
-#: admin/select_userrole.php:23 admin/serverconf.php:361 user/userinfo.php:420
-#: user/userinfo.php:521
+#: admin/select_userrole.php:23 admin/serverconf.php:361 user/userinfo.php:423
+#: user/userinfo.php:524
 msgid "Administrator"
 msgstr "Administrator"
 
-#: admin/select_userrole.php:32 user/userinfo.php:424 user/userinfo.php:522
+#: admin/select_userrole.php:32 user/userinfo.php:427 user/userinfo.php:525
 msgid "Translation administrator"
 msgstr "Übersetzungsadministrator"
 
@@ -2546,36 +2648,36 @@ msgstr "Übersetzungsadministrator"
 msgid "cancel"
 msgstr "Abbrechen"
 
-#: admin/select_userrole.php:41 user/userinfo.php:428 user/userinfo.php:523
+#: admin/select_userrole.php:41 user/userinfo.php:431 user/userinfo.php:526
 msgid "User administrator"
 msgstr "Benutzeradministrator"
 
-#: admin/select_userrole.php:50 user/userinfo.php:433 user/userinfo.php:524
+#: admin/select_userrole.php:50 user/userinfo.php:436 user/userinfo.php:527
 msgid "Team contact person"
 msgstr "Team-Kontaktperson"
 
-#: admin/select_userrole.php:53 user/userinfo.php:454 user/userinfo.php:527
+#: admin/select_userrole.php:53 user/userinfo.php:457 user/userinfo.php:530
 msgid "Accreditation official"
 msgstr "Akkreditierungsverantwortlicher"
 
-#: admin/select_userrole.php:56 user/userinfo.php:440 user/userinfo.php:525
+#: admin/select_userrole.php:56 user/userinfo.php:443 user/userinfo.php:528
 msgid "Event responsible"
 msgstr "Turnier-/Saisonverantwortlicher"
 
-#: admin/select_userrole.php:59 user/userinfo.php:447 user/userinfo.php:526
+#: admin/select_userrole.php:59 user/userinfo.php:450 user/userinfo.php:529
 msgid "Division organizer"
 msgstr "Liga-/Klassenverantwortlicher"
 
-#: admin/select_userrole.php:62 user/userinfo.php:461 user/userinfo.php:528
+#: admin/select_userrole.php:62 user/userinfo.php:464 user/userinfo.php:531
 msgid "Scheduling right"
 msgstr "Spielplan-Verantwortlicher"
 
 #: admin/select_userrole.php:65 admin/select_userrole.php:68
-#: user/userinfo.php:470 user/userinfo.php:529
+#: user/userinfo.php:473 user/userinfo.php:532
 msgid "Reservation game input responsible"
 msgstr "Spieleingabe für eine Reservierung"
 
-#: admin/select_userrole.php:71 user/userinfo.php:488 user/userinfo.php:531
+#: admin/select_userrole.php:71 user/userinfo.php:491 user/userinfo.php:534
 msgid "Player profile administrator"
 msgstr "Spielerprofilverwalter"
 
@@ -2583,7 +2685,7 @@ msgstr "Spielerprofilverwalter"
 msgid "Rule Templates"
 msgstr "Regel-Vorlagen"
 
-#: admin/serieformats.php:23 menufunctions.php:712
+#: admin/serieformats.php:23 menufunctions.php:714
 msgid "Rule templates"
 msgstr "Regel-Vorlagen"
 
@@ -2653,7 +2755,7 @@ msgstr "Serverkonfiguration"
 
 #: admin/serverconf.php:184
 msgid "Show phpinfo()"
-msgstr "phpinfo() anzeigen"
+msgstr "Zeige phpinfo()"
 
 #: admin/serverconf.php:194
 msgid "Page title"
@@ -2839,7 +2941,7 @@ msgstr ""
 msgid "Save rankings"
 msgstr "Platzierungen speichern"
 
-#: admin/translations.php:6 admin/translations.php:91 menufunctions.php:724
+#: admin/translations.php:6 admin/translations.php:91 menufunctions.php:726
 msgid "Translations"
 msgstr "Übersetzungen"
 
@@ -2934,7 +3036,7 @@ msgstr ""
 msgid "HTTP Error"
 msgstr "HTTP-Fehler"
 
-#: admin/users.php:5 menufunctions.php:728
+#: admin/users.php:5 menufunctions.php:730
 msgid "Users"
 msgstr "Benutzer"
 
@@ -2985,7 +3087,7 @@ msgstr "Alle Vereine"
 msgid "ALL"
 msgstr "ALLES"
 
-#: allcountries.php:4 allcountries.php:9 menufunctions.php:940
+#: allcountries.php:4 allcountries.php:9 menufunctions.php:942
 msgid "Countries"
 msgstr "Länder"
 
@@ -3011,11 +3113,11 @@ msgid "Founded"
 msgstr "Gegründet"
 
 #: clubcard.php:46 lib/url.functions.php:67 menufunctions.php:435
-#: menufunctions.php:505
+#: menufunctions.php:507
 msgid "Homepage"
 msgstr "Homepage"
 
-#: clubcard.php:56 menufunctions.php:1102 user/clubprofile.php:154
+#: clubcard.php:56 menufunctions.php:1104 user/clubprofile.php:154
 #: user/contacts.php:4 user/contacts.php:18
 msgid "Contacts"
 msgstr "Kontakte"
@@ -4205,8 +4307,8 @@ msgstr "LOGO EXAMPLE"
 #: cust/default/head.php:12 cust/dfv/head.php:19 ext/countrystatus.php:17
 #: ext/eventpools.php:18 ext/poolscoreboard.php:16 ext/poolstatus.php:17
 #: ext/teamcoming.php:17 ext/teamplayed.php:18 ext/teamscoreboard.php:17
-#: ext/tournament.php:22 ical.php:47 lib/user.functions.php:1078
-#: lib/user.functions.php:1130 lib/user.functions.php:1521
+#: ext/tournament.php:22 ical.php:47 lib/user.functions.php:1098
+#: lib/user.functions.php:1150 lib/user.functions.php:1541
 #: scorekeeper/index.php:100
 msgid "Ultiorganizer"
 msgstr "Ultiorganizer"
@@ -4248,6 +4350,7 @@ msgstr "Erste Offence"
 #: mobile/deletescore.php:29 mobile/deletescore.php:41
 #: scorekeeper/addscoresheet.php:144 scorekeeper/addscoresheet.php:161
 #: scorekeeper/deletescore.php:48 user/addscoresheet.php:546
+#: user/pollresult.php:198
 msgid "Score"
 msgstr "Spielstand"
 
@@ -4283,7 +4386,7 @@ msgid "Profile Id"
 msgstr "Profil-ID"
 
 #: cust/default/teamplayers.functions.php:103 cust/slkl/pdfprinter.php:137
-#: cust/slkl/pdfprinter.php:147 user/pollresult.php:78 user/teamplayers.php:155
+#: cust/slkl/pdfprinter.php:147 user/pollresult.php:81 user/teamplayers.php:155
 msgid "#"
 msgstr "#"
 
@@ -4734,7 +4837,7 @@ msgstr "Punktedifferenz"
 msgid "Warning: missing team"
 msgstr "Warnung: fehlendes Team"
 
-#: ext/export.php:9 menufunctions.php:952
+#: ext/export.php:9 menufunctions.php:954
 msgid "Data export"
 msgstr "Daten exportieren"
 
@@ -4758,7 +4861,7 @@ msgstr "Alle angesetzten Spiele"
 msgid "Player statistics"
 msgstr "Spieler-Statistiken"
 
-#: ext/export.php:32 menufunctions.php:1028
+#: ext/export.php:32 menufunctions.php:1030
 msgid "Pool rankings"
 msgstr "Tabellenstände"
 
@@ -4782,7 +4885,7 @@ msgstr "Ändern"
 msgid "No image"
 msgstr "Kein Bild"
 
-#: ext/index.php:10 menufunctions.php:951
+#: ext/index.php:10 menufunctions.php:953
 msgid "Ultiorganizer links"
 msgstr "Ultiorganizer links"
 
@@ -4814,7 +4917,7 @@ msgstr ""
 msgid "Select grouping"
 msgstr "Gruppe"
 
-#: ext/index.php:99 plugins/generate_players.php:62
+#: ext/index.php:99 menufunctions.php:542 plugins/generate_players.php:62
 #: plugins/generate_teams.php:60 plugins/import_csv_players.php:82
 #: plugins/reassign_playoffpools.php:243
 msgid "Select division"
@@ -5342,17 +5445,9 @@ msgstr "Fehler: %s."
 msgid "Total points"
 msgstr "Gesamtpunkte"
 
-#: lib/poll.functions.php:5
-msgid "no poll"
-msgstr "Keine Umfrage"
-
-#: lib/poll.functions.php:5
-msgid "option entry"
-msgstr "Vorschlagsphase"
-
-#: lib/poll.functions.php:5
-msgid "voting"
-msgstr "Abstimmungsphase"
+#: lib/poll.functions.php:13
+msgid "Option suggestion"
+msgstr ""
 
 #: lib/pool.functions.php:231 lib/pool.functions.php:258
 msgid "Unknown"
@@ -5498,39 +5593,57 @@ msgstr "Email darf nicht leer sein"
 msgid "Invalid email address"
 msgstr "Ungültige Email-Adresse"
 
-#: lib/user.functions.php:1085
+#: lib/user.functions.php:1105
 msgid "Confirm your account to ultiorganizer"
 msgstr "Bestätigen Sie Ihren Ultiorganizer-Account"
 
-#: lib/user.functions.php:1137
+#: lib/user.functions.php:1157
 msgid "Confirm extra email address for ultiorganizer"
 msgstr "Extra-Email-Adresse für Ultiorganizer bestätigen"
 
-#: lib/user.functions.php:1530
+#: lib/user.functions.php:1550
 msgid "Password recovery request"
 msgstr "Zurücksetzen des Passworts"
 
-#: lib/user.functions.php:1567
+#: lib/user.functions.php:1587
 msgid "New password to ultiorganizer"
 msgstr "Neues Passwort für Ultiorganizer"
 
-#: login.php:6 login.php:106
+#: lib/user.functions.php:1646
+#, php-format
+msgid "Error running query, error '%s'"
+msgstr ""
+
+#: lib/user.functions.php:1668
+#, php-format
+msgid "No or too many anonymous users (%s). Additional users will be deleted."
+msgstr ""
+"Kein oder zu viele anonyme Benutzer (%s). Zusätzliche Benutzer werden "
+"gelöscht."
+
+#: lib/user.functions.php:1693
+#, php-format
+msgid "Anonymous userid is %d instead of 1. This may be okay."
+msgstr ""
+"ID des anonymen Benutzers ist %d statt 1. Das ist wahrscheinlich in Ordnung."
+
+#: login.php:6 login.php:107
 msgid "Recover password"
 msgstr "Passwort zurücksetzen"
 
-#: login.php:16
+#: login.php:17
 msgid "Please enter your new password below."
 msgstr "Bitte geben Sie unten Ihr neues Passwort ein."
 
-#: login.php:24 register.php:79 user/userinfo.php:550
+#: login.php:25 register.php:79 user/userinfo.php:553
 msgid "Repeat password"
 msgstr "Passwort (Wdh.)"
 
-#: login.php:29
+#: login.php:30
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: login.php:44
+#: login.php:45
 #, php-format
 msgid ""
 "If the address '%s' is registered, an email with further instructions was "
@@ -5539,13 +5652,13 @@ msgstr ""
 "Falls die Adresse '%s' registriert ist, wurde eine Mail mit weiteren "
 "Anweisungen an Sie geschickt."
 
-#: login.php:47
+#: login.php:48
 msgid "You must enter either a username or an registered email address."
 msgstr ""
 "Sie müssen entweder einen Benutzernamen oder eine registrierte Emailadresse "
 "eingeben."
 
-#: login.php:54
+#: login.php:55
 #, php-format
 msgid ""
 "If '%s' is a registered user, an email will be sent to the corresponding "
@@ -5554,11 +5667,11 @@ msgstr ""
 "Falls '%s' ein registrierter Benutzer ist, wird eine Email an die "
 "entsprechende Adresse geschickt."
 
-#: login.php:65
+#: login.php:66
 msgid "Invalid or expired token."
 msgstr "Ungültiges oder abgelaufenes Sicherheitstoken."
 
-#: login.php:67
+#: login.php:68
 msgid ""
 "Click this link to try again</a> or, if this problem persists, contact an "
 "administrator."
@@ -5566,13 +5679,13 @@ msgstr ""
 "Klicken Sie auf diesen Link, um es erneut zu probieren</a>, oder, falls das "
 "Problem dauerhaft besteht, kontaktieren Sie einen Administrator."
 
-#: login.php:80
+#: login.php:81
 msgid "Your password has been changed. Please login with your new password."
 msgstr ""
 "Ihr Passwort wurde geändert. Bitte melden Sie sich mit Ihrem neuen Passwort "
 "an."
 
-#: login.php:99
+#: login.php:100
 msgid ""
 "If you have forgotten your password, enter <em>either</em> your username "
 "<em>or</em> your email below. If we have your email address, you will "
@@ -5582,12 +5695,12 @@ msgstr ""
 "Benutzernamen </em>oder</em> Ihre Emailadresse unten ein. Wenn Ihre Adresse "
 "bekannt ist, erhalten Sie dorthin eine Nachricht mit weiteren Instruktionen."
 
-#: login.php:111 menufunctions.php:204 menufunctions.php:370
-#: menufunctions.php:1210 mobile/index.php:16 scorekeeper/login.php:23
+#: login.php:112 menufunctions.php:204 menufunctions.php:370
+#: menufunctions.php:1212 mobile/index.php:16 scorekeeper/login.php:23
 msgid "Login"
 msgstr "Login"
 
-#: login.php:114
+#: login.php:115
 msgid ""
 "Username/password did not match. Try again or request to recover a lost "
 "password."
@@ -5628,141 +5741,141 @@ msgstr "Hilfe"
 msgid "Back to the Ultiorganizer"
 msgstr "Zurück zu Ultiorganizer"
 
-#: menufunctions.php:556
+#: menufunctions.php:558
 msgid "Go"
 msgstr "Los"
 
-#: menufunctions.php:707 menufunctions.php:751
+#: menufunctions.php:709 menufunctions.php:753
 msgid "Administration"
 msgstr "Administration"
 
-#: menufunctions.php:713
+#: menufunctions.php:715
 msgid "Clubs & Countries"
 msgstr "Clubs & Länder"
 
-#: menufunctions.php:714
+#: menufunctions.php:716
 msgid "Field locations"
 msgstr "Spielfelder"
 
-#: menufunctions.php:715
+#: menufunctions.php:717
 msgid "Field reservations"
 msgstr "Platzreservierungen"
 
-#: menufunctions.php:729
+#: menufunctions.php:731
 msgid "Logs"
 msgstr "Logs"
 
-#: menufunctions.php:731
+#: menufunctions.php:733
 msgid "Database"
 msgstr "Datenbank"
 
-#: menufunctions.php:732
+#: menufunctions.php:734
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: menufunctions.php:741
+#: menufunctions.php:743
 msgid "Missing menu?"
 msgstr "Menü fehlt?"
 
-#: menufunctions.php:769
+#: menufunctions.php:771
 msgid "Create new event"
 msgstr "Neue(s) Turnier/Saison"
 
-#: menufunctions.php:779
+#: menufunctions.php:781
 msgid "Team registration"
 msgstr "Team-Anmeldung"
 
-#: menufunctions.php:794 menufunctions.php:1009
+#: menufunctions.php:796 menufunctions.php:1011
 msgid "Polls"
 msgstr "Umfragen"
 
-#: menufunctions.php:808
+#: menufunctions.php:810
 msgid "Player profiles"
 msgstr "Spielerprofile"
 
-#: menufunctions.php:826
+#: menufunctions.php:828
 msgid "No seasons created"
 msgstr "Keine Turniere vorhanden"
 
-#: menufunctions.php:844
+#: menufunctions.php:846
 msgid "Final ranking"
 msgstr "Endergebnis"
 
-#: menufunctions.php:867 seriesstatus.php:31 seriesstatus.php:256
+#: menufunctions.php:869 seriesstatus.php:31 seriesstatus.php:256
 msgid "Show all pools"
 msgstr "Zeige alle Gruppen"
 
-#: menufunctions.php:876
+#: menufunctions.php:878
 msgid "All Games"
 msgstr "Alle Spiele"
 
-#: menufunctions.php:893 teams.php:110
+#: menufunctions.php:895 teams.php:110
 msgid "Pools not yet created"
 msgstr "Gruppen noch nicht erzeugt"
 
-#: menufunctions.php:902
+#: menufunctions.php:904
 msgid "Event Links"
 msgstr "Turnierlinks"
 
-#: menufunctions.php:916
+#: menufunctions.php:918
 msgid "Result Feed"
 msgstr "Ergebnis-Feed"
 
-#: menufunctions.php:923
+#: menufunctions.php:925
 msgid "Result Twitter"
 msgstr "Ergebnis Twitter"
 
-#: menufunctions.php:942
+#: menufunctions.php:944
 msgid "All time"
 msgstr "Gesamtstatistik"
 
-#: menufunctions.php:949
+#: menufunctions.php:951
 msgid "Client access"
 msgstr "Client access"
 
-#: menufunctions.php:953
+#: menufunctions.php:955
 msgid "Mobile Administration"
 msgstr "Mobile Administration"
 
-#: menufunctions.php:954
+#: menufunctions.php:956
 msgid "Scorekeeper"
 msgstr "Scorekeeper"
 
-#: menufunctions.php:959
+#: menufunctions.php:961
 msgid "Links"
 msgstr "Links"
 
-#: menufunctions.php:977 user_guide.php:2
+#: menufunctions.php:979 user_guide.php:2
 msgid "User Guide"
 msgstr "Anleitung"
 
-#: menufunctions.php:978
+#: menufunctions.php:980
 msgid "Admin Help"
 msgstr "Admin-Hilfe"
 
-#: menufunctions.php:979 privacy.php:5 register.php:52
+#: menufunctions.php:981 privacy.php:5 register.php:52
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
 # Navigation menu entry
-#: menufunctions.php:1008
+#: menufunctions.php:1010
 msgid "Rankings"
 msgstr "Tabellenstände"
 
-#: menufunctions.php:1053 menufunctions.php:1077 user/respteams.php:7
+#: menufunctions.php:1055 menufunctions.php:1079 user/respteams.php:7
 #: user/respteams.php:17
 msgid "Team responsibilities"
 msgstr "Teamverwaltung"
 
-#: menufunctions.php:1101 mobile/respgames.php:7 user/respgames.php:8
+#: menufunctions.php:1103 mobile/respgames.php:7 user/respgames.php:8
 msgid "Game responsibilities"
 msgstr "Ergebniseingabe"
 
-#: menufunctions.php:1201
+#: menufunctions.php:1203
 msgid "New user?"
 msgstr "Neuer Benutzer?"
 
-#: menufunctions.php:1206
+#: menufunctions.php:1208
 msgid "Recover lost password?"
 msgstr "Vergessenes Passwort zurücksetzen?"
 
@@ -5916,7 +6029,7 @@ msgstr "Fehler korrigieren oder Punkt mit Fehlern speichern"
 #: scorekeeper/addspiritpoints.php:26 scorekeeper/addspiritpoints.php:35
 #: user/addspirit.php:27 user/addspirit.php:37
 #, php-format
-msgid "Missing score for %s. "
+msgid "Missing score for %s."
 msgstr "Fehlendes Ergebnis für %s."
 
 #: mobile/addspiritpoints.php:43 mobile/addspiritpoints.php:48
@@ -6837,82 +6950,78 @@ msgstr "Herausgeber"
 msgid "Player lists saved!"
 msgstr "Spielerlisten gespeichert!"
 
-#: user/addpolloption.php:6 user/pollresult.php:27 user/votepoll.php:14
-msgid "Series and poll mandatory"
-msgstr "Turnier und Umfrage erforderlich"
-
-#: user/addpolloption.php:55 user/addpolloption.php:168
+#: user/addpolloption.php:55 user/addpolloption.php:166
 msgid "Add option"
 msgstr "Wahlmöglichkeit hinzufügen"
 
-#: user/addpolloption.php:58
+#: user/addpolloption.php:57
 msgid "You cannot suggest options for this poll."
 msgstr "Sie können für diese Umfrage keine Wahlmöglichkeiten vorschlagen."
 
-#: user/addpolloption.php:76 user/addpolloption.php:115
+#: user/addpolloption.php:75 user/addpolloption.php:113
 msgid "Name cannot be empty."
 msgstr "Name darf nicht leer sein."
 
-#: user/addpolloption.php:78 user/addpolloption.php:117
+#: user/addpolloption.php:77 user/addpolloption.php:115
 msgid "Name already exists."
 msgstr "Name existiert schon."
 
-#: user/addpolloption.php:80 user/addpolloption.php:119
+#: user/addpolloption.php:79 user/addpolloption.php:117
 msgid "Mentor cannot be empty."
 msgstr "Mentor darf nicht leer sein."
 
-#: user/addpolloption.php:82 user/addpolloption.php:121 user/votepoll.php:77
-#: user/votepoll.php:95
-msgid "Wrong password"
-msgstr "Falsches Passwort"
+#: user/addpolloption.php:81 user/addpolloption.php:119 user/votepoll.php:73
+#: user/votepoll.php:96
+msgid "Wrong poll password"
+msgstr "Falsches Abstimmungspasswort"
 
-#: user/addpolloption.php:112
+#: user/addpolloption.php:110
 msgid "Cannot update, option not found."
 msgstr "Wahlmöglichkeit nicht gefunden, kann Änderungen nicht speichern."
 
-#: user/addpolloption.php:125
+#: user/addpolloption.php:123
 msgid "Option has been updated."
 msgstr "Wahlmöglichkeit wurde gespeichert."
 
-#: user/addpolloption.php:137
-msgid "Poll has been deleted."
-msgstr "Abstimmung wurde gelöscht."
+#: user/addpolloption.php:135
+msgid "Option has been deleted."
+msgstr "Wahlmöglichkeit wurde gelöscht."
 
-#: user/addpolloption.php:139
+#: user/addpolloption.php:137
 msgid "Error deleting poll"
 msgstr "Fehler beim Löschen der Umfrage"
 
-#: user/addpolloption.php:142
+#: user/addpolloption.php:140
 msgid "Cannot delete poll"
 msgstr "Kann Abstimmung nicht löschen"
 
-#: user/addpolloption.php:153
+#: user/addpolloption.php:151
 msgid "Poll not open for suggestions."
 msgstr "Umfrage nicht für Vorschläge freigegeben."
 
-#: user/addpolloption.php:161
+#: user/addpolloption.php:159
 msgid "Edit option"
 msgstr "Wahlmöglichkeit ändern"
 
-#: user/addpolloption.php:162
+#: user/addpolloption.php:160
 #, php-format
 msgid "Edit option for %s"
 msgstr "Wahlmöglichkeit für %s verändern"
 
-#: user/addpolloption.php:169
+#: user/addpolloption.php:167
 #, php-format
 msgid "Add option for %s"
 msgstr "Wahlmöglichkeit für %s hinzufügen"
 
-#: user/addpolloption.php:194
+#: user/addpolloption.php:192
 msgid "Option Name"
 msgstr "Name der Wahlmöglichkeit"
 
-#: user/addpolloption.php:209
+#: user/addpolloption.php:207
 msgid "Mentor (public)"
 msgstr "Mentor (öffentlich)"
 
-#: user/addpolloption.php:217
+#: user/addpolloption.php:215 user/votepoll.php:189
 msgid "Poll Password"
 msgstr "Umfragepasswort"
 
@@ -7029,10 +7138,6 @@ msgstr "Vereinsstatistik einsehen"
 #: user/contacts.php:8
 msgid "Event mandatory"
 msgstr "Turnier/Saison erforderlich"
-
-#: user/contacts.php:13
-msgid "Inadequate user rights"
-msgstr "Benutzerrechte reichen nicht aus"
 
 #: user/contacts.php:22
 msgid "Mail to everyone registered for the event"
@@ -7159,7 +7264,7 @@ msgstr "Spielerstatistik veröffentlichen"
 msgid "Check out my player profile in ultiorganizer"
 msgstr "Mein Spielerprofil in Ultiorganizer"
 
-#: user/facebookpublishing.php:94 user/userinfo.php:500
+#: user/facebookpublishing.php:94 user/userinfo.php:503
 msgid "Publish"
 msgstr "Veröffentlichen"
 
@@ -7227,154 +7332,212 @@ msgstr "Position/Rolle"
 msgid "Check public player card"
 msgstr "Öffentliche Spielerstatistik einsehen"
 
-#: user/pollresult.php:37
+#: user/pollresult.php:39
 #, php-format
 msgid "Poll Results for %s"
 msgstr "Umfrageergebnis für %s"
 
-#: user/pollresult.php:44
+#: user/pollresult.php:46
 msgid "No results yet"
 msgstr "Ergebnisse noch nicht verfügbar"
 
-#: user/pollresult.php:67
+#: user/pollresult.php:70
 msgid "Results not published yet."
 msgstr "Ergebnisse wurden noch nicht veröffentlicht."
 
-#: user/pollresult.php:74
+#: user/pollresult.php:77
 #, php-format
 msgid "%d votes cast."
 msgstr "%d Stimmen abgegeben."
 
-#: user/pollresult.php:77
-msgid "Rank"
-msgstr "Platzierung"
+#: user/pollresult.php:80
+msgid "R"
+msgstr "R"
 
-#: user/pollresult.php:77
+#: user/pollresult.php:80
 #, php-format
 msgid "Ranked by %s"
 msgstr "Sortiert nach %s"
 
-#: user/pollresult.php:77 user/polls.php:30
+#: user/pollresult.php:80 user/pollresult.php:198 user/polls.php:57
 msgid "Option"
 msgstr "Wahlmöglichkeit"
 
-#: user/pollresult.php:78
+#: user/pollresult.php:81
 msgid "Number of votes (0 or not) for this option"
 msgstr "Anzahl der Stimmen (0 oder nicht) für diese Wahlmöglichkeit"
 
-#: user/pollresult.php:79
+#: user/pollresult.php:82
 msgid "App"
 msgstr "App"
 
-#: user/pollresult.php:79
+#: user/pollresult.php:82
 msgid ""
 "Number of voters with a positive score for this option (approval voting)"
 msgstr ""
 "Anzahl der Stimmen mit positiver Bewertung für diese Wahlmöglichkeit "
 "(Zustimmungswahl)"
 
-#: user/pollresult.php:80
+#: user/pollresult.php:83
 msgid "P"
 msgstr "P"
 
-#: user/pollresult.php:80
+#: user/pollresult.php:83
 msgid ""
 "Number of voters with this option as first preference (plurality voting)"
 msgstr ""
 "Anzahl der Stimmen, die diese Wahlmöglichkeit an erster Stelle haben "
 "(Mehrheitswahl)"
 
-#: user/pollresult.php:81
+#: user/pollresult.php:84
 msgid "Sum"
 msgstr "Summe"
 
-#: user/pollresult.php:81
+#: user/pollresult.php:84
 msgid "Sum of all scores for this option (score voting)"
 msgstr "Summe aller Bewertungen (Bewertungswahl)"
 
-#: user/pollresult.php:82
+#: user/pollresult.php:85
 msgid "Norm"
 msgstr "Norm"
 
-#: user/pollresult.php:82
+#: user/pollresult.php:85
 msgid "Normalized sum (scores between 0 and 1)"
 msgstr "Normalisierte Summe (Bewertungen zwischen 0 und 1)"
 
-#: user/pollresult.php:83
+#: user/pollresult.php:86
 msgid "Range"
 msgstr "Range"
 
-#: user/pollresult.php:83
+#: user/pollresult.php:86
 msgid "Average of all scores (not counting 0s) for this option (range voting)"
 msgstr ""
 "Mittelwert aller Bewertungen (0 nicht mitgezählt) für diese Wahlmöglichkeit "
 "(Bewertungswahl)"
 
-#: user/pollresult.php:84
+#: user/pollresult.php:87
 msgid "RangeN"
 msgstr "RangeN"
 
-#: user/pollresult.php:84
+#: user/pollresult.php:87
 msgid "Normalized average"
 msgstr "Normalisierter Mittelwert"
 
-#: user/pollresult.php:85
+#: user/pollresult.php:88
 msgid "Cope"
 msgstr "Cope"
 
-#: user/pollresult.php:85
+#: user/pollresult.php:88
 msgid ""
 "Round robin tournament where each result is majority voting (Copeland score)"
 msgstr ""
 "Rundenturnier, bei dem jedes einzelne Ergebnis durch Mehrheitswahl bestimmt "
 "wird (Copeland score)"
 
-#: user/pollresult.php:87
+#: user/pollresult.php:90
 msgid "Borda"
 msgstr "Borda"
 
-#: user/pollresult.php:87
-msgid "Round robin tournament score where each vote is a game (Borda score)"
-msgstr "Rundenturnier, bei dem jede Stimme einem Spiel entspricht (Borda-Wahl)"
+#: user/pollresult.php:90
+msgid ""
+"Round robin tournament score where each voter represents a full round (Borda "
+"score)"
+msgstr ""
+"Rundenturnier, bei dem jeder Abstimmende einer vollen Runde entspricht "
+"(Borda-Wahl)"
 
-#: user/pollresult.php:88
+#: user/pollresult.php:91
+msgid "Borda0"
+msgstr "Borda0"
+
+#: user/pollresult.php:91
+msgid "As Borda, but allowing abstention"
+msgstr "Wie Borda, aber mit Enthaltungen"
+
+#: user/pollresult.php:92
 msgid "Geometric"
 msgstr "Geometrisch"
 
-#: user/pollresult.php:88
+#: user/pollresult.php:92
 msgid "As Borda but with geometric point distribution (1, 1/2, 1/3, 1/4 ...)"
 msgstr ""
 "Wie Bordawahl, aber mit geometrischer Punktverteilung (1, 1/2, 1/3, 1/4, ...)"
 
-#: user/pollresult.php:89
+#: user/pollresult.php:93
 msgid "Harmonic"
 msgstr "Harmonisch"
 
-#: user/pollresult.php:89
+#: user/pollresult.php:93
 msgid "As Borda but with harmonic point distribution (1, 1/2, 1/4, 1/8 ...)"
 msgstr ""
 "Wie Bordawahl, aber mit harmonischer Punkteverteilung (1, 1/2, 1/4, 1/8, ...)"
 
-#: user/pollresult.php:139 user/polls.php:48 user/votepoll.php:167
+#: user/pollresult.php:146 user/polls.php:74 user/votepoll.php:177
 msgid "Details"
 msgstr "Details"
 
-#: user/pollresult.php:162
+#: user/pollresult.php:164
+msgid "Show votes"
+msgstr "Zeige Stimmen"
+
+#: user/pollresult.php:171
+msgid "Select metric"
+msgstr "Metrik wählen"
+
+#: user/pollresult.php:178
 msgid "Rank by"
 msgstr "Sortieren nach"
 
-#: user/polls.php:10
+#: user/pollresult.php:196
+msgid "Votes"
+msgstr "Stimmen"
+
+#: user/polls.php:7
+msgid "Season or series mandatory"
+msgstr "Saison oder Liga erforderlich"
+
+#: user/polls.php:12
+msgid "Unknown division"
+msgstr "Unbekannte Klasse/Liga"
+
+#: user/polls.php:14 user/polls.php:19
 #, php-format
 msgid "Polls for %s"
 msgstr "Umfrage für %s"
 
-#: user/polls.php:25
-msgid "No poll"
-msgstr "Keine Umfrage"
+#: user/polls.php:27
+msgid "Poll option has been deleted."
+msgstr "Wahlmöglichkeit wurde gelöscht."
 
-#: user/polls.php:31
+#: user/polls.php:45
+#, php-format
+msgid "Poll %d"
+msgstr "Umfrage %d"
+
+#: user/polls.php:55
+msgid "No options have been defined, yet."
+msgstr "Es wurden noch keine Wahlmöglichkeiten definiert."
+
+#: user/polls.php:59
 msgid "Mentor"
 msgstr "Mentor"
+
+#: user/polls.php:59
+msgid "Op"
+msgstr "Akt"
+
+#: user/polls.php:77
+#, php-format
+msgid "Do you want to delete %s?"
+msgstr "Wollen sie %s löschen?"
+
+#: user/polls.php:91
+msgid "Suggest option"
+msgstr "Auswahlmöglichkeit vorschlagen"
+
+#: user/polls.php:108
+msgid "View Results"
+msgstr "Ergebnisse ansehen"
 
 #: user/respgames.php:20
 msgid "Feed in the data for your game responsibilities"
@@ -7435,11 +7598,11 @@ msgstr "Vereinsstatistiken"
 msgid "Choose pools to show"
 msgstr "Wählen Sie anzuzeigende Gruppen"
 
-#: user/select_poolselector.php:16 user/userinfo.php:362 user/userinfo.php:391
+#: user/select_poolselector.php:16 user/userinfo.php:361 user/userinfo.php:394
 msgid "Current event"
 msgstr "Aktuelles Turnier"
 
-#: user/select_poolselector.php:22 user/userinfo.php:364 user/userinfo.php:392
+#: user/select_poolselector.php:22 user/userinfo.php:368 user/userinfo.php:395
 msgid "Team pools"
 msgstr "Gruppen für Team"
 
@@ -7495,10 +7658,6 @@ msgstr "anzeigen"
 #: user/teamplayers.php:217
 msgid "Yes"
 msgstr "Ja"
-
-#: user/teamplayers.php:218
-msgid "No"
-msgstr "Nein"
 
 #: user/teamplayers.php:281
 msgid "Back to feeding in player numbers"
@@ -7589,31 +7748,31 @@ msgstr "Anzeigen"
 msgid "Show pools"
 msgstr "Zeige Gruppen"
 
-#: user/userinfo.php:409
+#: user/userinfo.php:412
 msgid "User roles"
 msgstr "Nutzerrollen"
 
-#: user/userinfo.php:479 user/userinfo.php:530
+#: user/userinfo.php:482 user/userinfo.php:533
 msgid "Game input responsibility"
 msgstr "Spieleingabe-Recht"
 
-#: user/userinfo.php:495
+#: user/userinfo.php:498
 msgid "Do not publish the game events of this player on my Facebook feed"
 msgstr "Ergebnisse dieses Spielers nicht per Facebook veröffentlichen"
 
-#: user/userinfo.php:496
+#: user/userinfo.php:499
 msgid "Unpublish"
 msgstr "Veröffentl. rückgängig machen"
 
-#: user/userinfo.php:499
+#: user/userinfo.php:502
 msgid "Publish the game events of this player on my Facebook feed"
 msgstr "Ergebnisse dieses Spielers per Facebook veröffentlichen"
 
-#: user/userinfo.php:548
+#: user/userinfo.php:551
 msgid "New  password"
 msgstr "Neues Passwort"
 
-#: user/userinfo.php:553
+#: user/userinfo.php:556
 msgid "Change Password"
 msgstr "Passwort ändern"
 
@@ -7631,32 +7790,42 @@ msgid "Missing vote for %s"
 msgstr "Fehlendes Ergebnis für %s"
 
 #: user/votepoll.php:81
+msgid "Wrong personal password"
+msgstr "Falsches persönliches Passwort"
+
+#: user/votepoll.php:85
 msgid ""
 "Passwort cannot be empty. The password can be used to change your vote later."
 msgstr ""
 "Passwort darf nicht leer sein. Mit Ihrem Passwort können Sie ihre Stimme "
 "später ändern."
 
-#: user/votepoll.php:88
+#: user/votepoll.php:92
 msgid "Vote has been saved."
 msgstr "Stimme wurde gespeichert."
 
-#: user/votepoll.php:99
+#: user/votepoll.php:103
+msgid "Wrong password"
+msgstr "Falsches Passwort"
+
+#: user/votepoll.php:107
 msgid "Vote has been deleted."
 msgstr "Stimme wurde gelöscht."
 
-#: user/votepoll.php:124
+#: user/votepoll.php:132
 msgid "Voting has not started yet."
 msgstr "Stimme wurde gespeichert."
 
-#: user/votepoll.php:178
+#: user/votepoll.php:194
 #, php-format
-msgid "Enter a password for %s's vote (needed if you change your vote later)"
+msgid ""
+"Enter a personal password for %s's vote (needed if you change your vote "
+"later)"
 msgstr ""
 "Geben Sie ein Passwort für die Stimmabgabe von %s ein (um sie später ändern "
 "zu können)"
 
-#: user/votepoll.php:181
+#: user/votepoll.php:197
 msgid "Override"
 msgstr "Überstimmen"
 
@@ -7664,14 +7833,26 @@ msgstr "Überstimmen"
 msgid "Sorry, user guide not available for your language."
 msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
 
-#~ msgid "Series mandatory"
-#~ msgstr "Turnier erforderlich"
+#~ msgid "View options"
+#~ msgstr "Wahlmöglichkeiten ansehen"
+
+#~ msgid "Restore anonymous user"
+#~ msgstr "Anonymen Benutzer zurücksetzen"
+
+#~ msgid "voting"
+#~ msgstr "Abstimmungsphase"
+
+#~ msgid "Status"
+#~ msgstr "Zustand"
+
+#~ msgid "Rank"
+#~ msgstr "Platzierung"
+
+#~ msgid "No poll"
+#~ msgstr "Keine Umfrage"
 
 #~ msgid "Field "
 #~ msgstr "Feld"
-
-#~ msgid "Results"
-#~ msgstr "Ergebnisse"
 
 #~ msgid "Seasons"
 #~ msgstr "Turniere"
@@ -7681,9 +7862,6 @@ msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
 
 #~ msgid "Not named"
 #~ msgstr "Unbenannt"
-
-#~ msgid "not found"
-#~ msgstr "nicht gefunden"
 
 #~ msgid "outdoors"
 #~ msgstr "outdoor"
@@ -7816,9 +7994,6 @@ msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
 
 #~ msgid "No winner"
 #~ msgstr "Kein Gewinner"
-
-#~ msgid "No divisions"
-#~ msgstr "Keine Klassen/Ligen"
 
 #~ msgid "Spirit points given"
 #~ msgstr "Spiritpunkte vergeben"

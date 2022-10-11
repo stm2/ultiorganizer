@@ -1,5 +1,5 @@
 <?php
-$title = _("Restore anonymous user");
+$title = _("Restore anonymous user settings");
 
 $html = "<h2>$title</h2>";
 

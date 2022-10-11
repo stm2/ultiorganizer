@@ -12,7 +12,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
   $html = "<h2>" . _("Run SQL") . "</h2>\n";
   $html = "<p>" .
     _(
-      "Direct database access is disabled. To enable it, define(ENABLE_ADMIN_DB_ACCESS,'enabled') in the config.inc.php file") .
+      "Direct database access is disabled. To enable it, define('ENABLE_ADMIN_DB_ACCESS','enabled') in the config.inc.php file.") .
     "</p>";
 } else if (!isSuperAdmin()) {
   $html .= "<p>" . _("Inadequate user rights") . "</p><br />";

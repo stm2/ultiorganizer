@@ -22,7 +22,7 @@ if(!empty($_POST['save'])) {
     if (isset($_POST['homecat'.$cat]))
       $points[$cat] = $_POST['homecat'.$cat];
     else
-      $missing = sprintf(_("Missing score for %s. "), $game_result['hometeamname']);
+      $missing = sprintf(_("Missing score for %s."), $game_result['hometeamname']);
   }
   GameSetSpiritPoints($gameId, $game_result['hometeam'], 1, $points, $categories);
   
@@ -31,7 +31,7 @@ if(!empty($_POST['save'])) {
     if (isset($_POST['viscat'.$cat]))
       $points[$cat] = $_POST['viscat'.$cat];
     else
-      $missing = sprintf(_("Missing score for %s. ") . $game_result['visitorteamname']);
+      $missing = sprintf(_("Missing score for %s.") . $game_result['visitorteamname']);
   }
   GameSetSpiritPoints($gameId,$game_result['visitorteam'],0,$points, $categories);
   
@@ -53,7 +53,7 @@ $html .= SpiritTable($game_result, $points, $categories, false, false);
 $html .= "<p>";
 $html .= "<input class='button' type='submit' name='save' value='"._("Save")."'/>";
 if (isset($missing))
-  $html .= " $missing";
+  $html .= " $missing ";
 $html .= "</p>";
 $html .= "<p><a href='?view=mobile/addscoresheet&amp;game=".$gameId."'>"._("Back to score sheet")."</a></p>";
 $html .= "</form>\n";

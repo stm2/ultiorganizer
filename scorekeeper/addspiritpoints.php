@@ -23,7 +23,7 @@ if ($season['spiritmode'] > 0) {
         if (isset($_POST['homecat' . $cat]))
           $points[$cat] = $_POST['homecat' . $cat];
         else
-          $missing = sprintf(_("Missing score for %s. "), $game_result['hometeamname']);
+          $missing = sprintf(_("Missing score for %s."), $game_result['hometeamname']);
       }
       GameSetSpiritPoints($gameId, $game_result['hometeam'], 1, $points, $categories);
     } else {
@@ -32,7 +32,7 @@ if ($season['spiritmode'] > 0) {
         if (isset($_POST['viscat' . $cat]))
           $points[$cat] = $_POST['viscat' . $cat];
         else
-          $missing = sprintf(_("Missing score for %s. "), $game_result['visitorteamname']);
+          $missing = sprintf(_("Missing score for %s."), $game_result['visitorteamname']);
       }
       GameSetSpiritPoints($gameId, $game_result['visitorteam'], 0, $points, $categories);
       
@@ -56,7 +56,7 @@ if ($season['spiritmode'] > 0) {
   $html .= "<p>";
   $html .= "<input type='submit' name='save' data-ajax='false' value='"._("Save")."'/>";
   if (isset($missing))
-    $html .= " $missing";
+    $html .= " $missing ";
   $html .= "</p>";
   $html .= "</form>\n";
   if ($ishome) {
