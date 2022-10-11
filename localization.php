@@ -24,6 +24,9 @@ function setSessionLocale() {
   if (iget("locale")) {
     $locale = iget("locale");
   }
+  
+  if (empty($locale))
+    $locale = $oldlocale;
 
   if (empty($locale)) {
     $locale = GetDefaultLocale();
