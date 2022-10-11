@@ -2,7 +2,7 @@
 include_once $include_prefix . 'lib/debug.functions.php';
 
 function PollStatuses() {
-  return array(1 => _("visible"), 2 => _("option_entry"), 4 => _("voting"), 8 => _("results"));
+  return array(1 => "visible", 2 => "option_entry", 4 => "voting", 8 => "results");
 }
 
 function PollStatusName($statusId) {
