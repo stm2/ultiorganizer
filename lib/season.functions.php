@@ -767,7 +767,7 @@ function SeasonPoolGamesTable($formId, $seasonId, $series = null, $disableunfini
   $html = "<table>";
   $html .= "<tr><th class='left'><input type='checkbox' onclick='checkAll(\"pools[]\");'/></th>";
   $html .= "<th>" . _("Pool") . "</th>";
-  $html .= "<th>" . _("Series") . "</th>";
+  $html .= "<th>" . _("Divisions") . "</th>";
   $html .= "<th>" . _("Teams") . "</th>";
   $html .= "<th>" . _("Played/Total") . "</th>";
   $html .= "</tr>\n";

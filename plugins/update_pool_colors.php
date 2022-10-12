@@ -71,7 +71,7 @@ if(empty($seasonId)){
 	$html .= "<table>";
 	$html .= "<tr><th><input type='checkbox' onclick='checkAll(\"pools\");'/></th>";
 	$html .= "<th>"._("Pool")."</th>";
-	$html .= "<th>"._("Series")."</th>";
+	$html .= "<th>"._("Division")."</th>";
 	$html .= "</tr>\n";
 	
 	$series = SeasonSeries($seasonId);

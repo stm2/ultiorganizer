@@ -3,7 +3,7 @@ include_once $include_prefix . 'lib/series.functions.php';
 include_once $include_prefix . 'lib/poll.functions.php';
 
 if (empty($_GET['series']) || (empty($_GET['poll']) && empty($_POST['poll']))) {
-  die(_("Series and poll mandatory"));
+  die(_("Division and poll mandatory"));
 }
 $seriesId = $_GET['series'];
 

@@ -97,7 +97,7 @@ if (!count($serieses)) {
 
   $html .= "<form method='post' action='?view=admin/addseasonpoll'>";
 
-  $html .= "<p><label>" . _("Select series") . ": <select class='dropdown' name='series'>\n";
+  $html .= "<p><label>" . _("Select division") . ": <select class='dropdown' name='series'>\n";
   foreach ($serieses as $series) {
     $seriesId = $series['series_id'];
     $html .= "<option class='dropdown' value='$seriesId'>" . utf8entities(U_($series['name'])) . "</option>\n";

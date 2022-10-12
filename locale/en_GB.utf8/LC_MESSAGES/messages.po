@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-12 11:31+0200\n"
+"POT-Creation-Date: 2022-10-12 12:51+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -272,7 +272,7 @@ msgstr ""
 #: admin/addseasonseries.php:133 admin/addseasonteams.php:210
 #: admin/addserieformats.php:182 admin/adduser.php:93 admin/clubs.php:49
 #: admin/clubs.php:87 admin/locations.php:125 admin/poolmoves.php:332
-#: admin/seasonpools.php:292 admin/seasons.php:157 admin/seasonseries.php:151
+#: admin/seasonpools.php:292 admin/seasons.php:158 admin/seasonseries.php:151
 #: admin/seasonteams.php:200 admin/serieformats.php:49
 #: admin/translations.php:133 user/addextraemail.php:82
 #: user/addpolloption.php:223 user/enrollteam.php:144 user/teamplayers.php:259
@@ -305,7 +305,7 @@ msgstr ""
 #: admin/addseasonlinks.php:85 admin/addseasonpools.php:276
 #: admin/addseasons.php:78 admin/addseasons.php:278
 #: admin/addseasonseries.php:109 admin/eventviewer.php:85
-#: admin/seasonadmin.php:28 admin/seasonpools.php:108 admin/seasons.php:92
+#: admin/seasonadmin.php:28 admin/seasonpools.php:108 admin/seasons.php:93
 #: admin/seasonseries.php:59 admin/seasonstats.php:19 admin/seasonstats.php:33
 #: admin/serverconf.php:344 user/addmedialink.php:169 user/clubprofile.php:190
 #: user/playerprofile.php:335 user/teamprofile.php:145
@@ -327,7 +327,7 @@ msgstr ""
 #: admin/clubs.php:90 admin/dbadmin.php:38 admin/dbbackup.php:87
 #: admin/dbequalize.php:154 admin/dbequalize.php:173 admin/dbequalize.php:193
 #: admin/editgame.php:257 admin/locations.php:163 admin/seasonpolls.php:38
-#: admin/seasonpools.php:103 admin/seasons.php:91 admin/seasonseries.php:59
+#: admin/seasonpools.php:103 admin/seasons.php:92 admin/seasonseries.php:59
 #: admin/seasonstats.php:19 admin/seasonstats.php:33 admin/seasonteams.php:113
 #: admin/serieformats.php:26 admin/serieteams.php:142 admin/serverconf.php:344
 #: cust/bula/pdfprinter.php:132 cust/bula/pdfprinter.php:142
@@ -370,11 +370,11 @@ msgid "3rd party API settings"
 msgstr ""
 
 #: admin/addseasonpoll.php:7
-msgid "Series mandatory"
+msgid "Division mandatory"
 msgstr ""
 
 #: admin/addseasonpoll.php:15
-msgid "Series no found"
+msgid "Division not found"
 msgstr ""
 
 #: admin/addseasonpoll.php:24
@@ -447,10 +447,10 @@ msgstr ""
 #: lib/search.functions.php:69 lib/search.functions.php:100
 #: lib/search.functions.php:420 lib/search.functions.php:460
 #: lib/search.functions.php:502 playercard.php:209 playercard.php:286
-#: playercard.php:384 playercard.php:453 teamcard.php:199 teamcard.php:219
-#: teamcard.php:382 teamcard.php:543 teams.php:158 user/respteams.php:21
-#: user/select_poolselector.php:28 user/select_poolselector.php:31
-#: user/userinfo.php:374 user/userinfo.php:397
+#: playercard.php:384 playercard.php:453 plugins/update_pool_colors.php:74
+#: teamcard.php:199 teamcard.php:219 teamcard.php:382 teamcard.php:543
+#: teams.php:158 user/respteams.php:21 user/select_poolselector.php:28
+#: user/select_poolselector.php:31 user/userinfo.php:374 user/userinfo.php:397
 msgid "Division"
 msgstr ""
 
@@ -494,7 +494,7 @@ msgid "Mutual"
 msgstr ""
 
 #: admin/addseasonpools.php:329 admin/seasonadmin.php:51
-#: admin/seasonpolls.php:40 admin/seasonpools.php:105 admin/seasons.php:96
+#: admin/seasonpolls.php:40 admin/seasonpools.php:105 admin/seasons.php:97
 #: admin/seasonseries.php:59 lib/poll.functions.php:11
 msgid "Visible"
 msgstr ""
@@ -703,12 +703,12 @@ msgid "New season added"
 msgstr ""
 
 #: admin/addseasons.php:79 admin/addseasons.php:348 admin/reservations.php:104
-#: admin/seasons.php:93 lib/search.functions.php:740
+#: admin/seasons.php:94 lib/search.functions.php:740
 msgid "Starts"
 msgstr ""
 
 #: admin/addseasons.php:80 admin/addseasons.php:351 admin/reservations.php:104
-#: admin/seasons.php:94 lib/search.functions.php:740
+#: admin/seasons.php:95 lib/search.functions.php:740
 msgid "Ends"
 msgstr ""
 
@@ -716,11 +716,11 @@ msgstr ""
 msgid "Enrollment open"
 msgstr ""
 
-#: admin/addseasons.php:81 admin/seasonadmin.php:50 admin/seasons.php:128
+#: admin/addseasons.php:81 admin/seasonadmin.php:50 admin/seasons.php:129
 msgid "yes"
 msgstr ""
 
-#: admin/addseasons.php:81 admin/seasonadmin.php:50 admin/seasons.php:128
+#: admin/addseasons.php:81 admin/seasonadmin.php:50 admin/seasons.php:129
 msgid "no"
 msgstr ""
 
@@ -867,7 +867,7 @@ msgstr ""
 
 #: admin/addseasonusers.php:107 admin/addseasonusers.php:270
 #: admin/addteamadmins.php:65 admin/poolmoves.php:195 admin/poolmoves.php:268
-#: admin/seasonmoves.php:167 admin/seasonpools.php:254 admin/seasons.php:146
+#: admin/seasonmoves.php:167 admin/seasonpools.php:254 admin/seasons.php:147
 #: admin/seasonseries.php:114 admin/seasonstandings.php:379
 #: admin/seasonstandings.php:428 admin/seasonteams.php:177
 #: admin/serieformats.php:45 admin/serverconf.php:353
@@ -913,7 +913,7 @@ msgid "Event admins"
 msgstr ""
 
 #: admin/addseasonusers.php:159
-msgid "Series admins"
+msgid "Division admins"
 msgstr ""
 
 #: admin/addseasonusers.php:168 admin/addteamadmins.php:6
@@ -1293,7 +1293,7 @@ msgid "Delete games in %s ..."
 msgstr ""
 
 #: admin/delete.php:63
-msgid "You have no rights to delete any series."
+msgid "You have no rights to delete any divisions."
 msgstr ""
 
 #: admin/delete.php:66 plugins/simulate_games.php:177
@@ -1304,9 +1304,8 @@ msgstr ""
 msgid "Reset played games"
 msgstr ""
 
-#: admin/deletepoll.php:6 user/addpolloption.php:6 user/pollresult.php:29
-#: user/votepoll.php:14
-msgid "Series and poll mandatory"
+#: admin/deletepoll.php:6
+msgid "Poll mandatory"
 msgstr ""
 
 #: admin/deletepoll.php:12
@@ -1404,14 +1403,14 @@ msgid "Export season %s."
 msgstr ""
 
 #: admin/eventdataexport.php:42
-msgid "Exported series:"
+msgid "Exported divisions:"
 msgstr ""
 
 #: admin/eventdataexport.php:55
 msgid "Export as template, without results"
 msgstr ""
 
-#: admin/eventdataexport.php:58 admin/seasons.php:142
+#: admin/eventdataexport.php:58 admin/seasons.php:143
 msgid "Export"
 msgstr ""
 
@@ -1450,7 +1449,7 @@ msgstr ""
 
 #: admin/eventdataimport.php:134
 msgid ""
-"This operation inserts one or more new series in the database with the "
+"This operation inserts one or more new divisions into the database with the "
 "content of the file. It will only add, not alter any data or change user "
 "rights."
 msgstr ""
@@ -1487,11 +1486,11 @@ msgid "Reservation Group"
 msgstr ""
 
 #: admin/eventdataimport.php:170
-msgid "Change series or teams?"
+msgid "Change divisions or teams?"
 msgstr ""
 
 #: admin/eventdataimport.php:172
-msgid "Series Name"
+msgid "Division Name"
 msgstr ""
 
 #: admin/eventdataimport.php:178
@@ -2035,20 +2034,20 @@ msgstr ""
 msgid "Spirit points"
 msgstr ""
 
-#: admin/seasonadmin.php:40 admin/seasons.php:125
+#: admin/seasonadmin.php:40 admin/seasons.php:126
 msgid "open"
 msgstr ""
 
-#: admin/seasonadmin.php:40 admin/seasons.php:125
+#: admin/seasonadmin.php:40 admin/seasons.php:126
 msgid "closed"
 msgstr ""
 
-#: admin/seasonadmin.php:41 admin/seasons.php:95
+#: admin/seasonadmin.php:41 admin/seasons.php:96
 msgid "Enrollment"
 msgstr ""
 
 #: admin/seasonadmin.php:58 admin/seasonseries.php:11 admin/seasonseries.php:53
-#: menufunctions.php:1005
+#: lib/season.functions.php:770 menufunctions.php:1005
 msgid "Divisions"
 msgstr ""
 
@@ -2220,7 +2219,7 @@ msgstr ""
 msgid "poll_r"
 msgstr "R"
 
-#: admin/seasonpolls.php:46 admin/seasonpools.php:109 admin/seasons.php:97
+#: admin/seasonpolls.php:46 admin/seasonpools.php:109 admin/seasons.php:98
 #: admin/seasonseries.php:60
 msgid "Operations"
 msgstr ""
@@ -2234,8 +2233,10 @@ msgstr ""
 msgid "Vote"
 msgstr ""
 
-#: admin/seasonpolls.php:100
-msgid "Select series"
+#: admin/seasonpolls.php:100 ext/index.php:99 menufunctions.php:542
+#: plugins/generate_players.php:62 plugins/generate_teams.php:60
+#: plugins/import_csv_players.php:82 plugins/reassign_playoffpools.php:243
+msgid "Select division"
 msgstr ""
 
 #: admin/seasonpools.php:105 admin/seasonseries.php:59
@@ -2309,46 +2310,43 @@ msgid "Events"
 msgstr ""
 
 #: admin/seasons.php:42
-msgid "Event has"
+#, php-format
+msgid "Event has %d Division(s)."
 msgstr ""
 
-#: admin/seasons.php:42
-msgid "Division(s)"
+#: admin/seasons.php:43
+msgid "Divisions must be removed before removing the event."
 msgstr ""
 
-#: admin/seasons.php:42
-msgid "Divisions must be removed before removing the event"
-msgstr ""
-
-#: admin/seasons.php:49
+#: admin/seasons.php:50
 msgid "You can not remove a current event"
 msgstr ""
 
-#: admin/seasons.php:70
+#: admin/seasons.php:71
 msgid "Are you sure you want to delete the event?"
 msgstr ""
 
-#: admin/seasons.php:86
+#: admin/seasons.php:87
 msgid "Seasons/Tournaments"
 msgstr ""
 
-#: admin/seasons.php:133
+#: admin/seasons.php:134
 msgid "Conf. Twitter"
 msgstr ""
 
-#: admin/seasons.php:137
+#: admin/seasons.php:138
 msgid "Re-calc. stats"
 msgstr ""
 
-#: admin/seasons.php:139
+#: admin/seasons.php:140
 msgid "Calc. stats"
 msgstr ""
 
-#: admin/seasons.php:155
+#: admin/seasons.php:156
 msgid "Import event"
 msgstr ""
 
-#: admin/seasons.php:156
+#: admin/seasons.php:157
 msgid "All event statistics"
 msgstr ""
 
@@ -4859,12 +4857,6 @@ msgstr ""
 msgid "Select grouping"
 msgstr ""
 
-#: ext/index.php:99 menufunctions.php:542 plugins/generate_players.php:62
-#: plugins/generate_teams.php:60 plugins/import_csv_players.php:82
-#: plugins/reassign_playoffpools.php:243
-msgid "Select division"
-msgstr ""
-
 #: ext/index.php:116
 msgid "Select country"
 msgstr ""
@@ -5403,10 +5395,6 @@ msgstr ""
 
 #: lib/search.functions.php:586
 msgid "Last login"
-msgstr ""
-
-#: lib/season.functions.php:770 plugins/update_pool_colors.php:74
-msgid "Series"
 msgstr ""
 
 #: lib/season.functions.php:772
@@ -6845,6 +6833,10 @@ msgstr ""
 msgid "Player lists saved!"
 msgstr ""
 
+#: user/addpolloption.php:6 user/pollresult.php:29 user/votepoll.php:14
+msgid "Division and poll mandatory"
+msgstr ""
+
 #: user/addpolloption.php:55 user/addpolloption.php:166
 msgid "Add option"
 msgstr ""
@@ -7375,7 +7367,7 @@ msgid "Votes"
 msgstr ""
 
 #: user/polls.php:7
-msgid "Season or series mandatory"
+msgid "Season or division mandatory"
 msgstr ""
 
 #: user/polls.php:12
@@ -7700,6 +7692,9 @@ msgstr ""
 #: user_guide.php:12
 msgid "Sorry, user guide not available for your language."
 msgstr ""
+
+#~ msgid "Series"
+#~ msgstr "Division"
 
 #, fuzzy
 #~ msgid "View options"

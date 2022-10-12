@@ -156,7 +156,7 @@ $html .= adminTable($admins, 'eventadmin', null, array(
   'delId' => 'userid'
 ));
 
-$html .= adminHeader(_("Series admins"), 'seriesadmin');
+$html .= adminHeader(_("Division admins"), 'seriesadmin');
 $series = SeasonSeries($seasonId);
 $admins = SeasonSeriesAdmins($seasonId, false, 'series');
 

@@ -40,6 +40,7 @@ function setSessionLocale() {
   $encoding = 'UTF-8';
 
   putenv("LC_MESSAGES=$locale");
+  putenv("LANGUAGE=$locale");
   $domain = 'messages';
   T_textdomain($domain);
   T_bindtextdomain($domain, $include_prefix."locale");

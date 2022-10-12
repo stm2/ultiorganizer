@@ -4,7 +4,7 @@ include_once $include_prefix . 'lib/poll.functions.php';
 
 if (empty($_GET['season'])) {
   if (empty($_GET['series'])) {
-    die(_("Season or series mandatory"));
+    die(_("Season or division mandatory"));
   }
   $seriesId = $_GET['series'];
   $name = SeriesName($seriesId);

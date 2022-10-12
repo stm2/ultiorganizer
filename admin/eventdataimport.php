@@ -131,7 +131,7 @@ if ($mode == 'rename') {
   if (!empty($seasonId)) {
     $html .= "<fieldset>";
     $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
-    $html .= "<label for='insert_mode'>"._("This operation inserts one or more new series in the database with the content of the file. It will only add, not alter any data or change user rights.")."</label></p>\n";
+    $html .= "<label for='insert_mode'>"._("This operation inserts one or more new divisions into the database with the content of the file. It will only add, not alter any data or change user rights.")."</label></p>\n";
     $html .= "<p><input type='radio' id='replace_mode' name='rename_mode' value='replace_mode' />";
     $html .= "<label for='replace_mode'>"._("This operation updates and adds event data in the database with the content of the file. It will not delete any data or change user rights.")."</label></p>\n";
     $html .= "</fieldset>";
@@ -167,9 +167,9 @@ if ($mode == 'rename') {
   }
   
   $disabled = "";
-  $html .= "<tr><td colspan='4' class='infocell'>" . _("Change series or teams?") . "</td></tr>\n";
+  $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
   foreach ($seasonInfo['series'] as $skey => $sval) {
-    $html .= "<tr><td  class='infocell'>" ._("Series Name"). "</td><td>"
+    $html .= "<tr><td  class='infocell'>" ._("Division Name"). "</td><td>"
       . "<input type='hidden' id='series" . utf8entities($skey) . "' name='series[]' value='" .utf8entities($skey). "' />"
       . "<input class='input' $disabled size='30' maxlength='50' id='seriesnames" . utf8entities($skey) . "' name='seriesnames[]' value='". utf8entities($sval['name']) ."'/></td></tr>\n";
     foreach ($sval['teams'] as $tkey => $tval) {

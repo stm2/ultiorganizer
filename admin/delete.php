@@ -60,7 +60,7 @@ if (empty($mode)) {
       }
     }
     if ($found < 1) {
-      $html .= "<p>" . _("You have no rights to delete any series.") . "</p>\n";
+      $html .= "<p>" . _("You have no rights to delete any divisions.") . "</p>\n";
     }
   } else {
     $html .= "<p>" . _("Select pools to play or undo") . ":</p>\n";

@@ -4,7 +4,7 @@ include_once $include_prefix . 'lib/poll.functions.php';
 
 if (empty($_GET['series']))
   if (empty($_POST['series']))
-    die(_("Series mandatory"));
+    die(_("Division mandatory"));
   else
     $seriesId = $_POST['series'];
 else
@@ -12,7 +12,7 @@ else
 
 $series = SeriesInfo($seriesId);
 if (empty($series))
-  die(_("Series no found"));
+  die(_("Division not found"));
 
 $pollId = isset($_GET['poll']) ? $_GET['poll'] : -1;
 

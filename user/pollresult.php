@@ -26,14 +26,14 @@ function getScore($columns, $ranker, $optionId) {
 }
 
 if (empty($_GET['series']) || empty($_GET['poll'])) {
-  die(_("Series and poll mandatory"));
+  die(_("Division and poll mandatory"));
 }
 $seriesId = $_GET['series'];
 $pollId = $_GET['poll'];
 
 $poll = PollInfo($pollId);
 if ($seriesId != $poll['series_id'])
-  die("Invalid poll and series");
+  die("Invalid poll and division");
 $series = SeriesInfo($poll['series_id']);
 
 $title = sprintf(_("Poll Results for %s"), $series['name']);
