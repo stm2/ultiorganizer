@@ -456,7 +456,7 @@ function PoolResults() {
 
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    $ret .= "<table><tr><th><input type='checkbox' onclick='checkAll(\"pools\");' /></th>";
+    $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"pools\");' /></th>";
     $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Division")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='pools[]' value='".utf8entities($row['pool'])."' /></td>";
