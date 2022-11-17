@@ -267,13 +267,13 @@ foreach ($pools as $spool) {
   if (count($standings)) {
     $seeds = array();
     foreach ($standings as $row) {
-      if (isset($seeds[$row['Rank']]))
-        ++$seeds[$row['Rank']];
+      if (isset($seeds[$row['rank']]))
+        ++$seeds[$row['rank']];
       else 
-        $seeds[$row['Rank']] = 1;
+        $seeds[$row['rank']] = 1;
     }
     foreach ($standings as $row) {
-      $html .= $getRow($poolId, $poolinfo, $row, $teamNum, $seeds[$row['Rank']] > 1);
+      $html .= $getRow($poolId, $poolinfo, $row, $teamNum, $seeds[$row['rank']] > 1);
       $teamNum++;
     }
     $html .= "<tr><th></th><th>";
@@ -364,7 +364,7 @@ function swissRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
     $html .= "<tr class='attention'>";
   else
     $html .= "<tr>";
-  $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['Rank'])) . "</td>";
+  $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['rank'])) . "</td>";
   $html .= "<td>" . editField("rank", $teamNum, $row['team_id'], intval($row['activerank'])) . "</td>";
   $html .= "<td>" . utf8entities($row['name']) . "</td>";
   
@@ -410,7 +410,7 @@ function regularRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
     $html .= "<tr class='attention'>";
   else
     $html .= "<tr>";
-  $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['Rank'])) . "</td>";
+  $html .= "<td>" . editField("seed", $teamNum, $row['team_id'], intval($row['rank'])) . "</td>";
   $html .= "<td>" . editField("rank", $teamNum, $row['team_id'], intval($row['activerank'])) . "</td>";
   $html .= "<td>" . utf8entities($row['name']) . "</td>";
   $html .= "<td class='center'>" . intval($stats['games']) . "</td>";

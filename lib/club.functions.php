@@ -2,6 +2,7 @@
 
 function ClubName($clubId)
 	{
+  if (!$clubId) return null;
 	$query = sprintf("SELECT name FROM uo_club WHERE club_id='%s'",
 		mysql_adapt_real_escape_string($clubId));
 	$result = mysql_adapt_query($query);

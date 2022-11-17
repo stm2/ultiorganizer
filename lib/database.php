@@ -217,7 +217,7 @@ function DBQueryToRow($query, $docasting=false) {
     $query = "UPDATE ".mysql_adapt_real_escape_string($name)." SET ";
 
     for($i=0;$i<count($fields);$i++){
-      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='".$values[$i]."', ";
+      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='".mysql_adapt_real_escape_string($values[$i])."', ";
     }
     $query = rtrim($query,', ');
     $query .= " WHERE ";
