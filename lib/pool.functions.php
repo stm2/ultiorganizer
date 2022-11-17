@@ -1288,6 +1288,7 @@ function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
     (int)$poolTemplateId);
 
     $newId = DBQueryInsert($query);
+
     $color = $colors[$newId % count($colors)];
     $query = "UPDATE uo_pool SET color='".$color."' WHERE pool_id=".$newId;
 
@@ -2548,4 +2549,9 @@ function PoolUndoAllGames($poolId) {
   PoolResolvePlayed($poolId);
   // TODO undo moves, uo_team_pool.activerank, special ranks, ...
 }
+
+function PoolOrderingLength() {
+  return 20;
+}
+
 ?>

@@ -107,7 +107,7 @@ if ($poolinfo['type']==3){
   $SwissOK=CheckSwissdrawMoves($poolId);
   //returned -1 if ties were detected
   //-2 if not all activeranks were found
-  // 1 if a correct Swissdraw move has been found
+  // 1+duplicates if a correct Swissdraw move has been found
 }else{
   $SwissOK=0;
 }
@@ -124,12 +124,14 @@ $moves = count(PoolMovingsToPool($poolId));
 
 $pstart = 0;
 if ($continuation && $SwissOK==-1) {
-  echo "<p>Ties detected in previous pool. Swissdraw moves only make sense if there are no ties in the previous pools. ";
-  echo "Do you want to automatically resolve these ties?</p>";
+  echo "<p>" .
+    _(
+      "Ties detected in previous pool. Swissdraw moves only make sense if there are no ties in the previous pools. Do you want to automatically resolve these ties?") .
+    "</p>";
   echo "<p><input class='button' name='ties' type='submit' value='"._("Resolve Ties")."'/>\n";
   $pstart = 1;
 }elseif($continuation && $SwissOK==-2) {
-  echo "<p>Swissdraw moves cannot be determined, because the previous pool has not been played yet.</p>\n";
+  echo "<p>" . _("Swissdraw moves cannot be determined, because the previous pool has not been played yet.") . "</p>\n";
 }elseif(!$continuation || ($moved && $moves>0)) {
   echo "<h2>"._("Select teams").":</h2>\n";
   echo "<table class='admintable'>\n";
@@ -149,7 +151,7 @@ if ($continuation && $SwissOK==-1) {
     echo "<td style='text-align: center;'>
 		<input onchange=\"toggleField(this,'rank".$team['team_id']."');\"  type='checkbox' name='selcheck[]' checked='checked' value='".utf8entities($team['team_id'])."'/></td>";
     echo "<td><input onkeyup=\"javascript:this.value=this.value.replace(/[^0-9]/g, '');\" class='input'
-			name='rank".$team['team_id']."' id='rank".$team['team_id']."' style='width: 20px' maxlength='3' size='2' value='".utf8entities($team['Rank'])."'/></td>";
+			name='rank".$team['team_id']."' id='rank".$team['team_id']."' style='width: 20px' maxlength='3' size='2' value='".utf8entities($team['rank'])."'/></td>";
     echo "<td>".utf8entities($team['name'])."</td>";
     echo "<td>".utf8entities($team['clubname'])."</td>";
     echo "</tr>\n";
@@ -177,7 +179,36 @@ if ($continuation && $SwissOK==-1) {
   $pstart = 1;
 }else{
   $playoffpool = false;
-
+  if ($SwissOK > 1) {
+    echo "<p><strong>" .
+      sprintf(_("Did not find arrangement without duplicates. Arrangement with %d duplicate(s) found."), $SwissOK - 1) .
+      "</strong></p>";
+    $moves = PoolMovingsToPool($poolId);
+    $mvgames = intval($poolinfo['mvgames']);
+    $games2 = PoolGetGamesToMove($poolId, $mvgames);
+    
+    $team1 = null;
+    $team2 = null;
+    foreach ($moves as $row) {
+      $team = PoolTeamFromStandings($row['frompool'], $row['fromplacing'], $poolinfo['type'] != 2); // do not count the BYE team if we are moving to a playoff pool
+      if ($team1 == null) {
+        $team1 = $team['team_id'];
+      } else {
+        $team2 = $team['team_id'];
+        foreach ($games2 as $game2) {
+          $game2 = GameInfo($game2);
+          if (
+            ($team1 == $game2['hometeam'] && $team2 == $game2['visitorteam']) ||
+            ($team1 == $game2['visitorteam'] && $team2 == $game2['hometeam'])) {
+              echo "<p><strong>" . $game2['hometeamname'] . " - " . $game2['visitorteamname'] . "</strong></p>";
+          }
+        }
+        $team1 = null;
+      }
+    }
+    echo "<br />"; 
+  }
+  
   echo "<table class='admintable'><tr>
 		<th>"._("From pool")."</th>
 		<th>"._("From pos.")."</th>

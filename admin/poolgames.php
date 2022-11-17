@@ -83,12 +83,14 @@ if(!empty($_POST['remove_x'])) {
 			$generatedgames = GenerateGames($poolId,$rounds,false);
 			$fakegames .= "<p>".count($generatedgames)." "._("games").". "._("Previous round winner vs. winners and losers vs. losers")."</p>";
 //			debugVar($gpool);
-			if($gpool['specialmoves']) { $fakegames .= "<p>playoff layout with moves found, using special moves.</p>"; }
+			if($gpool['specialmoves']) { $fakegames .= "<p>" . _("playoff layout with moves found, using special moves.") . "</p>"; }
 		}
 	}elseif($poolInfo['type']==3){
 		// Swiss-draw:
 		if($generatedgames[0]==false) {
-			$fakegames .= "<p>The number of teams in a Swiss-draw pool should be even. Please add or remove a team.</p>";
+			$fakegames .= "<p>". _("The number of teams in a Swiss-draw pool should be even. Please add or remove a team.") . "</p>";
+		}elseif ($rounds <=0) {
+		  $fakegames .= "<p>" . _("Must generate at least one round") . "</p>";
 		}else{
 			$generatedpools = GenerateSwissdrawPools($poolId,$rounds,false);
 			$fakegames .= "<p><b>".$poolInfo['name']."</b></p>";
@@ -99,13 +101,18 @@ if(!empty($_POST['remove_x'])) {
 					$fakegames .= "<p>".TeamName($game['home'])." - ".TeamName($game['away'])."</p>";
 				}
 			}
+			
 			if ($rounds>2) {
 				$generatedgames = GenerateGames($poolId,$rounds,false);
-				$fakegames .="<p><b> and ".($rounds-1)." extra Swissdraw pools with ".count($generatedgames)." games each</b></p>";
-			}elseif($rounds=2){
+				$fakegames .="<p><b> ". sprintf(_("and %d extra swiss draw pools with %d games each"), ($rounds-1), count($generatedgames)) . "</b></p>";
+			}elseif($rounds==2){
 				$generatedgames = GenerateGames($poolId,$rounds,false);
-				$fakegames .="<p><b> and ".($rounds-1)." extra Swissdraw pool with ".count($generatedgames)." games each</b></p>";
+				$fakegames .="<p><b> " . sprintf(_("and one extra swiss draw pool with %d games each"), ($rounds-1), count($generatedgames)) . "</b></p>";
 			}
+			foreach ($generatedpools as $fakepool) {
+			  $fakegames .= "<p>" . $fakepool['name'] . "</p>";
+			}
+			
 		}
 	}elseif($poolInfo['type']==4){
 	  foreach($generatedgames as $game){

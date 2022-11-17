@@ -82,7 +82,7 @@ if(!empty($_POST['add']))
   $backurl = utf8entities($_POST['backurl']);
 
   //series pool
-  if($poolinfo['type']==1){
+  if($poolinfo['type']==1 || $poolinfo['type']==3){
     $total_teams = 10;
 
     for($i=0;$i<$total_teams;$i++){
