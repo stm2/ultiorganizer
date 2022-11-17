@@ -20,6 +20,7 @@ if(!empty($_GET["season"]))
   $season = $_GET["season"];
 
 $title = _("Teams");
+$reroute = "";
 
 //process itself on submit
 if(!empty($_POST['save'])) {
@@ -64,8 +65,8 @@ if(!empty($_POST['save'])) {
   }
   ResolvePoolStandings($poolId);
 } else if(!empty($_POST['move'])) {
-  PoolConfirmMoves($poolId, $_POST['visible'] == "on");
-  
+  $swapped = PoolConfirmMoves($poolId, $_POST['visible'] == "on");
+  debug_to_apache($swapped);
   $backurl = $_POST['backurl'];
   session_write_close();
   header("location:$backurl");
@@ -286,12 +287,14 @@ if ($continuation && $SwissOK==-1) {
   echo _("Make this pool visible on menu")."</p>";
   
   echo "<p><input class='button' name='move' type='submit' value='"._("Confirm moves")."'/>";
+  $reroute = "<p><a href='?view=admin/seasonstandings&season=$season#P$poolId'>" . _("... or change ranking and confirm manually") ."</a></p>\n";
   $pstart = 1;
 }
 if ($pstart == 0)
   echo "<p>";
 echo "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
 echo "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
+echo $reroute;
 echo "</form>\n";
 
 contentEnd();

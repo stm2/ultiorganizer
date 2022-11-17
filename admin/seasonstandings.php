@@ -79,7 +79,9 @@ if (!empty($_POST['undoFromPlacing'])) {
 }
 
 if (!empty($_POST['confirmMoves'])) {
-  PoolConfirmMoves($_POST['PoolId']);
+  $swapped = PoolConfirmMoves($_POST['PoolId']);
+  if (!empty($swapped))
+    $html .= "<p>" . $swapped . "</p>";
 }
 
 if (!empty($_POST['setVisible'])) {
@@ -463,7 +465,10 @@ function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId) {
       $html .= "<td>" . $row['torank'] . "</td>";
     }
     $team = PoolTeamFromStandings($row['frompool'], $row['fromplacing'], $topoolinfo['type']!=2);  // do not count the BYE team if we are moving to a playoff pool
-    $html .= "<td>" . $team['name'] . "</td>";
+    if (empty($team))
+      $html .= "<td>???</td>";
+      else
+      $html .= "<td>" . $team['name'] . "</td>";
 
     if ($row['ismoved']) {
       $undo = true;

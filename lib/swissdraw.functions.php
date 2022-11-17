@@ -448,30 +448,30 @@ function CheckBYESchedule($poolId) {
   if (mysqli_num_rows($result) == 2) { // swap spots
     $row1 = mysqli_fetch_assoc($result);
     $row2 = mysqli_fetch_assoc($result);
-
-    $query = sprintf("
+    
+    if (!empty($row2['time']) && !empty($row2['reservation']) && empty($row1['reservation']) && empty($row1['time'])) {
+      // row2 is a game with time slot and bye team, row1 is the only game without reservation => swap them
+      $query = sprintf("
 				UPDATE uo_game SET reservation='%s', time='%s' 
 				WHERE game_id='%s' ", mysql_adapt_real_escape_string($row2['reservation']),
-      mysql_adapt_real_escape_string($row2['time']), mysql_adapt_real_escape_string($row1['game_id']));
-    $result = mysql_adapt_query($query);
-    if (!$result || mysql_adapt_affected_rows() != 1) {
-      die('Invalid query: ' . mysql_adapt_error());
-    }
+        mysql_adapt_real_escape_string($row2['time']), mysql_adapt_real_escape_string($row1['game_id']));
+      $result = mysql_adapt_query($query);
+      if (!$result || mysql_adapt_affected_rows() != 1) {
+        die('Invalid query: ' . mysql_adapt_error());
+      }
 
-    if ($row1['reservation'] != "" or $row1['time'] != "") {
-      die('something is fishy here');
-    }
-
-    $query = sprintf("
+      $query = sprintf("
 				UPDATE uo_game SET reservation=NULL, time=NULL 
 				WHERE game_id='%s' ", mysql_adapt_real_escape_string($row2['game_id']));
-    $result = mysql_adapt_query($query);
-    if (!$result || mysql_adapt_affected_rows() != 1) {
-      die('Invalid query: ' . mysql_adapt_error());
-    }
+      $result = mysql_adapt_query($query);
+      if (!$result || mysql_adapt_affected_rows() != 1) {
+        die('Invalid query: ' . mysql_adapt_error());
+      }
 
-    echo "Spots swapped!!! Pool_id " . $poolId . "<br>";
+      return sprintf(_("Time spots swapped! Pool_id %d"),  $poolId);
+    }
   }
+  return null;
 }
 
 function CheckBYE($poolId) {

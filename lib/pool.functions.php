@@ -1821,9 +1821,10 @@ function PoolConfirmMoves($toPoolId, $visible = null) {
   PoolMakeMoves($toPoolId);
   // Check if a BYE team has been scheduled. If so, fill in standard result
   $changes = CheckBYE($toPoolId);
+  $swapped = "";
   if ($changes > 0) {
     // check if the game with the BYE team is scheduled. If so, exchange it with the game that is not scheduled.
-    CheckBYESchedule($toPoolId);
+    $swapped = CheckBYESchedule($toPoolId);
   }
 
   ResolvePoolStandings($toPoolId);
@@ -1831,6 +1832,7 @@ function PoolConfirmMoves($toPoolId, $visible = null) {
   if (isset($visible)) {
     SetPoolVisibility($toPoolId, $visible);
   }
+  return $swapped;
 }
 
 /**
