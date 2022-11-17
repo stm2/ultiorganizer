@@ -66,7 +66,7 @@ function SearchPool($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "'/>\n";
   $ret .= "</td></tr>\n";
   $ret .= "<tr><td>";
-  $ret .= _("Division")."</td><td>";
+  $ret .= _("Pool")."</td><td>";
   $ret .= "<input type='text' name='poolname' value='";
   if (isset($_POST['poolname'])) $ret .= $_POST['poolname'];
   $ret .="'/>\n";
@@ -77,16 +77,21 @@ function SearchPool($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "</table>\n";
   $ret .= "</form>";
   $ret .= "<form method='post' id='pools' action='?".$resultTarget."'>\n";
-  $ret .= "<p>";
-  $ret .= PoolResults();
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
+  $results = PoolResults();
+  if (empty($results)) {
+    $ret .= "<p>" . _("No results") . "</p>";
+  } else {
+    $ret .= "<p>";
+    $ret .= $results;
+    foreach ($hiddenProperties as $name => $value) {
+      $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
+    }
+    foreach ($submitbuttons as $name => $value) {
+      $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
+    }
+    $ret .= "</p>";
+    $ret .= "</form>";
   }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
-  $ret .= "</p>";
-  $ret .= "</form>";
   return $ret;
 }
 
@@ -456,16 +461,19 @@ function PoolResults() {
 
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"pools\");' /></th>";
-    $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Division")."</th></tr>\n";
-    while ($row = mysqli_fetch_assoc($result)) {
-      $ret .= "<tr><td><input type='checkbox' name='pools[]' value='".utf8entities($row['pool'])."' /></td>";
-      $ret .= "<td>".utf8entities($row['season_name'])."</td>";
-      $ret .= "<td>".utf8entities($row['series_name'])."</td>";
-      $ret .= "<td>".utf8entities($row['pool_name'])."</td>";
-      $ret .= "</tr>\n";
+    $ret = "";
+    if (mysqli_num_rows($result) > 0) {
+      $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"pools\");' /></th>";
+      $ret .= "<th>" . _("Event") . "</th><th>" . _("Division") . "</th><th>" . _("Division") . "</th></tr>\n";
+      while ($row = mysqli_fetch_assoc($result)) {
+        $ret .= "<tr><td><input type='checkbox' name='pools[]' value='" . utf8entities($row['pool']) . "' /></td>";
+        $ret .= "<td>" . utf8entities($row['season_name']) . "</td>";
+        $ret .= "<td>" . utf8entities($row['series_name']) . "</td>";
+        $ret .= "<td>" . utf8entities($row['pool_name']) . "</td>";
+        $ret .= "</tr>\n";
+      }
+      $ret .= "</table>\n";
     }
-    $ret .= "</table>\n";
     return $ret;
   }
 }
