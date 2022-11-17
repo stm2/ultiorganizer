@@ -650,7 +650,11 @@ function TeamVictoryPointsByPool($poolId,$teamId)
   	
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-
+  if (mysqli_num_rows($result) == 0) {
+    return array('pool' => $poolId, 'team_id' => $teamId, 'games' => 0, 'margin' => 0, 'victorypoints' => 0,
+      'oppvp' => 0, 'score' => 0);
+  }
+  
   return mysqli_fetch_assoc($result);
 }
 

@@ -194,7 +194,7 @@ foreach($serieslist as $series){
 					echo "<td>"._("mutual")."</td>";
 				if($row['ismoved']){
 					$team = PoolTeamFromStandings($row['frompool'],$row['fromplacing']);
-					if(CanDeleteTeamFromPool($row['topool'],$team['team_id'])){
+					if(!empty($team) && CanDeleteTeamFromPool($row['topool'],$team['team_id'])){
 						echo "<td class='right'><input class='button' type='submit' name='undo' value='"._("Undo")."' onclick=\"setId(".$row['frompool'].",".$row['fromplacing'].",".$row['topool'].");\"/></td>";
 					}else{
 					    echo "<td class='right'></td>";
