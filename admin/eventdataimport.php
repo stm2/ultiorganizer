@@ -76,7 +76,7 @@ if (isset($_POST['load']) && isSuperAdmin()) {
       $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
     }
   } else {
-    $html .= "<p>" . sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected"), $filename, $_FILES['restorefile']['error']) . "</p>\n";
+    $html .= "<p>" . sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected."), $filename, $_FILES['restorefile']['error']) . "</p>\n";
   }
 } elseif (isset($_POST['new']) && isSuperAdmin()) {
   $mode = 'new';
