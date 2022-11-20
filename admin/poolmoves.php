@@ -5,7 +5,10 @@ include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 $LAYOUT_ID = POOLMOVES;
 
-$backurl = utf8entities($_SERVER['HTTP_REFERER']);
+if (isset($_SERVER['HTTP_REFERER']))
+  $backurl = utf8entities($_SERVER['HTTP_REFERER']);
+else 
+  $backurl = '';
 $seriesId = 0;
 if(!empty($_GET["pool"]))
 $poolId = intval($_GET["pool"]);
@@ -135,7 +138,7 @@ if(!empty($_POST['add']))
 }else if(!empty($_POST['remove_x'])){
   $backurl = utf8entities($_POST['backurl']);
 
-  if($poolinfo['type']==1){
+  if ($poolinfo['type'] == 1 || $poolinfo['type'] == 3) {
     $move = preg_split('/:/', $_POST['hiddenDeleteId']);
     if(PoolIsMoved($move[0],$move[1])){
       $err .= "<p class='warning'>"._("Team has already moved.")."</p>\n";

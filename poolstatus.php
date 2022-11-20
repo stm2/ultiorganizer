@@ -267,21 +267,24 @@ function printSwissdraw($seasoninfo, $poolinfo){
 
   if(count($standings)){
     foreach($standings as $row){
-      //			$stats = TeamStatsByPool($poolinfo['pool_id'], $row['team_id']);
-      $vp = TeamVictoryPointsByPool($poolinfo['pool_id'], $row['team_id']);
-      //			$points=TeamPointsByPool($poolinfo['pool_id'], $row['team_id']);
-      $flag="";
-      if(intval($seasoninfo['isinternational'])){
-        $flag = "<img height='10' src='images/flags/tiny/".$row['flagfile']."' alt=''/> ";
+      if ($row['valid'] != 2) {
+          // $stats = TeamStatsByPoolrg($poolinfo['pool_id'], $row['team_id']);
+        $vp = TeamVictoryPointsByPool($poolinfo['pool_id'], $row['team_id']);
+        // $points=TeamPointsByPool($poolinfo['pool_id'], $row['team_id']);
+        $flag = "";
+        if (intval($seasoninfo['isinternational'])) {
+          $flag = "<img height='10' src='images/flags/tiny/" . $row['flagfile'] . "' alt=''/> ";
+        }
+        $ret .= "<tr><td>" . $row['activerank'] . "</td>";
+        $ret .= "<td>&nbsp;$flag<a href='?view=teamcard&amp;team=" . $row['team_id'] . "'>" .
+          utf8entities(U_($row['name'])) . "</a></td>";
+        $ret .= "<td class='center'>" . intval($vp['games']) . "</td>";
+        $ret .= "<td class='center'>" . intval($vp['victorypoints']) . " / " . intval($vp['games']) . "</td>";
+        $ret .= "<td class='center'>" . intval($vp['oppvp']) . " / " . intval($vp['oppgames']) . "</td>";
+        $ret .= "<td class='center'>" . intval($vp['margin']) . " / " . intval($vp['games']) . "</td>";
+        $ret .= "<td class='center'>" . intval($vp['score']) . " / " . intval($vp['games']) . "</td>";
+        $ret .= "</tr>\n";
       }
-      $ret .= "<tr><td>".$row['activerank']."</td>";
-      $ret .= "<td>&nbsp;$flag<a href='?view=teamcard&amp;team=".$row['team_id']."'>".utf8entities(U_($row['name']))."</a></td>";
-      $ret .= "<td class='center'>".intval($vp['games'])."</td>";
-      $ret .= "<td class='center'>".intval($vp['victorypoints'])."</td>";
-      $ret .= "<td class='center'>".intval($vp['oppvp'])."</td>";
-      $ret .= "<td class='center'>".intval($vp['margin'])."</td>";
-      $ret .= "<td class='center'>".intval($vp['score'])."</td>";
-      $ret .= "</tr>\n";
     }
   }else{
     $teams = PoolSchedulingTeams($poolinfo['pool_id']);
@@ -289,6 +292,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
       $ret .= "<tr><td>-</td>";
       $ret .= "<td>".utf8entities(U_($row['name']))."</td>";
       $ret .= "<td class='center'>-</td>";
+      $ret .="<td class='center'>-</td>";
       $ret .="<td class='center'>-</td>";
       $ret .="<td class='center'>-</td>";
       $ret .="<td class='center'>-</td>";
@@ -313,7 +317,17 @@ function printSwissdraw($seasoninfo, $poolinfo){
   }
   $ret .= "</table>\n";
 
+  
   $ret .= "<p><a href='?view=games&amp;pool=".$poolinfo['pool_id'].".&amp;singleview=1'>"._("Schedule")."</a><br/></p>";
+  
+  $ret .= "<h3>" . _("Victory Points") . "</h3>";
+  $ret .= "<table class='infotable'>";
+  $ret .= "<tr><th>" . _("Score Difference") . "</th><th>" . _("Victory Points") ."</th></tr>\n";
+  $victory = VictoryPoints();
+  foreach ($victory as $vp) {
+    $ret .= "<tr><td>" . $vp['pointdiff'] . "</td><td>" . $vp['victorypoints'] . "</td></tr>\n";
+  }
+  $ret .= "</table>";
   return $ret;
 }
 
@@ -645,7 +659,10 @@ function printPlayoffTree($seasoninfo, $poolinfo){
       $gamesleft = -1;
     else {
       $team = PoolTeamFromStandings($pool['pool_id'], $i);
-      $gamesleft = mysqli_num_rows(TeamPoolGamesLeft($team['team_id'], $pool['pool_id']));
+      if ($team == null)
+        $gamesleft = 0;
+      else
+        $gamesleft = mysqli_num_rows(TeamPoolGamesLeft($team['team_id'], $pool['pool_id']));
     }
     $teampart = "";
     $unknown = "";

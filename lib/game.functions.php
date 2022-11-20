@@ -1088,7 +1088,7 @@ function AddGame($params) {
  */
 function SetGame($gameId, $params) {
   $poolinfo = PoolInfo($params['pool']);
-  if (hasEditGamesRight($poolinfo['series'])) {
+  if (!empty($poolinfo) && hasEditGamesRight($poolinfo['series'])) {
     $result = true;
     foreach ($params as $key => $param) {
       switch ($key) {

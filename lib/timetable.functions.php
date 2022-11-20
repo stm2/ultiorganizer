@@ -482,8 +482,17 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
     }
   }
 
+  $hbye = '';
+  $vbye = '';
+  if (isset($game['homevalid']) && $game['homevalid'] == 2) {
+    $hbye=" class='byename'";
+  }
+  if (isset($game['visitorvalid']) && $game['visitorvalid'] == 2) {
+    $vbye=" class='byename'";
+  }
+  
   if($game['hometeam']){
-    $ret .= "<td style='$teamw'><span>". utf8entities($game['hometeamname']) ."</span></td>\n";
+    $ret .= "<td style='$teamw'><span$hbye>". utf8entities($game['hometeamname']) ."</span></td>\n";
   }else{
     $ret .= "<td style='$teamw'><span class='schedulingname'>". utf8entities(U_($game['phometeamname'])) ."</span></td>\n";
   }
@@ -491,7 +500,7 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
   $ret .= "<td style='$againstmarkw'>-</td>\n";
 
   if($game['visitorteam']){
-    $ret .= "<td style='$teamw'><span>". utf8entities($game['visitorteamname']) ."</span></td>\n";
+    $ret .= "<td style='$teamw'><span$vbye>". utf8entities($game['visitorteamname']) ."</span></td>\n";
   }else{
     $ret .= "<td style='$teamw'><span class='schedulingname'>". utf8entities(U_($game['pvisitorteamname'])) ."</span></td>\n";
   }
@@ -622,7 +631,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
 			phome.name AS phometeamname, pvisitor.name AS pvisitorteamname, pool.color, pgame.name AS gamename,
 			home.abbreviation AS homeshortname, visitor.abbreviation AS visitorshortname, homec.country_id AS homecountryid, 
 			homec.name AS homecountry, visitorc.country_id AS visitorcountryid, visitorc.name AS visitorcountry, 
-			homec.flagfile AS homeflag, visitorc.flagfile AS visitorflag, s.timezone
+			homec.flagfile AS homeflag, visitorc.flagfile AS visitorflag, s.timezone, home.valid as homevalid, visitor.valid as visitorvalid
 			FROM uo_game pp 
 			LEFT JOIN (SELECT COUNT(*) AS goals, game FROM uo_goal GROUP BY game) AS pm ON (pp.game_id=pm.game)
 			LEFT JOIN uo_pool pool ON (pool.pool_id=pp.pool) 

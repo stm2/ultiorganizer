@@ -59,7 +59,7 @@ if ($list == "allteams" || $list == "byseeding") {
         }
         $i = 0;
         foreach ($teams as $team) {
-            $i ++;
+            $i++;
             $html .= "<tr>";
             if ($list == "byseeding") {
                 if (! empty($team['rank'])) {
@@ -170,6 +170,7 @@ if ($list == "allteams" || $list == "byseeding") {
         $htmlteams = array();
         $teams = SeriesRanking($ser['series_id']);
         foreach ($teams as $team) {
+          if ($team['valid'] != 2) {
             if ($team) {
                 if ($team['placement'] <= 3)
                     $htmltmp = "<td class='rankingtop'>";
@@ -184,6 +185,7 @@ if ($list == "allteams" || $list == "byseeding") {
                 $htmltmp .= "</td>";
                 $htmlteams[] = $htmltmp;
             }
+          }
         }
         $htmlseries[] = $htmlteams;
     }
@@ -211,7 +213,7 @@ if ($list == "allteams" || $list == "byseeding") {
         }
     }
     $batches[] = count($series);
-
+    
     for ($c = 0; $c < count($batches) - 1; $c ++) {
         $html .= "<table cellpadding='2' style='width:100%;'>\n";
         $html .= "<tr>";

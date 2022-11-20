@@ -89,7 +89,38 @@ function AutoResolveTies($poolId) {
   }
 }
 
-function CheckSwissdrawMoves($poolId) {
+function findPairing2($moves, $games) {
+  
+}
+
+function findPairing($moves, $games) {
+  $forward = true;
+  $foundValidArrangement = AdjustForDuplicateGames($moves, $games, $forward);
+  $duplicates = 0;
+  while (!$foundValidArrangement && $duplicates < $moves) {
+    $roundcounter = 0;
+    while (!$foundValidArrangement) {
+      $forward = !$forward;
+      // print "trying the other way round, now forward? ".$forward."<br><br>";
+      $foundValidArrangement = AdjustForDuplicateGames($moves, $games, $forward, $duplicates);
+      if (!$foundValidArrangement) {
+        $roundcounter++;
+        if ($roundcounter > count($moves) * 2) {
+          break;
+        }
+      }
+    }
+    if (!$foundValidArrangement) {
+      debug_to_apache("did not find arrangement with $duplicates duplicates.");
+      $duplicates++;
+    } else if ($duplicates > 0) {
+      debug_to_apache("found arrangement with $duplicates duplicates.");
+    }
+  }
+  return $foundValidArrangement;
+}
+
+function CheckSwissdrawMoves($poolId, &$alteredmoves) {
   // returns -1 if there are ties in previous pool
   // returns -2 if there are no active teams in previous pool
   // returns 1 if everything went fine
@@ -115,51 +146,18 @@ function CheckSwissdrawMoves($poolId) {
   // retrieve all previously played games
   $games = PoolGetGamesToMove($poolId, 0);
 
-  // print_r($moves);
+  if (count($moves) % 2 == 1) return -3;
 
-  $forward = true;
-  $foundValidArrangement = AdjustForDuplicateGames($moves, $games, $forward);
-  $duplicates = 0;
-  while (!$foundValidArrangement && $duplicates < $moves) {
-    $roundcounter = 0;
-    while (!$foundValidArrangement) {
-      $forward = !$forward;
-      // print "trying the other way round, now forward? ".$forward."<br><br>";
-      $foundValidArrangement = AdjustForDuplicateGames($moves, $games, $forward, $duplicates);
-      if (!$foundValidArrangement) {
-        $roundcounter++;
-        if ($roundcounter > count($moves) * 2) {
-          break;
-        }
-      }
-    }
-    if (!$foundValidArrangement) {
-      debug_to_apache("did not find arrangement with $duplicates duplicates.");
-      $duplicates++;
-    } else if ($duplicates > 0) {
-      debug_to_apache("found arrangement with $duplicates duplicates.");
-    }
-  }
+  $foundValidArrangement = findPairing($moves, $games);
   if (!$foundValidArrangement)
     Die("Could not find a valid arrangment of teams");
 
   // update the moves in the database
   usort($moves,
     create_function('$a,$b',
-      'return $a[\'fromplacing\']==$b[\'fromplacing\']?0:($a[\'fromplacing\']<$b[\'fromplacing\']?-1:1);'));
-  // PrintMoves($moves);
-  for ($i = 0; $i < count($moves); $i++) {
-    $query = sprintf("
-			UPDATE uo_moveteams SET torank=%s,scheduling_id=%s
-			WHERE fromplacing=%s AND frompool=%s", mysql_adapt_real_escape_string($moves[$i]['torank']),
-      mysql_adapt_real_escape_string($moves[$i]['scheduling_id']),
-      mysql_adapt_real_escape_string($moves[$i]['fromplacing']), mysql_adapt_real_escape_string($moves[$i]['frompool']));
-    // print $query."<br>";
-    $result = mysql_adapt_query($query);
-    if (!$result)
-      die($query . 'Invalid query: ' . mysql_adapt_error());
-  }
-
+      'return $a[\'torank\']==$b[\'torank\']?0:($a[\'torank\']<$b[\'torank\']?-1:1);'));
+  
+  $alteredmoves = $moves;
   // everthing went fine
   return 1 + $duplicates;
 }
@@ -177,7 +175,7 @@ function AdjustForDuplicateGames(&$moves, $games, $forward, $duplicates = 0) {
   }
 
   // print "Loop from ".$startPos." until ".$stopPos." with steps ".($sign*2)."<br>";
-  for ($i = $startPos; $i != $stopPos; $i = $i + $sign * 2) {
+  for ($i = $startPos; $i != $stopPos && $i + $sign != $stopPos; $i = $i + $sign * 2) {
     If (TeamsHavePlayed($moves[$i]['team_id'], $moves[$i + $sign]['team_id'], $games, $duplicates)) {
       // Find the first team in the rest of the list that hasn't played
       $j = FindUnplayedTeam($moves[$i]['team_id'], $i + 2 * $sign, $moves, $games, $forward);
@@ -332,12 +330,6 @@ function GenerateSwissdrawPools($poolId, $rounds, $generate = true) {
     $prevpoolId = $poolId;
     $offset = $teams;
     $poolname = $poolInfo['name'];
-    
-    if ($generate) {
-      $name = sprintf(_("%s, round %d"), $poolname, 1);
-      $query = sprintf("UPDATE uo_pool SET name='%s' WHERE pool_id=%d", mysql_adapt_real_escape_string($name), (int) $poolId);
-      $result = DBQuery($query);
-    }
     
     if ($rounds > 0){ 
       $preflen = (int) log10($rounds) + 1;

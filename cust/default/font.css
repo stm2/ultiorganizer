@@ -221,6 +221,11 @@ ul.pagemenu li a.right {
   color: var(--lowlightcolor, #a0a0a0);
 }
 
+.byename {
+  color: var(--lowlightcolor, #a0a0a0);
+  font-style: italic;
+}
+
 .schedulingname {
   font-style: italic;
 }

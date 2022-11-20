@@ -65,8 +65,39 @@ if(!empty($_POST['save'])) {
   }
   ResolvePoolStandings($poolId);
 } else if(!empty($_POST['move'])) {
+
+  function applyMoves($poolId, $moves) {
+    usort($moves,
+      create_function('$a,$b',
+        'return $a[\'fromplacing\']==$b[\'fromplacing\']?0:($a[\'fromplacing\']<$b[\'fromplacing\']?-1:1);'));
+      
+    $series = PoolSeries($poolId);
+    if (hasEditSeriesRight($series)) {
+      for ($i = 0; $i < count($moves); $i++) {
+        $query = sprintf("
+			UPDATE uo_moveteams SET torank=%s,scheduling_id=%s
+			WHERE fromplacing=%s AND frompool=%s", mysql_adapt_real_escape_string($moves[$i]['torank']),
+          mysql_adapt_real_escape_string($moves[$i]['scheduling_id']),
+          mysql_adapt_real_escape_string($moves[$i]['fromplacing']),
+          mysql_adapt_real_escape_string($moves[$i]['frompool']));
+
+        $result = mysql_adapt_query($query);
+        if (!$result)
+          die($query . 'Invalid query: ' . mysql_adapt_error());
+      }
+    }
+  }
+  
+  $newmoves = array();
+  if (isset($_POST['movefrompool'])) {
+    for ($i = 0; $i < count($_POST['movefrompool']); ++$i) {
+      $newmoves[] = array('frompool' => $_POST['movefrompool'][$i], 'fromplacing' => $_POST['movefromplacing'][$i],
+        'torank' => $_POST['movetorank'][$i], 'scheduling_id' => $_POST['movescheduling_id'][$i]);
+    }
+  }
+  applyMoves($poolId, $newmoves);
+  
   $swapped = PoolConfirmMoves($poolId, $_POST['visible'] == "on");
-  debug_to_apache($swapped);
   $backurl = $_POST['backurl'];
   session_write_close();
   header("location:$backurl");
@@ -100,15 +131,30 @@ echo "<h1>".utf8entities(PoolName($poolId))."</h1>\n";
 
 $poolinfo = PoolInfo($poolId);
 $continuation = intval($poolinfo['continuingpool']);
+$moves = null;
+
+
+function getInput($name, $value) {
+  $value=utf8entities($value);
+  return "<input type='hidden' name='$name' value='$value'/>";
+  
+}
 
 // for Swiss-draw: come up with moves such that no team plays
 // a team that they have played previously
 // this can only be done if all ties from the previous pool have been resolved
 if ($poolinfo['type']==3){
-  $SwissOK=CheckSwissdrawMoves($poolId);
+  $moves = array();
+  $SwissOK=CheckSwissdrawMoves($poolId, $moves);
   //returned -1 if ties were detected
   //-2 if not all activeranks were found
   // 1+duplicates if a correct Swissdraw move has been found
+  foreach ($moves as $move) {
+    echo getInput('movefrompool[]', $move['frompool']);
+    echo getInput('movefromplacing[]', $move['fromplacing']);
+    echo getInput('movetorank[]', $move['torank']);
+    echo getInput('movescheduling_id[]', $move['scheduling_id']);
+  }
 }else{
   $SwissOK=0;
 }
@@ -121,7 +167,7 @@ if ($poolinfo['type']==2){
 }
 
 $moved = PoolIsAllMoved($poolId);
-$moves = count(PoolMovingsToPool($poolId));
+$numMoves = count(PoolMovingsToPool($poolId));
 
 $pstart = 0;
 if ($continuation && $SwissOK==-1) {
@@ -133,7 +179,7 @@ if ($continuation && $SwissOK==-1) {
   $pstart = 1;
 }elseif($continuation && $SwissOK==-2) {
   echo "<p>" . _("Swissdraw moves cannot be determined, because the previous pool has not been played yet.") . "</p>\n";
-}elseif(!$continuation || ($moved && $moves>0)) {
+}elseif(!$continuation || ($moved && $numMoves>0)) {
   echo "<h2>"._("Select teams").":</h2>\n";
   echo "<table class='admintable'>\n";
 
@@ -180,11 +226,14 @@ if ($continuation && $SwissOK==-1) {
   $pstart = 1;
 }else{
   $playoffpool = false;
+  if ($SwissOK == -3)
+    echo "<p>" . _("Odd number of teams detected. You can fix this in 'Game management'.") . "</p>\n";
+  
   if ($SwissOK > 1) {
     echo "<p><strong>" .
       sprintf(_("Did not find arrangement without duplicates. Arrangement with %d duplicate(s) found."), $SwissOK - 1) .
       "</strong></p>";
-    $moves = PoolMovingsToPool($poolId);
+    
     $mvgames = intval($poolinfo['mvgames']);
     $games2 = PoolGetGamesToMove($poolId, $mvgames);
     
@@ -218,7 +267,8 @@ if ($continuation && $SwissOK==-1) {
 		<th>"._("To pool")."</th>
 		<th>"._("Name in Schedule")."</th></tr>";
 
-  $moves = PoolMovingsToPool($poolId);
+  if ($moves == null)
+    $moves = PoolMovingsToPool($poolId);
   $BYEs=false;
 
   foreach($moves as $row){
@@ -258,7 +308,7 @@ if ($continuation && $SwissOK==-1) {
   }
 
   if ($poolinfo['type']==2 && $PlayoffOK==-1) {
-    echo "<p><b>Warning:</b> You are about to move an odd number of teams which might result in one of the teams having another BYE.</p>";
+    echo "<p><b>" . _("Warning:"). "</b> " . _("You are about to move an odd number of teams which might result in one of the teams having another BYE.") . "</p>";
   }
   echo "<p><a href='?view=admin/poolmoves&amp;season=$season&amp;series=".$seriesId."&amp;pool=".$poolId."'>"._("Manage moves")."</a></p>";
 
@@ -287,7 +337,7 @@ if ($continuation && $SwissOK==-1) {
   echo _("Make this pool visible on menu")."</p>";
   
   echo "<p><input class='button' name='move' type='submit' value='"._("Confirm moves")."'/>";
-  $reroute = "<p><a href='?view=admin/seasonstandings&season=$season#P$poolId'>" . _("... or change ranking and confirm manually") ."</a></p>\n";
+  $reroute = "<p><a href='?view=admin/seasonstandings&season=$season#P$poolId'>" . _("... or change ranking of from pool and confirm manually") ."</a></p>\n";
   $pstart = 1;
 }
 if ($pstart == 0)

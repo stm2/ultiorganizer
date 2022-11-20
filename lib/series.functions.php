@@ -99,7 +99,7 @@ function SeriesTypes() {
 function SeriesTeams($seriesId, $orderbyseeding = false) {
   $query = sprintf(
     "SELECT t.team_id, t.name, t.abbreviation, t.club, cl.name AS clubname,
-			t.country, c.name AS countryname, t.`rank`, c.flagfile, c.flagfile
+			t.country, c.name AS countryname, t.`rank`, c.flagfile, c.flagfile, t.valid
 			FROM uo_team t
 			LEFT JOIN uo_series ser ON(ser.series_id=t.series)
 			LEFT JOIN uo_club cl ON(cl.club_id=t.club)

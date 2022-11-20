@@ -193,7 +193,7 @@ function PoolTypes() {
 function PoolTeams($poolId, $order="rank"){
   $query = sprintf("SELECT uo_team.team_id, uo_team.name, uo_team.club, club.name AS clubname,
         uo_team_pool.`rank`, uo_team.country, c.name AS countryname, uo_team.`rank` AS seed,
-        c.flagfile, uo_team_pool.activerank
+        c.flagfile, uo_team_pool.activerank, uo_team.valid
         FROM uo_team
         RIGHT JOIN uo_team_pool ON (uo_team.team_id=uo_team_pool.team)
         LEFT JOIN uo_club club ON (club=club.club_id)
@@ -646,6 +646,14 @@ function PoolMovingsToPool($toPool){
   return DBQueryToArray($query);
 }
 
+function PoolMaxMoveToPool($toPool) {
+  $query = sprintf("SELECT max(torank)
+        FROM uo_moveteams pmt
+        WHERE pmt.topool = %d",
+    (int)$toPool);
+  return DBQueryToValue($query);
+}
+
 function PoolGetMoveByTeam($toPool, $team) {
   $query = sprintf("SELECT mv.* FROM uo_moveteams AS mv
     LEFT JOIN uo_team_pool AS tp ON (tp.pool = mv.topool AND tp.activerank = mv.torank)
@@ -771,7 +779,7 @@ function PoolGetFromPoolByTeamId($poolId,$teamId){
  */
 function PoolTeamsFromStandings($poolId, $activerank, $countbye=true) {
   if($countbye) {
-    $query = sprintf("SELECT j.team_id, j.name, js.activerank, c.flagfile
+    $query = sprintf("SELECT j.team_id, j.name, js.activerank, c.flagfile, j.valid
               FROM uo_team AS j
               LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
               LEFT JOIN uo_country c ON(c.country_id=j.country)
@@ -779,7 +787,7 @@ function PoolTeamsFromStandings($poolId, $activerank, $countbye=true) {
               (int)$poolId,
               (int)$activerank);
   }else{
-    $query = sprintf("SELECT j.team_id, j.name, js.activerank, c.flagfile
+    $query = sprintf("SELECT j.team_id, j.name, js.activerank, c.flagfile, j.valid
               FROM uo_team AS j
               LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
               LEFT JOIN uo_country c ON(c.country_id=j.country)
@@ -930,6 +938,7 @@ function PoolGetGamesToMove($toPoolId, $mvgames){
   $moves = PoolMovingsToPool($toPoolId);
   foreach($moves as $row){
     $team = PoolTeamFromStandings($row['frompool'],$row['fromplacing']);
+    if (!empty($team)) { // TODO why can this happen?
     if($mvgames==0){
       $teamgames = TeamPoolGames($team['team_id'],$row['frompool']);
       if(mysqli_num_rows($teamgames)){
@@ -966,6 +975,7 @@ function PoolGetGamesToMove($toPoolId, $mvgames){
           }
         }
       }
+    }
     }
   }
   sort($games);
@@ -1050,7 +1060,7 @@ function PoolMovedGames($poolId){
             pl.name AS placename, pl.address, pp.isongoing, pp.hasstarted, home.name AS hometeamname, visitor.name AS visitorteamname,
             phome.name AS phometeamname, pvisitor.name AS pvisitorteamname, pool.color, pgame.name AS gamename,
             home.abbreviation AS homeshortname, visitor.abbreviation AS visitorshortname, homec.country_id AS homecountryid,
-            homec.name AS homecountry, visitorc.country_id AS visitorcountryid, visitorc.name AS visitorcountry
+            homec.name AS homecountry, visitorc.country_id AS visitorcountryid, visitorc.name AS visitorcountry, home.valid as homevalid, visitor.valid as visitorvalid
             FROM uo_game_pool gp
             LEFT JOIN uo_game pp ON (gp.game=pp.game_id)
             LEFT JOIN (SELECT COUNT(*) AS goals, game FROM uo_goal GROUP BY game) AS pm ON (pp.game_id=pm.game)
@@ -1349,6 +1359,19 @@ function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=fal
     Log1("pool","add",$newId);
     return $newId;
   } else { die('Insufficient privileges to add pool'); }
+}
+
+function AddByePool($name, $type, $ordering, $seriesId) {
+  $query = sprintf("INSERT INTO uo_pool
+            (type, continuingpool, visible, played, ordering, name, series) VALUES
+            (%d, 0, 0, 1, '%s', '%s', %d)",
+    (int) $type,
+    mysql_adapt_real_escape_string($ordering),
+    mysql_adapt_real_escape_string($name),
+    (int)$seriesId);
+  
+  $newId = DBQueryInsert($query);
+  return $newId;
 }
 
 /**
@@ -1694,6 +1717,7 @@ function PoolMakeAMove($frompool, $fromplacing, $countbye, $topool, $torank, $ch
 
   //add team to target pool
   $team = PoolTeamFromStandings($frompool,$fromplacing, $countbye);
+  if (empty($team)) die ("invalid team");
 
   // delete previously moved team
   $previous = PoolTeamFromInitialRank($topool, $torank);
@@ -2166,7 +2190,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
       $pseudoteams = false;
 
       $poolInfo = PoolInfo($poolId);
-      $query = sprintf("SELECT team.team_id from uo_team_pool as tp left join uo_team team
+      $query = sprintf("SELECT team.team_id, team.valid from uo_team_pool as tp left join uo_team team
                 on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
       (int)$poolId);
       $result = DBQuery($query);
@@ -2181,9 +2205,15 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
       }
 
       $teams = array();
+      $bye = false;
       while ($row = mysqli_fetch_row($result)) {
+        if (isset($row[1]) && $row[1] == 2)
+          $bye = true;
         $teams[] = $row[0];
       }
+      
+      if (count($teams) < 2)
+        return array(0 => -1);
 
       $games = array();
 
@@ -2245,9 +2275,9 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
         }
       } elseif ($poolInfo['type'] == 3) {
         // game generation for Swiss draw round
-
-        if(count($teams) % 2 ==1) {
-          $games[]=false;
+        
+        if(count($teams) % 2 == 1) {
+          $games[] = -2;
         }else {
           if ($poolInfo['continuingpool']) {
             // if it's a continuation pool, team 1 plays team 2, etc.
@@ -2258,14 +2288,15 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
               $games[] = $game;
             }
           }else {
-            // for the first round, for 2n teams (has to be even)
-            // team 1 plays team n+1, 2 plays n+2 etc.
-            $halfnbteams=count($teams)/2;
-            for ($i=0; $i<$halfnbteams; $i++) {
-              $game = array("home"=>0,"away"=>0);
-              $game['home']= (int)$teams[$i];
-              $game['away']= (int)$teams[$i+$halfnbteams];
-              $games[] = $game;
+              // for the first round, for 2n teams (has to be even)
+              // team 1 plays team n+1, 2 plays n+2 etc.
+            $halfnbteams = count($teams) / 2 - ($bye ? 1 : 0);
+            for ($i = 0; $i < $halfnbteams; $i++) {
+              $games[] = array("home" => (int) $teams[$i], "away" => (int) $teams[$i + $halfnbteams]);
+            }
+            // but last team has a bye
+            if ($bye) {
+              $games[] = array("home" => (int) $teams[count($teams) - 2], "away" => (int) $teams[count($teams) - 1]);
             }
           }
         }
@@ -2290,7 +2321,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
         }
       }
 
-      if($generate){
+      if($generate && $games[0] !== -2){
         foreach($games as $game){
           if($homeresp){
             if($pseudoteams){

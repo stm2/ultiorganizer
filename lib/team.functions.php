@@ -608,54 +608,73 @@ function TeamStats($teamId)
 
 function TeamVictoryPointsByPool($poolId,$teamId)
 {
-  $query = sprintf("
+  $query = sprintf(
+    "
     SELECT tot.pool,tot.team_id,count(tot.game_id) as games,sum(tot.diff) as margin,
-	   sum(tot.victorypoints) as victorypoints,sum(swiss.victorypoints) as oppvp,
+	   sum(tot.victorypoints) as victorypoints,sum(swiss.victorypoints) as oppvp, sum(swiss.games) as oppgames,
 	   sum(tot.score) as score
-    FROM 
+    FROM
     (SELECT gp.pool,hometeam as team_id, visitorteam as opp_id,game.game_id,homescore-visitorscore as diff, vp.victorypoints,homescore as score
-    FROM uo_game game
-    LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
-    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-    WHERE isongoing=0 AND hasstarted>0
+    
+
+    FROM uo_game_pool gp 
+    LEFT JOIN uo_game game ON (game.game_id=gp.game)
+    LEFT JOIN uo_victorypoints vp ON (SELECT GREATEST(min(pointdiff), LEAST(max(pointdiff), homescore-visitorscore)) FROM uo_victorypoints)=vp.pointdiff
+    LEFT JOIN uo_team vt ON (visitorteam=vt.team_id)
+    WHERE gp.pool=%d AND isongoing=0 AND hasstarted>0 AND vt.valid!=2
     UNION
     SELECT gp.pool,visitorteam as team_id, hometeam as opp_id,game.game_id,visitorscore-homescore as diff, vp.victorypoints,visitorscore as score
-    FROM uo_game game
-    LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
-    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-    WHERE isongoing=0 AND hasstarted>0) tot
-
+    FROM uo_game_pool gp 
+    LEFT JOIN uo_game game ON (game.game_id=gp.game)
+    LEFT JOIN uo_victorypoints vp ON (SELECT GREATEST(min(pointdiff), LEAST(max(pointdiff), visitorscore-homescore)) FROM uo_victorypoints)=vp.pointdiff
+    LEFT JOIN uo_team ht ON (hometeam=ht.team_id)
+    WHERE gp.pool=%d AND isongoing=0 AND hasstarted>0 AND ht.valid!=2) tot
+    
     LEFT JOIN
-
+    
     (SELECT un.pool,un.team_id,count(un.game_id) as games,sum(victorypoints) as victorypoints FROM
     (SELECT gp.pool,hometeam as team_id, game.game_id,vp.victorypoints
-    FROM uo_game game
-    LEFT JOIN uo_victorypoints vp ON homescore-visitorscore=vp.pointdiff
-    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-    WHERE isongoing=0 AND hasstarted>0
+    FROM uo_game_pool gp
+    LEFT JOIN uo_game game ON (game.game_id=gp.game)
+    LEFT JOIN uo_victorypoints vp ON (SELECT GREATEST(min(pointdiff), LEAST(max(pointdiff), homescore-visitorscore)) FROM uo_victorypoints)=vp.pointdiff
+    LEFT JOIN uo_team vt ON (visitorteam=vt.team_id)
+    WHERE gp.pool=%d AND isongoing=0 AND hasstarted>0 AND vt.valid!=2
     UNION
     SELECT gp.pool,visitorteam as team_id, game.game_id,vp.victorypoints
-    FROM uo_game game
-    LEFT JOIN uo_victorypoints vp ON visitorscore-homescore=vp.pointdiff
-    LEFT JOIN uo_game_pool gp ON (game_id=gp.game)
-    WHERE isongoing=0 AND hasstarted>0) un
+    FROM uo_game_pool gp
+    LEFT JOIN uo_game game ON (game_id=gp.game)
+    LEFT JOIN uo_victorypoints vp ON (SELECT GREATEST(min(pointdiff), LEAST(max(pointdiff), visitorscore-homescore)) FROM uo_victorypoints)=vp.pointdiff
+    LEFT JOIN uo_team ht ON (hometeam=ht.team_id)
+    WHERE gp.pool=%d AND isongoing=0 AND hasstarted>0 AND ht.valid!=2) un
     GROUP BY pool,team_id) swiss
-
-    ON swiss.pool=tot.pool AND tot.opp_id=swiss.team_id		
-		
+    
+    ON swiss.pool=tot.pool AND tot.opp_id=swiss.team_id
+    
     WHERE tot.team_id=%d AND tot.pool=%d
-    GROUP BY tot.pool,tot.team_id",
-  intval($teamId),
-  intval($poolId));
-  	
+    GROUP BY tot.pool,tot.team_id", intval($poolId), intval($poolId), intval($poolId), intval($poolId), intval($teamId),
+    intval($poolId));
+
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
   if (mysqli_num_rows($result) == 0) {
     return array('pool' => $poolId, 'team_id' => $teamId, 'games' => 0, 'margin' => 0, 'victorypoints' => 0,
       'oppvp' => 0, 'score' => 0);
   }
-  
-  return mysqli_fetch_assoc($result);
+  $ret = mysqli_fetch_assoc($result);
+
+  // bye team
+  $query = sprintf("SELECT valid from uo_team WHERE team_id=%d", intval($teamId));
+  if (DBQueryToValue($query) == 2)
+    $ret['victorypoints'] = -1;
+
+  return $ret;
+}
+
+function VictoryPoints() {
+  $query = "SELECT * FROM uo_victorypoints ORDER BY pointdiff ASC";
+  return DBQueryToArray($query);
 }
 
 

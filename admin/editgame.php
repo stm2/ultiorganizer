@@ -19,6 +19,7 @@ $warning = "";
 $gp = array(
   "hometeam" => "",
   "visitorteam" => "",
+  "pool" => "",
   "scheduling_name_home" => "",
   "scheduling_name_visitor" => "",
   "reservation" => "",
