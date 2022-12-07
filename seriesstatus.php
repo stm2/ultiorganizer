@@ -88,20 +88,18 @@ $style = "";
 $html .= "<table border='1' style='width:100%'>\n";
 $html .= "<tr>";
 
-if($sort == "ranking") {
-  mergesort($allteams, create_function('$a,$b','$va=$a[\''.$sort.'\']; $vb=$b[\''.$sort.'\'];
-    return $va==$vb?0:($va==null?1:($vb==null?-1:($a[\''.$sort.'\']<$b[\''.$sort.'\']?-1:1)));'));
-  
-} else if($sort == "name" || $sort == "pool" || $sort == "against" || $sort == "seed") {
-  mergesort($allteams, create_function('$a,$b','return $a[\''.$sort.'\']==$b[\''.$sort.'\']?0:($a[\''.$sort.'\']<$b[\''.$sort.'\']?-1:1);'));
-}else{
-  mergesort($allteams, create_function('$a,$b','return $a[\''.$sort.'\']==$b[\''.$sort.'\']?0:($a[\''.$sort.'\']>$b[\''.$sort.'\']?-1:1);'));
+if ($sort == "ranking") {
+  mergesort($allteams, uo_create_key_comparator($sort, true, true));
+} else if ($sort == "name" || $sort == "pool" || $sort == "against" || $sort == "seed") {
+  mergesort($allteams, uo_create_key_comparator($sort, true, false));
+} else {
+  mergesort($allteams, uo_create_key_comparator($sort, false, false));
 }
 
-if($sort == "name") {
-  $html .= "<th style='width:180px'>"._("Team")."</th>";
-}else{
-  $html .= "<th style='width:180px'><a class='thlink' href='".$viewUrl."&amp;Sort=name'>"._("Team")."</a></th>";
+if ($sort == "name") {
+  $html .= "<th style='width:180px'>" . _("Team") . "</th>";
+} else {
+  $html .= "<th style='width:180px'><a class='thlink' href='" . $viewUrl . "&amp;Sort=name'>" . _("Team") . "</a></th>";
 }
 
 /*

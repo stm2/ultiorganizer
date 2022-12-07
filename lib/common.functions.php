@@ -1393,6 +1393,39 @@ function mergesort(&$array, $cmp_function = 'strcmp') {
 }
 
 /**
+ * Returns a comparator function for comparing arrays of arrays in mergesort (and other sorts).
+ * 
+ * @param string key
+ *    The array elements are sorted according to the natural sort of the given key, subject to the other parameters
+ * @param bool ascending
+ *    The array is sorted in ascending order (the default)
+ * @param bool null_low
+ *    null or 0 key values are sorted last if this is true 
+ * 
+ * @return callable
+ */
+function uo_create_key_comparator($key, $ascending = true, $null_low = true) {
+  $comparator = function ($a, $b) use ($key, $ascending, $null_low) {
+    $va = $a[$key];
+    $vb = $b[$key];
+    if ($null_low) {
+      if ($va == null && $vb != null)
+        return 1;
+      if ($vb == null && $va != null)
+        return -1;
+    }
+    if ($va == null && $vb == null)
+      return 0;
+    if ($va == $vb)
+      return 0;
+
+    $lt = $ascending ? -1 : 1;
+    return $va < $vb ? $lt : -$lt;
+  };
+  return $comparator;
+}
+
+/**
  * Returns html code for an 'X' delete button, that changes element $element's value to $value by javascript.
  * Your page must include common.js.inc. (It usually does, by way of menufunctions.php.)
  *
