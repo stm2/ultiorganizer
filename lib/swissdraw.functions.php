@@ -460,7 +460,7 @@ function CheckBYESchedule($poolId) {
         die('Invalid query: ' . mysql_adapt_error());
       }
 
-      return sprintf(_("Time spots swapped! Pool_id %d"),  $poolId);
+      return sprintf(_("Time slots swapped! Pool_id %d"),  $poolId);
     }
   }
   return null;
