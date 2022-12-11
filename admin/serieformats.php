@@ -23,7 +23,7 @@ $html .= "<form method='post' action='?view=admin/serieformats'>";
 $html .= "<h2>"._("Rule templates")."</h2>\n";
 $html .= "<table class='admintable'>\n";
 $html .= "<tr>";
-$html .= "<th>"._("Name")."</th> <th class='center'>"._("Winning points")."</th> <th class='center'>"._("Point cap")."</th> <th class='center'>"._("Draws allowed")."</th>  <th class='center'>"._("Time cap")."</th><th class='center'>"._("Time-outs")."</th><th></th>";
+$html .= "<th>"._("Name")."</th> <th class='center'>"._("Winning points")."</th> <th class='center'>"._("Point cap")."</th> <th class='center'>"._("Draws allowed")."</th><th class='center'>"._("Time cap")."</th><th class='center'>"._("Time slot")."</th><th class='center'>"._("Time-outs")."</th><th></th>";
 $html .= "</tr>\n";
 
 $templates = PoolTemplates();
@@ -36,6 +36,7 @@ foreach($templates as $row) {
   $html .= "<td class='center'>".$row['scorecap']."</td>";
   $html .= "<td class='center'>".$row['drawsallowed']."</td>";
   $html .= "<td class='center'>".$row['timecap']."</td>";
+  $html .= "<td class='center'>".$row['timeslot']."</td>";
   if(!empty($row['timeouts'])){
     $html .= "<td class='center'>".$row['timeouts']."</td>";
   }else{
