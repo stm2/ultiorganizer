@@ -2,7 +2,7 @@
 
 class Games extends Restful {
 
-  function Games() {
+  function __construct() {
     $this->listsql = "SELECT time, home.name AS hometeamname, visitor.name AS visitorteamname, game.*,scheduling_name.name AS gamename
 		FROM uo_game AS game 
 		LEFT JOIN uo_team AS home ON (game.hometeam=home.team_id) 

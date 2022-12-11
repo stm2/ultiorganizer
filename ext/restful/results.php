@@ -4,7 +4,7 @@ class Results extends Restful {
 
   var $listfields;
 
-  function Results() {
+  function __construct() {
     $this->listsql = "SELECT game.game_id AS id, '' AS name, game.time AS 'time', 
                game.hometeam AS hometeam, hteam.name as hname,  
                game.visitorteam visitorteam, vteam.name as vname,

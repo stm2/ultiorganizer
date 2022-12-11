@@ -33,7 +33,7 @@ if(!defined('DATE_RSS')){
 	* 
 	* @param    constant    the version constant (RSS1/RSS2/ATOM).       
 	*/ 
-	function FeedWriter($version = RSS2)
+	 function __construct($version = RSS2)
 	{	
 		$this->version = $version;
 			

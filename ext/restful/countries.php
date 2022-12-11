@@ -2,7 +2,7 @@
 
 class Countries extends Restful {
 
-  function Countries() {
+  function __construct() {
     $this->listsql = "SELECT country_id, name
 		FROM uo_country country";
     $this->itemsql = "SELECT name, abbreviation, flagfile

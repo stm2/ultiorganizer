@@ -2,7 +2,7 @@
 
 class Clubs extends Restful {
 
-  function Clubs() {
+  function __construct() {
     $this->listsql = "SELECT club_id, club.name
 		FROM uo_club club";
     $this->itemsql = "SELECT club.name, club.city, club.country, country.name AS countryname, country.flagfile, club.founded
