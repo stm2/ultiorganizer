@@ -67,9 +67,8 @@ if(!empty($_POST['save'])) {
 } else if(!empty($_POST['move'])) {
 
   function applyMoves($poolId, $moves) {
-    usort($moves,
-      create_function('$a,$b',
-        'return $a[\'fromplacing\']==$b[\'fromplacing\']?0:($a[\'fromplacing\']<$b[\'fromplacing\']?-1:1);'));
+    usort($moves, uo_create_key_comparator('fromplacing'));
+//    create_function('$a,$b','return $a[\'fromplacing\']==$b[\'fromplacing\']?0:($a[\'fromplacing\']<$b[\'fromplacing\']?-1:1);'));
       
     $series = PoolSeries($poolId);
     if (hasEditSeriesRight($series)) {

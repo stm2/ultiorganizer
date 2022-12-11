@@ -249,7 +249,8 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
 		<th>"._("Delete")."</th>
 		</tr>";
 
-  mergesort($moves, create_function('$a,$b','return $a[\'torank\']==$b[\'torank\']?0:($a[\'torank\']<$b[\'torank\']?-1:1);'));
+  mergesort($moves, uo_create_key_comparator('torank'));
+  // create_function('$a,$b','return $a[\'torank\']==$b[\'torank\']?0:($a[\'torank\']<$b[\'torank\']?-1:1);'));
   for($i=0;$i<count($moves);$i++){
     $move = $moves[$i];
     echo "<tr>";

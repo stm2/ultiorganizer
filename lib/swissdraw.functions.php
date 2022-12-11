@@ -152,9 +152,8 @@ function CheckSwissdrawMoves($poolId, &$alteredmoves) {
     Die("Could not find a valid arrangment of teams");
 
   // update the moves in the database
-  usort($moves,
-    create_function('$a,$b',
-      'return $a[\'torank\']==$b[\'torank\']?0:($a[\'torank\']<$b[\'torank\']?-1:1);'));
+  usort($moves, uo_create_key_comparator('torank'));
+  // create_function('$a,$b', 'return $a[\'torank\']==$b[\'torank\']?0:($a[\'torank\']<$b[\'torank\']?-1:1);'));
   
   $alteredmoves = $moves;
   // everthing went fine

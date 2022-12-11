@@ -256,9 +256,10 @@ function ResolveSwissdrawPoolStandings($poolId)
 	
 //	echo "before sorting acc to games:"
 //	PrintStandingsSwissdraw($points);
+	usort($points, uo_create_key_comparator('games', false));
+	  // create_function('$a,$b','return $a[\'games\']==$b[\'games\']?0:($a[\'games\']>$b[\'games\']?-1:1);'));
 
 	//initial sort according games
-	usort($points, create_function('$a,$b','return $a[\'games\']==$b[\'games\']?0:($a[\'games\']>$b[\'games\']?-1:1);'));
 
 //	echo "before sorting acc to points:";
 //	PrintStandingsSwissdraw($points);
@@ -312,7 +313,8 @@ function ResolveSeriesPoolStandings($poolId){
   $points = getMatchesWins($points, $poolId);
   
   //initial sort according games
-  usort($points, create_function('$a,$b','return $a[\'games\']==$b[\'games\']?0:($a[\'games\']>$b[\'games\']?-1:1);'));
+  usort($points, uo_create_key_comparator('games', false));
+    // create_function('$a,$b','return $a[\'games\']==$b[\'games\']?0:($a[\'games\']>$b[\'games\']?-1:1);'));
 
   //sort according to score (wins*winscore+draws*drawscore)
   $points = SolveStandings($points, 'cmp_score');
@@ -480,7 +482,8 @@ function SolveStandings($points, $cmpf){
 	
 function FindSameRank($points, $offset)
 	{
-	usort($points, create_function('$a,$b','return $a[\'arank\']==$b[\'arank\']?0:($a[\'arank\']<$b[\'arank\']?-1:1);'));
+	usort($points, uo_create_key_comparator('arank'));
+	// create_function('$a,$b','return $a[\'arank\']==$b[\'arank\']?0:($a[\'arank\']<$b[\'arank\']?-1:1);'));
 	$samerank=array();
 	$total=0;
 
