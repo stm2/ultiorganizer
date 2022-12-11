@@ -611,7 +611,7 @@ function TeamVictoryPointsByPool($poolId,$teamId)
   $query = sprintf(
     "
     SELECT tot.pool,tot.team_id,count(tot.game_id) as games,sum(tot.diff) as margin,
-	   sum(tot.victorypoints) as victorypoints,sum(swiss.victorypoints) as oppvp, sum(swiss.games) as oppgames,
+	   sum(tot.victorypoints) as victorypoints, IFNULL(sum(swiss.victorypoints), 0) as oppvp, IFNULL(sum(swiss.games), 0) as oppgames,
 	   sum(tot.score) as score
     FROM
     (SELECT gp.pool,hometeam as team_id, visitorteam as opp_id,game.game_id,homescore-visitorscore as diff, vp.victorypoints,homescore as score
@@ -660,10 +660,10 @@ function TeamVictoryPointsByPool($poolId,$teamId)
   }
   if (mysqli_num_rows($result) == 0) {
     return array('pool' => $poolId, 'team_id' => $teamId, 'games' => 0, 'margin' => 0, 'victorypoints' => 0,
-      'oppvp' => 0, 'score' => 0);
+      'oppvp' => 0, 'oppgames' => 0, 'score' => 0);
   }
   $ret = mysqli_fetch_assoc($result);
-
+    
   // bye team
   $query = sprintf("SELECT valid from uo_team WHERE team_id=%d", intval($teamId));
   if (DBQueryToValue($query) == 2)

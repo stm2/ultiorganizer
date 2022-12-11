@@ -2186,24 +2186,26 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
   $poolInfo = PoolInfo($poolId);
   if (hasEditTeamsRight($poolInfo['series'])) {
     if (CanGenerateGames($poolId)) {
-
       $pseudoteams = false;
+      
+      $query = sprintf(
+        "SELECT team.team_id, team.valid from uo_team_pool as tp left join uo_team team
+                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`", (int) $poolId);
+      $moved_teams = DBQuery($query);
 
-      $poolInfo = PoolInfo($poolId);
-      $query = sprintf("SELECT team.team_id, team.valid from uo_team_pool as tp left join uo_team team
-                on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
-      (int)$poolId);
-      $result = DBQuery($query);
-
-      if(mysqli_num_rows($result)==0){
-        $pseudoteams = true;
-        $query = sprintf("SELECT pt.scheduling_id AS team_id from uo_scheduling_name pt
+      $query = sprintf(
+        "SELECT pt.scheduling_id AS team_id from uo_scheduling_name pt
                     LEFT JOIN uo_moveteams mt ON(pt.scheduling_id = mt.scheduling_id)
-                    WHERE mt.topool=%d ORDER BY mt.torank",
-        (int)$poolId);
-        $result = DBQuery($query);
-      }
+                    WHERE mt.topool=%d ORDER BY mt.torank", (int) $poolId);
+      $scheduled_teams = DBQuery($query);
 
+      if (mysqli_num_rows($moved_teams) < mysqli_num_rows($scheduled_teams)) {
+        $pseudoteams = true;
+        $result = $scheduled_teams;
+      } else {
+        $result = $moved_teams;
+      }
+        
       $teams = array();
       $bye = false;
       while ($row = mysqli_fetch_row($result)) {

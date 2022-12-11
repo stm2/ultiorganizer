@@ -24,7 +24,7 @@ function DetectTiesInPreviousPool($poolId) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     $row = mysqli_fetch_assoc($result2);
-
+    
     if ($row['activeteams'] == 0) {
       // no active teams in this pool
       return (2);
@@ -117,7 +117,10 @@ function findPairing($moves, $games) {
       debug_to_apache("found arrangement with $duplicates duplicates.");
     }
   }
-  return $foundValidArrangement;
+  if (!$foundValidArrangement)
+    return -1;
+  else
+    return $duplicates;
 }
 
 function CheckSwissdrawMoves($poolId, &$alteredmoves) {
@@ -148,8 +151,8 @@ function CheckSwissdrawMoves($poolId, &$alteredmoves) {
 
   if (count($moves) % 2 == 1) return -3;
 
-  $foundValidArrangement = findPairing($moves, $games);
-  if (!$foundValidArrangement)
+  $duplicates = findPairing($moves, $games);
+  if ($duplicates < 0)
     Die("Could not find a valid arrangment of teams");
 
   // update the moves in the database
@@ -314,18 +317,21 @@ function GenerateSwissdrawPools($poolId, $rounds, $generate = true) {
     $query = sprintf(
       "SELECT team.team_id from uo_team_pool as tp left join uo_team team 
 				on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`", (int) $poolId);
-    $result = DBQuery($query);
+    $moved_result = DBQuery($query);
 
-    if (mysqli_num_rows($result) == 0) {
+    $query = sprintf(
+      "SELECT pt.scheduling_id AS team_id from uo_scheduling_name pt 
+			LEFT JOIN uo_moveteams mt ON(pt.scheduling_id = mt.scheduling_id) 
+			WHERE mt.topool=%d ORDER BY mt.torank", (int) $poolId);
+      $scheduled_result = DBQuery($query);
+    
+    if (mysqli_num_rows($moved_result) < mysqli_num_rows($scheduled_result)) {
       $pseudoteams = true;
-      $query = sprintf(
-        "SELECT pt.scheduling_id AS team_id from uo_scheduling_name pt 
-					LEFT JOIN uo_moveteams mt ON(pt.scheduling_id = mt.scheduling_id) 
-					WHERE mt.topool=%d ORDER BY mt.torank", (int) $poolId);
-      $result = DBQuery($query);
+      $result = $scheduled_result;
+    } else {
+      $result = $moved_result;
     }
     $teams = mysqli_num_rows($result);
-
     // echo "<p>rounds to win $rounds</p>";
     $prevpoolId = $poolId;
     $offset = $teams;

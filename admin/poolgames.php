@@ -27,7 +27,7 @@ contentStart();
 
 $html .= "<h2>" . U_(PoolName($poolId)) . "</h2>";
 
-function askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, $action) {
+function askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, $action, $generate = false) {
   global $html;
   if (empty($_POST['byename'])) {
     $html .= "<p>" . _("The number of teams in a Swiss-draw pool should be even. We must add a BYE.") . "</p>";
@@ -59,7 +59,7 @@ function askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, $act
       $move = PoolGetMoveToPool($byePool, 1);
       PoolMakeAMove($byePool, 1, true, $poolId, $maxrank + 1, true, $move['scheduling_id']);
     }
-    $generatedgames = GenerateGames($poolId, $rounds, true, $nomutual, $homeresp);
+    $generatedgames = GenerateGames($poolId, $rounds, $generate, $nomutual, $homeresp);
     return $generatedgames;
   }
 }
@@ -129,7 +129,7 @@ if (!empty($_POST['remove_x'])) {
   } elseif ($poolInfo['type'] == 3) {
     // Swiss-draw:
     if ($generatedgames[0] === -2) {
-      $generatedgames = askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, "fakegenerate");
+      $generatedgames = askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, "fakegenerate", false);
       $fakegames .= "<p>" . _("The number of teams in a Swiss-draw pool should be even.") . "</p>";
     } else if ($generatedgames[0] === -1) {
       $html .= "<p>" . _("There must be at least two teams. Add more teams to the pool.") . "</p>";
@@ -139,7 +139,7 @@ if (!empty($_POST['remove_x'])) {
       $html .= "<p>" . _("Must generate at least one round") . "</p>";
     } elseif (gettype($generatedgames[0]) === "array") {
       // generate pools (with games) and moves
-      $generatedpools = GenerateSwissdrawPools($poolId, $rounds, true);
+      $generatedpools = GenerateSwissdrawPools($poolId, $rounds, false);
       $fakegames .= "<p><b>" . $poolInfo['name'] . "</b></p>";
       foreach ($generatedgames as $game) {
         if ($usepseudoteams) {
@@ -193,7 +193,7 @@ if (!empty($_POST['remove_x'])) {
     }
   } elseif ($poolInfo['type'] == 3) { // in case of Swissdraw, create pools and moves
     if ($generatedgames[0] === -2) {
-      $generatedgames = askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, "generate");
+      $generatedgames = askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, "generate", true);
     } else if ($generatedgames[0] === -1) {
       $html .= "<p>" . _("There must be at least two teams. Add more teams to the pool.") . "</p>";
     }
