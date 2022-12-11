@@ -58,6 +58,7 @@ if (!empty($_POST['save'])) {
     $gp['respteam'] = $_POST['respteam'];
   
   $gp['name'] = $_POST['name'];
+  $gp['pool'] = $info['pool'];
   
   if (!SetGame($gameId, $gp))
     $warning = "<p>" . _("Error") . "</p>\n";
