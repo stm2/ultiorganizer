@@ -18,7 +18,7 @@ if ($series_id<=0) {
   die;
 }
 
-if (!hasEditSeriesRight($seriesId)) {
+if (!hasEditSeriesRight($series_id)) {
   showPage($title, "<p>" . _("Insufficient rights to show division stats.") . "</p>");
   die;
 }
@@ -377,7 +377,7 @@ function swissRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
   
   $html .= "<td class='center'>" . intval($vp['games']) . "</td>";
   $html .= "<td class='center'>" . intval($vp['victorypoints']) . " / " . intval($vp['games']) . "</td>";
-  $html .= "<td class='center'>" . intval($vp['oppgames']) . " / " . intval($vp['oppgames'])  . "</td>";
+  $html .= "<td class='center'>" . intval($vp['oppvp']) . " / " . intval($vp['oppgames'])  . "</td>";
   $html .= "<td class='center'>" . intval($vp['margin']) . " / " . intval($vp['games'])  . "</td>";
   $html .= "<td class='center'>" . intval($vp['score']) . " / " . intval($vp['games'])  . "</td>";
   if (CanDeleteTeamFromPool($poolId, $row['team_id'])) {
