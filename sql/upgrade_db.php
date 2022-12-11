@@ -434,7 +434,7 @@ function migrateLocationInfo() {
     $cinfos[] = $column['Field'];
   }
   if (!empty($cinfos)) {
-    $query = "SELECT id, " . implode($cinfos, ",") . " FROM uo_location WHERE ";
+    $query = "SELECT id, " . implode(",", $cinfos) . " FROM uo_location WHERE ";
     $whereclause = "";
     foreach ($cinfos as $column) {
       if (!empty($whereclause))

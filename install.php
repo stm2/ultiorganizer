@@ -272,7 +272,7 @@ function database() {
         "uo_visitor_counter");
       $delta = array_diff($required, $tables);
       if (!empty($delta)) {
-        $html .= "<br>Missing tables: " . utf8entities(implode($delta, ', ')) . "</p>";
+        $html .= "<br>Missing tables: " . utf8entities(implode(', ', $delta)) . "</p>";
         
         $html .= "<p>Creating Ultiorganizer tables: ";
         $ret = createtables($mysqlconnectionref);

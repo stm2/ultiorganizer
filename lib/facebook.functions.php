@@ -302,7 +302,7 @@ function SetFacebookPublishing($userid, $playerid, $pubEvents, $pubMessages) {
 			mysql_adapt_real_escape_string($playerid));
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		$value = $playerid.":".implode($pubEvents, ":");
+		$value = $playerid.":".implode(":", $pubEvents);
 		if ($row = mysqli_fetch_row($result)) {
 			$query = sprintf("UPDATE uo_userproperties SET value='%s' WHERE prop_id=%d",
 			 	mysql_adapt_real_escape_string($value),
