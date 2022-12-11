@@ -434,7 +434,7 @@ function migrateLocationInfo() {
     $cinfos[] = $column['Field'];
   }
   if (!empty($cinfos)) {
-    $query = "SELECT id, " . implode(",", $cinfos) . " FROM uo_location WHERE ";
+    $query = "SELECT `id`,` " . implode("`,`", $cinfos) . "` FROM uo_location WHERE ";
     $whereclause = "";
     foreach ($cinfos as $column) {
       if (!empty($whereclause))
@@ -511,72 +511,72 @@ function upgrade75() {
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=1000");
 
     // the gettext strings have no function here, but are needed so gettext replaces things like _($category) later ...
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1001", 0, "One simple score")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1001", 0, "One simple score")');
     _("One simple score");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `min`, `max`, `text`) VALUES ("1001", 1, 0, 20, "Spirit score")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `min`, `max`, `text`) VALUES ("1001", 1, 0, 20, "Spirit score")');
     _("Spirit score");
 
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 0, "WFDF (four categories plus comparison)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 0, "WFDF (four categories plus comparison)")');
     _("WFDF (four categories plus comparison)");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 1, "Rules Knowledge and Use")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 1, "Rules Knowledge and Use")');
     _("Rules Knowledge and Use");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 2, "Fouls and Body Contact")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 2, "Fouls and Body Contact")');
     _("Fouls and Body Contact");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 3, "Fair-Mindedness")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 3, "Fair-Mindedness")');
     _("Fair-Mindedness");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 4, "Positive Attitude and Self-Control")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 4, "Positive Attitude and Self-Control")');
     _("Positive Attitude and Self-Control");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1002", 5, "Our Spirit compared to theirs")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1002", 5, "Our Spirit compared to theirs")');
     _("Our Spirit compared to theirs");
 
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 0, "WFDF (five categories)")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 0, "WFDF (five categories)")');
     _("WFDF (five categories)");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 1, "Rules Knowledge and Use")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 1, "Rules Knowledge and Use")');
     _("Rules Knowledge and Use");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 2, "Fouls and Body Contact")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 2, "Fouls and Body Contact")');
     _("Fouls and Body Contact");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 3, "Fair-Mindedness")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 3, "Fair-Mindedness")');
     _("Fair-Mindedness");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 4, "Positive Attitude and Self-Control")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 4, "Positive Attitude and Self-Control")');
     _("Positive Attitude and Self-Control");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1003", 5, "Communication")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1003", 5, "Communication")');
     _("Communication");
 
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 0, "WFDF (five categories, theirs and ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 0, "WFDF (five categories, theirs and ours)")');
     _("WFDF (five categories, theirs and ours)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 1, "Rules Knowledge and Use (theirs)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 1, "Rules Knowledge and Use (theirs)")');
     _("Rules Knowledge and Use (theirs)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 2, 0, "Rules Knowledge and Use (ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 2, 0, "Rules Knowledge and Use (ours)")');
     _("Rules Knowledge and Use (ours)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 3, "Fouls and Body Contact (theirs)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 3, "Fouls and Body Contact (theirs)")');
     _("Fouls and Body Contact (theirs)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 4, 0, "Fouls and Body Contact (ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 4, 0, "Fouls and Body Contact (ours)")');
     _("Fouls and Body Contact (ours)");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 5, "Fair-Mindedness (theirs)")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 5, "Fair-Mindedness (theirs)")');
     _("Fair-Mindedness (theirs)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 6, 0, "Fair-Mindedness (ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 6, 0, "Fair-Mindedness (ours)")');
     _("Fair-Mindedness (ours)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 7, "Positive Attitude and Self-Control (theirs)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 7, "Positive Attitude and Self-Control (theirs)")');
     _("Positive Attitude and Self-Control (theirs)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 8, 0, "Positive Attitude and Self-Control (ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 8, 0, "Positive Attitude and Self-Control (ours)")');
     _("Positive Attitude and Self-Control (ours)");
-    runQuery('INSERT INTO uo_spirit_category (`mode`, `index`, `text`) VALUES ("1004", 9, "Communication (theirs)")');
+    runQuery('INSERT INTO `uo_spirit_category` (`mode`, `index`, `text`) VALUES ("1004", 9, "Communication (theirs)")');
     _("Communication (theirs)");
     runQuery(
-      'INSERT INTO uo_spirit_category (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 10, 0, "Communication (ours)")');
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `index`, `factor`, `text`) VALUES ("1004", 1, 10, 0, "Communication (ours)")');
     _("Communication (ours)");
 
     runQuery(
@@ -590,7 +590,7 @@ function upgrade75() {
 
     addColumn('uo_season', 'spiritmode', 'INT(10) DEFAULT NULL');
     // set all to 1001
-    runQuery("UPDATE uo_season SET `spiritmode` = 1001 WHERE `spiritpoints`=1");
+    runQuery("UPDATE `uo_season` SET `spiritmode` = 1001 WHERE `spiritpoints`=1");
 
     // update WFDF scores
     $categoriesResult = runQuery("SELECT * FROM `uo_spirit_category` WHERE mode=1002");
@@ -602,11 +602,11 @@ function upgrade75() {
     $lastSeason = null;
 
     $query = "SELECT st.*, sn.season_id
-       FROM uo_spirit st
-       LEFT JOIN uo_game g on (g.game_id = st.game_id)
-       LEFT JOIN uo_pool p on (g.pool = p.pool_id)
-       LEFT JOIN uo_series ss on (p.series = ss.series_id)
-       LEFT JOIN uo_season sn on (ss.season = sn.season_id)";
+       FROM `uo_spirit` st
+       LEFT JOIN `uo_game` g on (g.game_id = st.game_id)
+       LEFT JOIN `uo_pool` p on (g.pool = p.pool_id)
+       LEFT JOIN `uo_series` ss on (p.series = ss.series_id)
+       LEFT JOIN `uo_season` sn on (ss.season = sn.season_id)";
     $results = runQuery($query);
 
     while ($row = mysqli_fetch_assoc($results)) {
@@ -619,7 +619,7 @@ function upgrade75() {
       if ($lastSeason != $row['season_id']) {
         $lastSeason = $row['season_id'];
         runQuery(
-          sprintf("UPDATE uo_season SET `spiritmode` = 1002 WHERE `spiritpoints`=1 AND season_id=%d", (int) $lastSeason));
+          sprintf("UPDATE `uo_season` SET `spiritmode` = 1002 WHERE `spiritpoints`=1 AND season_id=%d", (int) $lastSeason));
       }
     }
 
@@ -631,10 +631,10 @@ function upgrade75() {
     }
 
     $query = "SELECT g.game_id, g.hometeam, g.visitorteam, g.homesotg, g.visitorsotg
-    FROM uo_game g
-    LEFT JOIN uo_pool p on (g.pool = p.pool_id)
-    LEFT JOIN uo_series ss on (p.series = ss.series_id)
-    LEFT JOIN uo_season sn on (ss.season = sn.season_id)
+    FROM `uo_game` g
+    LEFT JOIN `uo_pool` p on (g.pool = p.pool_id)
+    LEFT JOIN `uo_series` ss on (p.series = ss.series_id)
+    LEFT JOIN `uo_season` sn on (ss.season = sn.season_id)
     WHERE
     (g.homesotg IS NOT NULL OR g.visitorsotg IS NOT NULL)
     AND sn.spiritmode = 1001";
@@ -654,7 +654,7 @@ function upgrade75() {
      */
 
     // clean up
-    runQuery('DROP TABLE uo_spirit');
+    runQuery('DROP TABLE `uo_spirit`');
     dropField("uo_game", "homesotg");
     dropField("uo_game", "visitorsotg");
     dropField("uo_season", "spiritpoints");
@@ -676,12 +676,12 @@ function upgrade76() {
       $loc = mysql_adapt_real_escape_string(str_replace(".", "_", $localestr));
       runQuery(
         sprintf(
-          "INSERT INTO uo_translation 
+          "INSERT INTO `uo_translation` 
           (SELECT translation_key, '%s' AS locale, `%s` AS translation 
-           FROM uo_dbtranslations
+           FROM `uo_dbtranslations`
            WHERE `%s` IS NOT NULL)", $loc, $loc, $loc));
     }
-    runQuery("DROP TABLE uo_dbtranslations");
+    runQuery("DROP TABLE `uo_dbtranslations`");
   }
 }
 
@@ -692,10 +692,10 @@ function upgrade77() {
 
 function upgrade78() {
   if (hasTable("uo_series")) {
-    runQuery("ALTER TABLE uo_series MODIFY ordering varchar(5)");
+    runQuery("ALTER TABLE `uo_series` MODIFY ordering varchar(5)");
   }
   if (hasTable("uo_urls")) {
-    runQuery("ALTER TABLE uo_urls MODIFY ordering varchar(5)");
+    runQuery("ALTER TABLE `uo_urls` MODIFY ordering varchar(5)");
   }
 }
 
@@ -787,28 +787,24 @@ function runQuery($query) {
 
 function addColumn($table, $column, $type) {
   if (hasColumn($table, $column)) {
-    runQuery("alter table " . $table . " drop column " . $column);
+    runQuery("alter table `" . $table . "` drop column `" . $column . "`");
   }
-  runQuery("alter table " . $table . " add " . $column . " " . $type);
+  runQuery("alter table `" . $table . "` add `" . $column . "` " . $type);
 }
 
 function hasColumn($table, $column) {
-  $query = "SELECT max(" . $column . ") FROM " . $table;
-  $result = mysql_adapt_query($query);
-  if (!$result) {
-    return false;
-  } else
-    return true;
+  $result = mysql_adapt_query("SHOW COLUMNS FROM `$table` LIKE '$column'");
+  return (mysqli_num_rows($result))?TRUE:FALSE;
 }
 
 function hasRow($table, $column, $value) {
-  $query = "SELECT * FROM $table WHERE $column='" . $value . "'";
+  $query = "SELECT * FROM `$table` WHERE `$column`='" . $value . "'";
   $result = mysql_adapt_query($query);
   return mysqli_num_rows($result);
 }
 
 function hasTable($table) {
-  $query = "SHOW TABLES FROM " . DB_DATABASE;
+  $query = "SHOW TABLES FROM `" . DB_DATABASE . "`";
   $tables = mysql_adapt_query($query);
   while (list ($temp) = mysqli_fetch_array($tables)) {
     if ($temp == $table) {
@@ -832,11 +828,11 @@ function getPositions($pos) {
 }
 
 function renameTable($oldtable, $newtable) {
-  $query = "SHOW COLUMNS FROM $newtable";
+  $query = "SHOW COLUMNS FROM `$newtable`";
   $result = mysql_adapt_query($query);
   if ($result)
     return true;
-  $query = "RENAME TABLE $oldtable TO $newtable";
+  $query = "RENAME TABLE `$oldtable` TO `$newtable`";
   runQuery($query);
   return true;
 }
@@ -845,10 +841,10 @@ function renameField($table, $oldfield, $newfield) {
   if (hasColumn($table, $newfield)) {
     return true;
   }
-  $query = "SHOW COLUMNS FROM $table WHERE FIELD='" . $oldfield . "'";
+  $query = "SHOW COLUMNS FROM `$table` WHERE FIELD='" . $oldfield . "'";
   $result = mysql_adapt_query($query);
   if ($row = mysqli_fetch_assoc($result)) {
-    $query = "ALTER TABLE $table CHANGE $oldfield $newfield " . $row['Type'];
+    $query = "ALTER TABLE `$table` CHANGE `$oldfield` `$newfield` " . $row['Type'];
     if ($row['Null'] == "YES") {
       $query .= " NULL ";
     } else {
@@ -860,10 +856,10 @@ function renameField($table, $oldfield, $newfield) {
 }
 
 function changeToAutoIncrementField($table, $field) {
-  $query = "SHOW COLUMNS FROM $table WHERE FIELD='" . $field . "'";
+  $query = "SHOW COLUMNS FROM `$table` WHERE FIELD='" . $field . "'";
   $result = mysql_adapt_query($query);
   if ($row = mysqli_fetch_assoc($result)) {
-    $query = "ALTER TABLE $table CHANGE $field $field " . $row['Type'] . " NOT NULL auto_increment";
+    $query = "ALTER TABLE `$table` CHANGE `$field` `$field` " . $row['Type'] . " NOT NULL auto_increment";
     runQuery($query);
   }
   return true;
@@ -884,7 +880,7 @@ function dropField($table, $field) {
 function copyProfileImages() {
 
   // club images
-  $results = runQuery("SELECT * FROM uo_club WHERE image IS NOT NULL");
+  $results = runQuery("SELECT * FROM `uo_club` WHERE image IS NOT NULL");
   while ($row = mysqli_fetch_assoc($results)) {
     $image = GetImage($row['image']);
     if ($image) {
@@ -919,7 +915,7 @@ function copyProfileImages() {
 
       ConvertToJpeg($target, $basedir . $imgname);
       CreateThumb($basedir . $imgname, $basedir . "thumbs/" . $imgname, 160, 120);
-      $query = sprintf("UPDATE uo_club SET profile_image='%s' WHERE club_id='%s'",
+      $query = sprintf("UPDATE `uo_club` SET profile_image='%s' WHERE club_id='%s'",
         mysql_adapt_real_escape_string($imgname), mysql_adapt_real_escape_string($row['club_id']));
       runQuery($query);
       unlink($target);
@@ -927,7 +923,7 @@ function copyProfileImages() {
   }
 
   // team images
-  $results = runQuery("SELECT * FROM uo_team_profile WHERE image IS NOT NULL");
+  $results = runQuery("SELECT * FROM `uo_team_profile` WHERE image IS NOT NULL");
   while ($row = mysqli_fetch_assoc($results)) {
     $image = GetImage($row['image']);
     if ($image) {
@@ -962,7 +958,7 @@ function copyProfileImages() {
 
       ConvertToJpeg($target, $basedir . $imgname);
       CreateThumb($basedir . $imgname, $basedir . "thumbs/" . $imgname, 320, 240);
-      $query = sprintf("UPDATE uo_team_profile SET profile_image='%s' WHERE team_id=%d",
+      $query = sprintf("UPDATE `uo_team_profile` SET profile_image='%s' WHERE team_id=%d",
         mysql_adapt_real_escape_string($imgname), intval($row['team_id']));
       runQuery($query);
       unlink($target);
@@ -970,7 +966,7 @@ function copyProfileImages() {
   }
 
   // player images
-  $results = runQuery("SELECT * FROM uo_player_profile WHERE image IS NOT NULL");
+  $results = runQuery("SELECT * FROM `uo_player_profile` WHERE image IS NOT NULL");
   while ($row = mysqli_fetch_assoc($results)) {
     $image = GetImage($row['image']);
     if ($image) {
@@ -1005,7 +1001,7 @@ function copyProfileImages() {
 
       ConvertToJpeg($target, $basedir . $imgname);
       CreateThumb($basedir . $imgname, $basedir . "thumbs/" . $imgname, 120, 160);
-      $query = sprintf("UPDATE uo_player_profile SET profile_image='%s' WHERE accreditation_id='%s'",
+      $query = sprintf("UPDATE `uo_player_profile` SET profile_image='%s' WHERE accreditation_id='%s'",
         mysql_adapt_real_escape_string($imgname), mysql_adapt_real_escape_string($row['accreditation_id']));
       runQuery($query);
       unlink($target);
