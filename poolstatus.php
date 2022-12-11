@@ -66,6 +66,7 @@ if (!empty($seriesId)) {
 $html .= $comment;
 
 $prevseries = 0;
+$printVP = false;
 foreach ($pools as $pool) {
 
   $poolinfo = PoolInfo($pool['pool_id']);
@@ -92,6 +93,7 @@ foreach ($pools as $pool) {
   }elseif($poolinfo['type']==3){
     // Swissdraw
     $html .= printSwissdraw($seasoninfo, $poolinfo);
+    $printVP = true;
   }elseif($poolinfo['type']==4){
     // Cross matches
     $html .= printCrossmatchPool($seasoninfo, $poolinfo);
@@ -107,6 +109,10 @@ foreach ($pools as $pool) {
 }
 if($seriesScoreboard && !$print){
   $html .= scoreboard($prevseries, true);
+}
+
+if ($printVP) {
+  $html .= printVictoryPoints();
 }
 
 showPage($title, $html);
@@ -270,6 +276,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
       if ($row['valid'] != 2) {
           // $stats = TeamStatsByPoolrg($poolinfo['pool_id'], $row['team_id']);
         $vp = TeamVictoryPointsByPool($poolinfo['pool_id'], $row['team_id']);
+          
         // $points=TeamPointsByPool($poolinfo['pool_id'], $row['team_id']);
         $flag = "";
         if (intval($seasoninfo['isinternational'])) {
@@ -319,8 +326,11 @@ function printSwissdraw($seasoninfo, $poolinfo){
 
   
   $ret .= "<p><a href='?view=games&amp;pool=".$poolinfo['pool_id'].".&amp;singleview=1'>"._("Schedule")."</a><br/></p>";
-  
-  $ret .= "<h3>" . _("Victory Points") . "</h3>";
+  return $ret;
+}
+
+function printVictoryPoints() {
+  $ret = "<h3>" . _("Victory Points") . "</h3>";
   $ret .= "<table class='infotable'>";
   $ret .= "<tr><th>" . _("Score Difference") . "</th><th>" . _("Victory Points") ."</th></tr>\n";
   $victory = VictoryPoints();
