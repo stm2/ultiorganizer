@@ -540,7 +540,7 @@ function seasonSelection() {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
     echo "<div><label for='selseason'>" . _("Select division") . "<select class='seasondropdown' name='selseason' id='selseason'
-			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>";
+			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>\n";
     while ($row = mysqli_fetch_assoc($seasons)) {
       $selected = "";
       if (isset($_SESSION['userproperties']['selseason']) &&
@@ -548,17 +548,17 @@ function seasonSelection() {
         $selected = "selected='selected'";
       }
       echo "<option class='dropdown' $selected value='" . utf8entities($row['season_id']) . "'>" .
-        SeasonName($row['season_id']) . "</option>";
+        SeasonName($row['season_id']) . "</option>\n";
     }
     echo "</select></label>\n";
     foreach ($_GET as $name => $value) {
       if ($name != 'selseason')
-        echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />";
+        echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />\n";
     }
     echo "<noscript><div><input type='submit' value='" . utf8entities(_("Go")) .
-      "' name='selectseason'/></div></noscript>";
+      "' name='selectseason'/></div></noscript>\n";
     echo "</div></form>";
-    echo "</td></tr></table>";
+    echo "</td></tr></table>\n";
   }
 }
 
