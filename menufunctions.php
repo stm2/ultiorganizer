@@ -227,6 +227,8 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     $showHide = getShowNav() == 1 ? 'shown_block' : ' hidden';
   }
 
+  leftMenuScript();
+  
   echo "<div id='show_menu_link' class='$showShow'><a href='$showUrl' onclick='LeftMenu.toggleMenu(this);'>$showText</a></div>\n";
   echo "<div id='hide_menu_link' class='$showHide'><a href='$hideUrl' onclick='LeftMenu.toggleMenu(this);'>$hideText</a></div>\n";
   echo "<button id='menu_toggle' class='page_menu' title='Toggle menu' onclick='return LeftMenu.toggleMenu(this);'>";
@@ -268,6 +270,13 @@ function addFooter($link, $caption) {
   $footers[$link] = $caption;
 }
 
+$backurl = null;
+
+function setBackurl($newback) {
+  global $backurl;
+  $backurl = $newback;
+}
+
 /**
  * End of page content.
  */
@@ -280,7 +289,9 @@ function contentEnd() {
   echo "</main><!--content-->";
   echo "<footer>\n";
   echo "<hr />";
-  $backurl = isset($_SERVER['HTTP_REFERER']) ? ($_SERVER['HTTP_REFERER']) : "";
+  global $backurl;
+  if (!$backurl)
+    $backurl = isset($_SERVER['HTTP_REFERER']) ? ($_SERVER['HTTP_REFERER']) : "";
   if ($backurl) {
     echo "<div class='backlink'><a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></div>\n";
   }
@@ -539,7 +550,8 @@ function seasonSelection() {
   if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
-    echo "<div><label for='selseason'>" . _("Select division") . "<select class='seasondropdown' name='selseason' id='selseason'
+    echo "<div><label for='selseason'>" . _("Select division") .
+      "<select class='seasondropdown' name='selseason' id='selseason'
 			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>\n";
     while ($row = mysqli_fetch_assoc($seasons)) {
       $selected = "";
@@ -635,6 +647,7 @@ class LeftMenu {
  
   static toggleMenu(elem) {
      var menu = document.getElementById('left_menu');
+     if (menu == null) return; 
      var hidden=menu.style.display === "none";
      hidden = menu.offsetParent === null;
      if (!hidden) {
@@ -693,7 +706,6 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     pageMainStart($printable);
   }
 
-  leftMenuScript();
   if ($printable) {
     return;
   }
@@ -1191,7 +1203,7 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
 
 function loginForm($query_string, $userId = '') {
   if (empty($query_string))
-    $query_string='view=login';
+    $query_string = 'view=login';
   $userId = utf8entities($userId);
   $html = '';
 
