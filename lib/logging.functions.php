@@ -223,12 +223,17 @@ function LogPageLoad($page){
   }
 }
 
+function anonymize_ip($ip) {
+  return preg_replace(['/\.\d*$/', '/[\da-f]*:[\da-f]*$/'], ['.0', '0:0'], $ip);
+}
+
 /**
  * Log visitors visit into database for usage statistics.
  * 
  * @param string $ip - ip address
  */
 function LogVisitor($ip){
+  $ip = anonymize_ip($ip);
 
   $query=sprintf("SELECT visits FROM uo_visitor_counter WHERE ip='%s'",
 		mysql_adapt_real_escape_string($ip));

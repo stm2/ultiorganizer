@@ -777,6 +777,17 @@ function upgrade82() {
   }
 }
 
+function upgrade82() {
+  // allow ipv6 
+  runQuery("ALTER TABLE uo_visitor_counter MODIFY ip VARCHAR(40)");
+  
+  // anonymize
+  runQuery(
+    "UPDATE uo_visitor_counter 
+      SET ip=REGEXP_REPLACE(REGEXP_REPLACE(ip, '\.[0-9]*$', '.0'), ':[0-9a-f]*:[0-9a-f]*$', ':0:0')"); 
+}
+  
+
 function runQuery($query) {
   $result = mysql_adapt_query($query);
   if (!$result) {
