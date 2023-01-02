@@ -81,6 +81,7 @@ $res = array(
       $html .= "<p>" . _("Reservations added:") . "</p>";
       $html .= "<ul>";
       $locinfo = LocationInfo($res['location']);
+      $loc_name = $locinfo != null ? $locinfo['name'] : '---';
       $allfields = $res['fieldname'];
       foreach ($fields as $field) {
         $res['fieldname'] = $field;
@@ -91,7 +92,7 @@ $res = array(
         } else {
           $html .= DefHourFormat($res['starttime']) . "-" . DefHourFormat($res['endtime']) . " ";
         }
-        $html .= $locinfo['name'] . " " . _("field") . " " . $field;
+        $html .= $loc_name . " " . _("field") . " " . $field;
         $html .= "</li>";
       }
       $html .= "</ul><hr/>";
@@ -224,7 +225,8 @@ $html .= "</td></tr>\n";
 $location_info=null;
 if($res['location']>0){
   $location_info = LocationInfo($res['location']);
-  $location_info = $location_info['name'];
+  if ($location_info != null)
+    $location_info = $location_info['name'];
 }
 $html .= LocationInput('location', 'location', $location_info, _("Location"), $res['location']); 
 

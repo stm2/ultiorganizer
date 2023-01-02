@@ -19,6 +19,8 @@ $location = array(
   'lng' => '0'
 );
 
+$message = '';
+
 $location['info'] = array();
 foreach ($locales as $locale => $name) {
   $locale = str_replace(".", "_", $locale);
