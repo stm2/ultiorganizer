@@ -337,7 +337,7 @@ if ($continuation && $SwissOK==-1) {
   echo _("Make this pool visible on menu")."</p>";
   
   echo "<p><input class='button' name='move' type='submit' value='"._("Confirm moves")."'/>";
-  $reroute = "<p><a href='?view=admin/seasonstandings&season=$season#P$poolId'>" . _("... or change ranking of from pool and confirm manually") ."</a></p>\n";
+  $reroute = "<p><a href='?view=admin/seasonstandings&season=$season&amp;series=$seriesId#P$poolId'>" . _("... or change ranking of from pool and confirm manually") ."</a></p>\n";
   $pstart = 1;
 }
 if ($pstart == 0)

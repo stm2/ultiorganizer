@@ -89,11 +89,7 @@ function AutoResolveTies($poolId) {
   }
 }
 
-function findPairing2($moves, $games) {
-  
-}
-
-function findPairing($moves, $games) {
+function findPairing(&$moves, $games) {
   $forward = true;
   $foundValidArrangement = AdjustForDuplicateGames($moves, $games, $forward);
   $duplicates = 0;
