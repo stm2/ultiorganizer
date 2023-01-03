@@ -59,16 +59,21 @@ if(!empty($_POST['save']) || !empty($_POST['add'])){
 			$tp['country'] = $_POST['country'];
 		}
 		
-		if(!empty($_POST['teamvalid'])){
-			$tp['valid']=1;
-		}else{
-			$tp['valid']=0;
-		}
-		/*
-		if(!empty($_POST['teambye'])){
-			$tp['valid']=2;
-		}		
-		*/
+		
+		if (isset($_POST['teambye'])) {
+		  if (!empty($_POST['teambye'])) {
+              $tp['valid'] = 2;
+		  } else {
+		    $tp['valid'] = 1;
+		  }
+          } else {
+            if (!empty($_POST['teamvalid'])) {
+              $tp['valid'] = 1;
+            } else {
+              $tp['valid'] = 0;
+            }
+          }
+    
 		if($teamId) {
 			SetTeam($tp);
 			$html .= "<p>"._("Changes saved")."</p><hr/>";
@@ -189,12 +194,17 @@ $html .= "</select></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Seed").":</td>
 		<td><input class='input' id='rank' size='4' name='rank' value='".utf8entities($tp['rank'])."'/></td></tr>";		
 
-$html .= "<tr><td class='infocell'>"._("Valid").":</td>";		
-if(intval($tp['valid']) || !$teamId)
-		$html .= "<td><input class='input' type='checkbox' id='teamvalid' name='teamvalid' checked='checked'/></td>";
-	else
-		$html .= "<td><input class='input' type='checkbox' id='teamvalid' name='teamvalid' /></td>";
-
+if (intval($tp['valid']) == 2) {
+  $html .= "<tr><td class='infocell'>"._("BYE").":</td>";
+  $html .= "<td><input class='input' type='checkbox' checked='checked' id='teambye' name='teambye'/></td>";
+  $html .= "</tr>";
+} else {
+  $html .= "<tr><td class='infocell'>" . _("Valid") . ":</td>";
+  if (intval($tp['valid']) || !$teamId)
+    $html .= "<td><input class='input' type='checkbox' id='teamvalid' name='teamvalid' checked='checked'/></td>";
+  else
+    $html .= "<td><input class='input' type='checkbox' id='teamvalid' name='teamvalid' /></td>";
+}
 /* BYE functionality TBD
 $html .= "<tr><td class='infocell'>"._("BYE").":</td>";		
 $html .= "<td><input class='input' type='checkbox' id='teambye' name='teambye'/></td>";
