@@ -777,7 +777,7 @@ function upgrade82() {
   }
 }
 
-function upgrade82() {
+function upgrade83() {
   // allow ipv6 
   runQuery("ALTER TABLE uo_visitor_counter MODIFY ip VARCHAR(40)");
   
