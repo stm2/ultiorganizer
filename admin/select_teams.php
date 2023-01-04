@@ -30,104 +30,102 @@ $teamsNotInPool = SeriesTeamsWithoutPool($seriesId);
 pageTopHeadOpen($title);
 
 include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities","dragdrop"
-));
+echo yuiLoad(array("utilities", "dragdrop"));
 pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
-echo "<table class='contenttable'><tr><td>";
 
-// teams without pool
-echo "<h3>" . _("Without pool") . "</h3>\n";
-echo "<div class='workarea' >\n";
-echo "<ul id='unpooled' class='draglist' style='height:400px'>\n";
-foreach ($teamsNotInPool as $team) {
-  if (hasEditTeamsRight($seriesId)) {
-    teamEntry(TEAM_HEIGHT, $team['team_id'], $team['name'], $team['rank']);
-  }
-}
-echo "</ul>\n";
-echo "</div>\n";
-echo "</td>\n";
+if (count($pools)) {
 
-// pools with teams
-echo "<td style='vertical-align:top'>\n";
-echo "<table><tr>\n";
-$areacount = 0;
-$total_pools = count($pools);
-$total_teams = count(SeriesTeams($seriesId));
+  echo "<table class='contenttable'><tr><td>";
 
-foreach ($pools as $poolId) {
-  if ($areacount ++ % 2 == 0 && $areacount > 1)
-    echo "</tr><tr>\n";
-  
-  echo "<td>\n";
-  $poolinfo = PoolInfo($poolId);
-  echo "<table style='width:100%'><tr><td><h3 style='float:left;'>" . $poolinfo['name'] . "</h3></td>";
-  echo "<td style='width:1ex'><a href='javascript:clearPool($poolId);'>x</a></td></tr></table>\n";
-  
+  // teams without pool
+  echo "<h3>" . _("Without pool") . "</h3>\n";
   echo "<div class='workarea' >\n";
-  echo "<ol id='pool" . $poolId . "' class='draglist' style='min-height:" . (($total_teams / $total_pools + 1) * TEAM_HEIGHT) . "px'>\n";
-  $poolteams = PoolTeams($poolId, 'seed');
-  foreach ($poolteams as $team) {
-    teamEntry(TEAM_HEIGHT, $team['team_id'], $team['name'], $team['seed']);
+  echo "<ul id='unpooled' class='draglist' style='height:400px'>\n";
+  foreach ($teamsNotInPool as $team) {
+    if (hasEditTeamsRight($seriesId)) {
+      teamEntry(TEAM_HEIGHT, $team['team_id'], $team['name'], $team['rank']);
+    }
   }
-  echo "</ol>\n";
+  echo "</ul>\n";
   echo "</div>\n";
   echo "</td>\n";
-}
 
-echo "</tr></table>\n";
-echo "</td></tr>\n";
-echo "<tr><td colspan=4>\n";
+  // pools with teams
+  echo "<td style='vertical-align:top'>\n";
+  echo "<table><tr>\n";
+  $areacount = 0;
+  $total_pools = count($pools);
+  $total_teams = count(SeriesTeams($seriesId));
 
-function modeSelect($group, $id, $description, $cells, $checked = false) {
-  $checked = $checked ? " checked='checked'" : "";
-  echo "      <div class='tabcell'><input type='radio'$checked id='$group$id' name='$group' value='$group$id' /></div>\n";
-  echo "     <div class='tabcell'><label for='$group$id'>$description</label>&nbsp;</div><div class='tabcell'><div class='tabular'>";
-  foreach ($cells as $row) {
-    echo "<div class='tabrow'>";
-    foreach ($row as $number) {
-      echo "<div class='tabcell' style='padding:1px;'>$number</div>";
+  foreach ($pools as $poolId) {
+    if ($areacount++ % 2 == 0 && $areacount > 1)
+      echo "</tr><tr>\n";
+
+    echo "<td>\n";
+    $poolinfo = PoolInfo($poolId);
+    echo "<table style='width:100%'><tr><td><h3 style='float:left;'>" . $poolinfo['name'] . "</h3></td>";
+    echo "<td style='width:1ex'><a href='javascript:clearPool($poolId);'>x</a></td></tr></table>\n";
+
+    echo "<div class='workarea' >\n";
+    echo "<ol id='pool" . $poolId . "' class='draglist' style='min-height:" .
+      (($total_teams / $total_pools + 1) * TEAM_HEIGHT) . "px'>\n";
+    $poolteams = PoolTeams($poolId, 'seed');
+    foreach ($poolteams as $team) {
+      teamEntry(TEAM_HEIGHT, $team['team_id'], $team['name'], $team['seed']);
     }
-    echo "</div>";
+    echo "</ol>\n";
+    echo "</div>\n";
+    echo "</td>\n";
   }
+
+  echo "</tr></table>\n";
+  echo "</td></tr>\n";
+  echo "<tr><td colspan=4>\n";
+
+  function modeSelect($group, $id, $description, $cells, $checked = false) {
+    $checked = $checked ? " checked='checked'" : "";
+    echo "      <div class='tabcell'><input type='radio'$checked id='$group$id' name='$group' value='$group$id' /></div>\n";
+    echo "     <div class='tabcell'><label for='$group$id'>$description</label>&nbsp;</div><div class='tabcell'><div class='tabular'>";
+    foreach ($cells as $row) {
+      echo "<div class='tabrow'>";
+      foreach ($row as $number) {
+        echo "<div class='tabcell' style='padding:1px;'>$number</div>";
+      }
+      echo "</div>";
+    }
+    echo "</div></div>\n";
+  }
+
+  // save button
+  echo "<div class='tabular radioselect' id='user_actions'>\n";
+  echo "<div class='tabrow'>";
+  echo "  <div class ='tabcell' style='float:left; width:100%; padding:20px 0px 5px 0px'>";
+  echo "    <input type='button' style='width:100%;' id='assignButton' value='" . _("Assign to pools") . "'/>";
+  echo "  </div>\n";
+  if (count($pools) > 1) {
+    echo "  <div class='tabcell'><fieldset>\n";
+    echo "    <div class='tabular'><div class='tabrow'>\n";
+    modeSelect('mode_', 'vertical', _("Vertical"), array(array(1, 3), array(2, 4)));
+    modeSelect('mode_', 'horizontal', _("Horizontal"), array(array(1, 2), array(3, 4)));
+    modeSelect('mode_', 'snaked', _("Back and forth"), array(array(1, 2), array(4, 3)), true);
+    echo "    </div></div></fieldset>";
+    echo "  </div>";
+  }
+  echo "</div>\n";
+  echo "<div class='tabrow'><div class='tabcell' style='float:left;width:100%;padding:20px 0px 5px 0px'>\n";
+  echo "  <input type='button' style='width:100%;' id='saveButton' value='" . _("Save") . "'/></div>\n";
+  echo "  <div class='tabcell center'><div id='responseStatus'></div></div>";
   echo "</div></div>\n";
-}
+  echo "<div class='tabrow'><div class='tabcell' style='float:left;width:100%;padding:10px 0px 5px 0px'>\n";
+  $seasonId = SeriesSeasonId($seriesId);
+  echo "  <a href='?view=admin/seasonpools&season=$seasonId&series=$seriesId'>" . _("Return") . "</a></div>\n";
+  echo "</div></div>\n";
 
-// save button
-echo "<div class='tabular radioselect' id='user_actions'>\n";
-echo "<div class='tabrow'>";
-echo "  <div class ='tabcell' style='float:left; width:100%; padding:20px 0px 5px 0px'>";
-echo "    <input type='button' style='width:100%;' id='assignButton' value='" . _("Assign to pools") . "'/>";
-echo "  </div>\n";
-if (count($pools) > 1) {
-  echo "  <div class='tabcell'><fieldset>\n";
-  echo "    <div class='tabular'><div class='tabrow'>\n";
-  modeSelect('mode_', 'vertical', _("Vertical"), array(array(1,3
-  ),array(2,4
-  )
-  ));
-  modeSelect('mode_', 'horizontal', _("Horizontal"), array(array(1,2
-  ),array(3,4
-  )
-  ));
-  modeSelect('mode_', 'snaked', _("Back and forth"), array(array(1,2
-  ),array(4,3
-  )
-  ), true);
-  echo "    </div></div></fieldset>";
-  echo "  </div>";
-}
-echo "</div>\n";
-echo "<div class='tabrow'><div class='tabcell' style='float:left;width:100%;padding:20px 0px 5px 0px'>\n";
-echo "  <input type='button' style='width:100%;' id='saveButton' value='" . _("Save") . "'/></div>\n";
-echo "  <div class='tabcell center'><div id='responseStatus'></div></div>";
-echo "</div></div>\n";
+  echo "</td></tr></table>\n";
 
-echo "</td></tr></table>\n";
-
-?>
+  ?>
 <script type="text/javascript">
 //<![CDATA[
 
@@ -153,20 +151,19 @@ function clearPool(id) {
 
 function assignTeams() {
   var responseDiv = Dom.get("responseStatus");
-  Dom.setStyle(responseDiv,"color", "#00aa00");
-  responseDiv.innerHTML = "doing something";
+  Dom.setAttribute(responseDiv, "class", "inprogress");
 
   var unpooled=Dom.get("unpooled");
   var pools = [
 <?php
-$expr = "";
-foreach ($pools as $poolId) {
-  if (!empty($expr))
-    $expr .= ",";
-  $expr .= "    \"pool" . $poolId . "\"\n";
-}
-echo $expr;
-?>
+  $expr = "";
+  foreach ($pools as $poolId) {
+    if (!empty($expr))
+      $expr .= ",";
+    $expr .= "    \"pool" . $poolId . "\"\n";
+  }
+  echo $expr;
+  ?>
   ];
   var html = "";
   var items = unpooled.getElementsByTagName("li");
@@ -206,6 +203,7 @@ echo $expr;
       }
     }
   }
+  Dom.setAttribute(responseDiv, "class", "responseSuccess");
   responseDiv.innerHTML = "<?php echo _("Pools have not been saved!") ?>";
 }
 
@@ -224,23 +222,23 @@ YAHOO.example.ScheduleApp = {
   init: function() {
   new YAHOO.util.DDTarget("unpooled");
 <?php
-foreach ($pools as $poolId) {
-  echo "  new YAHOO.util.DDTarget(\"pool" . $poolId . "\");\n";
-  $poolteams = PoolTeams($poolId);
-  foreach ($poolteams as $team) {
+  foreach ($pools as $poolId) {
+    echo "  new YAHOO.util.DDTarget(\"pool" . $poolId . "\");\n";
+    $poolteams = PoolTeams($poolId);
+    foreach ($poolteams as $team) {
+      if (hasEditTeamsRight($seriesId)) {
+        echo "  new YAHOO.example.DDList(\"team" . $team['team_id'] . "\");\n";
+      }
+    }
+  }
+
+  foreach ($teamsNotInPool as $team) {
     if (hasEditTeamsRight($seriesId)) {
       echo "  new YAHOO.example.DDList(\"team" . $team['team_id'] . "\");\n";
     }
   }
-}
 
-foreach ($teamsNotInPool as $team) {
-  if (hasEditTeamsRight($seriesId)) {
-    echo "  new YAHOO.example.DDList(\"team" . $team['team_id'] . "\");\n";
-  }
-}
-
-?>
+  ?>
   Event.on("saveButton", "click", this.requestString);
 },
     
@@ -266,23 +264,18 @@ foreach ($teamsNotInPool as $team) {
             return out;
         };
 <?php
-echo "	var unpooled=Dom.get(\"unpooled\");\n";
-foreach ($pools as $poolId) {
-  echo "	var pool" . $poolId . "=Dom.get(\"pool" . $poolId . "\");\n";
-}
-echo "	var request = parseList(unpooled, \"0\") + \"\\n\"";
-foreach ($pools as $poolId) {
-  echo " + \"|\" + parseList(pool" . $poolId . ", \"" . $poolId . "\")";
-}
-echo ";\n";
-?>
+  echo "	var unpooled=Dom.get(\"unpooled\");\n";
+  foreach ($pools as $poolId) {
+    echo "	var pool" . $poolId . "=Dom.get(\"pool" . $poolId . "\");\n";
+  }
+  echo "	var request = parseList(unpooled, \"0\") + \"\\n\"";
+  foreach ($pools as $poolId) {
+    echo " + \"|\" + parseList(pool" . $poolId . ", \"" . $poolId . "\")";
+  }
+  echo ";\n";
+  ?>
 	var responseDiv = Dom.get("responseStatus");
-	Dom.setStyle(responseDiv,"background-image","url('images/indicator.gif')");
-	Dom.setStyle(responseDiv,"background-repeat","no-repeat");
-	Dom.setStyle(responseDiv,"background-position", "top right");
-	Dom.setStyle(responseDiv,"height", "20px");
-	Dom.setStyle(responseDiv,"width", "20px");
-	Dom.setStyle(responseDiv,"class", "inprogress");
+	Dom.setAttribute(responseDiv, "class", "inprogress");
 	responseDiv.innerHTML = '&nbsp;';
     
 	var transaction = YAHOO.util.Connect.asyncRequest('POST', 'index.php?view=admin/saveteampools', callback, request);         
@@ -293,15 +286,13 @@ echo ";\n";
 var callback = {
 	success: function(o) {
 		var responseDiv = Dom.get("responseStatus");
-		Dom.setStyle(responseDiv,"background-image","");
-		Dom.setStyle(responseDiv,"color", "#00aa00");
+          Dom.setAttribute(responseDiv, "class", "responseSuccess");
 		responseDiv.innerHTML = o.responseText;
 	},
 
 	failure: function(o) {
 		var responseDiv = Dom.get("responseStatus");
-		Dom.setStyle(responseDiv,"background-image","");
-		Dom.setStyle(responseDiv,"color", "#aa0000");
+          Dom.setStyle(responseDiv, "class", "responseFailure");
 		responseDiv.innerHTML = o.responseText;
 	}
 }
@@ -436,6 +427,9 @@ Event.onDOMReady(YAHOO.example.ScheduleApp.init, YAHOO.example.ScheduleApp, true
 
 
 <?php
+} else {
+  echo "no pools";
+}
 contentEnd();
 pageEnd();
 

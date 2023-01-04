@@ -174,3 +174,24 @@ a.current {
   vertical-align: middle;
 }
 
+.inprogress {
+  background-image: url('images/indicator.gif'), url('../images/indicator.gif');
+  background-repeat: no-repeat;
+  background-position: top right;
+  height: 3ex;
+  width: 3ex;
+}
+
+.responseSuccess {
+  background-image: none;
+  color: #00aa00;
+  height: auto;
+  width: auto;
+}
+
+.responseFailure {
+  background-image: none;
+  color: #aa0000;
+  height: auto;
+  width: auto;
+}

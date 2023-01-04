@@ -311,12 +311,17 @@ function printSwissdraw($seasoninfo, $poolinfo){
   $ret .= "</table>\n";
 
   $ret .= "<table class='admintable'>\n";
+  $mvgames = array();
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
+    if (count($mvgames)>0)
+      $ret .= "<tr><td colspan='8'><h3>" . _("Previous games") . "</h3></td></tr>\n";
     foreach($mvgames as $game){
       $ret .= GameRow($game, true, true, false, false, false, true);
     }
   }
+  if (count($mvgames)>0)
+    $ret .= "<tr><td colspan='8'><h3>" . _("Current games") . "</h3></td></tr>\n";
   $games = TimetableGames($poolinfo['pool_id'], "pool", "all", "series");
   while($game = mysqli_fetch_assoc($games)){
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
@@ -462,13 +467,19 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
     $ret .= "</tr></table>\n";
   }
   $ret .= "<table class='admintable'>\n";
+  $mvgames = array();
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
+    if (count($mvgames)>0)
+      $ret .= "<tr><td colspan='8'><h3>" . _("Previous games") . "</h3></td></tr>\n";
+
     foreach($mvgames as $game){
       $ret .= GameRow($game, true, true, false, false, false, true);
     }
   }
   $games = TimetableGames($poolinfo['pool_id'], "pool", "all", "series");
+  if (count($mvgames)>0)
+    $ret .= "<tr><td colspan='8'><h3>" . _("Current games") . "</h3></td></tr>\n";
   while($game = mysqli_fetch_assoc($games)){
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
     $ret .= GameRow($game, true, true, false, false, false, true);
