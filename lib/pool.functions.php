@@ -2053,17 +2053,16 @@ function GeneratePlayoffPools($poolId, $generate=true){
 
     // try to parse moves
     $specialmoves=false;
-
-     if (substr($html,0,26)=="<!-- corresponding moves:") {
-       $movestring=substr($html,28,strpos($html,"-->")-29);
-       $movelines=explode("\n",$movestring);
-       foreach ($movelines as $move) {
-         $moves[]=str_getcsv($move," ");
-       }
-       if (count($moves)==$rounds) {
-         $specialmoves=true; //parsing succesful
-       }
-     }
+    $matches = null;
+    if (preg_match("/<!--\s*corresponding moves:\s*([^>]*[^\s])\s*-->/", $html, $matches)) {
+      $movelines = explode("\n", $matches[1]);
+      foreach ($movelines as $move) {
+        $moves[] = str_getcsv($move, " ");
+      }
+      if (count($moves) == $rounds) {
+        $specialmoves = true; // parsing succesful
+      }
+    }
 
     $poolInfo['specialmoves']=$specialmoves;
 
