@@ -198,7 +198,7 @@ function PoolTeams($poolId, $order="rank"){
         RIGHT JOIN uo_team_pool ON (uo_team.team_id=uo_team_pool.team)
         LEFT JOIN uo_club club ON (club=club.club_id)
         LEFT JOIN uo_country c ON (uo_team.country=c.country_id)
-        WHERE uo_team_pool.pool = '%s'",
+        WHERE uo_team_pool.pool = '%d'",
           (int)$poolId);
 
   switch($order) {
@@ -1003,7 +1003,7 @@ function PoolGames($poolId, $fieldId=null) {
             p.hometeam, p.visitorteam,
             p.time, p.game_id, p.homescore, p.visitorscore,
             phome.name AS phometeamname, pvisitor.name AS pvisitorteamname,
-            ps.pool AS original_pool
+            p.pool AS original_pool
             FROM uo_game p
             LEFT JOIN uo_team AS home ON (p.hometeam=home.team_id)
             LEFT JOIN uo_team AS visitor ON (p.visitorteam=visitor.team_id)
