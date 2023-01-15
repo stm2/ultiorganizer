@@ -524,6 +524,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
   $notemplate = "";
 
   $round=0;
+  $previousRoundByeName = '???';
   foreach($pools as $poolId){
     $pool = PoolInfo($poolId);
 
@@ -571,29 +572,33 @@ function printPlayoffTree($seasoninfo, $poolinfo){
       $name = "";
       $byeName = "";
       //find out team name
-      if($team['team_id']){
+      if($team != null && $team['team_id']){
         if(intval($seasoninfo['isinternational']) && !empty($team['flagfile'])){
           $name .= "<img height='10' src='images/flags/tiny/".$team['flagfile']."' alt=''/> ";
         }
         $name .= "<a href='?view=teamcard&amp;team=".$team['team_id']."'>".utf8entities($team['name'])."</a>";
-      }else{
-        $realteam = PoolTeamFromStandings($movefrom['frompool'],$movefrom['fromplacing']);
-        $gamesleft = TeamPoolGamesLeft($realteam['team_id'], $movefrom['frompool']);
-        $frompoolinfo = PoolInfo($movefrom['frompool']);
-        $isodd = is_odd($totalteams) && $i==$totalteams;
-        if($realteam['team_id'] && $frompoolinfo['played'] && mysqli_num_rows($gamesleft)==0 && !$isodd){
-          if(intval($seasoninfo['isinternational']) && !empty($realteam['flagfile'])){
-            $name .= "<img height='10' src='images/flags/tiny/".$realteam['flagfile']."' alt=''/> ";
-          }
-          $name .= "<i>".utf8entities($realteam['name'])."</i>";
-        }else{
-          $sname = SchedulingNameByMoveTo($pool['pool_id'],$i);
+      } else {
+        $realteam = PoolTeamFromStandings($movefrom['frompool'], $movefrom['fromplacing']);
+        if ($realteam == null) {
+          $sname = SchedulingNameByMoveTo($pool['pool_id'], $i);
           $name .= utf8entities(U_($sname['name']));
+        } else {
+          $gamesleft = TeamPoolGamesLeft($realteam['team_id'], $movefrom['frompool']);
+          $frompoolinfo = PoolInfo($movefrom['frompool']);
+          $isodd = is_odd($totalteams) && $i == $totalteams;
+          if ($realteam['team_id'] && $frompoolinfo['played'] && mysqli_num_rows($gamesleft) == 0 && !$isodd) {
+            if (intval($seasoninfo['isinternational']) && !empty($realteam['flagfile'])) {
+              $name .= "<img height='10' src='images/flags/tiny/" . $realteam['flagfile'] . "' alt=''/> ";
+            }
+            $name .= "<i>" . utf8entities($realteam['name']) . "</i>";
+          } else {
+            $sname = SchedulingNameByMoveTo($pool['pool_id'], $i);
+            $name .= utf8entities(U_($sname['name']));
+          }
         }
-
       }
        
-      if($team['team_id']){
+      if($team != null && $team['team_id']){
         $gamesinpool =TeamPoolGames($team['team_id'], $pool['pool_id']);
         if (mysqli_num_rows($gamesinpool)==0) { // that's the BYE team
           $byeName = $name; // save its name
@@ -601,7 +606,6 @@ function printPlayoffTree($seasoninfo, $poolinfo){
         }
       }
       //update team name to template
-      $theName = $name;
       if($round==0){
         $template=str_replace("[team $i]",$name,$template);
       }else{
@@ -609,7 +613,6 @@ function printPlayoffTree($seasoninfo, $poolinfo){
           $winners=ceil($movefrom['fromplacing']/2);
            
           $template=str_replace("[winner $round/$winners]",$previousRoundByeName,$template);
-          $theName = $previousRoundByeName;
         } elseif($movefrom['fromplacing']%2==1){
           $winners=ceil($movefrom['fromplacing']/2);
           $template=str_replace("[winner $round/$winners]",$name,$template);
@@ -622,26 +625,31 @@ function printPlayoffTree($seasoninfo, $poolinfo){
       if($i%2==1){
         $games++;
         $game = "";
-        if($team['team_id']){
-          $results = GameHomeTeamResults($team['team_id'], $pool['pool_id']);
-          $reverse = false;
-          if (!$results) {
-            $results = GameVisitorTeamResults($team['team_id'], $pool['pool_id']);
-            $reverse = true;
-          }
+        if($team != null && $team['team_id']){
+          $results = GameTeamResults($team['team_id'], $pool['pool_id']);
           foreach($results as $res){
+            $reverse = false;
+            if ($res['visitorteam'] == $team['team_id']) {
+              $reverse = true;
+            }
+
             if ($reverse) {
               $dummy = $res['homescore'];
               $res['homescore'] = $res['visitorscore'];
               $res['visitorscore'] = $dummy;
             }
+            if (!empty($game)) {
+              $game .= ", ";
+            }
             if ($res['scoresheet'] && !$res['isongoing']) {
               $game .= "<a href='?view=gameplay&amp;game=". $res['game_id'] ."'>";
-              $game .= $res['homescore']."-".$res['visitorscore']."</a> ";
+              $game .= $res['homescore']." - ".$res['visitorscore']."</a> ";
             }elseif(GameHasStarted($res) >0 && !$res['isongoing']){
-              $game .= $res['homescore']."-".$res['visitorscore'];
+              $game .= $res['homescore']." - ".$res['visitorscore'];
             }elseif(!empty($res['gamename'])){
               $game .= "<span class='lowlight'>".utf8entities(U_($res['gamename']))."</span>";
+            }else if (!empty($game)){
+              $game .= "?-?";
             }
           }
         }
@@ -695,7 +703,8 @@ function printPlayoffTree($seasoninfo, $poolinfo){
         if(intval($seasoninfo['isinternational']) && !empty($team['flagfile'])){
           $teampart .= "<img height='10' src='images/flags/tiny/".$team['flagfile']."' alt=''/> ";
         }
-        $teampart .= utf8entities($team['name']);
+        if (isset($team['name']))
+          $teampart .= utf8entities($team['name']);
       } else {
         $unknown = "<i>"._("???")."</i>";
       }

@@ -389,9 +389,13 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
 
   //if pool is not follower, do not make move
   $poolinfo = PoolInfo($frompool);
-  if($inplayofftree && $poolinfo['follower']!=$move['topool']){
+  if (empty($move)) {
+    return null;
+  }
+  if($inplayofftree && $poolinfo['follower'] != $move['topool']){
     // FIXME
-    return "<p>"._("Not moving to follower of playoff pool.")."</p>";
+    debug_to_apache("Not moving $teamId to follower " . $poolinfo['follower'] . " of playoff pool ${frompool}.");
+    return null;
   }
 
   if($move['ismoved']){
@@ -413,7 +417,8 @@ function TeamMove($teamId, $frompool, $inplayofftree=false){
       $games = DBQueryToArray($query);
       // $games = DBQueryRowCount($query);
       if (count($games)) {
-        return "<p>" . _("Move not allowed. Game already played!") . "</p>";
+        debug_to_apache("Move from $frompool to " . $move['topool'] . " not allowed. Game " . $games[0]['game_id'] . " already played!");
+        return null;
       }
     }
     foreach ($team_exist as $key => $exists) {
