@@ -21,6 +21,7 @@ foreach ($places as $placeGameStr) {
 		ClearReservation($games[0]);
 		$resInfo = ReservationInfo($games[0]);
 		$firstStart = strtotime($resInfo['starttime']);
+		$gameEnd = $firstStart;
 		$resEnd = strtotime($resInfo['endtime']);
 		for ($i=1; $i < count($games); $i++) {
 			$gameArr = explode("/", $games[$i]);

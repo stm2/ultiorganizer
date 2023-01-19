@@ -66,7 +66,7 @@ class EventDataXMLHandler{
    */
 
   function selectSeries($eventId, $series) {
-    $query = sprintf("SELECT * FROM uo_series WHERE season='%s'",
+    $query = sprintf("SELECT * FROM `uo_series` WHERE `season`='%s'",
       mysql_adapt_real_escape_string($eventId));
     if (!empty($series)) {
       $query .= "AND series_id IN (" . mysql_adapt_real_escape_string(implode(",", $series)) . ")";
@@ -77,7 +77,7 @@ class EventDataXMLHandler{
   
   
   function write_season($eventId, $template) {
-    $seasons = DBQuery("SELECT * FROM uo_season WHERE season_id='".mysql_adapt_real_escape_string($eventId)."'");
+    $seasons = DBQuery("SELECT * FROM `uo_season` WHERE `season_id`='".mysql_adapt_real_escape_string($eventId)."'");
     $row = mysqli_fetch_assoc($seasons);
     
     if($template) {
@@ -90,9 +90,9 @@ class EventDataXMLHandler{
   function write_reservations($eventId, $template, $series = null) {
     $ret = "";
     
-    $select = sprintf("rr.season='%s'", mysql_adapt_real_escape_string($eventId));
+    $select = sprintf("rr.`season`='%s'", mysql_adapt_real_escape_string($eventId));
     if (! empty($series))
-      $select .= sprintf(" AND series IN (%s)", mysql_adapt_real_escape_string(implode(",", $series)));
+      $select .= sprintf(" AND `series` IN (%s)", mysql_adapt_real_escape_string(implode(",", $series)));
     
     $query = "SELECT `rr`.* FROM `uo_reservation` `rr` 
         LEFT JOIN `uo_game` `gg` ON (`gg`.`reservation` = `rr`.`id`)
@@ -223,6 +223,8 @@ class EventDataXMLHandler{
           $gameRow['hometeam'] = NULL;
           $gameRow['visitorteam'] = NULL;
         }
+        if ($gameRow['hometeam'] != $gameRow['respteam'] && $gameRow['visitorteam'] != $gameRow['respteam'])
+          $gameRow['respteam'] = NULL; // TODO can the scheduling team be reconstructed?
         $gameRow['homescore'] = NULL;
         $gameRow['visitorscore'] = NULL;
         $gameRow['homedefenses'] = 0;
@@ -505,7 +507,7 @@ class EventDataXMLHandler{
         DBCommit();
       } catch (Exception $e) {
         DBRollback();
-        $this->error = $e->message;
+        $this->error = $e->getMessage();
       }
       xml_parser_free($xmlparser);
     } else { die('Insufficient rights to import data'); }
@@ -562,7 +564,7 @@ class EventDataXMLHandler{
           $row['reservationgroup'] = $this->replacers['reservationgroup'][$key];
         }
         if (!empty($this->replacers['date'][$key])) {
-          $this->debug .= "(".$row['starttime']."->".$this->shiftTime($row['starttime'], $key).")";
+          $this->debug .= "(".$row['starttime']."->".$this->shiftTime($row['starttime'], $key).")\n";
           $row['starttime'] = $this->shiftTime($row['starttime'], $key);
           $row['endtime'] = $this->shiftTime($row['endtime'], $key);
           $row['date'] = $this->shiftTime($row['date'], $key);
@@ -644,7 +646,7 @@ class EventDataXMLHandler{
           
           $cond = "`season_id`='" . $this->uo_season[$key] . "'";
           $query = "SELECT `season_id` FROM `uo_season` WHERE $cond";
-          $this->debug .= "insert season " . $key . " -> " . $this->uo_season   . "\n";
+          $this->debug .= "insert season " . $key . " -> " . $this->uo_season[$key] . "\n";
           $exist = DBQueryRowCount($query);
           if ($exist) {
             // don't update
@@ -964,7 +966,7 @@ class EventDataXMLHandler{
         unset($row["pool_id"]);
         $row["series"] = $this->uo_series[$row["series"]];
 
-        $cond = "pool_id='".$key."'";
+        $cond = "`pool_id`='".$key."'";
         $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
 

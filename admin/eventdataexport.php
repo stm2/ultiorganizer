@@ -28,7 +28,7 @@ if(!empty($_POST['season'])){
 	header("Content-Transfer-Encoding: binary");
 	
 	$eventdatahandler = new EventDataXMLHandler();
-	$data = $eventdatahandler->EventToXML($seasonId, $_POST["searchseries"], $_POST["template"] === "on");
+	$data = $eventdatahandler->EventToXML($seasonId, $_POST["searchseries"], isset($_POST["template"]) &&  $_POST["template"] === "on");
 	header("Content-Length: ".strlen($data));
 	echo $data;
 }

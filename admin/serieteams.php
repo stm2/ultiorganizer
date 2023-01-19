@@ -96,7 +96,7 @@ if(!empty($_POST['save'])) {
   }
   applyMoves($poolId, $newmoves);
   
-  $swapped = PoolConfirmMoves($poolId, $_POST['visible'] == "on");
+  $swapped = PoolConfirmMoves($poolId, isset($_POST['visible']) && $_POST['visible'] == "on");
   $backurl = $_POST['backurl'];
   session_write_close();
   header("location:$backurl");

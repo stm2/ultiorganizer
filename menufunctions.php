@@ -567,8 +567,8 @@ function seasonSelection() {
       if ($name != 'selseason')
         echo "<input type='hidden' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "' />\n";
     }
-    echo "<noscript><div><input type='submit' value='" . utf8entities(_("Go")) .
-      "' name='selectseason'/></div></noscript>\n";
+    echo "<noscript><input type='submit' value='" . utf8entities(_("Go")) .
+      "' name='selectseason'/></noscript>\n";
     echo "</div></form>";
     echo "</td></tr></table>\n";
   }
