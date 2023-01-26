@@ -20,7 +20,7 @@ class RestoreChecker extends RestoreHandler {
   protected $tdropped;
 
   protected $tables;
-  
+
   protected int $start;
 
   function handle_start($filename) {
@@ -109,7 +109,7 @@ class RestoreChecker extends RestoreHandler {
     $start = time();
     $limit = 300;
     set_time_limit($limit);
-    
+
     if ($total < 1000)
       $total = 1000;
     echo "<br />" . sprintf(_("Creating test table and inserting %d rows ..."), $total);
@@ -138,10 +138,13 @@ class RestoreChecker extends RestoreHandler {
       }
     }
     if ($result) {
-      echo "<br />" . sprintf(_("Successfully created table with %d inserts in %ss. Time limit is %ss"), $total, (time()-$start), $limit) . "</p>\n";
+      echo "<br />" .
+        sprintf(_("Successfully created table with %d inserts in %ss. Time limit is %ss"), $total, (time() - $start),
+          $limit) . "</p>\n";
     } else {
       echo '<p>' . _('Test was <em>not</em> successful') . ":<br />\n" . mysql_adapt_error() . "</p>";
     }
+    $result = mysql_adapt_query("DROP TABLE if exists uo_dbrestore_test");
 
     echo "<br /><p>" .
       _(
@@ -169,8 +172,11 @@ class RestoreFilter extends RestoreHandler {
 
   protected $checked;
 
+  protected $paragraph;
+
   function __construct($post) {
     $this->checked = array();
+    $this->paragraph = true;
     foreach ($post['tables'] as $tname) {
       $this->checked[$tname] = true;
     }
@@ -198,7 +204,11 @@ class RestoreFilter extends RestoreHandler {
       }
     }
     if ((time() - $this->start) > 1) {
-      echo "<br />running ...\n";
+      if ($this->paragraph) {
+        echo "<br />running ...";
+        $this->paragraph = false;
+      } else
+        echo ".";
       $this->flush();
       $this->start = time();
     }
@@ -239,6 +249,7 @@ class RestoreFilter extends RestoreHandler {
         echo _(", dropped");
       }
       echo "\n";
+      $this->paragraph = true;
       $this->flush();
       $this->start = time();
     }
