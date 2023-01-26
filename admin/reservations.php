@@ -76,8 +76,15 @@ if(!empty($urlparams)){
 }
 if(empty($season)){
   $html .=  SearchReservation($url, $hidden, array('schedule' => _("Schedule selected")));
+  $html .= "<hr />";
+  $html .= "<p><a href='?view=admin/addreservation&amp;season=".$season."'>"._("Add reservation")."</a> | ";
+  $html .= "<a href='?view=admin/locations&amp;season=".$season."'>"._("Add location")."</a></p>";
 }else{
-  $html .= "<p><a href='?view=admin/reservations'>". _("Search"). "</a></p>";
+$html .= "<p><a href='?view=admin/addreservation&amp;season=".$season."'>"._("Add reservation")."</a> | ";
+$html .= "<a href='?view=admin/locations&amp;season=".$season."'>"._("Add location")."</a> | ";
+$html .= "<a href='?view=admin/reservations'>". _("Search"). "</a></p>\n";
+$html .= "<hr />";
+
   $groups = SeasonReservationgroups($season);
   if(count($groups)>1){
   	$html .= "<p>\n";	
@@ -175,10 +182,6 @@ if(empty($season)){
     $html .= "<p>" . _("No reservations.") . "</p>";
   }
 }
-	
-$html .= "\n<hr/>\n";
-$html .= "<p><a href='?view=admin/addreservation&amp;season=".$season."'>"._("Add reservation")."</a> | ";
-$html .= "<a href='?view=admin/locations&amp;season=".$season."'>"._("Add location")."</a></p>";
 
 showPage($title, $html);
 ?>
