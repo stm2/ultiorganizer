@@ -1,5 +1,4 @@
 <?php
-
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/data.functions.php';
@@ -11,21 +10,26 @@ $seasonId = "";
 
 $imported = false;
 
-//check access rights before user can upload data into server
-if (!empty($_GET['season'])){
+// check access rights before user can upload data into server
+if (!empty($_GET['season'])) {
   $seasonId = $_GET["season"];
-  if (!isSeasonAdmin($seasonId)) { die('Insufficient rights to import data'); }
+  if (!isSeasonAdmin($seasonId)) {
+    die('Insufficient rights to import data');
+  }
 } else {
-  if (!isSuperAdmin()) { die('Insufficient rights to import data');}
+  if (!isSuperAdmin()) {
+    die('Insufficient rights to import data');
+  }
 }
 
-$html = "";
+$html = JavaScriptWarning();
+
 $scripts = "";
 
 if (empty($seasonId)) {
-  $html = "<h2>" . $title . "</h2>";
+  $html .= "<h2>" . $title . "</h2>";
 } else {
-  $html = "<h2>" . $title ." (". SeasonName($seasonId) . ")</h2>";
+  $html .= "<h2>" . $title . " (" . SeasonName($seasonId) . ")</h2>";
 }
 
 $mode = 'select';

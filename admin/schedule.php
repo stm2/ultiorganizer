@@ -279,6 +279,7 @@ pageTopHeadClose($title,false, $scrolling);
 pageMainStart();
 contentStartWide();
 
+echo JavaScriptWarning();
 echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a>";
 
 echo "<table class='scheduling'><tr><td class='scheduling_column'>";

@@ -35,6 +35,8 @@ pageTopHeadClose($title);
 leftMenu($LAYOUT_ID);
 contentStart();
 
+echo JavaScriptWarning();
+
 if (count($pools)) {
 
   echo "<table class='contenttable'><tr><td>";

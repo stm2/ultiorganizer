@@ -195,3 +195,11 @@ a.current {
   height: auto;
   width: auto;
 }
+
+.warningbox {
+  color: var(--warning, #ff0000);
+  background: var(--hishadecolor, #eee);
+  border: 2pt solid var(--hardbordercolor, #333);
+  padding: 1ex;
+  border-radius: 1ex;
+}

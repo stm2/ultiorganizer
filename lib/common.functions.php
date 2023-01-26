@@ -1511,4 +1511,9 @@ function checkAllCheckbox($selector, $id='') {
     $id="checkall$selector";
   return "<input type='checkbox' id='$id' disabled onclick='checkAll(\"$selector\");' />" . scriptedEnable($id);
 }
+
+function JavaScriptWarning() {
+  return "<noscript><p class='warningbox'>" .
+    _("This page requires JavaScript to function, but JavaScript appears to be disabled.") . "</p></noscript>\n";
+}
 ?>
