@@ -11,6 +11,11 @@ else
 
 include_once $bootstrapfile;
 
+if (defined('MAINTENANCE_MODE') && MAINTENANCE_MODE > 0) {
+  include 'maintenance.php';
+  exit();
+}
+
 $view = iget("view");
 if (!$view) {
   header("location:?view=frontpage");
