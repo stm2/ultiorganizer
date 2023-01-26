@@ -152,29 +152,46 @@ function RemoveLocation($id) {
 }
 
 function LocationInput($id, $group, $value, $label, $location) {
-  $html = "<tr><td>&nbsp;</td><td><div id='${id}Autocomplete' class='yui-skin-sam'>";
-  $html .= "<input class='input' id='${id}Name' size='30' type='text' style='width:200px' name='${id}Name' value='";
+  $html = "<tr>";
+  $html .= "<td>$label</td><td>";
+  $html .= LocationInput2($id, $group, $value, $location);
+  $html .= "</td>";
+  $html .= "</tr>\n";
+
+  return $html;
+}
+
+function LocationInput2($id, $group, $value, $location) {
+  $html = "<input type='hidden'  name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>";
+  $html .= "<div id='${id}Autocomplete' class='yui-skin-sam'>";
+  $html .= "<input class='input' id='${id}Name' style='position:relative;' size='30' type='text' name='${id}Name' value='";
   $html .= utf8entities($value);
-  $html .= "'/><div style='width:400px' id='${id}NameContainer'></div></div>\n";
-  $html .= "</td></tr>\n";
-  $html .= "<tr><td>$label</td><td><input type='hidden'  name='${group}[]' id='${id}' value='".utf8entities($location)."'/></td></tr>\n";
-  
+  $html .= "'/><div id='${id}NameContainer'></div></div>\n";
+
   return $html;
 }
 
 function LocationScript($id) {
   return "<script type=\"text/javascript\">
 //<![CDATA[
-var ${id}SelectHandler = function(sType, aArgs) {
-	var oData = aArgs[2];
-	document.getElementById(\"${id}\").value = oData[2];
-};
+  var ${id}SelectHandler = function(sType, aArgs) {
+    var oData = aArgs[2];
+    document.getElementById(\"${id}\").value = oData[2];
+    var x = document.getElementById(\"${id}Name\").className; 
+    document.getElementById(\"${id}Name\").className = x.replaceAll(' highlight','');
+  };
 
-Fetch${id} = function(){        
-	var locationSource = new YAHOO.util.XHRDataSource(\"ext/locationtxt.php\");
+  var ${id}SelectHandler2 = function() {
+    var x = document.getElementById(\"${id}Name\").className;
+    if (!x || !x.includes(' highlight'))
+      document.getElementById(\"${id}Name\").className+=' highlight';
+  };
+
+  Fetch${id} = function(){        
+    var locationSource = new YAHOO.util.XHRDataSource(\"ext/locationtxt.php\");
     locationSource.responseSchema = {
-         recordDelim: \"\\n\",
-         fieldDelim: \"\\t\"
+      recordDelim: \"\\n\",
+      fieldDelim: \"\\t\"
     };
     locationSource.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
     locationSource.maxCacheEntries = 60;
@@ -183,26 +200,21 @@ Fetch${id} = function(){
     var locationAutoComp = new YAHOO.widget.AutoComplete(\"${id}Name\",\"${id}NameContainer\",locationSource);
     locationAutoComp.formatResult = function(oResultData, sQuery, sResultMatch) { 
 
-    	// some other piece of data defined by schema 
-		var moreData1 = oResultData[1];  
+      // some other piece of data defined by schema 
+      var moreData1 = oResultData[1];  
 
-		var aMarkup = [\"<div class='myCustomResult'>\", 
-		\"<span style='font-weight:bold'>\", 
-		sResultMatch, 
-		\"</span>\", 
-		\" / \", 
-		moreData1, 
-		\"</div>\"]; 
-		return (aMarkup.join(\"\")); 
-	}; 
-	locationAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
+      return `<div class='myCustomResult'>
+  <span style='font-weight:bold'>\${sResultMatch}</span> / \${moreData1}</div>`; 
+    }; 
+    locationAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
+    locationAutoComp.textboxFocusEvent.subscribe(${id}SelectHandler2);
     return {
-        oDS: locationSource,
-        oAC: locationAutoComp
+      oDS: locationSource,
+      oAC: locationAutoComp
     }
-}();
+  }();
 //]]>
-</script>";
+</script>\n";
 }
 
 function MapScript(string $elementId, float $lat, float $lng, string $latElem = null, string $lngElem = null) {

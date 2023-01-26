@@ -230,7 +230,6 @@ if($res['location']>0){
 }
 $html .= LocationInput('location', 'location', $location_info, _("Location"), $res['location']); 
 
-$html .= "<tr><td></td><td>&nbsp;</td></tr>\n";
 if(isSuperAdmin()){
   $html .= "<tr><td>"._("Season").":</td><td>";
   $html .= "<select class='dropdown' name='resseason'>\n";
@@ -244,7 +243,7 @@ if(isSuperAdmin()){
       $html .= "<option class='dropdown' value='".utf8entities($row['season_id'])."'>". utf8entities($row['name']) ."</option>";
     }
   }
-  $html .= "</select></p>\n";
+  $html .= "</select>\n";
   $html .= "</td></tr>\n";
 }
 
@@ -252,7 +251,7 @@ $html .= "<tr><td>";
 
 
 if (!$addmore) {
-  $html .= "<input type='hidden' name='id' value='".utf8entities($res['id'])."'/>";
+  $html .= "<br /><input type='hidden' name='id' value='".utf8entities($res['id'])."'/>";
   $html .= "<input type='submit' class='button' name='save' value='"._("Save")."'/>";
 } else {
   $html .= "<input type='submit' class='button' name='add' value='"._("Add")."'/>";

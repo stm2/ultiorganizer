@@ -738,9 +738,11 @@ class EventDataXMLHandler{
           $row["visitorteam"] = $this->uo_team[$row["visitorteam"]];
         }
         if (!empty($row["respteam"]) && !is_null($row["respteam"]) && $row["respteam"] > 0) {
-          $oldresp = $row["respteam"];
           if (is_null($row["hometeam"])) {
-            $row["respteam"] = $this->uo_scheduling_name[$row["respteam"]];
+            if (!isset($this->uo_scheduling_name[$row["respteam"]])) {
+              $this->error .= sprintf("no match for responsible team %d in game %d<br />", $row['respteam'], $key);
+            } else
+              $row["respteam"] = $this->uo_scheduling_name[$row["respteam"]];
           } else {
             $row["respteam"] = $this->uo_team[$row["respteam"]];
           }
@@ -1044,13 +1046,7 @@ class EventDataXMLHandler{
         if(!empty($row["scheduling_name_visitor"]) && isset($this->uo_scheduling_name[$row["scheduling_name_visitor"]])){
           $row["scheduling_name_visitor"] = $this->uo_scheduling_name[$row["scheduling_name_visitor"]];
         }
-        
-        $this->replace($row, $reservationKey, $tagName);
-        
-        $newId = $this->InsertRow($tagName, $row);
-        
-        $this->uo_game[$key]=$newId;
-        
+
         $cond = "`game_id`='".$key."'";
         $query = "SELECT * FROM `".$tagName."` WHERE ".$cond;
         $exist = DBQueryRowCount($query);
@@ -1167,22 +1163,33 @@ class EventDataXMLHandler{
    * @param string $name Name of the table to update
    * @param array $row Data to insert: key=>field, value=>data
    */
-  function SetRow($name, $row, $cond){
+  function SetRow($name, $row, $cond) {
+    $columns = GetTableColumns($name);
+    $query = "UPDATE `" . mysql_adapt_real_escape_string($name) . "` SET ";
 
-    $values = array_values($row);
-    $fields = array_keys($row);
-
-    $query = "UPDATE `".mysql_adapt_real_escape_string($name)."` SET ";
-    
-    for($i=0;$i<count($fields);$i++){
-      $query .= '`' . mysql_adapt_real_escape_string($fields[$i]) ."`='". mysql_adapt_real_escape_string($values[$i])."', ";
+    foreach ($row as $key => $value) {
+      $svalue = '';
+      if ($columns[strtolower($key)] === 'int') {
+        if (is_null($value)) {
+          $svalue = "NULL";
+        } elseif (is_numeric($value)) {
+          $svalue = "'" . mysql_adapt_real_escape_string($value) . "'";
+        } else {
+          throw new Exception(
+            $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ").");
+        }
+      } else {
+        $svalue = "'" . mysql_adapt_real_escape_string($value) . "'";
+      }
+      $query .= '`' . mysql_adapt_real_escape_string($key) . "`=$svalue, ";
     }
-    $query = rtrim($query,', ');
+
+    $query = rtrim($query, ', ');
     $query .= " WHERE ";
     $query .= $cond;
-    
+
     if ($this->mock) {
-      $this->debug .= $query ."\n";
+      $this->debug .= $query . "\n";
       return FALSE;
     } else {
       return DBQueryInsert($query);
