@@ -39,9 +39,9 @@ class RestoreChecker extends RestoreHandler {
     echo "<table class='infotable'>";
     echo "<tr><th>" . checkAllCheckbox('tables') . "</th>";
     echo "<th>" . _("Name") . "</th>";
-    echo "<th>" . _("Insert statements") . "</th>";
+    echo "<th>" . _("INSERT statements") . "</th>";
     echo "<th>" . _("Other statements") . "</th>";
-    echo "<th>" . _("Drop statement") . "</th>";
+    echo "<th>" . _("DROP statement") . "</th>";
     echo "</tr>\n";
     $this->flush();
   }
@@ -139,10 +139,10 @@ class RestoreChecker extends RestoreHandler {
     }
     if ($result) {
       echo "<br />" .
-        sprintf(_("Successfully created table with %d inserts in %ss. Time limit is %ss"), $total, (time() - $start),
+        sprintf(_("Successfully created table with %d INSERTs in %ss. Time limit is %ss."), $total, (time() - $start),
           $limit) . "</p>\n";
     } else {
-      echo '<p>' . _('Test was <em>not</em> successful') . ":<br />\n" . mysql_adapt_error() . "</p>";
+      echo '<p>' . _('Test was <em>not</em> successful!') . ":<br />\n" . mysql_adapt_error() . "</p>";
     }
     $result = mysql_adapt_query("DROP TABLE if exists uo_dbrestore_test");
 
@@ -193,7 +193,7 @@ class RestoreFilter extends RestoreHandler {
     if ($context == null || $this->accept($context)) {
       $result = mysql_adapt_query($line);
       if (!$result) {
-        $this->error .= '<p>' . sprintf(_('Invalid query: ("%s")'), $line) . "<br />\n" . mysql_adapt_error() . "</p>";
+        $this->error .= '<p>' . sprintf(_('Invalid query: "%s"'), $line) . "<br />\n" . mysql_adapt_error() . "</p>";
       }
       if ($log) {
         debug_to_apache("execute: $line");
@@ -244,9 +244,10 @@ class RestoreFilter extends RestoreHandler {
         $checked = " checked='true'";
       }
       echo "<br /><input type='checkbox'$checked disabled='true' name='tables[]' value='" . utf8entities($tname) . "' />";
-      echo sprintf(_(" %s: %d inserts, %d others"), utf8entities($tname), $tinserts, $tothers);
       if ($this->tdropped) {
-        echo _(", dropped");
+        echo sprintf(_("%s: %d inserts, %d others, dropped"), utf8entities($tname), $tinserts, $tothers);
+      } else {
+        echo sprintf(_("%s: %d inserts, %d others"), utf8entities($tname), $tinserts, $tothers);
       }
       echo "\n";
       $this->paragraph = true;
@@ -293,7 +294,7 @@ class RestoreFilter extends RestoreHandler {
     }
 
     echo "</p>\n";
-    echo "<p>" . sprintf(_("Imported %d / %d tables"), $this->imported, $this->tables) . "</p>\n";
+    echo "<p>" . sprintf(_("Imported %d / %d tables."), $this->imported, $this->tables) . "</p>\n";
 
     if (empty($this->error)) {
       // disable facebook and twitter updates after restore to avoid false postings
@@ -382,7 +383,7 @@ class RestoreReader {
     } elseif ("sql" == $ext) {
       $lines = file($restorefilename);
     } else {
-      $error = "<p>" . sprintf(_("Unknown extension %s of %s"), $ext, utf8entities($restorefilename)) . "</p>";
+      $error = "<p>" . sprintf(_("Unknown extension '%s' of '%s'"), $ext, utf8entities($restorefilename)) . "</p>";
     }
 
     if (isset($lines)) {
@@ -415,7 +416,7 @@ class RestoreReader {
           }
 
           if (!empty($this->handler->error)) {
-            $error = "<p>" . sprintf(_("Handler error on line %d"), $line_count) . "</p>\n";
+            $error = "<p>" . sprintf(_("Handler error on line %d."), $line_count) . "</p>\n";
             $error .= $this->handler->error;
             break;
           }
@@ -464,7 +465,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
         // FIXME sanitize user input
         $filename = "" . UPLOAD_DIR . "tmp/$restorefilename";
         if (!move_uploaded_file($restorefiletempname, $filename)) {
-          $error = _("Could not copy restore file");
+          $error = _("Could not copy restore file.");
         } else {
           unlink($restorefiletempname);
 
@@ -482,7 +483,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
       $filename = $_POST['restorefilename'];
 
       if (!($fp = fopen($filename, "r"))) {
-        $error = sprintf(_("Could not open file '%s'"), $filename);
+        $error = sprintf(_("Could not open file '%s'."), $filename);
       } else {
         $reader = new RestoreReader($filename, new RestoreFilter($_POST));
         $error = $reader->read();
