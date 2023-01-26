@@ -83,7 +83,7 @@ if(isSuperAdmin()){
 	
 	$html .= "<p><span class='profileheader'>"._("Select tables to backup").": </span></p>\n";
 	$html .= "<table class='infotable'>";
-	$html .= "<tr><th><input type='checkbox' onclick='checkAll(\"tables\");'/></th>";
+	$html .= "<tr><th>" . checkAllCheckbox('tables') . "</th>";
 	$html .= "<th>"._("Name")."</th>";
 	$html .= "<th>"._("Data")."</th>";
 	$html .= "<th>"._("Index")."</th>";

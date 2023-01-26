@@ -421,7 +421,7 @@ function SeriesResults($season = NULL) {
     $result = SeasonSeriesMult($selected, $_POST['seriesname']);
     
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    $ret = "<table class='results'><tr><th><input type='checkbox' onclick='checkAll(\"series\");' /></th>";
+    $ret = "<table class='results'><tr><th>" . checkAllCheckbox('series') . "</th>";
     $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='series[]' value='".utf8entities($row['series'])."' /></td>";
@@ -463,7 +463,7 @@ function PoolResults() {
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     $ret = "";
     if (mysqli_num_rows($result) > 0) {
-      $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"pools\");' /></th>";
+      $ret = "<table><tr><th>" . checkAllCheckbox('pools') . "</th>";
       $ret .= "<th>" . _("Event") . "</th><th>" . _("Division") . "</th><th>" . _("Division") . "</th></tr>\n";
       while ($row = mysqli_fetch_assoc($result)) {
         $ret .= "<tr><td><input type='checkbox' name='pools[]' value='" . utf8entities($row['pool']) . "' /></td>";
@@ -506,7 +506,7 @@ function TeamResults() {
 
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"teams\")' /></th>";
+    $ret = "<table><tr><th>" . checkAllCheckbox('teams') . "</th>";
     $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Team")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='teams[]' value='".utf8entities($row['team'])."' /></td>";
@@ -590,7 +590,7 @@ function UserResults() {
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     
-    $ret = "<table style='white-space: nowrap;'><tr><th><input type='checkbox' onclick='checkAll(\"users\");'/></th>";
+    $ret = "<table style='white-space: nowrap;'><tr><th>" . checkAllCheckbox('users') . "</th>";
     $ret .= "<th>"._("Name")."</th><th>"._("Username")."</th><th>"._("Email")."</th><th>"._("Rights")."</th><th>"._("Last login")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td style='vertical-align:text-top;'>";
@@ -682,7 +682,7 @@ function PlayerResults() {
     if (!$result) { die("Invalid query: " . mysql_adapt_error()); }
     
     
-    $ret = "<table class='infotable widetable'><tr><th><input type='checkbox' onclick='checkAll(\"players\");'/></th>";
+    $ret = "<table class='infotable widetable'><tr><th>" . checkAllCheckbox('players') . "</th>";
     $ret .= "<th>"._("Name")."</th><th>"._("Team")."</th><th>"._("Email")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td>";
@@ -743,7 +743,7 @@ function ReservationResults($post, $season = null) {
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     
     if (mysqli_num_rows($result) > 0) {
-    $ret = "<table class='admintable'><tr><th><input type='checkbox' onclick='checkAll(\"reservations\");'/></th>";
+    $ret = "<table class='admintable'><tr><th>" . checkAllCheckbox('reservations') . "</th>";
     $ret .= "<th>"._("Group")."</th><th>"._("Location")."</th><th>"._("Date")."</th>";
     $ret .= "<th>"._("Starts")."</th><th>"._("Ends")."</th><th>"._("Games")."</th>";
     $ret .= "<th>"._("Scoresheets")."</th><th></th></tr>\n";
@@ -823,7 +823,7 @@ function GameResults() {
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     
-    $ret = "<table><tr><th><input type='checkbox' onclick='checkAll(\"games\");'/></th>";
+    $ret = "<table><tr><th>" . checkAllCheckbox('games') . "</th>";
     $ret .= "<th>"._("Tournament")."</th><th>"._("Location")."</th><th>"._("Game")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='games[]' value='".utf8entities($row['game_id'])."'/></td>";

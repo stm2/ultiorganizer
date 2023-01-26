@@ -1501,4 +1501,14 @@ function almostSecureRandom($min, $max) {
     die("random generator error");
   }
 }
+
+function scriptedEnable($id) {
+  return "<script type='text/javascript'>document.getElementById('$id').disabled=false;</script>";
+}
+
+function checkAllCheckbox($selector, $id='') {
+  if (empty($id))
+    $id="checkall$selector";
+  return "<input type='checkbox' id='$id' disabled onclick='checkAll(\"$selector\");' />" . scriptedEnable($id);
+}
 ?>

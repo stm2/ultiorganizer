@@ -121,7 +121,7 @@ $html .= "<input class='button' type='submit' name='remove' value='"._("Delete s
 $html .= "<input class='button' type='reset' value='"._("Clear")."'/>";	
 $html .= "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/dbadmin'\"/></p>";
 
-$html .= "<table class='infotable'><tr><th><input type='checkbox' onclick='checkAll(\"ids\");'/></th>";
+$html .= "<table class='infotable'><tr><th>" . checkAllCheckbox('ids') . "</th>";
 $prevname = "";
 $prevseries = "";
 $counter = 0;

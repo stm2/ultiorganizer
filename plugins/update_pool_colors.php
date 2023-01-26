@@ -69,7 +69,7 @@ if(empty($seasonId)){
 	
 	$html .= "<p>"._("Select pools to change color").":</p>\n";
 	$html .= "<table>";
-	$html .= "<tr><th><input type='checkbox' onclick='checkAll(\"pools\");'/></th>";
+	$html .= "<tr><th>" . checkAllCheckbox('pools') . "</th>";
 	$html .= "<th>"._("Pool")."</th>";
 	$html .= "<th>"._("Division")."</th>";
 	$html .= "</tr>\n";

@@ -144,7 +144,7 @@ $html .= "<table cellspacing='0' cellpadding='0' border='0'>\n";
 $html .= "<tr style='height=20'><td align='center'><b>";
 $html .= utf8entities($game_result['hometeamname']). "</b></td></tr>\n";
 $html .= "</table><div id='home'><table id='hometable' cellspacing='0' cellpadding='3' border='0'>";
-$html .= "<tr><th class='home'>"._("Name")."</th><th class='home right' style='white-space: nowrap' >"._("Played")." <input type='checkbox' onclick='checkAll(\"hometable\");'/></th><th class='home'>"._("Jersey#")."</th></tr>\n";
+$html .= "<tr><th class='home'>"._("Name")."</th><th class='home right' style='white-space: nowrap' >"._("Played") . checkAllCheckbox('hometable') . "</th><th class='home'>"._("Jersey#")."</th></tr>\n";
 
 $played_players = GamePlayers($gameId, $game_result['hometeam']);
 
@@ -186,7 +186,7 @@ $html .= "<table cellspacing='0' cellpadding='0' border='0'>";
 $html .= "<tr><td><b>";
 $html .= utf8entities($game_result['visitorteamname']). "</b></td></tr>\n";
 $html .= "</table><div id='away'><table id='awaytable' cellspacing='0' cellpadding='3' border='0'>";
-$html .= "<tr><th class='guest'>"._("Name")."</th><th class='guest right' style='white-space: nowrap'>"._("Played")." <input type='checkbox' onclick='checkAll(\"awaytable\");'/></th><th class='guest'>"._("Jersey#")."</th></tr>\n";
+$html .= "<tr><th class='guest'>"._("Name")."</th><th class='guest right' style='white-space: nowrap'>"._("Played") . checkAllCheckbox('awaytable') . "</th><th class='guest'>"._("Jersey#")."</th></tr>\n";
 
 $played_players = GamePlayers($gameId, $game_result['visitorteam']);
 

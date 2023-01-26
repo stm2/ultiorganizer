@@ -37,7 +37,7 @@ class RestoreChecker extends RestoreHandler {
     echo "<input type='hidden' name='restorefilename' value='" . utf8entities($filename) . "'/>";
 
     echo "<table class='infotable'>";
-    echo "<tr><th><input type='checkbox' checked='true' onclick='checkAll(\"tables\");'/></th>";
+    echo "<tr><th>" . checkAllCheckbox('tables') . "</th>";
     echo "<th>" . _("Name") . "</th>";
     echo "<th>" . _("Insert statements") . "</th>";
     echo "<th>" . _("Other statements") . "</th>";

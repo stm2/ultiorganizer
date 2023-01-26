@@ -765,7 +765,7 @@ function SpiritTotal($points, $categories) {
 
 function SeasonPoolGamesTable($formId, $seasonId, $series = null, $disableunfinished = false) {
   $html = "<table>";
-  $html .= "<tr><th class='left'><input type='checkbox' onclick='checkAll(\"pools[]\");'/></th>";
+  $html .= "<tr><th class='left'>" . checkAllCheckbox('pools') . "</th>";
   $html .= "<th>" . _("Pool") . "</th>";
   $html .= "<th>" . _("Divisions") . "</th>";
   $html .= "<th>" . _("Teams") . "</th>";
