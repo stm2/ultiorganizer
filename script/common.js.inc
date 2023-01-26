@@ -17,7 +17,6 @@ function checkAll(name) {
   }
 }
 
-
 function clearAll(field) {
   var form = document.getElementById(field);
 
@@ -64,8 +63,8 @@ function changeseason(id) {
 
 function confirmLeave(element, confirm, text) {
   if (element) {
-    if (!element.className.contains("highlight"))
-      element.className += "highlight";
+    if (!element.className.includes("highlight"))
+      element.className += " highlight";
   }
   if (confirm)
     window.onbeforeunload = function() {
