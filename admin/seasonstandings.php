@@ -102,7 +102,7 @@ pageTopHeadOpen($title);
 <!--
 function setAnchor(pool) {
 	var form = document.getElementById("theForm");
-	form.action = "?view=admin/seasonstandings&season=<?php echo $season?>#P"+pool;
+	form.action = "?view=admin/seasonstandings&season=<?php echo utf8entities($season)?>#P"+pool;
 }
 
 function setDeleteId(pool, team){
@@ -308,7 +308,7 @@ foreach ($pools as $spool) {
   } else {
     $html .= "<p>" . _("Pool games not completed:");
   }
-  $html .=" <a href='?view=admin/seasongames&season=".$season."&series=".$series_id."&pool=". $poolId . "'>". _("Games") ."</a></p>\n";
+  $html .=" <a href='?view=admin/seasongames&amp;season=".$season."&amp;series=".$series_id."&amp;pool=". $poolId . "'>". _("Games") ."</a></p>\n";
 
   $fromMoves = PoolMovingsFromPool($poolId);
   $toMoves = PoolMovingsToPool($poolId);

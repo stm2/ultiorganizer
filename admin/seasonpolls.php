@@ -32,7 +32,7 @@ if (!empty($_POST['save'])) {
 if (!count($serieses)) {
   $html .= "<p>" . _("No divisions.") . "</p>\n";
 } else {
-  $html .= "<form method='post' action='?view=admin/seasonpolls&season=$season'>";
+  $html .= "<form method='post' action='?view=admin/seasonpolls&amp;season=$season'>";
   $html .= "<table class='admintable'>\n";
 
   $html .= "<tr><th>" . _("Name") . "</th>
@@ -72,17 +72,17 @@ if (!count($serieses)) {
       $html .= "<td>" . count($options) . "</td>";
       $html .= "<td>" . $voters . "</td>";
 
-      $html .= "<td><a href='?view=admin/addseasonpoll&amp;&series=$seriesId&poll=$pollId'><img class='deletebutton' src='images/settings.png' alt='E' title='" .
+      $html .= "<td><a href='?view=admin/addseasonpoll&amp;series=$seriesId&amp;poll=$pollId'><img class='deletebutton' src='images/settings.png' alt='E' title='" .
         _("Edit details") . "'/></a>";
 
-      $html .= "&nbsp;<a href='?view=admin/deletepoll&poll=$pollId&series=$seriesId'/><img class='deletebutton' src='images/remove.png' alt='X' title='" .
+      $html .= "&nbsp;<a href='?view=admin/deletepoll&amp;poll=$pollId&amp;series=$seriesId'/><img class='deletebutton' src='images/remove.png' alt='X' title='" .
         _("Delete") . "'/></a>";
 
-      $html .= "&nbsp;<a href=?view=user/polls&series=$seriesId&poll=$pollId><img width='16' class='deletebutton' src='images/options.png' alt='O' title='" .
+      $html .= "&nbsp;<a href=?view=user/polls&amp;series=$seriesId&amp;poll=$pollId><img width='16' class='deletebutton' src='images/options.png' alt='O' title='" .
         _("Options") . "'/></a>\n";
-      $html .= "&nbsp;<a href=?view=user/votepoll&series=$seriesId&poll=$pollId><img width='16' class='deletebutton' src='images/vote.png' alt='V' title='" .
+      $html .= "&nbsp;<a href=?view=user/votepoll&amp;series=$seriesId&amp;poll=$pollId><img width='16' class='deletebutton' src='images/vote.png' alt='V' title='" .
         _("Vote") . "'/></a>\n";
-      $html .= "&nbsp;<a href='?view=user/pollresult&series=$seriesId&poll=$pollId'><img width='16' class='deletebutton' src='images/result.png' alt='R' title='" .
+      $html .= "&nbsp;<a href='?view=user/pollresult&amp;series=$seriesId&amp;poll=$pollId'><img width='16' class='deletebutton' src='images/result.png' alt='R' title='" .
         _("Results") . "'/></a>\n";
 
       $html .= "</td></tr>\n";

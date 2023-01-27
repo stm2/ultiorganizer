@@ -64,7 +64,7 @@ if (!empty($_GET['token']) && !empty($userId)) {
     $html .= getResetForm($userId, $token);
   } else {
     $html .= "<p class='warning'>" . _("Invalid or expired token.") .
-      " <a class='topheaderlink' href='?view=login&recover=1&user=$userId'>" .
+      " <a class='topheaderlink' href='?view=login&amp;recover=1&amp;user=$userId'>" .
       _("Click this link to try again</a> or, if this problem persists, contact an administrator.") . "</p>";
   }
 }
@@ -87,7 +87,7 @@ if (!empty($_POST['changepw']) && !empty($userId)) {
     $html .= "<p>" .
       _(
         "Invalid or expired token.
-         Please <a href='login?failed=1&user=$userId'>try again</a> or, if this problem persists, contact an administrator.") .
+         Please <a href='login?failed=1&amp;user=$userId'>try again</a> or, if this problem persists, contact an administrator.") .
       "</p>";
   }
 }

@@ -142,7 +142,7 @@ if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
       else
         $html .= utf8entities($option['description']) . "</span>";
     }
-    $html .= " <a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=$optionId&edit=0' rel='noopener' target='_blank'>" .
+    $html .= " <a href='?view=user/addpolloption&amp;series=$seriesId&amp;poll=$pollId&amp;option_id=$optionId&amp;edit=0' rel='noopener' target='_blank'>" .
       _("Details") . "</a>";
 
     $html .= " </td>\n";
@@ -159,7 +159,7 @@ if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
 
   $html .= "</tbody></table>";
 
-  $html .= "<form method='post' action='?view=user/pollresult&series=$seriesId&poll=$pollId'>";
+  $html .= "<form method='post' action='?view=user/pollresult&amp;series=$seriesId&amp;poll=$pollId'>";
   if (hasEditSeriesRight($seriesId)) {
     $html .= "<p><label for=show_votes>" . _("Show votes") . "</label>";
     $html .= "<input class='input' type='checkbox' id='show_votes' name='show_votes' ";

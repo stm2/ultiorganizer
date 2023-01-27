@@ -274,20 +274,20 @@ if ($_SESSION['uid'] != "anonymous") {
       if (ExistingFBUserId($fb_cookie['uid'])) {
         // Offer to change facebook linkage
         $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-				<td><a href='?view=user/userinfo&linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
+				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
       } else {
         // Offer to link account
         $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-				<td><a href='?view=user/userinfo&linkfacebook=true'>"._("Link this account to my Facebook account")."</a></td></tr>\n";
+				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Link this account to my Facebook account")."</a></td></tr>\n";
       }
     } elseif ($fb_cookie['uid'] == $fb_props['facebookuid']) {
       // Offer to unlink account
       $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-			<td><a href='?view=user/userinfo&unlinkfacebook=true'>"._("Remove link from this account to my Facebook account")."</a></td></tr>\n";	
+			<td><a href='?view=user/userinfo&amp;unlinkfacebook=true'>"._("Remove link from this account to my Facebook account")."</a></td></tr>\n";	
     } else {
       // Offer to change facebook linkage
       $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-			<td><a href='?view=user/userinfo&linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
+			<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
     }
   }
 

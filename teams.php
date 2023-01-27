@@ -221,7 +221,7 @@ if ($list == "allteams" || $list == "byseeding") {
         $maxplacements = 3;
         for ($series_index = $batches[$c]; $series_index < $batches[$c + 1]; $series_index ++) {
             $ser = $series[$series_index];
-            $html .= "<th style='width:" . (80 / ($batches[$c + 1] - $batches[$c])) . "%;'><a href='?view=seriesstatus&series=" . $ser['series_id'] . "'>" . utf8entities(U_($ser['name'])) . "</a></th>";
+            $html .= "<th style='width:" . (80 / ($batches[$c + 1] - $batches[$c])) . "%;'><a href='?view=seriesstatus&amp;series=" . $ser['series_id'] . "'>" . utf8entities(U_($ser['name'])) . "</a></th>";
             $maxplacements = max(count(SeriesTeams($ser['series_id'])), $maxplacements);
         }
         $html .= "</tr>\n";

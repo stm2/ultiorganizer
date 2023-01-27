@@ -29,7 +29,7 @@ if(!empty($_GET["club"])){
 if(isset($_SERVER['HTTP_REFERER']))
 $backurl = utf8entities($_SERVER['HTTP_REFERER']);
 else
-$backurl = "?view=user/teamplayers&team=$teamId";
+$backurl = utf8entities("?view=user/teamplayers&team=$teamId");
 
 if ($clubId <= 0) {
   $title = _("Club");

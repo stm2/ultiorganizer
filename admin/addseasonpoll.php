@@ -50,7 +50,7 @@ if (!empty($_POST['save'])) {
   }
 }
 
-$html .= "<form method='post' action='?view=admin/addseasonpoll&series=$seriesId&poll=$pollId'>";
+$html .= "<form method='post' action='?view=admin/addseasonpoll&amp;series=$seriesId&amp;poll=$pollId'>";
 
 if ($pollId == -1) {
   $html .= "<h2>" . _("Add poll") . "</h2>\n";

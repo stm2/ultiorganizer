@@ -181,7 +181,7 @@ if ($edit && !($suggestive && IsVisible($pollId)) && !hasEditSeriesRight($series
       $info = PollOption($optionId);
     }
 
-    $html .= "<form method='post' action='?view=user/addpolloption&series=$seriesId'>\n";
+    $html .= "<form method='post' action='?view=user/addpolloption&amp;series=$seriesId'>\n";
     $html .= "<input type='hidden' name='backurl' value='$backurl'/>\n";
     $html .= "<input type='hidden' name='option_id' value='$optionId'/>\n";
     $html .= "<input type='hidden' name='poll' value='$pollId'/>\n";

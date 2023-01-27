@@ -12,7 +12,7 @@ $season = GameSeason($gameId);
 if(isset($_SERVER['HTTP_REFERER'])){
   $backurl = utf8entities($_SERVER['HTTP_REFERER']);
 }else{
-  $backurl = "?view=user/respgames&season=$season";
+  $backurl = utf8entities("?view=user/respgames&season=$season");
 }
 $seasoninfo = SeasonInfo($season);
 $home_playerlist = TeamPlayerList($game_result['hometeam']);

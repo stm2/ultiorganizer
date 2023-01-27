@@ -50,7 +50,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   $html .= "<p>" . _("You cannot vote for this poll.") . "</p>";
 } else if (empty($name)) {
   $html .= "<h2>$title</h2>";
-  $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
+  $html .= "<form method='post' action='?view=user/votepoll&amp;series=$seriesId&amp;poll=$pollId'>";
   $html .= "<p><label>" . _("Enter your name (public)") . ": <input class='input' type='text' name='name'/></label></p>\n";
   $html .= "<input id='doname' class='button' name='doname' type='submit' value='" . _("Vote") . "'/></form>\n";
 } else {
@@ -137,7 +137,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
     $html .= "<div id='poll_description'><p>" . $poll['description'] . "</p></div>";
   }
 
-  $html .= "<form method='post' action='?view=user/votepoll&series=$seriesId&poll=$pollId'>";
+  $html .= "<form method='post' action='?view=user/votepoll&amp;series=$seriesId&amp;poll=$pollId'>";
 
   if (hasEditSeriesRight($seriesId)) {
     $html .= "<table>";
@@ -173,7 +173,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
       else
         $html .= utf8entities($option['description']) . "</span>";
     }
-    $html .= " <a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=$optionId' rel='noopener' target='_blank'>" .
+    $html .= " <a href='?view=user/addpolloption&amp;series=$seriesId&amp;poll=$pollId&amp;option_id=$optionId' rel='noopener' target='_blank'>" .
       _("Details") . "</a>";
 
     $html .= " </td><td><input style='text-align:right;' class='input' type='number' size='2' maxlength='3' min='$min' max='$max' id='rank$optionId' name='rank$optionId'";

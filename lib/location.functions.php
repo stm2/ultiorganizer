@@ -85,6 +85,17 @@ function LocationInfo($id) {
 	return mysqli_fetch_assoc($result);
 }
 
+/**
+ * @param unknown $id
+ * @param unknown $name
+ * @param unknown $address
+ * @param unknown $info
+ * @param unknown $fields
+ * @param unknown $indoor
+ * @param unknown $lat
+ * @param unknown $lng
+ * @param unknown $season user has to be any season admin
+ */
 function SetLocation($id, $name, $address, $info, $fields, $indoor, $lat, $lng, $season) {
 	if (isSuperAdmin()||isSeasonAdmin($season)) {
 		$query = sprintf("UPDATE uo_location SET name='%s', address='%s', fields=%d, indoor=%d, lat='%s', lng='%s'  WHERE id=%d", 
@@ -120,6 +131,17 @@ function updateInfos($id, $info) {
   }
 }
 
+/**
+ * @param unknown $name
+ * @param unknown $address
+ * @param unknown $info
+ * @param unknown $fields
+ * @param unknown $indoor
+ * @param unknown $lat
+ * @param unknown $lng
+ * @param unknown $season user has to be any season admin
+ * @return unknown
+ */
 function AddLocation($name, $address, $info, $fields, $indoor, $lat, $lng, $season) {
 	if (isSuperAdmin()||isSeasonAdmin($season)) {
 	   $query = sprintf("INSERT INTO uo_location (name, address, fields, indoor, lat, lng)

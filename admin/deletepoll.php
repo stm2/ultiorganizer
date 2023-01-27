@@ -35,7 +35,7 @@ if (!empty($poll['name'])) {
 }
 $html .= "</h2>\n";
 
-$html .= "<form method='post' action='?view=admin/deletepoll&poll=$pollId'>";
+$html .= "<form method='post' action='?view=admin/deletepoll&amp;poll=$pollId'>";
 
 $html .= "<input type='hidden' name='backurl' value='$backurl'/>";
 

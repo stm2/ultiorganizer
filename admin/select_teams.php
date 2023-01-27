@@ -122,7 +122,7 @@ if (count($pools)) {
   echo "</div></div>\n";
   echo "<div class='tabrow'><div class='tabcell' style='float:left;width:100%;padding:10px 0px 5px 0px'>\n";
   $seasonId = SeriesSeasonId($seriesId);
-  echo "  <a href='?view=admin/seasonpools&season=$seasonId&series=$seriesId'>" . _("Return") . "</a></div>\n";
+  echo "  <a href='?view=admin/seasonpools&amp;season=$seasonId&amp;series=$seriesId'>" . _("Return") . "</a></div>\n";
   echo "</div></div>\n";
 
   echo "</td></tr></table>\n";

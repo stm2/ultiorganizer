@@ -44,7 +44,7 @@ if($list=="teamstandings"){
         if(!count($standings)){continue;}
         ++$countall;
         $html .= "<tr>";
-        $html .= "<td style='width:16%'><a href='?view=teams&season=" . urlencode($season['season_id']) .
+        $html .= "<td style='width:16%'><a href='?view=teams&amp;season=" . urlencode($season['season_id']) .
              "&amp;list=bystandings'>" . utf8entities(U_($season['name'])) . "</a></td>";
 
         for($i=0;$i<count($standings)&&$i<3;$i++){
@@ -87,7 +87,7 @@ if($list=="teamstandings"){
         $scores = AlltimeScoreboard($season['season_id'],$seriestype);
         if(!count($scores)){continue;}
         $html .= "<tr>";
-        $html .= "<td style='width:16%%'><a href='?view=scorestatus&Series=".$scores[0]['series']."'>".utf8entities(U_($season['name']))."</a></td>";
+        $html .= "<td style='width:16%%'><a href='?view=scorestatus&amp;Series=".$scores[0]['series']."'>".utf8entities(U_($season['name']))."</a></td>";
 
         for($i=0;$i<count($scores)&&$i<3;$i++){
           $html .= "<td style='width:28%'>";

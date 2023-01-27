@@ -200,7 +200,7 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     }
 
     if ($user == 'anonymous') {
-      echo "</td><td class='right'><span class='topheadertext'>" . "<a class='topheaderlink' href='?view=login&query=" .
+      echo "</td><td class='right'><span class='topheadertext'>" . "<a class='topheaderlink' href='?view=login&amp;query=" .
         urlencode($query_string) . "'>" . utf8entities(_("Login")) . "</a></span>";
     } else {
       $userinfo = UserInfo($user);
@@ -1119,7 +1119,7 @@ function getEditSeasonLinks() {
 
     foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
-        $links['?view=admin/addseasonusers&season=' . $season] = _("Event users");
+        $links['?view=admin/addseasonusers&amp;season=' . $season] = _("Event users");
       }
       $ret[$season] = $links;
     }
@@ -1147,7 +1147,7 @@ function getEditSeasonLinks() {
  * Typically top of the page.
  *
  * @param array $menuitems
- *          - key is link name, value is url.
+ *          - key is link name, value is url (not html encoded).
  * @param string $current
  *          - links to this url obtain the class 'current'
  * @param boolean $echoed
@@ -1216,7 +1216,7 @@ function loginForm($query_string, $userId = '', $subId = '') {
   $html .= "</tr>\n";
   $html .= "<tr><td class='infocell'><label for='mypassword$subId'>" . _("Password") . "</label>:</td>";
   $html .= "<td><input type='password' class='input' size='40' maxlength='20' id='mypassword$subId' name='mypassword' value=''/></td>";
-  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=login&recover=1'>" .
+  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=login&amp;recover=1'>" .
     utf8entities(_("Recover lost password?")) . "</a></span></td>\n";
   $html .= "</tr>";
   $html .= "</table>\n";

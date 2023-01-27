@@ -16,7 +16,7 @@ $teamId = intval(iget("team"));
 if(isset($_SERVER['HTTP_REFERER']))
 	$backurl = utf8entities($_SERVER['HTTP_REFERER']);
 else
-	$backurl = "?view=user/teamplayers&team=$teamId";
+	$backurl = utf8entities("?view=user/teamplayers&team=$teamId");
 
 $team = TeamInfo($teamId);
 

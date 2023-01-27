@@ -69,11 +69,11 @@ if (!count($serieses)) {
           else
             $html .= utf8entities($option['description']) . "</td>";
 
-          $html .= "<td><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId&option_id=" .
+          $html .= "<td><a href='?view=user/addpolloption&amp;series=$seriesId&amp;poll=$pollId&amp;option_id=" .
             $option['option_id'] . "'><img class='deletebutton' src='images/settings.png' alt='E' title='" .
             _("Details") . "'/></a>";
           if (hasEditSeriesRight($seriesId)) {
-            $html .= "&nbsp;<a href='?view=user/polls&poll=$pollId&series=$seriesId&deleteoption=" . $option['option_id'] .
+            $html .= "&nbsp;<a href='?view=user/polls&amp;poll=$pollId&amp;series=$seriesId&amp;deleteoption=" . $option['option_id'] .
               "' onclick='return confirm(\"" . utf8entities(sprintf(_("Do you want to delete %s?"), $option['name'])) .
               "\");'" . // "onclick='return deletePollOption($pollId, " . $option['option_id'] . ");' .
               "/><img src='images/remove.png' class='deletebutton' alt='X' /></a>";
@@ -89,7 +89,7 @@ if (!count($serieses)) {
         if (CanSuggest(null, null, $pollId) || hasEditSeriesRight($seriesId)) {
           $open = true;
           $heading = _("Suggest option");
-          $html .= "<p><a href='?view=user/addpolloption&series=$seriesId&poll=$pollId'>" .
+          $html .= "<p><a href='?view=user/addpolloption&amp;series=$seriesId&amp;poll=$pollId'>" .
             "<img src='images/options.png' alt='$heading'/>&ensp;$heading</a>\n";
         }
         if (count($options) > 0) {
@@ -98,7 +98,7 @@ if (!count($serieses)) {
               $html .= "<p>";
             $open = true;
             $heading = _("Vote");
-            $html .= "&emsp;<a href='?view=user/votepoll&series=$seriesId&poll=$pollId'>" .
+            $html .= "&emsp;<a href='?view=user/votepoll&amp;series=$seriesId&amp;poll=$pollId'>" .
               "<img src='images/vote.png' alt='$heading'/>&ensp;$heading</a>\n";
           }
           if (HasResults($pollId) || hasEditSeriesRight($seriesId)) {
@@ -106,7 +106,7 @@ if (!count($serieses)) {
               $html .= "<p>";
             $open = true;
             $heading = _("View Results");
-            $html .= "&emsp;<a href='?view=user/pollresult&series=$seriesId&poll=$pollId'>" .
+            $html .= "&emsp;<a href='?view=user/pollresult&amp;series=$seriesId&amp;poll=$pollId'>" .
               "<img src='images/result.png' alt='$heading'/>&ensp;$heading</a>";
           }
         }

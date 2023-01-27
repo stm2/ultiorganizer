@@ -111,26 +111,26 @@ pageMenu($menutabs, seasongameslink($season, $series_id, $group, null, $mass, $s
 $html .= "<table class='admintable'><tr><td>";
 if (!$showpool) {
   if ($_SESSION['hide_played_pools']) {
-    $html .= "<a href='" . seasongameslink($season, $series_id, $group, "pool", $mass, $showpool) . "' tabindex='" .
+    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "pool", $mass, $showpool)) . "' tabindex='" .
          ++$tab . "'>" . _("Show played pools") . "</a> ";
   } else {
-    $html .= "<a href='" . seasongameslink($season, $series_id, $group, "pool", $mass, $showpool) . "' tabindex='" .
+    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "pool", $mass, $showpool)) . "' tabindex='" .
          ++$tab . "'>" . _("Hide played pools") . "</a> ";
   }
 }
 if ($_SESSION['hide_played_games']) {
-  $html .= "<a href='" . seasongameslink($season, $series_id, $group, "game", $mass, $showpool) . "' tabindex='" . ++$tab . "'>" .
+  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
        _("Show played games") . "</a> ";
 } else {
-  $html .= "<a href='" . seasongameslink($season, $series_id, $group, "game", $mass, $showpool) . "' tabindex='" . ++$tab . "'>" .
+  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
        _("Hide played games") . "</a> ";
 }
 $html .= "</td><td style='text-align:right;'>";
 if ($mass) {
-  $html .= "<a class='button' href='" . seasongameslink($season, $series_id, $group, null, false, $showpool) . "' tabindex='" .
+  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $group, null, false, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Just display values") . "</a></td></tr></table>\n";
 } else {
-  $html .= "<a class='button' href='" . seasongameslink($season, $series_id, $group, null, true, $showpool) . "' tabindex='" .
+  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $group, null, true, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Mass input") . "</a></td></tr></table>\n";
 }
 
