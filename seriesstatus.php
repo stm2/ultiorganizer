@@ -31,7 +31,9 @@ $tabs = array(
   _("Show all pools") => MakeUrl(array('view' => 'poolstatus', 'series' => $seriesId)),
 );
 foreach (SeriesPools($seriesId, true) as $pool) {
-  $tabs[$pool['name']] = MakeUrl(array('view' => 'poolstatus', 'pool' => $pool['pool_id']));
+  if (!isset($tabs[$pool['name']]))
+    $tabs[$pool['name']]=array();
+  $tabs[$pool['name']][] = MakeUrl(array('view' => 'poolstatus', 'pool' => $pool['pool_id']));
 }
 
 $html .= pageMenu($tabs, MakeUrl($_GET), false);

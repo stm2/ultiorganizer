@@ -1142,12 +1142,17 @@ function getEditSeasonLinks() {
   return $ret;
 }
 
+function make_array($var) {
+  if (is_array($var)) return $var;
+  return [$var];
+}
+
 /**
  * Creates on page menu.
  * Typically top of the page.
  *
  * @param array $menuitems
- *          - key is link name, value is url (not html encoded).
+ *          - key is link name, value is url (not html encoded), or array of urls if there are duplicate names.
  * @param string $current
  *          - links to this url obtain the class 'current'
  * @param boolean $echoed
@@ -1160,20 +1165,24 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
   $html .= "<div class='pagemenu_container'>\n";
   $line = "";
   foreach ($menuitems as $name => $url) {
-    $line .= utf8entities($name);
-    $line .= " - ";
+    foreach(make_array($url) as $url2) {
+      $line .= utf8entities($name);
+      $line .= " - ";
+    }
   }
   if (strlen($line) < 100) {
     $html .= "<table class='pagemenu'><tr>\n";
     $first = true;
     foreach ($menuitems as $name => $url) {
+      foreach(make_array($url) as $url2) {
       if (!$first)
         $html .= "<td> - </td>";
       $first = false;
-      if ($url == $current || strrpos($_SERVER["REQUEST_URI"], $url)) {
-        $html .= "<th><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></th>\n";
+      if ($url2 == $current || strrpos($_SERVER["REQUEST_URI"], $url2)) {
+        $html .= "<th><a class='current' href='" . htmlentities($url2) . "'>" . utf8entities($name) . "</a></th>\n";
       } else {
-        $html .= "<th><a href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></th>\n";
+        $html .= "<th><a href='" . htmlentities($url2) . "'>" . utf8entities($name) . "</a></th>\n";
+      }
       }
     }
     $html .= "</tr></table>";
@@ -1181,13 +1190,14 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
     $html .= "<ul class='pagemenu'>\n";
 
     foreach ($menuitems as $name => $url) {
-
-      if ($url == $current) {
-        $html .= "<li><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
-      } elseif (strrpos($_SERVER["REQUEST_URI"], $url)) {
-        $html .= "<li><a class='current' href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
+      foreach(make_array($url) as $url2) {
+      if ($url2 == $current) {
+        $html .= "<li><a class='current' href='" . htmlentities($url2) . "'>" . utf8entities($name) . "</a></li>\n";
+      } elseif (strrpos($_SERVER["REQUEST_URI"], $url2)) {
+        $html .= "<li><a class='current' href='" . htmlentities($url2) . "'>" . utf8entities($name) . "</a></li>\n";
       } else {
-        $html .= "<li><a href='" . htmlentities($url) . "'>" . utf8entities($name) . "</a></li>\n";
+        $html .= "<li><a href='" . htmlentities($url2) . "'>" . utf8entities($name) . "</a></li>\n";
+      }
       }
     }
     $html .= "</ul>\n";

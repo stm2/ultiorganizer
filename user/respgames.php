@@ -63,8 +63,12 @@ if (!empty($_POST['save'])) {
 	$feedback = GameProcessMassInput($_POST);
 }
 
+$menutabs = array();
 foreach($series as $row){
-  $menutabs[U_($row['name'])]="?view=user/respgames&season=".$season."&series=".$row['series_id'];
+  if (!isset($menutabs[U_($row['name'])]))
+    $menutabs[U_($row['name'])]=array();
+  
+  $menutabs[U_($row['name'])][]="?view=user/respgames&season=".$season."&series=".$row['series_id'];
 }
 $menutabs[_("...")]="?view=user/respgames&season=".$season;
 $html .= pageMenu($menutabs, respgameslink($season, $series_id, $group, $hide, $mass, false), false);

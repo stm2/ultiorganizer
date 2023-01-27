@@ -96,9 +96,11 @@ pageTopHeadClose($title, false, $setFocus);
 leftMenu($LAYOUT_ID);
 contentStart();
 
+$menutabs = array();
 foreach($series as $row){
-  // FIXME does not work as intended for series with identical names
-  $menutabs[U_($row['name'])]="?view=admin/seasonteams&season=".$season."&series=".$row['series_id'];
+  if (!isset($menutabs[U_($row['name'])]))
+    $menutabs[U_($row['name'])]=array();
+  $menutabs[U_($row['name'])][]="?view=admin/seasonteams&season=".$season."&series=".$row['series_id'];
 }
 $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
 pageMenu($menutabs,"?view=admin/seasonteams&season=".$season."&series=".$series_id);

@@ -88,8 +88,11 @@ leftMenu($LAYOUT_ID);
 contentStart();
 
 
+$menutabs = array();
 foreach($series as $row){
-  $menutabs[U_($row['name'])]="?view=admin/seasonpools&season=".$season."&series=".$row['series_id'];
+  if (!isset($menutabs[U_($row['name'])]))
+    $menutabs[U_($row['name'])]=array();
+  $menutabs[U_($row['name'])][]="?view=admin/seasonpools&season=".$season."&series=".$row['series_id'];
 }
 $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
 pageMenu($menutabs,"?view=admin/seasonpools&season=".$season."&series=".$series_id);

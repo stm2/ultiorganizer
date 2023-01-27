@@ -102,8 +102,11 @@ function seasongameslink($season, $series, $group, $switchvisible, $mass, $showp
 }
 
 $tab = 0;
+$menutabs = array();
 foreach($series as $row){
-  $menutabs[U_($row['name'])]=seasongameslink($season, $row['series_id'], $group, null, $mass, null);
+  if (!isset($menutabs[U_($row['name'])]))
+    $menutabs[U_($row['name'])]=array();
+  $menutabs[U_($row['name'])][]=seasongameslink($season, $row['series_id'], $group, null, $mass, null);
 }
 $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
 pageMenu($menutabs, seasongameslink($season, $series_id, $group, null, $mass, $showpool));
