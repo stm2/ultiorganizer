@@ -778,15 +778,27 @@ function upgrade82() {
 }
 
 function upgrade83() {
-  // allow ipv6 
+  // allow ipv6
   runQuery("ALTER TABLE uo_visitor_counter MODIFY ip VARCHAR(40)");
-  
+
   // anonymize
-  runQuery(
-    "UPDATE uo_visitor_counter 
-      SET ip=REGEXP_REPLACE(REGEXP_REPLACE(ip, '\.[0-9]*$', '.0'), ':[0-9a-f]*:[0-9a-f]*$', ':0:0')"); 
+
+  $ips = runQuery("SELECT id, ip FROM uo_visitor_counter");
+  while ($row = mysqli_fetch_assoc($ips)) {
+    $anon = preg_replace('/^(.*)\.[0-9]*$/', '\1.0', $row['ip']);
+    $anon = preg_replace('/^(.*):[0-9a-f]*:[0-9a-f]*$/', '\1:0:0', $anon);
+    if ($anon != $row['ip']) {
+      runQuery(
+        sprintf("UPDATE `uo_visitor_counter` SET `ip`='%s' WHERE id=%d", mysql_adapt_real_escape_string($anon),
+          (int) $row['id']));
+    }
+  }
+
+  // mysql 8.0
+  // runQuery(
+  // "UPDATE uo_visitor_counter
+  // SET ip=REGEXP_REPLACE(REGEXP_REPLACE(ip, '\.[0-9]*$', '.0'), ':[0-9a-f]*:[0-9a-f]*$', ':0:0')");
 }
-  
 
 function runQuery($query) {
   $result = mysql_adapt_query($query);

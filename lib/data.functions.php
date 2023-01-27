@@ -419,7 +419,7 @@ class EventDataXMLHandler{
   function start_tag_structure($parser, $name, $attribs) {
     if (is_array($attribs)) {
       $row = array();
-      while(list($key,$val) = each($attribs)) {
+      foreach ($attribs as $key => $val) {
         $this->get_attribute($row, strtolower($key), $val);
       }
       switch (strtolower($name)) {
@@ -522,7 +522,7 @@ class EventDataXMLHandler{
   function start_tag($parser, $name, $attribs) {
     if (is_array($attribs)) {
       $row = array();
-      while(list($key,$val) = each($attribs)) {
+      foreach ($attribs as $key => $val) {
         $this->get_attribute($row, $key, $val);
       }
       switch($this->mode){

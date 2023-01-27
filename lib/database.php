@@ -7,7 +7,7 @@ include_once $include_prefix.'sql/upgrade_db.php';
 // You can get it by getting ext/restful/show_tables.php
 define('DB_VERSION', 83); //Database version matching to upgrade functions.
 
-$mysqlconnectionref = 0;
+$mysqlconnectionref = null;
 
 /**
  * Open database connection.
@@ -284,7 +284,12 @@ function mysql_adapt_real_escape_string($string, $link_identifier = NULL) {
 }
 
 function mysql_adapt_error($link_identifier = NULL) {
-  return mysqli_error(is_null($link_identifier) ? DBLink() : $link_identifier);
+  if (is_null($link_identifier))
+    $link_identifier = DBLink();
+  if ($link_identifier === false) {
+    return "no connection, " . mysqli_connect_error();
+  }
+  return mysqli_error($link_identifier);
 }
 
 function mysql_adapt_query($query, $link_identifier = NULL) {
