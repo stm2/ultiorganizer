@@ -130,11 +130,11 @@ function ensureLogin() {
     if (isset($_POST) && !empty($_POST)) {
       // we must login, then reload this page
       $html = "<p class='warning'>" .
-        _("Insufficient privileges. You must login to acces this page.") . "</p>\n";
+        _("You must login to access this page.") . "</p>\n";
       
       // non-JS solution: login in other window, then reload manually
       $html .= "<noscript><p><a href='?view={$mobile}login' target='_blank'>" .
-      _("Please open this login link in a new window, then reload this page") . "</a></noscript>";
+      _("Please open this login link in a new window, then reload this page.") . "</a></noscript>";
       
       // JS solution: login asynchronosly, then reload
       $html .= "<div id='loginwrapperpopup' style='display:none'>";
@@ -156,10 +156,10 @@ function showUnprivileged($title, $message, $type = null, $options = null) {
   }
   
   if ($message === null) {
-    $message = "<p>" . _("Insufficient rights.") . "</p>\n";
+    $message = "<p>" . _("Insufficient rights") . "</p>\n";
     switch ($type) {
       case "season":
-        $message .= "<p>" . sprintf(_("You are not a season admin for %s"), $options) . "</p>";
+        $message .= "<p>" . sprintf(_("You are not a season admin for %s."), $options) . "</p>";
         break;
       default:
         $message .= "<p>" . _("You are not allowed to do this.") . "</p>";

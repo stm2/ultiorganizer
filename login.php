@@ -115,7 +115,7 @@ if (empty($html)) {
       _("Username/password did not match. Try again or request to recover a lost password.") . "</p>\n";
   } else if (isset($_GET['privileged'])) {
     $html .= "<p class='warning'>" .
-      _("Insufficient privileges. You must login to acces this page.") . "</p>\n";
+      _("You must login to access this page.") . "</p>\n";
   }
 
   if (!empty($_GET['query']))

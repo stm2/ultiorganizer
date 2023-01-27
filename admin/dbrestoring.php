@@ -453,7 +453,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
   $error = null;
   if (isset($_POST['check'])) {
     if (!isSuperAdmin()) {
-      $error = _("insufficient rights");
+      $error = _("Insufficient rights");
     } else {
       $restorefilename = $_FILES['restorefile']['name'];
       $restorefiletempname = $_FILES['restorefile']['tmp_name'];
@@ -477,7 +477,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
   } else if (isset($_POST['restore'])) {
     $error = '';
     if (!isSuperAdmin()) {
-      $error = _("insufficient rights");
+      $error = _("Insufficient rights");
     } else {
 
       $filename = $_POST['restorefilename'];
