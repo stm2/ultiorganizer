@@ -7,14 +7,14 @@ include_once $include_prefix . 'lib/logging.functions.php';
 include_once $include_prefix . 'lib/common.functions.php';
 
 // include_once $include_prefix.'lib/configuration.functions.php';
-function FailRedirect($user, $query='') {
+function FailRedirect($user, $query = '') {
   SetUserSessionData('anonymous');
   $query = urlencode($query);
   header("location:?view=login&failed=1&query=$query&user=" . urlencode($user));
   exit();
 }
 
-function FailRedirectMobile($user, $query='') {
+function FailRedirectMobile($user, $query = '') {
   SetUserSessionData('anonymous');
   $query = urlencode($query);
   header("location:?view=mobile/login&failed=1&query=$query&user=" . urlencode($user));
@@ -43,6 +43,137 @@ function Forbidden($user) {
   exit();
 }
 
+function asyncLogin($id) {
+  global $include_prefix;
+  include_once $include_prefix.'lib/yui.functions.php';
+  $html = yuiLoad(array("utilities"));
+  
+  $html .= <<<EOS
+
+<script type="text/javascript">
+//<![CDATA[
+
+var Dom = YAHOO.util.Dom;
+
+(function() {
+  var Event = YAHOO.util.Event;
+
+  YAHOO.example.ScheduleApp = {
+    init: function() {
+      Dom.get("loginwrapper$id").style.display = "block";
+      Event.on("myloginbutton$id", "click", this.requestString);
+    },
+    
+    requestString: function() {
+      var responseDiv = Dom.get("responseStatus");
+      Dom.setStyle(responseDiv,"background-image","url('images/indicator.gif')");
+      Dom.setStyle(responseDiv,"background-repeat","no-repeat");
+      Dom.setStyle(responseDiv,"background-position", "top right");
+      Dom.setStyle(responseDiv,"class", "inprogress");
+      responseDiv.innerHTML = '&nbsp;';
+      var request = Dom.get("myusername$id").value + "|" + Dom.get("mypassword$id").value;
+      var transaction = YAHOO.util.Connect.asyncRequest('POST', 'index.php?view=user/login_request', callback, request);         
+    },
+  };
+
+  var callback = {
+    success: function(o) {
+      const answer = JSON.parse(o.responseText);
+      var responseDiv = Dom.get("responseStatus");
+      Dom.setStyle(responseDiv,"background-image","");
+
+      if (!answer.status) {
+        responseDiv.innerHTML = "<p>" + answer.msg + "</p>";
+      } else if (answer.authenticated) {
+        responseDiv.innerHTML = "<p>Authenticated</p>";
+      } else {
+        responseDiv.innerHTML = "<p>Authentication failed</p>";
+      }
+      if (answer.authenticated) {
+        YAHOO.util.Dom.removeClass(responseDiv,"attention");
+        YAHOO.util.Dom.addClass(responseDiv,"highlight");
+        window.history.go(0);
+      } else {
+        YAHOO.util.Dom.removeClass(responseDiv,"highlight");
+        YAHOO.util.Dom.addClass(responseDiv,"attention");
+      }
+    },
+
+    failure: function(o) {
+      var responseDiv = Dom.get("responseStatus");
+      YAHOO.util.Dom.removeClass(responseDiv,"highlight");
+      YAHOO.util.Dom.addClass(responseDiv,"attention");
+      Dom.setStyle(responseDiv,"background-image","");
+      responseDiv.innerHTML = o.responseText;
+    }
+  }
+
+
+  Event.onDOMReady(YAHOO.example.ScheduleApp.init, YAHOO.example.ScheduleApp, true);
+
+})();
+</script>
+EOS;
+  
+  return $html;
+}
+
+function ensureLogin() {
+  $view = iget("view");
+  $query = urlencode($_SERVER['QUERY_STRING']);
+  $mobile = "";
+  if (strpos($view, "mobile") === 0) {
+    $mobile = "mobile/";
+  }
+
+  if (empty($_SESSION['uid']) || $_SESSION['uid'] === "anonymous") {
+    if (isset($_POST) && !empty($_POST)) {
+      // we must login, then reload this page
+      $html = "<p class='warning'>" .
+        _("Insufficient privileges. You must login to acces this page.") . "</p>\n";
+      
+      // non-JS solution: login in other window, then reload manually
+      $html .= "<noscript><p><a href='?view={$mobile}login' target='_blank'>" .
+      _("Please open this login link in a new window, then reload this page") . "</a></noscript>";
+      
+      // JS solution: login asynchronosly, then reload
+      $html .= "<div id='loginwrapperpopup' style='display:none'>";
+      $html .= loginForm("", "", "popup");
+      $html .= "<p><div id='responseStatus'></div></p></div>";
+      $html .= asyncLogin("popup");
+      showPage(_("Please login"), $html);
+      exit();
+    }
+    
+    // login and reload with GET
+    header("location:?view=${mobile}login&query=$query&privileged=1");
+  }
+}
+
+function showUnprivileged($title, $message, $type = null, $options = null) {
+  if ($title === null) {
+    $title = _("Insufficient rights");
+  }
+  
+  if ($message === null) {
+    $message = "<p>" . _("Insufficient rights.") . "</p>\n";
+    switch ($type) {
+      case "season":
+        $message .= "<p>" . sprintf(_("You are not a season admin for %s"), $options) . "</p>";
+        break;
+      default:
+        $message .= "<p>" . _("You are not allowed to do this.") . "</p>";
+    }
+  }
+  
+  $message .= "<p><a href='?view=frontpage'>" . _("Go to front page.") . "</p>\n";
+  
+  $message = "<h1>$title</h1>\n" . $message;
+  
+  showPage($title, $message);
+  exit();
+}
+
 function UserExpireTokens($userId) {
   $query = "DELETE FROM `uo_extraemailrequest` WHERE TIMESTAMPDIFF(MINUTE, time, NOW()) > 60  OR TIME is NULL";
   DBQuery($query);
@@ -64,7 +195,8 @@ function UserAuthenticate($user, $passwd, $failcallback) {
     LogUserAuthentication($user, "success");
     SetUserSessionData($user);
     $row = mysqli_fetch_assoc($result);
-    mysql_adapt_query("UPDATE uo_users SET last_login=NOW() WHERE userid='" . mysql_adapt_real_escape_string($user) . "'");
+    mysql_adapt_query(
+      "UPDATE uo_users SET last_login=NOW() WHERE userid='" . mysql_adapt_real_escape_string($user) . "'");
 
     UserExpireTokens($user);
 
@@ -78,15 +210,18 @@ function UserAuthenticate($user, $passwd, $failcallback) {
       header("location:?view=user/userinfo");
       exit();
     }
+    return true;
   } else {
     LogUserAuthentication($user, "failed");
     if (!empty($failcallback)) {
       $query = $_SERVER['QUERY_STRING'];
       $failcallback($user, $query);
+      exit();
     } else {
       return false;
     }
   }
+  return false;
 }
 
 function UserInfo($user_id) {
@@ -254,8 +389,8 @@ function UserChangePassword($user_id, $passwd, $token = null) {
   Log1("user", "change", $user_id, "", "set password");
 
   if ($user_id == $_SESSION['uid'] || hasEditUsersRight() || UserCheckRecoverToken($user_id, $token)) {
-    $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'",
-      mysql_adapt_real_escape_string($passwd), mysql_adapt_real_escape_string($user_id));
+    $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'", mysql_adapt_real_escape_string($passwd),
+      mysql_adapt_real_escape_string($user_id));
 
     DBQuery($query);
     $query = sprintf("DELETE FROM uo_recoverrequest WHERE userid='%s'", mysql_adapt_real_escape_string($user_id));
@@ -273,7 +408,7 @@ function SetUserSessionData($user_id) {
 
   loadUserProperties($user_id);
 }
- 
+
 function loadUserProperties($user_id) {
   $query = sprintf("SELECT prop_id, name, value FROM uo_userproperties WHERE userid='%s'",
     mysql_adapt_real_escape_string($user_id));
@@ -445,7 +580,6 @@ function and_or($counter) {
   } else {
     return " OR ";
   }
-  
 }
 
 function getViewPools($selSeasonId) {
@@ -590,6 +724,15 @@ function isSuperAdmin() {
   return isset($_SESSION['userproperties']['userrole']['superadmin']);
 }
 
+function ensureSuperAdmin($title = null, $message = null) {
+  ensureLogin();
+
+  if (isSuperAdmin())
+    return true;
+
+  showUnprivileged($title, $message);
+}
+
 function isTranslationAdmin() {
   return isset($_SESSION['userproperties']['userrole']['translationadmin']);
 }
@@ -631,8 +774,22 @@ function hasCurrentSeasonsEditRight() {
 }
 
 function isSeasonAdmin($season) {
+  if (empty($season))
+    return false;
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
+}
+
+function ensureSeasonAdmin($season, $title=null, $super = false, $message=null) {
+  ensureLogin();
+  
+  if ($super && isSuperAdmin())
+    return true;
+
+  if (isSeasonAdmin($season))
+    return true;
+  
+  showUnprivileged($title, $message, "season", $season);
 }
 
 function hasEditSeasonSeriesRight($season) {
@@ -878,7 +1035,7 @@ function AddPoolSelector($userid, $selector) {
     if (!$result) {
       die('Invalid query: ' . mysql_adapt_error());
     }
-    
+
     $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'poolselector', '%s')",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($selector));
     $result = mysql_adapt_query($query);
@@ -1669,7 +1826,7 @@ function RestoreAnonymousUser($override = 0) {
 
     if ($override < 101)
       return restore_db_error($log, 101);
-    
+
     if ($count > 0) {
       $query = sprintf("DELETE FROM uo_users WHERE userid='anonymous'");
       $log[] = $query;
@@ -1680,7 +1837,7 @@ function RestoreAnonymousUser($override = 0) {
     }
     $query = "INSERT INTO `uo_users` (`userid`, `password`, `name`, `email`, `last_login`) " .
       "VALUES ('anonymous', NULL, NULL, NULL, NULL)";
-    
+
     $log[] = $query;
     $result = mysql_adapt_query($query);
     if (!$result) {

@@ -7,9 +7,7 @@ $title = _("Event users");
 $html = "";
 $seasonId = $_GET["season"];
 
-if(!isSeasonAdmin($seasonId)){
-   die('Insufficient rights');  
-}
+ensureSeasonAdmin($seasonId, $title);
 
 if (!empty($_POST['add'])) {
   $userids = $_POST['userids'];
