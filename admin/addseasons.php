@@ -260,10 +260,12 @@ YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
 
 
 if(empty($seasonId)){
+  ensureSuperAdmin($title);
   $html .= "<h2>"._("Add new season/tournament")."</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons'>";
   $disabled="";
 }else{
+  ensureSeasonAdmin($seasonId, $title);
   $html .= "<h2>"._("Edit season/tournament")."</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons&amp;season=$seasonId'>";
   $disabled="disabled='disabled'";

@@ -1,13 +1,13 @@
 <?php
 include_once $include_prefix . 'lib/common.functions.php';
 
-$seasonId = $_GET['season'];
+$title = _("Add new user");
+
+$seasonId = iget('season');
 if (!$seasonId)
   $seasonId = CurrentSeason();
 
-if ((!$seasonId || !isSeasonAdmin($seasonId)) && !isSuperAdmin()) {
-  die("Insufficient user rights");
-}
+ensureSeasonAdmin($seasonId, $title, true);
 
 $html = "";
 $mailsent = false;
@@ -40,7 +40,6 @@ if (!empty($_POST['save'])) {
   }
 }
 
-$title = _("Add new user");
 // common page
 addHeaderScript('script/disable_enter.js.inc');
 

@@ -20,6 +20,7 @@ $location = array(
 );
 
 $message = '';
+$mode = '';
 
 $location['info'] = array();
 foreach ($locales as $locale => $name) {
@@ -155,7 +156,7 @@ if ($mode == 'search') {
   
   $html .= "<div id='editPlace'>\n";
   $html .= "<form method='post' action='?view=admin/locations&season=$season'>\n<div>\n";
-  if ($location['new'])
+  if (!empty($location['new']))
     $html .= "<input type='hidden' name='isnew' id='isnew' value='". $location['new'] . "'/>\n";
   if (isset($id))
     $html .= "<input type='hidden' name='id' id='place_id' value='$id'/>\n";

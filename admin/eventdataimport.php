@@ -13,13 +13,9 @@ $imported = false;
 // check access rights before user can upload data into server
 if (!empty($_GET['season'])) {
   $seasonId = $_GET["season"];
-  if (!isSeasonAdmin($seasonId)) {
-    die('Insufficient rights to import data');
-  }
+  ensureSeasonAdmin($seasonId, $title);
 } else {
-  if (!isSuperAdmin()) {
-    die('Insufficient rights to import data');
-  }
+  ensureSuperAdmin($title);
 }
 
 $html = JavaScriptWarning();

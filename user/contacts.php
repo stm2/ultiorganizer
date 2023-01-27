@@ -9,8 +9,11 @@ if (empty($_GET['season'])) {
 }
 $season = $_GET['season'];
 $links = getEditSeasonLinks();
+
+ensureLogin();
+
 if (!isset($links[$season]['?view=user/contacts&amp;season=' . $season])) {
-  die(_("Inadequate user rights"));
+  showUnprivileged($title, null);
 }
 
 $seasonName = SeasonName($season);

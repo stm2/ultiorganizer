@@ -8,6 +8,8 @@ $html = "";
 //common page
 $title = _("Database administration");
 
+ensureSuperAdmin($title);
+
 if(isSuperAdmin()){
 	
     $html .= "<p><span class='profileheader'>"._("Database administration").": </span><br/>\n";
@@ -94,8 +96,6 @@ if(isSuperAdmin()){
 	}
 	$html .= "</p>\n";
 	$html .= "<p><span class='profileheader'>"._("PHP version").": </span>". phpversion() ."</p>\n";
-}else{
-	$html .= "<p>"._("User credentials does not match")."</p>\n";
 }
 
 showPage($title, $html);

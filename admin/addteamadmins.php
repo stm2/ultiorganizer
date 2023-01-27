@@ -10,9 +10,7 @@ $seriesinfo = SeriesInfo($seriesId);
 $backurl = isset($_POST['backurl']) ? utf8entities($_POST['backurl']) : utf8entities($_SERVER['HTTP_REFERER']);
 $teams = SeriesTeams($seriesId);
 
-if(!isSeasonAdmin($seriesinfo['season'])){
-   die('Insufficient rights');  
-}
+ensureSeasonAdmin($seriesinfo['season'], $title);
 
 if(!empty($_POST['add'])){
  

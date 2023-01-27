@@ -8,6 +8,8 @@ if (empty($seasonId)) {
   $seasonId = CurrentSeason();
 }
 
+ensureLogin();
+
 $mode = iget('mode');
 $seriesId = iget('series');
 

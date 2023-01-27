@@ -67,7 +67,11 @@ function LocationDescription($id, $locale = null) {
 	    WHERE location_id=%d AND `locale`='%s'", (int)$id, mysql_adapt_real_escape_string($locale));
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-  return mysqli_fetch_assoc($result)['info'];
+  
+  $result = mysqli_fetch_assoc($result);
+  if (empty($result))
+    return null;
+  return $result['info'];
 }
 
 

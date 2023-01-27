@@ -10,6 +10,8 @@ $LAYOUT_ID = EVENTVIEWER;
 $title = _("Event log");
 $html = "";
 
+ensureSuperAdmin($title);
+
 $userfilter="";
 $categoryfilter= array();//EventCategories();
 $resolve = false;

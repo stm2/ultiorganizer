@@ -7,6 +7,8 @@ $LAYOUT_ID = SERVERCONFIGURATION;
 $title = _("Server configuration");
 $html = "";
 
+ensureSuperAdmin($title);
+
 if(!empty($_POST['save'])){
 
 	$settings = array();
