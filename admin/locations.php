@@ -139,8 +139,7 @@ if ($mode == 'search') {
   while ($row = @mysqli_fetch_assoc($result)){
     if ($row['id'] !== $savedId) {
       $html .= "<td>" . U_($row['name']) . "</td><td>". $row['address'] . "</td>";
-      // FIXME season = ?? 
-      $html .= "<td><a href='?view=admin/locations&amp;location=" . $row['id'] . "'><img class='deletebutton' src='images/settings.png' alt='E' title='"._("edit details")."'/></a></td>";
+      $html .= "<td><a href='?view=admin/locations&amp;location=" . $row['id'] . "&amp;season=$season'><img class='deletebutton' src='images/settings.png' alt='E' title='"._("edit details")."'/></a></td>";
       $html .= "</tr>\n";
     }
     $savedId = $row['id'];
@@ -155,7 +154,7 @@ if ($mode == 'search') {
   }
   
   $html .= "<div id='editPlace'>\n";
-  $html .= "<form method='post' action='?view=admin/locations&season=$season'>\n<div>\n";
+  $html .= "<form method='post' action='?view=admin/locations&amp;season=$season'>\n<div>\n";
   if (!empty($location['new']))
     $html .= "<input type='hidden' name='isnew' id='isnew' value='". $location['new'] . "'/>\n";
   if (isset($id))
