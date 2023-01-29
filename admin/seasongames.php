@@ -60,15 +60,19 @@ $feedback = "<p>...</p>";
 if(!empty($_POST['remove_x'])){
   $id = $_POST['hiddenDeleteId'];
   $ok = true;
-
-  //run some test to for safe deletion
-  $goals = GameAllGoals($id);
-  if(mysqli_num_rows($goals)){
-    $html .= "<p class='warning'>"._("Game has")." ".mysqli_num_rows($goals)." "._("goals").". "._("Goals must be removed before removing the team").".</p>";
-    $ok = false;
-  }
-  if($ok){
-    DeleteGame($id);
+  if (empty($id))
+    debug_to_apache("invalid delete game id");
+  else {
+    // run some test to for safe deletion
+    $goals = GameAllGoals($id);
+    if (mysqli_num_rows($goals)) {
+      $html .= "<p class='warning'>" . _("Game has") . " " . mysqli_num_rows($goals) . " " . _("goals") . ". " .
+        _("Goals must be removed before removing the team") . ".</p>";
+      $ok = false;
+    }
+    if ($ok) {
+      DeleteGame($id);
+    }
   }
 } elseif (!empty($_POST['save'])) {
   $feedback = GameProcessMassInput($_POST);
@@ -221,9 +225,9 @@ foreach ($pools as $pool) {
     }
     $html .= "<td class='deletcol'>";
     $html .= "<a href='?view=admin/editgame&amp;season=$season&amp;game=" . $game['game_id'] . "'><img class='deletebutton' src='images/settings.png' alt='D' title='" . _("edit details") . "'/></a>";
-
     if (CanDeleteGame($game['game_id'])) {
-      $html .= getDeleteButton('remove', $game['game_id']); 
+      $html .= getDeleteButton('remove', $game['game_id'], 'hiddenDeleteId', 'images/remove.png', 'X',
+        _("Are you sure you want to delete this game completely?"));
     }
     $html .= "</td>\n";
 

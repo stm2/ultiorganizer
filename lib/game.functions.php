@@ -151,6 +151,8 @@ function GameSeries($gameId) {
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	$row = mysqli_fetch_row($result);
+	if ($row === null)
+	  return null;
 	
 	return $row[0];
 }

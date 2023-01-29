@@ -61,8 +61,7 @@ function get_replacers($post) {
     if (!empty($origin) && isset($post["copyrgroup$origin"])) { // should we copy
       $replacers['reservationgroup'][$resId] = $replacers['reservationgroup'][$post["copyofresgroup$resId"]];
     } else
-      $replacers['reservationgroup'][$resId] = $post['resgroups'][$i];
-    // $replacers['reservationgroup'][$resId] = $post['resgroups'][$i];
+      $replacers['reservationgroup'][$resId] = $post["resgroup$resId"];
 
     $date0 = $post['olddates'][$i];
 
@@ -72,7 +71,7 @@ function get_replacers($post) {
     if (!empty($origin) && isset($post["copydate$origin"])) { // should we copy
       $help_replacers['newdate'][$resId] = $help_replacers['newdate'][$post["copyofolddates$resId"]];
     } else
-      $help_replacers['newdate'][$resId] = $post['newdates'][$i];
+      $help_replacers['newdate'][$resId] = $post["newdates$resId"];
     $date1 = $help_replacers['newdate'][$resId];
     // $date1 = $post['newdates'][$i];
 
@@ -102,7 +101,6 @@ function link_script($all_listeners) {
   $map = "  var dependent = new Map();\n";
   foreach ($all_listeners as $type => $listeners) {
     $map .= "  dependent.set('${type}',new Map());\n";
-    debug_to_apache($type . ":" . print_r($listeners, true));
     foreach ($listeners as $location => $rkeys) {
       if (!empty($rkeys['copys'])) {
         $origin = $rkeys['origin'];
@@ -277,8 +275,8 @@ if ($mode == 'rename') {
 
     $id = "resgroup" . utf8entities($rkey);
     $value = utf8entities($rval['reservationgroup']);
-    $html .= "<tr><td>&nbsp;" . _("Reservation Group") . ":</td><td>" .
-      "<input type='text' class='input' size='20' name='resgroups[]' id='$id' value='$value'/>&nbsp;</td>";
+    $html .= "<tr><td>" . _("Reservation Group") . ":</td><td>" .
+      "<input type='text' class='input' size='30' name='$id' id='$id' value='$value'/>&nbsp;</td>";
 
     if (isset($resgroups[$rval['reservationgroup']])) {
       $origin = $listeners['reservationgroup'][$rval['reservationgroup']]['origin'];
@@ -298,10 +296,10 @@ if ($mode == 'rename') {
     $id = "olddates" . utf8entities($rkey);
     $shortdate = ShortDate($rval['starttime']);
     $olddate = utf8entities($shortdate);
+    $nid = "newdates" . utf8entities($rkey);
     $html .= "<tr><td>" . _("Date") . " (" . _("dd.mm.yyyy") . "):</td><td>" .
       "<input type='hidden' name='olddates[]' id='$id' value='$olddate' />" .
-      "<input type='text' class='input' size='20' name='newdates[]' id='newdates" . utf8entities($rkey) .
-      "' value='$olddate'/>&nbsp;</td>";
+      "<input type='text' class='input' size='20' name='$nid' id='$nid' value='$olddate'/>&nbsp;</td>";
 
     if (isset($dates[$olddate])) {
       $origin = $listeners['date'][$shortdate]['origin'];
@@ -321,17 +319,16 @@ if ($mode == 'rename') {
 
   $scripts .= link_script($listeners);
 
-  $disabled = "";
   $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
   foreach ($seasonInfo['series'] as $skey => $sval) {
     $html .= "<tr><td  class='infocell'>" . _("Division Name") . "</td><td>" . "<input type='hidden' id='series" .
       utf8entities($skey) . "' name='series[]' value='" . utf8entities($skey) . "' />" .
-      "<input class='input' $disabled size='30' maxlength='50' id='seriesnames" . utf8entities($skey) .
+      "<input class='input' size='30' maxlength='50' id='seriesnames" . utf8entities($skey) .
       "' name='seriesnames[]' value='" . utf8entities($sval['name']) . "'/></td></tr>\n";
     foreach ($sval['teams'] as $tkey => $tval) {
       $html .= "<tr><td>" . "<input type='hidden' id='teams" . utf8entities($tkey) . "' name='teams[]' value='" .
         utf8entities($tkey) . "' />" . _("Team Name") .
-        "</td><td><input class='input' $disabled size='30' maxlength='50' id='teamnames" . utf8entities($tkey) .
+        "</td><td><input class='input' size='30' maxlength='50' id='teamnames" . utf8entities($tkey) .
         "' name='teamnames[]' value='" . utf8entities($tval['name']) . "'/></td></tr>\n";
     }
   }
