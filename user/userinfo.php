@@ -46,28 +46,24 @@ if (IsFacebookEnabled() && $_SESSION['uid'] == $userid) {
 }
 
 if ($userid != "anonymous") {
-  //process itself if submit was pressed
-  if(!empty($_POST['save'])){
-    $newUsername=$_POST['UserName'];
-    $newName=$_POST['Name'];
-    $newLocale=$_POST['userlocale'];
-    
+  // process itself if submit was pressed
+  if (!empty($_POST['save'])) {
+    $newUsername = $_POST['UserName'];
+    $newName = $_POST['Name'];
+    $newLocale = $_POST['userlocale'];
+
     $message = UserValid($newUsername, null, null, $newName, "abc@example.com", $userid != $newUsername, false);
 
     global $locales;
     if (!isset($locales[$newLocale])) {
-      $message .= "<p class='warning'>"._("Unsupported language:")." ".$newLocale."</p>";
-      $error = 1;
+      $message .= "<p class='warning'>" . _("Unsupported language:") . " " . $newLocale . "</p>";
     }
-    
-    if(!$error){
-      $message .= "<p>"._("Changes were saved")."</p><hr/>";
-    }else{
-      $message .= "<p class='warning'><b>"._("Changes were NOT saved")."</b></p><hr/>";
-    }
-    
 
-    if(!$error) {
+    if (!empty($message)) {
+      $message .= "<p class='warning'><b>" . _("Changes were NOT saved") . "</b></p><hr/>";
+    } else {
+      $message = "<p>" . _("Changes were saved") . "</p><hr/>";
+
       $success = false;
       $oldLocale = getUserLocale($userid);
       if ($oldLocale != $newLocale) {
@@ -79,11 +75,11 @@ if ($userid != "anonymous") {
         }
       }
       $userinfo = UserInfo($userid);
-      $success = UserUpdateInfo($userinfo['id'],$userid, $newUsername, $newName);
+      $success = UserUpdateInfo($userinfo['id'], $userid, $newUsername, $newName);
       if ($success) {
         if ($newUsername != $_SESSION['uid'] && $userid != $newUsername) {
-          header('location:?view=user/userinfo&user='.urlencode($newUsername));
-          exit;
+          header('location:?view=user/userinfo&user=' . urlencode($newUsername));
+          exit();
         } else {
           $userid = $newUsername;
         }
