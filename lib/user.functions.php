@@ -352,7 +352,7 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
     $error = 1;
   }
 
-  if ($checkDuplicate && IsRegistered($newUsername)) {
+  if ($checkDuplicate && (IsRegistered($newUsername) || $newUsername === "anonymous")) {
     $html .= "<p class='warning'>" . _("The username is already in use") . ".</p>";
   }
 
@@ -362,9 +362,9 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
       $html .= $pw;
     }
 
-    $pswcheck = mysql_adapt_real_escape_string($newPassword);
+    $pswcheck = mysql_adapt_real_escape_string($newPassword1);
 
-    if ($pswcheck != $newPassword) {
+    if ($pswcheck != $newPassword1) {
       $html .= "<p class='warning'>" . _("Illegal characters in the password") . ".</p>";
       $error = 1;
     }
