@@ -124,6 +124,21 @@ function ShowDefenseStats() {
 	return ($serverConf['ShowDefenseStats'] == "true");
 }
 
+function GetSettingsValidationToken() {
+  $query = "SELECT `value` FROM `uo_setting` WHERE `name`='SettingsToken'";
+  $result = (int) DBQueryToValue($query);
+  if ($result > 0)
+    return $result;
+  DBQueryInsert("INSERT INTO `uo_setting` (`name`, `value`) VALUES ('SettingsToken', '1')");
+  return 1;
+}
+
+function IncreaseSettingsValidationToken() {
+  $token = GetSettingsValidationToken();
+  $token += 1;
+  DBQueryInsert("UPDATE `uo_setting` SET `value` = '$token' WHERE `name`='SettingsToken'");
+}
+
 function GetServerConf() {
 	$query = "SELECT * FROM uo_setting ORDER BY setting_id";
 	return DBQueryToArray($query);

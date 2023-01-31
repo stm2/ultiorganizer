@@ -51,6 +51,11 @@ if (!isset($_SESSION['uid']) && iget('view')!="result") {
 	$_SESSION['uid'] = "anonymous";
 	SetUserSessionData("anonymous");
 	header("location:?view=login");
+} else {
+  if (UserSettingsValidationToken() != GetSettingsValidationToken()) {
+    // user properties may have changed
+    SetUserSessionData($_SESSION['uid']);
+  }
 }
 
 if (isset($_POST['myusername'])) {

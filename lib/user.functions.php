@@ -309,6 +309,7 @@ function UserUpdateInfo($user_id, $olduser, $user, $name) {
 
       DBQuery($query);
     }
+    invalidateSessions();
     // update session data only if user is current use
     if ($olduser == $_SESSION['uid']) {
       SetUserSessionData($user);
@@ -400,6 +401,17 @@ function UserChangePassword($user_id, $passwd, $token = null) {
   }
 }
 
+function invalidateSessions() {
+  IncreaseSettingsValidationToken();
+}
+
+function UserSettingsValidationToken() {
+  if (!isset($_SESSION['SETTINGS_VALIDATION_TOKEN'])) {
+    $_SESSION['SETTINGS_VALIDATION_TOKEN'] = GetSettingsValidationToken();
+  }
+  return $_SESSION['SETTINGS_VALIDATION_TOKEN'];
+}
+
 function SetUserSessionData($user_id) {
   unset($_SESSION['userproperties']);
   unset($_SESSION['navigation']);
@@ -407,6 +419,7 @@ function SetUserSessionData($user_id) {
   $_SESSION['uid'] = $user_id;
 
   loadUserProperties($user_id);
+  $_SESSION['SETTINGS_VALIDATION_TOKEN'] = GetSettingsValidationToken();
 }
 
 function loadUserProperties($user_id) {
@@ -971,6 +984,7 @@ function RemovePoolSelector($userid, $propid) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     Log1("security", "delete", $userid, $propid, "poolselector");
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1043,6 +1057,7 @@ function AddPoolSelector($userid, $selector) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     Log1("security", "add", $userid, $selector, "poolselector");
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1061,6 +1076,7 @@ function RemoveEditSeason($userid, $propid) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     Log1("security", "delete", $userid, $propid, "editseason");
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1086,6 +1102,8 @@ function AddEditSeason($userid, $season) {
       }
       Log1("security", "add", $userid, $season, "editseason");
     }
+    
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1104,6 +1122,7 @@ function RemoveUserRole($userid, $propid) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     Log1("security", "delete", $userid, $propid, "userrole");
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1128,6 +1147,8 @@ function AddUserRole($userid, $role) {
       die('Invalid query: ' . mysql_adapt_error());
     }
     Log1("security", "add", $userid, $role, "userrole");
+    
+    invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
     }
@@ -1159,6 +1180,7 @@ function AddSeasonUserRole($userid, $role, $seasonId) {
       Log1("security", "add", $userid, $seasonId, $role);
       AddEditSeason($userid, $seasonId);
 
+      invalidateSessions();
       if ($userid == $_SESSION['uid']) {
         SetUserSessionData($userid);
       }

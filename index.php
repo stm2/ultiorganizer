@@ -42,11 +42,17 @@ if (!isset($_SESSION['VISIT_COUNTER'])) {
   $_SESSION['VISIT_COUNTER'] = true;
 }
 
-if (!isset($_SESSION['uid'])) {
+if (!isset($_SESSION['uid']) || UserId($_SESSION['uid']) <= 0) {
   $_SESSION['uid'] = "anonymous";
   SetUserSessionData("anonymous");
-} else if ($_SESSION['uid'] === "anonymous") {
+} else {
+  if (UserSettingsValidationToken() != GetSettingsValidationToken()) {
+    // user properties may have changed
+    SetUserSessionData($_SESSION['uid']);
+  }
+  if ($_SESSION['uid'] === "anonymous") {
   // loadUserProperties("anonymous");
+  }
 }
 
 require_once $include_prefix . 'lib/configuration.functions.php';
