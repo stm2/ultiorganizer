@@ -6,12 +6,12 @@ $addmore = false;
 $html = "";
 $allfields = "";
 $reservationId = 0;
-$season="";
+$season = "";
 
 if (isset($_GET['reservation'])) {
   $reservationId = $_GET['reservation'];
 }
-if(!empty($_GET['season'])) {
+if (!empty($_GET['season'])) {
   $season = $_GET['season'];
 }
 
@@ -27,42 +27,43 @@ $res = array(
 	"season"=>$season,
 	"timeslots"=>"");
 
-  function check_input($post, $season, &$res) {
-    $error = "";
-    if (empty($post['date'])) {
-      $error = "<p>" . _("Date required.") . "</p>";
-    }
-    
-    $res['id'] = isset($post['id']) ? $post['id'] : 0;
-    $res['location'] = isset($post['location'][0]) ? $post['location'][0] : 0;
-    $res['fieldname'] = isset($post['fieldname']) ? $post['fieldname'] : "";
-    $res['reservationgroup'] = isset($post['reservationgroup']) ? $post['reservationgroup'] : "";
-    $res['date'] = isset($post['date']) ? $post['date'] : date('d.m.Y', time());
-    $res['starttime'] = isset($post['starttime']) ? ToInternalTimeFormat($res['date'] . " " . $post['starttime']) : ToInternalTimeFormat(
-        "00:00");
-    $res['endtime'] = isset($post['endtime']) ? ToInternalTimeFormat($res['date'] . " " . $post['endtime']) : ToInternalTimeFormat(
-        "00:00");
-    $res['date'] = ToInternalTimeFormat($res['date']);
-    $res['timeslots'] = isset($post['timeslots']) ? $post['timeslots'] : "";
-    $res['season'] = isset($post['resseason']) ? $post['resseason'] : $season;
-    
-    if (empty($res['season'])) {
-      $error .= "<p>" . _("Season required.") . "</p>";
-    }
-    if (empty ($res['starttime']) || empty ($res['endtime']) || strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
-      $error .= "<p>" . sprintf(_("Error: Duration must be at least %d minutes"), 1) . "</p>";
-    }
-    return $error;
+function check_input($post, $season, &$res) {
+  $error = "";
+  if (empty($post['date'])) {
+    $error = "<p>" . _("Date required.") . "</p>";
   }
-  
-  if (isset($_POST['save']) || isset($_POST['add'])) {
+
+  $res['id'] = isset($post['id']) ? $post['id'] : 0;
+  $res['location'] = isset($post['location'][0]) ? $post['location'][0] : 0;
+  $res['fieldname'] = isset($post['fieldname']) ? $post['fieldname'] : "";
+  $res['reservationgroup'] = isset($post['reservationgroup']) ? $post['reservationgroup'] : "";
+  $res['date'] = isset($post['date']) ? $post['date'] : date('d.m.Y', time());
+  $res['starttime'] = isset($post['starttime']) ? ToInternalTimeFormat($res['date'] . " " . $post['starttime']) : ToInternalTimeFormat(
+    "00:00");
+  $res['endtime'] = isset($post['endtime']) ? ToInternalTimeFormat($res['date'] . " " . $post['endtime']) : ToInternalTimeFormat(
+    "00:00");
+  $res['date'] = ToInternalTimeFormat($res['date']);
+  $res['timeslots'] = isset($post['timeslots']) ? $post['timeslots'] : "";
+  $res['season'] = isset($post['resseason']) ? $post['resseason'] : $season;
+
+  if (empty($res['season'])) {
+    $error .= "<p>" . _("Season required.") . "</p>";
+  }
+  if (empty($res['starttime']) || empty($res['endtime']) ||
+    strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
+    $error .= "<p>" . sprintf(_("Error: Duration must be at least %d minutes"), 1) . "</p>";
+  }
+  return $error;
+}
+
+if (isset($_POST['save']) || isset($_POST['add'])) {
   $error = check_input($_POST, $season, $res);
   if (empty($error)) {
     if ($res['id'] > 0) {
       SetReservation($res['id'], $res);
     } else {
       // check if adding more than 1 field
-      $fields = array ();
+      $fields = array();
       $tmpfields = explode(",", $res['fieldname']);
       foreach ($tmpfields as $field) {
         $morefields = explode("-", $field);
@@ -104,71 +105,14 @@ $res = array(
 }
 
 $title = _("Add field reservation");
-//common page
-pageTopHeadOpen($title);
 include_once 'lib/yui.functions.php';
-echo yuiLoad(array("utilities", "datasource", "autocomplete", "calendar"));
 
-?>
-<link
-	rel="stylesheet" type="text/css"
-	href="script/yui/calendar/calendar.css" />
-
-<script type="text/javascript">
-<!--
-
-YAHOO.namespace("calendar");
-
-YAHOO.calendar.init = function() {
-	
-	YAHOO.calendar.cal1 = new YAHOO.widget.Calendar("cal1","calContainer1");
-	YAHOO.calendar.cal1.cfg.setProperty("START_WEEKDAY", "1"); 
-	YAHOO.calendar.cal1.render();
-
-	function handleCal1Button(e) {
-		var containerDiv = YAHOO.util.Dom.get("calContainer1"); 
-		
-		if(containerDiv.style.display == "none"){
-			updateCal("date",YAHOO.calendar.cal1);
-			YAHOO.calendar.cal1.show();
-		}else{
-			YAHOO.calendar.cal1.hide();
-		}
-	}
-	
-	// Listener to show the Calendar when the button is clicked
-	YAHOO.util.Event.addListener("showcal1", "click", handleCal1Button);
-	YAHOO.calendar.cal1.hide();
-	
-	function handleSelect1(type,args,obj) {
-			var dates = args[0]; 
-			var date = dates[0];
-			var year = date[0], month = date[1], day = date[2];
-			
-			var txtDate1 = document.getElementById("date");
-			txtDate1.value = day + "." + month + "." + year;
-		}
-
-	function updateCal(input,obj) {
-            var txtDate1 = document.getElementById(input);
-            if (txtDate1.value != "") {
-				var date = txtDate1.value.split(".");
-				obj.select(date[1] + "/" + date[0] + "/" + date[2]);
-				obj.cfg.setProperty("pagedate", date[1] + "/" + date[2]);
-				obj.render();
-            }
-        }
-	YAHOO.calendar.cal1.selectEvent.subscribe(handleSelect1, YAHOO.calendar.cal1, true);
-}
-YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
-//-->
-</script>
-
-<?php
-$setFocus = "OnLoad=\"document.getElementById('date').focus();\"";
-pageTopHeadClose($title, false, $setFocus);
-leftMenu();
-contentStart();
+addHeaderCallback(
+  function () {
+    echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
+    
+    echo getCalendarScript(['date']);
+  });
 
 if ($reservationId > 0) {
   $reservationInfo = ReservationInfo($reservationId);
@@ -186,16 +130,19 @@ if ($reservationId > 0) {
   }
 }
 
-echo $html;
-
-$html = "<form method='post' action='?view=admin/addreservation&amp;season=".$season."&amp;reservation=".$res['id']."'>\n";
+$html .= "<form method='post' action='?view=admin/addreservation&amp;season=".$season."&amp;reservation=".$res['id']."'>\n";
 $html .= "<table class='formtable'>\n";
 
 $html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>";
-$html .= "<input type='text' class='input' name='date' id='date' value='".utf8entities(ShortDate($res['date']))."'/>&nbsp;\n";
-$html .= "<button type='button' class='button' id='showcal1'>
-		<img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>\n";
-$html .= "<tr><td></td><td><div id='calContainer1'></div></td></tr>\n";
+
+$value = utf8entities(ShortDate($res['date']));
+$html .= getCalendarInput('date', $value);
+
+// $html .= "<input type='text' class='input' name='date' id='date' value='$value'/>&nbsp;\n";
+// $html .= "<button type='button' class='button' id='showcal1'>
+// 		<img width='12' height='10' src='images/calendar.gif' alt='cal'/></button></td></tr>\n";
+// $html .= "<tr><td></td><td><div id='calContainer1'></div>";
+$html .= "</td></tr>\n";
 
 $html .= "<tr><td>"._("Start time")." ("._("hh:mm")."):</td><td>";
 $html .= "<input type='text' class='input' name='starttime' value='".utf8entities(DefHourFormat($res['starttime']))."'/>\n";
@@ -259,14 +206,10 @@ if (!$addmore) {
 $html .= "<input class='button' type='button' name='back'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/reservations&amp;season=".$season."'\"/>";
 $html .= "</td><td>&nbsp;</td></tr>\n";
 $html .= "</table>\n";
-$html .= "</form>";
-echo $html;
-echo LocationScript('location');
-?>
+$html .= "</form>\n";
+$html .= LocationScript('location');
+$html .= TranslationScript("reservationgroup");
+$html .= TranslationScript("fieldname");
 
-<?php
-echo TranslationScript("reservationgroup");
-echo TranslationScript("fieldname");
-
-postContent();
+showPage($title, $html);
 ?>

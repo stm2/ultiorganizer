@@ -53,9 +53,15 @@ if (!empty($_POST['change_times'])) {
 
 //common page
 $title = _("Fields");
-$LAYOUT_ID = RESERVATIONS;
 
-$html .=  file_get_contents('script/rescalendar.inc');
+include_once 'lib/yui.functions.php';
+
+addHeaderCallback(
+  function () {
+    echo yuiLoad(array("calendar"));
+    
+    echo getCalendarScript(['searchstart', 'searchend']);
+  });
 
 $searchItems = array();
 $searchItems[] = 'searchstart';
