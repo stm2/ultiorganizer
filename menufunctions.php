@@ -31,13 +31,14 @@ function showPageMobile($title, $html) {
 }
 
 $headerScripts = array();
+$headerTexts = array();
+$headerFunctions = array();
+$setFocus = null;
 
 function addHeaderScript($name) {
   global $headerScripts;
   $headerScripts[] = $name;
 }
-
-$headerFunctions = array();
 
 function addHeaderCallback($callback) {
   global $headerFunctions;
@@ -47,6 +48,11 @@ function addHeaderCallback($callback) {
 function addHeaderText($text) {
   global $headerTexts;
   $headerTexts[] = $text;
+}
+
+function setFocus($id) {
+  global $setFocus;
+  $setFocus = $id;
 }
 
 function preContent($title) {
@@ -170,7 +176,15 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
   }
   $printclass = $printable ? "class='print'" : "";
 
-  echo "</head><body style='overflow-y:scroll;' $printclass " . $bodyfunctions . ">\n";
+  global $setFocus;
+  $setFocus1 = $setFocus;
+  if ($setFocus1 === null)
+    $setFocus1 = 'onload=focusFirstInput();';
+  else
+    $setFocus1 = "onload=\"document.getElementById('${setFocus}').focus();\"";
+  
+  echo "</head><body style='overflow-y:scroll;' $printclass $bodyfunctions $setFocus1>\n";
+  
   echo "<div class='page'>\n";
 
   if (!$printable) {
@@ -247,7 +261,7 @@ function contentStart() {
   if (getPrintMode())
     contentStartWide();
   else
-    echo "\n<main class='content'>\n";
+    echo "\n<main id='mainContent' class='content'>\n";
 }
 
 function contentStartWide() {
@@ -674,6 +688,7 @@ class LeftMenu {
 YAHOO.util.Event.onDOMReady(function() { LeftMenu.init(); });
 //-->
 </script>
+
 EOG;
 }
 

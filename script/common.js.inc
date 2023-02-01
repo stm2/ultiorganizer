@@ -79,5 +79,11 @@ function validTime(field)
   field.value=field.value.replace(/[^0-9]/g, '.');
 }
 
+function focusFirstInput() {
+  var main = document.getElementById('mainContent');
+  var first = main == null ? null : main.querySelector("input:not([type='button'],[type='hidden'],[type='submit'],[type='image'])");
+  if (first !=null) first.focus();
+}
+
 //-->
 </script>

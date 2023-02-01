@@ -214,9 +214,7 @@ echo yuiLoad(array(
 </script>
 
 <?php
-$setFocus = "onload=\"document.getElementById('name').focus();\"";
-
-pageTopHeadClose($title, false, $setFocus);
+pageTopHeadClose($title);
 leftMenu();
 contentStart();
 

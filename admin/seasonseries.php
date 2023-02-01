@@ -43,8 +43,8 @@ if(!empty($_POST['remove_x'])){
 }
 
 //common page
+setFocus('name0');
 pageTopHeadOpen($title);
-$setFocus = "onload=\"document.getElementById('name0').focus();\"";
 pageTopHeadClose($title, false, $setFocus);
 leftMenu($LAYOUT_ID);
 contentStart();
