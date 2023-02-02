@@ -306,7 +306,9 @@ class EventDataXMLHandler{
       $ret .= "</uo_season>\n";
 
       return $ret;
-    } else { die('Insufficient rights to export data'); }
+    } else { 
+      throw new Exception(_('Insufficient rights to export data.')); 
+    }
   }
 
   /**
@@ -510,7 +512,7 @@ class EventDataXMLHandler{
         $this->error = $e->getMessage();
       }
       xml_parser_free($xmlparser);
-    } else { die('Insufficient rights to import data'); }
+    } else { $this->error = _('Insufficient rights to import data.'); }
   }
 
   /**

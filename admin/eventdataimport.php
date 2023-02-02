@@ -172,13 +172,18 @@ if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
   set_time_limit(300);
   $eventdatahandler = new EventDataXMLHandler();
 
-  $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
+  try {
+    $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
 
-  if (empty($eventdatahandler->error))
-    $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
-  else
-    $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
-      $eventdatahandler->error . "</p>\n";
+    if (empty($eventdatahandler->error))
+      $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
+    else
+      $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
+        $eventdatahandler->error . "</p>\n";
+  } catch (Exception $e) {
+    $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
+      "</p>\n";
+  }
 
   if (!empty($_POST['mock']))
     $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" .
