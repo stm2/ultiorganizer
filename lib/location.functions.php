@@ -188,11 +188,11 @@ function LocationInput($id, $group, $value, $label, $location) {
 }
 
 function LocationInput2($id, $group, $value, $location) {
-  $html = "<input type='hidden'  name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>";
-  $html .= "<div id='${id}Autocomplete' class='yui-skin-sam'>";
-  $html .= "<input class='input' id='${id}Name' style='position:relative;' size='30' type='text' name='${id}Name' value='";
+  $html = "<input type='hidden'  name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>\n";
+  $html .= "<div id='${id}Autocomplete' class='yui-skin-sam'>\n";
+  $html .= "<input class='input' id='${id}Name' style='position:relative;' type='text' name='${id}Name' value='";
   $html .= utf8entities($value);
-  $html .= "'/><div id='${id}NameContainer'></div></div>\n";
+  $html .= "'/><div id='${id}NameContainer'></div></div>";
 
   return $html;
 }
@@ -230,7 +230,7 @@ function LocationScript($id) {
       var moreData1 = oResultData[1];  
 
       return `<div class='myCustomResult'>
-  <span style='font-weight:bold'>\${sResultMatch}</span> / \${moreData1}</div>`; 
+  <span style='font-weight:bold'>\${sResultMatch}<\/span> / \${moreData1}<\/div>`; 
     }; 
     locationAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
     locationAutoComp.textboxFocusEvent.subscribe(${id}SelectHandler2);

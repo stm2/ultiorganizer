@@ -89,9 +89,9 @@ function get_replacers($post) {
 
 function copy_box($reference, $id, $label, $listener = '') {
   $cid = $id . $reference;
-  return "<td><label for='$cid'>" .
+  return "<label for='$cid'>" .
     "<input class='input' type='checkbox' checked='true' name='{$cid}' id='$cid' onchange='$listener'/>" .
-    "$label</label></td>";
+    "$label</label>";
 }
 
 function link_script($all_listeners) {
@@ -127,7 +127,8 @@ function link_script($all_listeners) {
 $map
   var toggleDependent = function(type, checkbox, rkey) {
     var active = checkbox.checked;
-    dependent.get(type).get(rkey).forEach((dep) => document.getElementById(dep).disabled = active);
+    if (dependent.get(type) != null && dependent.get(type).get(rkey) != null)
+      dependent.get(type).get(rkey).forEach((dep) => document.getElementById(dep).disabled = active);
   };
   var updateDependent = function(type, origin, value) {
     dependent.get(type).get(origin).forEach((dep) => { 
@@ -250,6 +251,7 @@ if ($mode == 'rename') {
   $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
   $locations = array();
   $dates = array();
+  $dateIds = array();
   $resgroups = array();
   $listeners = array('location' => array());
   foreach ($seasonInfo['reservations'] as $rkey => $rval) {
@@ -259,8 +261,8 @@ if ($mode == 'rename') {
       utf8entities($rkey) . "' />" . sprintf(_("Location %s map to"), $value);
     if (isset($locations[$rval['location']])) {
       $origin = $listeners['location'][$rval['location']]['origin'];
-      $postText = "<td><input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
-        sprintf(_("copy of location %s"), $value) . "</td>";
+      $postText = "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+        sprintf(_("copy of location %s"), $value);
       $listeners['location'][$rval['location']]['copys'][] = $rkey;
     } else {
       $label2 = sprintf(_("Change all locations %s to this value"), $value);
@@ -272,25 +274,26 @@ if ($mode == 'rename') {
         });
     }
 
-    $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") . "</th><th></th></tr><tr><td>$label</td><td>";
-    $html .= LocationInput2($id, 'rlocations', LocationInfo($rval['location'])['name'], $rval['location']) . "</td>";
-    $html .= $postText . "</tr>\n";
+    $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") . "</th><th></th></tr>\n";
+    $html .= "<tr><td><label for='{$id}Name'>$label</label></td><td>";
+    $html .= LocationInput2($id, 'rlocations', LocationInfo($rval['location'])['name'], $rval['location']);
+    $html .= "</td><td>" . $postText . "</td></tr>\n";
 
     $scripts .= LocationScript($id);
 
     $id = "resgroup" . utf8entities($rkey);
     $value = utf8entities($rval['reservationgroup']);
-    $html .= "<tr><td>" . _("Reservation Group") . ":</td><td>" .
-      "<input type='text' class='input' size='30' name='$id' id='$id' value='$value'/>&nbsp;</td>";
+    $html .= "<tr><td><label for='$id'>" . _("Reservation Group") . "</label>:</td><td>" .
+      "<input type='text' class='input' name='$id' id='$id' value='$value'/></td><td>";
 
     if (isset($resgroups[$rval['reservationgroup']])) {
       $origin = $listeners['reservationgroup'][$rval['reservationgroup']]['origin'];
-      $html .= "<td><input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+      $html .= "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
         sprintf(_("copy of reservation group %s"), $value) . "</td></tr>\n";
       $listeners['reservationgroup'][$rval['reservationgroup']]['copys'][] = $rkey;
     } else {
       $label = sprintf(_("Change all reservation groups %s to this value"), $value);
-      $html .= copy_box($rkey, "copyrgroup", $label, "toggleDependent(\"reservationgroup\", this, $rkey)") . "</tr>\n";
+      $html .= copy_box($rkey, "copyrgroup", $label, "toggleDependent(\"reservationgroup\", this, $rkey)") . "</td></tr>\n";
       $resgroups[$rval['reservationgroup']] = $id;
       $listeners['reservationgroup'][$rval['reservationgroup']] = array('origin' => $rkey, 'copys' => array(),
         'getDisplay' => function ($id) {
@@ -302,18 +305,19 @@ if ($mode == 'rename') {
     $shortdate = ShortDate($rval['starttime']);
     $olddate = utf8entities($shortdate);
     $nid = "newdates" . utf8entities($rkey);
-    $html .= "<tr><td>" . _("Date") . " (" . _("dd.mm.yyyy") . "):</td><td>" .
+    $html .= "<tr><td><label for='$nid'>" . _("Date") . " (" . _("dd.mm.yyyy") . ")</label>:</td><td>" .
       "<input type='hidden' name='olddates[]' id='$id' value='$olddate' />" .
-      "<input type='text' class='input' size='20' name='$nid' id='$nid' value='$olddate'/>&nbsp;</td>";
-
+      getCalendarInput($nid, $shortdate)."</td><td>";
+    $dateIds[] = $nid;  
+      
     if (isset($dates[$olddate])) {
       $origin = $listeners['date'][$shortdate]['origin'];
-      $html .= "<td><input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+      $html .= "<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
         sprintf(_("copy of date %s"), $olddate) . "</td></tr>\n";
       $listeners['date'][$shortdate]['copys'][] = $rkey;
     } else {
       $label = sprintf(_("Change all dates %s to this value"), $olddate);
-      $html .= copy_box($rkey, "copydate", $label, "toggleDependent(\"date\", this, $rkey)") . "</tr>\n";
+      $html .= copy_box($rkey, "copydate", $label, "toggleDependent(\"date\", this, $rkey)") . "</td></tr>\n";
       $dates[$olddate] = $id;
       $listeners['date'][$shortdate] = array('origin' => $rkey, 'copys' => array(),
         'getDisplay' => function ($id) {
@@ -321,24 +325,29 @@ if ($mode == 'rename') {
         });
     }
   }
+  
+  $scripts .= getCalendarScript($dateIds);
 
   $scripts .= link_script($listeners);
 
+  $html .= "</table><br />\n";
+  $html .= "<table class='formtable'>\n";
+  
   $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
   foreach ($seasonInfo['series'] as $skey => $sval) {
-    $html .= "<tr><td  class='infocell'>" . _("Division Name") . "</td><td>" . "<input type='hidden' id='series" .
+    $id = "seriesnames" . utf8entities($skey); 
+    $html .= "<tr><td  class='infocell'><label for='$id'>" . _("Division Name") . "</label></td><td>" . "<input type='hidden' id='series" .
       utf8entities($skey) . "' name='series[]' value='" . utf8entities($skey) . "' />" .
-      "<input class='input' size='30' maxlength='50' id='seriesnames" . utf8entities($skey) .
-      "' name='seriesnames[]' value='" . utf8entities($sval['name']) . "'/></td></tr>\n";
+      "<input class='input' maxlength='50' id='$id' name='seriesnames[]' value='" . utf8entities($sval['name']) . "'/></td></tr>\n";
     foreach ($sval['teams'] as $tkey => $tval) {
+      $tid = "teamnames" . utf8entities($tkey);
       $html .= "<tr><td>" . "<input type='hidden' id='teams" . utf8entities($tkey) . "' name='teams[]' value='" .
-        utf8entities($tkey) . "' />" . _("Team Name") .
-        "</td><td><input class='input' size='30' maxlength='50' id='teamnames" . utf8entities($tkey) .
-        "' name='teamnames[]' value='" . utf8entities($tval['name']) . "'/></td></tr>\n";
+        utf8entities($tkey) . "' /><label for='$tid'>" . _("Team Name") .
+        "</label></td><td colspan='2'><input class='input' maxlength='50' id='$tid' name='teamnames[]' value='" . utf8entities($tval['name']) . "'/></td></tr>\n";
     }
   }
-  $html .= "<tr><td>&nbsp;</td><td></td></tr>\n<tr><td class='infocell'>" . _("Mock (test only)") .
-    "</td><td><input class='input' type='checkbox' name='mock' /></td></tr>\n";
+  $html .= "<tr><td>&nbsp;</td><td></td></tr>\n<tr><td class='infocell'><label for='mock'>" . _("Mock (test only)") .
+    "</label></td><td><input class='input' type='checkbox' name='mock' id='mock'/></td></tr>\n";
   $html .= "</table>\n";
 }
 
