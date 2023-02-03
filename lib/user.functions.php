@@ -916,7 +916,10 @@ function UserListRightsHtml($userId) {
       break;
     case "teamadmin":
       $rights .= "<span'>" . $value[0] . ": ";
-      $rights .= utf8entities(TeamName($value[1]));
+      if (empty($value[1]))
+        $rights .= "???";
+      else
+        $rights .= utf8entities(TeamName($value[1]));
       $rights .= "</span><br/>";
       break;
     }
