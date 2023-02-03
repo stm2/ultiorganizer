@@ -1904,4 +1904,126 @@ function RestoreAnonymousUser($override = 0) {
   return restore_db_error($log, 1);
 }
 
+function SelectionInput($id, $value, $valueId = null) {
+  $html = "<div id='${id}Autocomplete' class='yui-skin-sam'>\n";
+  if ($valueId !== null) {
+    $html .= "<input type='hidden'  name='${id}' id='${id}' value='" . utf8entities($valueId) . "'/>\n";
+    $html .= "<input class='input' id='${id}Name' style='position:relative;' type='text' name='${id}Name' value='";
+    $html .= utf8entities($value);
+  } else {
+    $html .= "<input class='input' id='${id}' style='position:relative;' type='text' name='${id}' value='";
+    $html .= utf8entities($value);
+  }
+  $html .= "'/><div id='${id}Container'></div></div>";
+
+  return $html;
+}
+
+function UserInput($id, $value) {
+  return SelectionInput($id, $value);
+}
+
+function SelectionScript($id, $type, $hiddenId = false, $minQueryLength = 1) {
+  $idOffset = $hiddenId ? '1' : '0';
+  $trigger = $hiddenId ? "{$id}Name" : $id;
+  $script = "<script type=\"text/javascript\">
+//<![CDATA[
+  var idOffset = $idOffset;
+";
+  if ($hiddenId) {
+    $script .= "
+  var ${id}SelectHandler = function(sType, aArgs) {
+    var oData = aArgs[2];
+    document.getElementById(\"${id}\").value = oData[1];
+    var x = document.getElementById(\"${id}Name\").className;
+    document.getElementById(\"${id}Name\").className = x.replaceAll(' highlight','');
+  };
+
+  var ${id}SelectHandler2 = function() {
+    var x = document.getElementById(\"${id}Name\").className;
+    if (!x || !x.includes(' highlight'))
+      document.getElementById(\"${id}Name\").className+=' highlight';
+  };
+
+";
+  }
+  $script .= "
+  Fetch${id} = function(){
+    var ${type}Source = new YAHOO.util.XHRDataSource(\"ext/${type}txt.php\");
+    ${type}Source.responseSchema = {
+      recordDelim: \"\\n\",
+      fieldDelim: \"\\t\"
+    };
+    ${type}Source.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
+    ${type}Source.maxCacheEntries = 60;
+
+    // First AutoComplete
+    var ${type}AutoComp = new YAHOO.widget.AutoComplete(\"${trigger}\",\"${id}Container\", ${type}Source);
+    ${type}AutoComp.formatResult = function(oResultData, sQuery, sResultMatch) {
+
+      format = `<div class='${type}CustomResult'><span style='font-weight:bold'>\${sResultMatch}<\/span>`;
+      if (oResultData.length > 1 + idOffset) {
+        format += ` / \${oResultData[1 + idOffset]}`;
+      }
+      if (oResultData.length > 2 + idOffset) {
+        format += '<br /> (';
+        for(i=2; i < oResultData.length; ++i) {
+          if (i > 2) format += ', ';
+          format += `\${oResultData[i + idOffset]}`;
+        }
+        format += ')';
+      }
+      format += '</div>';
+      return format;
+    };
+    ${type}AutoComp.minQueryLength = $minQueryLength;
+";
+  if ($hiddenId) {
+    $script .= "
+      userAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
+      userAutoComp.textboxFocusEvent.subscribe(${id}SelectHandler2);
+";
+  }
+
+  $script .= "
+    return {
+      oDS: ${type}Source,
+      oAC: ${type}AutoComp
+    }
+  }();
+//]]>
+</script>\n";
+  return $script;
+}
+
+function UserScript($id) {
+  return SelectionScript($id, 'user');
+}
+
+function GetUsers($mode, $search) {
+  $query = sprintf("SELECT id, userid, name from uo_users WHERE uo_users.userid LIKE '%%%s%%' OR name LIKE '%%%s%%'",
+    mysql_adapt_real_escape_string($search), mysql_adapt_real_escape_string($search));
+  $result = mysql_adapt_query($query);
+
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
+  return $result;
+}
+
+function GetSearchUsers() {
+  if (isset($_GET['search']) || isset($_GET['query']) || isset($_GET['q'])) {
+    if (isset($_GET['search']))
+      $search = $_GET['search'];
+    elseif (isset($_GET['query']))
+      $search = $_GET['query'];
+    else
+      $search = $_GET['q'];
+    return GetUsers('search', $search);
+  } elseif (isset($_GET['id'])) {
+    return GetUsers('id', (int) $_GET['id']);
+  } else {
+    return GetUsers('all', null);
+  }
+}
 ?>

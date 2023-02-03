@@ -2,6 +2,7 @@
 include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
+include_once $include_prefix.'lib/yui.functions.php';
 
 $title = _("Event users");
 $html = "";
@@ -9,8 +10,28 @@ $seasonId = $_GET["season"];
 
 ensureSeasonAdmin($seasonId, $title);
 
+$html .= yuiLoad(array("utilities", "datasource", "autocomplete"));
+
 if (!empty($_POST['add'])) {
-  $userids = $_POST['userids'];
+  switch ($_GET['access']) {
+  case 'eventadmin':
+    $userids = $_POST['seasonusers'];
+    break;
+  case 'seriesadmin':
+    $userids = $_POST['seriesusers'];
+    break;
+  case 'teamadmin':
+    $userids = $_POST['teamusers'];
+    break;
+  case 'gameadmin':
+    $userids = $_POST['gameusers'];
+    break;
+  case 'accradmin':
+    $userids = $_POST['accrusers'];
+    break;
+  default:
+    $userids = isset($_POST['userids'])?$_POST['userids']:'';
+  }
   if (empty($userids)) {
     $userids = array();
     $mails = $_POST['emails'];
@@ -89,7 +110,7 @@ function userLink($userid) {
     . utf8entities($userid) . "</a>";
 }
 
-function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $dropdownId = null, $groupValueTag = null, $nameTag = null, $selectedId = null) {
+function adminTable($admins, $formId, $groupTag, $delIds, $inputId, $adminGroups = null, $dropdownId = null, $groupValueTag = null, $nameTag = null, $selectedId = null) {
   global $seasonId;
   $html = "<table class='admintable'>";
   $heading = null;
@@ -129,7 +150,9 @@ function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $
       $html .= "</select>\n";
     }
     
-    $html .= "</td></tr><tr><td>" . _("User Id(s)") . "</td><td><input class='input' size='20' name='userids'/></td><td>&nbsp;" . _("or") . "&nbsp;</td>\n";
+    $html .= "</td></tr><tr><td>" . _("User Id(s)") . "</td><td>";
+    $html .= UserInput($inputId, '');
+    $html .= "</td><td>&nbsp;" . _("or") . "&nbsp;</td>\n";
     $html .= "<td>" . _("E-Mail(s)") . "</td><td><input class='input' size='20' name='emails'/></td>\n";
     $html .= "<td>" . _("or") . " <a href='?view=admin/adduser&amp;season=".$seasonId."' target='_blank'>"._("Add new user")."</a></td></tr>\n";
     $html .= "</table>\n";
@@ -143,6 +166,10 @@ function adminTable($admins, $formId, $groupTag, $delIds, $adminGroups = null, $
   }
   $html .= "</form>\n";
   
+  if (! empty($_GET["access"]) && $_GET["access"] == $formId) {
+    $html .= UserScript($inputId);
+  }
+  
   return $html;
 }
 
@@ -152,7 +179,7 @@ $html .= adminHeader(_("Event admins"), 'eventadmin');
 $admins = SeasonAdmins($seasonId);
 $html .= adminTable($admins, 'eventadmin', null, array(
   'delId' => 'userid'
-));
+), 'seasonusers');
 
 $html .= adminHeader(_("Division admins"), 'seriesadmin');
 $series = SeasonSeries($seasonId);
@@ -161,7 +188,7 @@ $admins = SeasonSeriesAdmins($seasonId, false, 'series');
 $html .= adminTable($admins, 'seriesadmin', 'seriesname', array(
   'delId' => 'userid',
   'seriesId' => 'series_id'
-), $series, 'series', 'series_id', 'name', empty($_POST['series']) ? null : $_POST['series']);
+), 'seriesusers', $series, 'series', 'series_id', 'name', empty($_POST['series']) ? null : $_POST['series']);
 
 $html .= adminHeader(_("Team admins"), 'teamadmin');
 $admins = SeasonTeamAdmins($seasonId);
@@ -178,7 +205,7 @@ unset($team);
 $html .= adminTable($admins, 'teamadmin', 'teamname', array(
   'delId' => 'userid',
   'teamId' => 'team_id'
-), $teams, 'team', 'team_id', 'name');
+), 'teamusers', $teams, 'team', 'team_id', 'name');
 
 $html .= "<h3>"._("Scorekeepers").":</h3>\n";
 $seasongames = SeasonAllGames($seasonId);
@@ -225,7 +252,9 @@ if($teamresp){
 $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="gameadmin"){
   $html .= "<table class='formtable'>\n";
-  $html .= "<tr><td>"._("User Id (s)")."</td><td><input class='input' size='20' name='userids'/></td><td>"._("or")."</td>\n";
+  $html .= "<tr><td>"._("User Id (s)")."</td><td>";
+  $html .= UserInput('gameusers', '');
+  $html .= "</td><td>"._("or")."</td>\n";
   $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/></td>\n";
   $html .= "<td>" . _("or") . " <a href='?view=admin/adduser&amp;season=".$seasonId."' target='_blank'>"._("Add new user")."</a></td></tr>\n";
   
@@ -237,7 +266,10 @@ if(!empty($_GET["access"]) && $_GET["access"]=="gameadmin"){
     $html .= "</option>";
   }
   $html .= "</select></td></tr>";
-  $html .= "</table>";  
+  $html .= "</table>";
+  
+  $html .= UserScript('gameusers');
+  
   $html .= "<p><input class='button' name='add' type='submit' value='"._("Grant rights")."'/></p>\n";
 }else{
   $html .= "<p><a href='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=gameadmin'>"._("Add more ...")."</a></p>";
@@ -271,7 +303,9 @@ foreach($admins as $user){
 $html .= "</table>";
 if(!empty($_GET["access"]) && $_GET["access"]=="accradmin"){
   $html .= "<table class='formtable'>\n";
-  $html .= "<tr><td>"._("User Id(s)")."</td><td><input class='input' size='20' name='userids'/></td><td>"._("or")."</td>\n";
+  $html .= "<tr><td>"._("User Id(s)")."</td><td>";
+  $html .= UserInput('accrusers', '');
+  $html .= "</td><td>"._("or")."</td>\n";
   $html .= "<td>"._("E-Mail(s)")."</td><td><input class='input' size='20' name='emails'/></td>\n";
   $html .= "<td>" . _("or") . " <a href='?view=admin/adduser&amp;season=".$seasonId."' target='_blank'>"._("Add new user")."</a></td></tr>\n";
   
@@ -284,6 +318,9 @@ if(!empty($_GET["access"]) && $_GET["access"]=="accradmin"){
   }
   $html .= "</select></td></tr>";
   $html .= "</table>";
+  
+  $html .= UserScript('accrusers');
+  
   $html .= "<p><input class='button' name='add' type='submit' value='"._("Grant rights")."'/></p>\n";  
 }else{
   $html .= "<p><a href='?view=admin/addseasonusers&amp;season=".$seasonId."&amp;access=accradmin'>"._("Add more ...")."</a></p>";
