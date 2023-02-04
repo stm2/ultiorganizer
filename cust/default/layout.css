@@ -522,6 +522,16 @@ ul.draglist li, ol.draglist li {
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
 }
 
+ul.draglist li.negative, ol.draglist li.negative {
+  margin: 0px;
+  cursor: move;
+  text-align: center;
+  vertical-align: middle;
+  background-color: var(--draglistalarmbgcolor, #ff0000);
+  color: var(--draglistalarmcolor, #ffffff);
+  border: 1px solid var(--draglistbordercolor, #7ea6b2);
+}
+
 li.schedule_item {
   background-color: var(--scheduleitemcolor, #aaaaaa);
   border: 1px solid var(--draglistbordercolor, #7ea6b2);

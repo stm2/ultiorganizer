@@ -80,16 +80,11 @@ function jsSecure($string) {
 }
 
 function pauseEntry($height, $duration, $gameId, $editable = true) {
-  if ($gameId >= 0) {
-    $id = "pause$gameId";
-    $tid = "ptime$gameId";
-    $names = "ptimes[]";
-  } else {
-    $id = "fixed" . (-$gameId);
-    $tid = "tfixed" . (-$gameId);
-    $names = "tfixeds[]";
-  }
-  $html = "<li class='schedule_item' id='$id' style='min-height:" . $height . "px'>";
+  $id = "pause$gameId";
+  $tid = "ptime$gameId";
+  $names = "ptimes[]";
+  $alarm = $duration < 0 ? " negative" : "";
+  $html = "<li class='schedule_item$alarm' id='$id' style='min-height:" . $height . "px'>";
   $html .= "<input type='hidden' id='$tid' name='$names' value='" . $duration . "'/>";
   $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
   if ($editable) {
@@ -401,7 +396,7 @@ $MINTOP = 30;
         $gameStart = strtotime($gameInfo['time']);
         $duration = ($gameStart - $nextStart) / 60;
         $height = pauseHeight($duration);
-        if ($nextStart<$gameStart) {
+        if ($nextStart != $gameStart) {
           echo pauseEntry($height, $duration, $gameId);
           $reservedPauses[] = "pause".$gameId;
         }
@@ -607,17 +602,19 @@ foreach ($reservedPauses as $pauseId) {
     var unscheduled = Dom.get("unscheduled");
     var pauseElement = document.createElement("div");
     var duration = Dom.get("pauseLen").value;
-    var height = Math.max(10,(duration * minHeight)-2);
-    var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
-    html = html.replace(/%h%/g, height);
-    html = html.replace(/%d%/g, duration);
-    html = html.replace(/%i%/g, pauseIndex);
-    pauseElement.innerHTML = html;
-    pauseElement = pauseElement.firstChild;
-        
-    unscheduled.appendChild(pauseElement);
-    new YAHOO.example.DDList("pause" + pauseIndex);
-    pauseIndex++;
+    if (duration > 0) {
+      var height = Math.max(10,(duration * minHeight)-2);
+      var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
+      html = html.replace(/%h%/g, height);
+      html = html.replace(/%d%/g, duration);
+      html = html.replace(/%i%/g, pauseIndex);
+      pauseElement.innerHTML = html;
+      pauseElement = pauseElement.firstChild;
+          
+      unscheduled.appendChild(pauseElement);
+      new YAHOO.example.DDList("pause" + pauseIndex);
+      pauseIndex++;
+    }
   },  
     
   requestString: function() {
