@@ -161,6 +161,9 @@ function showUnprivileged($title, $message, $type = null, $options = null) {
       case "season":
         $message .= "<p>" . sprintf(_("You are not a season admin for %s."), $options) . "</p>";
         break;
+      case "season":
+        $message .= "<p>" . sprintf(_("You cannot change series for season %s."), $options) . "</p>";
+        break;
       default:
         $message .= "<p>" . _("You are not allowed to do this.") . "</p>";
     }
@@ -808,6 +811,15 @@ function ensureSeasonAdmin($season, $title=null, $super = false, $message=null) 
 function hasEditSeasonSeriesRight($season) {
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
+}
+
+function ensureSeasonSeriesAdmin($season, $title = null, $message = null) {
+  ensureLogin();
+
+  if (hasEditSeasonSeriesRight($season))
+    return true;
+
+  showUnprivileged($title, $message, "season_series", $season);
 }
 
 function hasEditSeriesRight($seriesId) {

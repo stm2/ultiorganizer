@@ -487,7 +487,8 @@ function DeleteSeries($seriesId) {
     $query = sprintf("DELETE FROM uo_series WHERE series_id=%d", (int) $seriesId);
 
     return DBQuery($query);
-  }
+  } else
+    die("Insufficient rights to edit series");
 }
 
 /**
@@ -511,7 +512,8 @@ function AddSeries($params) {
     $id = DBQueryInsert($query);
     Log1("series", "add", $id);
     return $id;
-  }
+  } else
+    die("Insufficient rights to edit series");
 }
 
 /**
@@ -535,7 +537,8 @@ function SetSeries($params) {
       (int) $params['series_id']);
 
     return DBQuery($query);
-  }
+  } else
+    die("Insufficient rights to edit series");
 }
 
 /**
@@ -556,7 +559,8 @@ function SetSeriesName($seriesId, $name) {
       mysql_adapt_real_escape_string($seriesId));
 
     return DBQuery($query);
-  }
+  } else
+    die("Insufficient rights to edit series");
 }
 
 /**

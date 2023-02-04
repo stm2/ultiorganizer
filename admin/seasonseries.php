@@ -13,10 +13,13 @@ $title = utf8entities(U_(SeasonName($season))).": "._("Divisions");
 //process itself on submit
 if(!empty($_POST['remove_x'])){
   $id = $_POST['hiddenDeleteId'];
+  $season2 = SeriesSeasonId($id);
+  ensureSeasonSeriesAdmin($season2);
   if(CanDeleteSeries($id)){
     DeleteSeries($id);
   }
 }elseif(!empty($_POST['add'])){
+  ensureSeasonSeriesAdmin($season);
   $sp['name'] = !empty($_POST['name0']) ? $_POST['name0'] : "no name";
   $sp['type'] = $_POST['type0'];
   $sp['ordering'] = !empty($_POST['ordering0']) ? $_POST['ordering0'] : "A";
@@ -26,7 +29,8 @@ if(!empty($_POST['remove_x'])){
   AddSeries($sp);
 
 }else if(!empty($_POST['save'])){
-
+  ensureSeasonSeriesAdmin($season);
+  
   //Save all
   $series = SeasonSeries($season);
   foreach($series as $row){
