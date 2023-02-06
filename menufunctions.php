@@ -1025,6 +1025,7 @@ function getEditSeasonLinks() {
       $ret[$season] = array();
     }
     $respgamesset = array();
+    $contactsset = array();
     $deleteset = array();
     foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
@@ -1038,6 +1039,7 @@ function getEditSeasonLinks() {
         $links['?view=admin/seasonpolls&amp;season=' . $season] = _("Polls");
         $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
         $respgamesset[$season] = "set";
+        $contactsset[$season] = "set";
         $deleteset[$season] = "set";
       }
       $ret[$season] = $links;
@@ -1049,16 +1051,16 @@ function getEditSeasonLinks() {
         if (isset($ret[$seriesseason]) && !isSeasonAdmin($seriesseason)) {
           $links = $ret[$seriesseason];
           $seriesname = U_(getSeriesName($series));
-          $links['?view=admin/seasonteams&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
+          $links['?view=admin/seasonteams&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname . " " .
             _("Teams");
-          $links['?view=admin/seasongames&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
+          $links['?view=admin/seasongames&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname . " " .
             _("Games");
-          $links['?view=admin/seasonstandings&amp;season=' . $season . '&amp;series=' . $series] = $seriesname . " " .
-            _("Pool rankings");
+          $links['?view=admin/seasonstandings&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname .
+            " " . _("Pool rankings");
           $links['?view=admin/accreditation&amp;season=' . $seriesseason] = _("Accreditation");
           $ret[$seriesseason] = $links;
           $respgamesset[$seriesseason] = "set";
-          $deleteset[$season] = "set";
+          $deleteset[$seriesseason] = "set";
         }
       }
     }
@@ -1111,9 +1113,10 @@ function getEditSeasonLinks() {
     if (isset($_SESSION['userproperties']['userrole']['gameadmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['gameadmin'] as $game => $param) {
         $gameseason = GameSeason($game);
-        if (isset($ret[$gameseason])) {
-          $respgamesset[$gameseason] = "set";
+        if (!isset($ret[$gameseason])) {
+          $ret[$gameseason] = array();
         }
+        $respgamesset[$gameseason] = "set";
       }
     }
     if (isset($_SESSION['userproperties']['userrole']['resgameadmin'])) {
@@ -1128,10 +1131,15 @@ function getEditSeasonLinks() {
     foreach ($respgamesset as $season => $set) {
       $links = $ret[$season];
       $links['?view=user/respgames&amp;season=' . $season] = _("Game responsibilities");
-      $links['?view=user/contacts&amp;season=' . $season] = _("Contacts");
       $ret[$season] = $links;
     }
 
+    foreach ($contactsset as $season => $set) {
+      $links = $ret[$season];
+      $links['?view=user/contacts&amp;season=' . $season] = _("Contacts");
+      $ret[$season] = $links;
+    }
+    
     foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
         $links['?view=admin/addseasonusers&amp;season=' . $season] = _("Event users");
