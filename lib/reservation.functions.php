@@ -228,7 +228,7 @@ function ReservationInfoArray($reservations) {
 	}
 	$fetchStr = implode(",", $fetch);
 	$query = "SELECT DATE_FORMAT(starttime, '%Y%m%d') as gameday, id FROM uo_reservation WHERE id IN (".$fetchStr.") 
-		ORDER BY location, fieldname +0, starttime ASC, id";
+		ORDER BY DATE(starttime), location, fieldname +0, fieldname, starttime ASC, id";
 	$result = mysql_adapt_query($query);
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	$ret = array();
