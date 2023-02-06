@@ -1516,7 +1516,7 @@ function scriptedEnable($id) {
 function checkAllCheckbox($selector, $id='') {
   if (empty($id))
     $id="checkall$selector";
-  return "<input type='checkbox' id='$id' disabled onclick='checkAll(\"$selector\");' />" . scriptedEnable($id);
+  return "<input type='checkbox' title='" . utf8entities(_("Check all")) . "' id='$id' disabled onclick='checkAll(\"$selector\");' />" . scriptedEnable($id);
 }
 
 function JavaScriptWarning() {

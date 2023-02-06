@@ -221,7 +221,7 @@ contentStart();
 echo $html;
 
 // if poolId is empty, then add new pool
-if (! $poolId || $addmore) {
+if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   echo "<h2>" . _("Add pool") . "</h2>\n";
   echo "<form method='post' action='?view=admin/addseasonpools&amp;season=$season&amp;series=$seriesId'>";
   echo "<table class='formtable'>
@@ -253,7 +253,7 @@ if (! $poolId || $addmore) {
       <p><input class='button' name='add' type='submit' value='" . _("Add") . "'/>
       <input class='button' type='button' name='takaisin'  value='" . _("Return") . "' onclick=\"window.location.href='?view=admin/seasonpools&amp;season=$season'\"/></p>
       </form>";
-} else {
+} else if ($poolId && !$addmore) {
   echo "<h2>" . _("Edit pool") . ":</h2>\n";
   echo "<form method='post' action='?view=admin/addseasonpools&amp;pool=$poolId&amp;season=$season'>";
   

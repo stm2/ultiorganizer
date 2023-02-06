@@ -124,7 +124,7 @@ if (isset($_POST['deletepools'])) {
     $html .= "<br /><p>" .
       sprintf(
         _(
-          "Are your sure you want to delete this data? This might have undesirable side effects, especially if the tournament is running!")) .
+          "Are you sure you want to delete this data? This might have undesirable side effects, especially if the tournament is running!")) .
       "</p><br />\n";
 
     $html .= "<p><input class='button' type='submit' name='deletepoolsconfirm' value='" . _("Delete pools") . "'/></p>";

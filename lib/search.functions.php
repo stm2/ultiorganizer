@@ -402,11 +402,12 @@ function SeriesResults($season = NULL) {
     
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     $ret = "<table class='results'><tr><th>" . checkAllCheckbox('series') . "</th>";
-    $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th></tr>\n";
+    $ret .= "<th>"._("Division")."</th><th>"._("Event")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='series[]' value='".utf8entities($row['series'])."' /></td>";
-      $ret .= "<td>".utf8entities($row['season_name'])."</td><td>";
-      $ret .= utf8entities($row['series_name'])."</td></tr>\n";
+      $ret .= "<td>".utf8entities($row['series_name'])."</td>";
+      $ret .= "<td>".utf8entities($row['season_name'])."</td>";
+      $ret .= "</tr>\n";
     }
     $ret .= "</table>\n";
     return $ret;
@@ -444,12 +445,12 @@ function PoolResults() {
     $ret = "";
     if (mysqli_num_rows($result) > 0) {
       $ret = "<table><tr><th>" . checkAllCheckbox('pools') . "</th>";
-      $ret .= "<th>" . _("Event") . "</th><th>" . _("Division") . "</th><th>" . _("Division") . "</th></tr>\n";
+      $ret .= "<th>" . _("Pool") . "</th><th>" . _("Division") . "</th><th>" . _("Event") . "</th></tr>\n";
       while ($row = mysqli_fetch_assoc($result)) {
         $ret .= "<tr><td><input type='checkbox' name='pools[]' value='" . utf8entities($row['pool']) . "' /></td>";
-        $ret .= "<td>" . utf8entities($row['season_name']) . "</td>";
-        $ret .= "<td>" . utf8entities($row['series_name']) . "</td>";
         $ret .= "<td>" . utf8entities($row['pool_name']) . "</td>";
+        $ret .= "<td>" . utf8entities($row['series_name']) . "</td>";
+        $ret .= "<td>" . utf8entities($row['season_name']) . "</td>";
         $ret .= "</tr>\n";
       }
       $ret .= "</table>\n";
@@ -487,12 +488,12 @@ function TeamResults() {
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     $ret = "<table><tr><th>" . checkAllCheckbox('teams') . "</th>";
-    $ret .= "<th>"._("Event")."</th><th>"._("Division")."</th><th>"._("Team")."</th></tr>\n";
+    $ret .= "<th>"._("Team")."</th><th>"._("Division")."</th><th>"._("Event")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='teams[]' value='".utf8entities($row['team'])."' /></td>";
-      $ret .= "<td>".utf8entities($row['season_name'])."</td>";
-      $ret .= "<td>".utf8entities($row['series_name'])."</td>";
       $ret .= "<td>".utf8entities($row['team_name'])."</td>";
+      $ret .= "<td>".utf8entities($row['series_name'])."</td>";
+      $ret .= "<td>".utf8entities($row['season_name'])."</td>";
       $ret .= "</tr>\n";
     }
     $ret .= "</table>\n";
@@ -697,34 +698,36 @@ function ReservationResults($post, $season = null) {
       $end = $post['searchend'];
     } 
     
-    if(empty($end)){
-      $query .= "WHERE res.starttime >= '".ToInternalTimeFormat($start." 00:00")."'";
-    }else{
-      $query .= "WHERE res.starttime >= '".ToInternalTimeFormat($start." 00:00")."' AND ";
-      $query .= "res.endtime <= '".ToInternalTimeFormat($end." 23:59")."' ";
+    $query .= "WHERE 1";
+    
+    if(!empty($start)){
+      $query .= " AND res.starttime >= '".ToInternalTimeFormat($start." 00:00")."'";
+    }
+    if(!empty($end)){
+      $query .= " AND res.endtime <= '".ToInternalTimeFormat($end." 23:59")."'";
     }
     if (isset($post['searchgroup']) && strlen($post['searchgroup']) > 0) {
-      $query .= "AND res.reservationgroup like '%".mysql_adapt_real_escape_string($post['searchgroup'])."%' ";
+      $query .= " AND res.reservationgroup like '%".mysql_adapt_real_escape_string($post['searchgroup'])."%'";
     }
     if (isset($post['searchfield']) && strlen($post['searchfield']) > 0) {
-      $query .= "AND res.fieldname like '".mysql_adapt_real_escape_string($post['searchfield'])."' ";
+      $query .= " AND res.fieldname like '".mysql_adapt_real_escape_string($post['searchfield'])."'";
     }
     if (isset($post['searchlocation']) && strlen($post['searchlocation']) > 0) {
-      $query .= "AND (loc.name like '%".mysql_adapt_real_escape_string($post['searchlocation'])."%' OR ";
-      $query .= "loc.address like '%".mysql_adapt_real_escape_string($post['searchlocation'])."%') ";
+      $query .= " AND (loc.name like '%".mysql_adapt_real_escape_string($post['searchlocation'])."%' OR ";
+      $query .= "loc.address like '%".mysql_adapt_real_escape_string($post['searchlocation'])."%')";
     }
     
     if (!empty($season)) {
-      $query .= "AND res.season='".mysql_adapt_real_escape_string($season)."' ";
+      $query .= " AND res.season='".mysql_adapt_real_escape_string($season)."'";
     }
-    $query .= "GROUP BY res.starttime, res.id, res.location, res.fieldname, res.reservationgroup, res.endtime, loc.name, loc.fields, loc.indoor, loc.address";
+    $query .= " GROUP BY res.starttime, res.id, res.location, res.fieldname, res.reservationgroup, res.endtime, loc.name, loc.fields, loc.indoor, loc.address";
 
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     
     if (mysqli_num_rows($result) > 0) {
     $ret = "<table class='admintable'><tr><th>" . checkAllCheckbox('reservations') . "</th>";
-    $ret .= "<th>"._("Group")."</th><th>"._("Location")."</th><th>"._("Date")."</th>";
+    $ret .= "<th>"._("Reservation Group")."</th><th>"._("Location")."</th><th>"._("Date")."</th>";
     $ret .= "<th>"._("Starts")."</th><th>"._("Ends")."</th><th>"._("Games")."</th>";
     $ret .= "<th>"._("Scoresheets")."</th><th></th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
@@ -804,12 +807,12 @@ function GameResults() {
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
     
     $ret = "<table><tr><th>" . checkAllCheckbox('games') . "</th>";
-    $ret .= "<th>"._("Tournament")."</th><th>"._("Location")."</th><th>"._("Game")."</th></tr>\n";
+    $ret .= "<th>"._("Game")."</th><th>"._("Reservation Group")."</th><th>"._("Location")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td><input type='checkbox' name='games[]' value='".utf8entities($row['game_id'])."'/></td>";
+      $ret .= "<td>".utf8entities(GameName($row))."</td>";
       $ret .= "<td>".utf8entities($row['reservationgroup'])."</td>";
       $ret .= "<td>".utf8entities($row['locationname'])."</td>";
-      $ret .= "<td>".utf8entities(GameName($row))."</td>";
       $ret .= "</tr>\n";
     }
     $ret .= "</table>\n";
