@@ -9,12 +9,11 @@ include_once $include_prefix.'lib/user.functions.php';
 function ReservationInfo($id) {
 	$locale = str_replace(".", "_", getSessionLocale());
 	$query = sprintf("SELECT res.id, res.location, res.fieldname, res.reservationgroup, 
-		res.date, res.starttime, res.endtime, res.timeslots, ANY_VALUE(loc.name) as name, 
-		inf.info as info, ANY_VALUE(loc.address) as address, res.season, count(game_id) as games  
+		res.date, res.starttime, res.endtime, res.timeslots, loc.name as name, 
+		inf.info as info, loc.address as address, res.season  
 		FROM uo_reservation as res 
-	    left join uo_location as loc on (res.location=loc.id)
-	    LEFT JOIN uo_location_info inf on (loc.id = inf.location_id AND inf.locale='%s' ) 
-		left join uo_game as game on (res.id = game.reservation)
+		LEFT JOIN uo_location as loc on (res.location=loc.id)
+		LEFT JOIN uo_location_info inf on (loc.id = inf.location_id AND inf.locale='%s' ) 
 		WHERE res.id=%d", mysql_adapt_real_escape_string($locale), (int)$id);
 	return DBQueryToRow($query);
 }
@@ -158,6 +157,14 @@ function ReservationSeasons($reservationId) {
 		$ret[] = $row[0];
 	}
 	return $ret;
+}
+
+function ReservationGameSeries($reservationId) {
+  $query = sprintf("SELECT count(g.game_id) games, ser.series_id series FROM uo_game g
+		LEFT JOIN uo_pool pool ON (g.pool=pool.pool_id)
+		LEFT JOIN uo_series ser ON (pool.series=ser.series_id)
+		WHERE g.reservation=%d GROUP BY ser.series_id", (int)$reservationId);
+  return DBQueryToArray($query);
 }
 
 /**
