@@ -397,8 +397,10 @@ function UserChangePassword($user_id, $passwd, $token = null) {
       mysql_adapt_real_escape_string($user_id));
 
     DBQuery($query);
+    $changed = mysql_adapt_affected_rows();
     $query = sprintf("DELETE FROM uo_recoverrequest WHERE userid='%s'", mysql_adapt_real_escape_string($user_id));
     DBQuery($query);
+    return $changed;
   } else {
     die('Insufficient rights to change user info');
   }

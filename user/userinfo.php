@@ -10,6 +10,8 @@ $html = "";
 $message = "";
 $error = 0;
 
+ensureLogin();
+
 if (!empty($_GET['user'])) {
   if (($_GET['user']) != $_SESSION['uid'] && !hasEditUsersRight()) {
     die('Insufficient rights to change user info');
@@ -45,7 +47,19 @@ if (IsFacebookEnabled() && $_SESSION['uid'] == $userid) {
   }
 }
 
-if ($userid != "anonymous") {
+if ($_SESSION['uid'] === "anonymous") {
+  showPage(_("User information"), "<p>" . _("You are not logged in.") . "</p>");
+  exit();
+}
+
+$userinfo = UserInfo($userid);
+if ($userinfo == null || $userid === "anonymous") {
+  showPage(_("User information"), "<p>" . sprintf(_("Unknown user '%s'."), utf8entities($userid)) . "</p>");
+  exit();
+} 
+
+// if ($userid != "anonymous") 
+{
   // process itself if submit was pressed
   if (!empty($_POST['save'])) {
     $newUsername = $_POST['UserName'];
@@ -74,7 +88,6 @@ if ($userid != "anonymous") {
           loadDBTranslations($newLocale);
         }
       }
-      $userinfo = UserInfo($userid);
       $success = UserUpdateInfo($userinfo['id'], $userid, $newUsername, $newName);
       if ($success) {
         if ($newUsername != $_SESSION['uid'] && $userid != $newUsername) {
@@ -95,15 +108,16 @@ if ($userid != "anonymous") {
       $message .= $pw;
       $error = 1;
     }
-    
-    if(!$error){
-      $message .= "<p>"._("Changes were saved")."</p><hr/>";
-    }else{
-      $message .= "<p class='warning'><b>"._("Changes were NOT saved")."</b></p><hr/>";
+
+    if (!$error) {
+      $message .= "<p>" . _("Changes were saved.") . "</p><hr/>";
+    } else {
+      $message .= "<p class='warning'><b>" . _("Changes were NOT saved.") . "</b></p><hr/>";
     }
-    
-    if(!$error){
-      UserChangePassword($userid,$newPassword1);
+
+    if (!$error) {
+      if (UserChangePassword($userid, $newPassword1) == 0)
+        $message .= "<p>" . _("Nothing was changed.") . "</p><hr/>";
     }
     
   }
@@ -196,7 +210,7 @@ if ($userid != "anonymous") {
         AddUserRole($userid, 'resgameadmin:'.$reservationId);
       }
     } elseif ($_POST['userrole'] == 'gameadmin') {
-      if (isset($_POST['gamses']))
+      if (isset($_POST['games']))
       foreach ($_POST['games'] as $gameId) {
         AddUserRole($userid, 'gameadmin:'.$gameId);
       }
@@ -210,52 +224,45 @@ if ($userid != "anonymous") {
 
 }
 
-
-$userinfo = UserInfo($userid);
-$title = _("User information").": ".utf8entities($userinfo['name']);
+$title = _("User information") . ": " . utf8entities($userinfo['name']);
 $html .= file_get_contents('script/disable_enter.js.inc');
 
-$html .= "<script type='text/javascript'>
-<!--
-function setId(id, name) 
-	{
-	var input = document.getElementById(name);
-	input.value = id;
-	}
-//-->
-</script>";
-
-if ($_SESSION['uid'] != "anonymous") {
-  //print_r($_POST);
+{
   $html .= $message;
 
   $html .= "<form method='post' action='?view=user/userinfo";
   if (!empty($_GET['user'])) {
-    $html .= "&amp;user=".urlencode($_GET['user']);
+    $html .= "&amp;user=" . urlencode($_GET['user']);
   }
   $html .= "'>\n";
   $html .= "<table cellpadding='8'>
-		<tr><td class='infocell'>"._("Name").":</td>
-			<td><input class='input' maxlength='256' id='Name' name='Name' value='".utf8entities($userinfo['name'])."'/></td></tr>
-		<tr><td class='infocell'>"._("Username").":</td>
-			<td><input class='input' maxlength='20' id='UserName' name='UserName' value='".utf8entities($userinfo['userid'])."'/></td></tr>
-		<tr><td class='infocell'>"._("Primary email").":</td>
-			<td>" . mailto_link($userinfo['email'], $userinfo['name'], $userinfo['email']) . "&nbsp;
-			<a href='?view=user/addextraemail&amp;user=".utf8entities($userid)."'>"._("Add extra address")."</a></td></tr>\n";
+		<tr><td class='infocell'>" . _("Name") .
+    ":</td>
+			<td><input class='input' maxlength='256' id='Name' name='Name' value='" . utf8entities($userinfo['name']) .
+    "'/></td></tr>
+		<tr><td class='infocell'>" . _("Username") .
+    ":</td>
+			<td><input class='input' maxlength='20' id='UserName' name='UserName' value='" . utf8entities($userinfo['userid']) .
+    "'/></td></tr>
+		<tr><td class='infocell'>" . _("Primary email") . ":</td>
+			<td>" . mailto_link($userinfo['email'], $userinfo['name'], $userinfo['email']) .
+    "&nbsp;
+			<a href='?view=user/addextraemail&amp;user=" . utf8entities($userid) . "'>" . _("Add extra address") .
+    "</a></td></tr>\n";
   $extraEmails = UserExtraEmails($userid);
   if ($extraEmails) {
-    $html .= "		<tr><td rowspan='".count($extraEmails)."' class='infocell'>"._("Extra emails").":</td>\n";
+    $html .= "<tr><td rowspan='" . count($extraEmails) . "' class='infocell'>" . _("Extra emails") . ":</td>\n";
     $first = true;
     foreach ($extraEmails as $extraEmail) {
       if ($first) {
         $first = false;
       } else {
-        $html .= "		<tr>\n";
+        $html .= "<tr>\n";
       }
-      $html .= "		  <td><a href='mailto:".utf8entities($extraEmail)."'>".utf8entities($extraEmail)."</a>
-						<input class='deletebutton' type='image' src='images/remove.png' name='remextraemail' value='X' alt='X' onclick='setId(\"".$extraEmail."\", \"deleteExtraEmail\");'/>
-						<input class='button' type='submit' name='toprimaryemail' value='"._("Set as primary")."' onclick='setId(\"".$extraEmail."\", \"toPrimaryEmailVal\");'/>
-						</td></tr>\n";
+      $html .= "<td><a href='mailto:" . utf8entities($extraEmail) . "'>" . utf8entities($extraEmail) . "</a>" .
+        getDeleteButton('remextraemail', $extraEmail, 'deleteExtraEmail') .
+        "<input class='button' type='submit' name='toprimaryemail' value='" . utf8entities(_("Set as primary")) .
+        "' onclick='setId1(\"toPrimaryEmailVal\", \"" . utf8entities($extraEmail) . "\");'/>" . "</td></tr>\n";
     }
   }
   if (IsFacebookEnabled() && $_SESSION['uid'] == $userid) {
@@ -264,42 +271,50 @@ if ($_SESSION['uid'] != "anonymous") {
     $fb_props = getFacebookUserProperties($userid);
     if (!$fb_cookie) {
       // Login button
-      $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-			<td><fb:login-button perms='email,publish_stream,offline_access'/></td></tr>\n";	
+      $html .= "<tr><td class='infocell'>" . _("Login via Facebook") .
+        ":</td>
+			<td><fb:login-button perms='email,publish_stream,offline_access'/></td></tr>\n";
     } elseif ($fb_cookie && !isset($fb_props['facebookuid'])) {
       if (ExistingFBUserId($fb_cookie['uid'])) {
         // Offer to change facebook linkage
-        $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
+        $html .= "<tr><td class='infocell'>" . _("Login via Facebook") .
+          ":</td>
+				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>" .
+          _("Change link from this account to my current Facebook account") . "</a></td></tr>\n";
       } else {
         // Offer to link account
-        $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Link this account to my Facebook account")."</a></td></tr>\n";
+        $html .= "<tr><td class='infocell'>" . _("Login via Facebook") .
+          ":</td>
+				<td><a href='?view=user/userinfo&amp;linkfacebook=true'>" . _("Link this account to my Facebook account") .
+          "</a></td></tr>\n";
       }
     } elseif ($fb_cookie['uid'] == $fb_props['facebookuid']) {
       // Offer to unlink account
-      $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-			<td><a href='?view=user/userinfo&amp;unlinkfacebook=true'>"._("Remove link from this account to my Facebook account")."</a></td></tr>\n";	
+      $html .= "<tr><td class='infocell'>" . _("Login via Facebook") .
+        ":</td>
+			<td><a href='?view=user/userinfo&amp;unlinkfacebook=true'>" .
+        _("Remove link from this account to my Facebook account") . "</a></td></tr>\n";
     } else {
       // Offer to change facebook linkage
-      $html .= "<tr><td class='infocell'>"._("Login via Facebook").":</td>
-			<td><a href='?view=user/userinfo&amp;linkfacebook=true'>"._("Change link from this account to my current Facebook account")."</a></td></tr>\n";	
+      $html .= "<tr><td class='infocell'>" . _("Login via Facebook") .
+        ":</td>
+			<td><a href='?view=user/userinfo&amp;linkfacebook=true'>" .
+        _("Change link from this account to my current Facebook account") . "</a></td></tr>\n";
     }
   }
 
-  $html .= "		<tr><td class='infocell'>"._("Language").":</td>
+  $html .= "		<tr><td class='infocell'>" . _("Language") . ":</td>
 			<td><select class='dropdown' name='userlocale'>";
   global $locales;
 
   $userlocale = getUserLocale($userinfo['userid']);
 
-
   foreach ($locales as $localestr => $localename) {
-    $html .= "<option value='".utf8entities($localestr)."'";
+    $html .= "<option value='" . utf8entities($localestr) . "'";
     if ($localestr == $userlocale) {
       $html .= " selected='selected'";
     }
-    $html .= ">".utf8entities($localename)."</option>\n";
+    $html .= ">" . utf8entities($localename) . "</option>\n";
   }
 
   $html .= "</select></td></tr>";
@@ -307,56 +322,56 @@ if ($_SESSION['uid'] != "anonymous") {
   $html .= "<tr><td colspan = '2'><br/>
 		  <input type='hidden' id='deleteExtraEmail' name='deleteExtraEmail'/>
 		  <input type='hidden' id='toPrimaryEmailVal' name='toPrimaryEmailVal'/>
-		  <input class='button' type='submit' name='save' value='"._("Save")."' />
-	      <input class='button' type='submit' name='cancel' value='"._("Cancel")."' />
+		  <input class='button' type='submit' name='save' value='" . _("Save") .
+    "' />
+	      <input class='button' type='submit' name='cancel' value='" . _("Cancel") . "' />
 	      </td></tr>\n";
 
-  	
   $html .= "</table>\n";
 
   $html .= "</form>";
 
   $html .= "<hr />\n";
 
-  $html .= "<h2>"._("Show administration responsibilities")."</h2>\n";
+  $html .= "<h2>" . _("Show administration responsibilities") . "</h2>\n";
   $html .= "<form method='post' action='?view=user/userinfo";
   if (!empty($_GET['user'])) {
-    $html .= "&amp;user=".urlencode($_GET['user']);
+    $html .= "&amp;user=" . urlencode($_GET['user']);
   }
   $html .= "'>\n";
   $editseasons = getEditSeasons($userid);
   $html .= "<table><tr><td><select multiple='multiple' name='remeditseasonslist[]' id='remeditseasonslist' style='height:200px;width:250px'>\n";
   foreach ($editseasons as $season => $id) {
-    $html .= "<option value='".utf8entities($id)."'>".utf8entities(SeasonName($season))."</option>";
+    $html .= "<option value='" . utf8entities($id) . "'>" . utf8entities(SeasonName($season)) . "</option>";
   }
   $html .= "</select></td><td>\n";
-  $html .= "<p><input class='button' type='submit' name='remeditseasons' value='"._("Hide")." &raquo;' /><br />
-	      <input class='button' type='submit' name='addeditseasons' value='&laquo; "._("Show")."' /></p></td><td>\n";
+  $html .= "<p><input class='button' type='submit' name='remeditseasons' value='" . _("Hide") .
+    " &raquo;' /><br />
+	      <input class='button' type='submit' name='addeditseasons' value='&laquo; " . _("Show") . "' /></p></td><td>\n";
 
   $html .= "<select multiple='multiple' name='addeditseasonslist[]' id='addeditseasonslist' style='height:200px;width:250px'>\n";
   $seasons = Seasons();
-  while($season = mysqli_fetch_assoc($seasons)){
+  while ($season = mysqli_fetch_assoc($seasons)) {
     if (empty($editseasons[$season['season_id']])) {
-      $html .= "<option value='".urlencode($season['season_id'])."'>".utf8entities($season['name'])."</option>";
+      $html .= "<option value='" . urlencode($season['season_id']) . "'>" . utf8entities($season['name']) . "</option>";
     }
   }
   $html .= "</select></td></tr></table></form>\n";
 
   $html .= "<hr />\n";
 
-  $html .= "<h2>"._("Show pools")."</h2>\n";
+  $html .= "<h2>" . _("Show pools") . "</h2>\n";
   $poolselectors = getPoolselectors($userid);
   if (!empty($poolselectors)) {
     $html .= "<form method='post' action='?view=user/userinfo";
     if (!empty($_GET['user'])) {
-      $html .= "&amp;user=".urlencode($_GET['user']);
+      $html .= "&amp;user=" . urlencode($_GET['user']);
     }
     $html .= "'>\n<table cellpadding='2'>\n";
     foreach ($poolselectors as $selector => $param) {
       if ($selector == 'currentseason') {
         $html .= "<tr><td>" . _("Current event");
-        $html .= "</td><td><input class='deletebutton' src='images/remove.png' type='image' name='rempoolselector' value='X' alt='X' onclick='setId(" .
-          $param . ", \"deleteSelectorId\");'/></td></tr>\n";
+        $html .= "</td><td>" . getDeleteButton('rempoolselector', $param, 'deleteSelectorId') . "</td></tr>\n";
       } else {
         foreach ($param as $subject => $propertyId) {
           $html .= "<tr><td>";
@@ -373,86 +388,85 @@ if ($_SESSION['uid'] != "anonymous") {
             $html .= _("Pool");
             $html .= " (" . utf8entities(U_(PoolSeriesName($subject)) . ", " . U_(PoolName($subject))) . ")";
           }
-          $html .= "</td><td><input class='deletebutton' src='images/remove.png' type='image' name='rempoolselector' value='X' alt='X' onclick='setId(" .
-            $propertyId . ", \"deleteSelectorId\");'/></td></tr>\n";
+          $html .= "</td><td>" . getDeleteButton('rempoolselector', $propertyId, 'deleteSelectorId') . "</td></tr>\n";
         }
       }
     }
     $html .= "<tr><td><input type='hidden' id='deleteSelectorId' name='deleteSelectorId'/></td><td></td></tr>";
     $html .= "</table></form>";
   }
-  $html .= "<form method='get' action='?view=user/select_poolselector";
-  if (!empty($_GET['user'])) {
-    $html .= "&amp;user=".urlencode($_GET['user']);
-  }
-  $html .= "'>";
-  $html .= "<p><select class='dropdown' name='selectortype'>\n";
-  $html .= "<option value='currentseason'>"._("Current event")."</option>\n";
-  $html .= "<option value='team'>". _("Team pools")."</option>\n";
-  $html .= "<option value='season'>"._("Event")."</option>\n";
-  $html .= "<option value='series'>"._("Division")."</option>\n";
-  $html .= "<option value='pool'>"._("Pool")."</option>\n";
-  $html .= "</select>\n";
-  $html .= "<input type='hidden' name='view' value='user/select_poolselector'/>\n";
-  if (!empty($_GET['user'])) {
-    $html .= "<input type='hidden' name='user' value='".urlencode($_GET['user'])."'/>\n";
-  }
-  $html .= "<input class='button' type='submit' name='addpoolselector' value='"._("Add")."...' /></p>\n";
-  $html .= "</form>\n";
-
 }
+
+$html .= "<form method='get' action='?view=user/select_poolselector";
+if (!empty($_GET['user'])) {
+  $html .= "&amp;user=" . urlencode($_GET['user']);
+}
+$html .= "'>";
+$html .= "<p><select class='dropdown' name='selectortype'>\n";
+$html .= "<option value='currentseason'>" . _("Current event") . "</option>\n";
+$html .= "<option value='team'>" . _("Team pools") . "</option>\n";
+$html .= "<option value='season'>" . _("Event") . "</option>\n";
+$html .= "<option value='series'>" . _("Division") . "</option>\n";
+$html .= "<option value='pool'>" . _("Pool") . "</option>\n";
+$html .= "</select>\n";
+$html .= "<input type='hidden' name='view' value='user/select_poolselector'/>\n";
+if (!empty($_GET['user'])) {
+  $html .= "<input type='hidden' name='user' value='" . urlencode($_GET['user']) . "'/>\n";
+}
+$html .= "<input class='button' type='submit' name='addpoolselector' value='" . _("Add") . "...' /></p>\n";
+$html .= "</form>\n";
 
 if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
   $html .= "<hr />\n";
 
-  $html .= "<h2>"._("User roles")."</h2>\n";
+  $html .= "<h2>" . _("User roles") . "</h2>\n";
   $userroles = getUserroles($userid);
   if (!empty($userroles)) {
     $html .= "<form method='post' action='?view=user/userinfo";
     if (!empty($_GET['user'])) {
-      $html .= "&amp;user=".urlencode($_GET['user']);
+      $html .= "&amp;user=" . urlencode($_GET['user']);
     }
     $html .= "'>\n<table>\n";
     foreach ($userroles as $role => $param) {
       if ($role == 'superadmin') {
         $html .= "<tr><td>";
         $html .= _("Administrator");
-        $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$param.", \"deleteRoleId\");'/></td></tr>\n";
+        $html .= "</td><td>" . getDeleteButton('remuserrole', $param, 'deleteRoleId') . "</td></tr>\n";
       } elseif ($role == 'translationadmin') {
         $html .= "<tr><td>";
         $html .= _("Translation administrator");
-        $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$param.", \"deleteRoleId\");'/></td></tr>\n";
+        $html .= "</td><td>" . getDeleteButton('remuserrole', $param, 'deleteRoleId') . "</td></tr>\n";
       } elseif ($role == 'useradmin') {
         $html .= "<tr><td>";
         $html .= _("User administrator");
-        $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$param.", \"deleteRoleId\");'/></td></tr>\n";
+        $html .= "</td><td>" . getDeleteButton('remuserrole', $param, 'deleteRoleId') . "</td></tr>\n";
       } elseif ($role == 'teamadmin') {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Team contact person");
-          $html .= " (".utf8entities(getTeamName($akey)).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities(getTeamName($akey)) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'seasonadmin') {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Event responsible");
-          $html .= " (".utf8entities(SeasonName($akey)).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities(SeasonName($akey)) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'seriesadmin' || $role == 'series') {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Division organizer");
-          $html .= " (".utf8entities(getSeriesName($akey)).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities(getSeriesName($akey)) . ", ". SeasonName(SeriesSeasonId($akey)) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'accradmin') {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Accreditation official");
-          $html .= " (".utf8entities(getTeamName($akey)).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities(getTeamName($akey)) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'resadmin') {
         foreach ($param as $akey => $prop_id) {
@@ -460,8 +474,8 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
           $html .= _("Scheduling right");
           $reservationInfo = ReservationInfo($akey);
           $resName = ReservationName($reservationInfo);
-          $html .= " (".$resName.")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . $resName . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'resgameadmin') {
         foreach ($param as $akey => $prop_id) {
@@ -469,8 +483,8 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
           $html .= _("Reservation game input responsible");
           $reservationInfo = ReservationInfo($akey);
           $resName = ReservationName($reservationInfo);
-          $html .= " (".$resName.")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . $resName . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'gameadmin') {
         foreach ($param as $akey => $prop_id) {
@@ -478,25 +492,28 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
           $html .= _("Game input responsibility");
           $gameInfo = GameInfo($akey);
           $gameName = GameName($gameInfo);
-          $html .= " (".utf8entities($gameName).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities($gameName) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'playeradmin') {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Player profile administrator");
           $playerInfo = PlayerProfile($akey);
-          $html .= " (".utf8entities($playerInfo['firstname']." ".$playerInfo['lastname']).")";
-          $html .= "</td><td><input class='deletebutton' type='image' src='images/remove.png' name='remuserrole' value='X' alt='X' onclick='setId(".$prop_id.", \"deleteRoleId\");'/></td></tr>\n";
+          $html .= " (" . utf8entities($playerInfo['firstname'] . " " . $playerInfo['lastname']) . ")";
+          $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
           if (IsFacebookEnabled() && $_SESSION['uid'] == $userid) {
             if (FBLoggedIn($fb_cookie, $fb_props)) {
               if (isset($fb_props['facebookplayer'][$akey])) {
-                $html .= "<tr><td>&raquo; "._("Do not publish the game events of this player on my Facebook feed");
-                $html .= "</td><td><input class='button' type='submit' name='unlinkfbplayer' value='"._("Unpublish")."' onclick='setId(".$akey.", \"fbPlayerId\");'/><br/>\n";
-                $html .= "<a href='?view=user/facebookpublishing&amp;player=".$akey."'>"._("Options")."...</a></td></tr>\n";
+                $html .= "<tr><td>&raquo; " . _("Do not publish the game events of this player on my Facebook feed");
+                $html .= "</td><td><input class='button' type='submit' name='unlinkfbplayer' value='" . _("Unpublish") .
+                  "' onclick='setId1(\"fbPlayerId\", " . $akey . ");'/><br/>\n";
+                $html .= "<a href='?view=user/facebookpublishing&amp;player=" . $akey . "'>" . _("Options") .
+                  "...</a></td></tr>\n";
               } else {
-                $html .= "<tr><td>&raquo; "._("Publish the game events of this player on my Facebook feed");
-                $html .= "</td><td><input class='button' type='submit' name='linkfbplayer' value='"._("Publish")."' onclick='setId(".$akey.", \"fbPlayerId\");'/></td></tr>\n";
+                $html .= "<tr><td>&raquo; " . _("Publish the game events of this player on my Facebook feed");
+                $html .= "</td><td><input class='button' type='submit' name='linkfbplayer' value='" . _("Publish") .
+                  "' onclick='setId1(\"fbPlayerId\", " . $akey . ");'/></td></tr>\n";
               }
             }
           }
@@ -509,6 +526,7 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
     $html .= "</form>\n";
   }
 }
+
 if (hasEditUsersRight()) {
   $html .= "<form method='get' action='?view=admin/select_userrole";
   if (!empty($_GET['user'])) {
