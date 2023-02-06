@@ -973,21 +973,25 @@ function TimeTableSetMoveTimes($season, $times) {
   if (isSuperAdmin() || isSeasonAdmin($season)) {
     for ($from = 0; $from < count($times); $from++) {
       for ($to = 0; $to < count($times); $to++) {
-        $query = sprintf(" 
-          INSERT INTO uo_movingtime
-          (season, fromlocation, fromfield, tolocation, tofield, time) 
-          VALUES ('%s', %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE time=%d", 
-            mysql_adapt_real_escape_string($season), 
-            (int) $times[$from]['location'], 
-            (int) $times[$from]['field'],
-            (int) $times[$to]['location'], 
-            (int) $times[$to]['field'],
-            (int) $times[$from][$to],
-            (int) $times[$from][$to]) ;
-    DBQuery($query);
+        if ((int) $times[$from][$to] == 0) {
+          $query = sprintf(
+            "DELETE FROM `uo_movingtime` WHERE 
+            `season`='%s' AND `fromlocation`=%d AND `fromfield`=%d AND `tolocation`=%d AND `tofield`=%d",
+            mysql_adapt_real_escape_string($season), (int) $times[$from]['location'], (int) $times[$from]['field'],
+            (int) $times[$to]['location'], (int) $times[$to]['field']);
+          DBQuery($query);
+        } else {
+          $query = sprintf(
+            "INSERT INTO `uo_movingtime`
+            (`season`, `fromlocation`, `fromfield`, `tolocation`, `tofield`, `time`) 
+            VALUES ('%s', %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE `time`=%d", mysql_adapt_real_escape_string($season),
+            (int) $times[$from]['location'], (int) $times[$from]['field'], (int) $times[$to]['location'],
+            (int) $times[$to]['field'], (int) $times[$from][$to], (int) $times[$from][$to]);
+          DBQuery($query);
+        }
       }
     }
-  }else {
+  } else {
     die('Insufficient rights to edit moving times');
   }
 }

@@ -800,6 +800,10 @@ function upgrade83() {
   // SET ip=REGEXP_REPLACE(REGEXP_REPLACE(ip, '\.[0-9]*$', '.0'), ':[0-9a-f]*:[0-9a-f]*$', ':0:0')");
 }
 
+function upgrade84() {
+  runQuery("DELETE FROM `uo_movingtime` WHERE `time`=0");
+}
+
 function runQuery($query) {
   $result = mysql_adapt_query($query);
   if (!$result) {
