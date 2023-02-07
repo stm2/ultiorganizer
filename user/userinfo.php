@@ -333,30 +333,30 @@ $html .= file_get_contents('script/disable_enter.js.inc');
 
   $html .= "<hr />\n";
 
-  $html .= "<h2>" . _("Show administration responsibilities") . "</h2>\n";
+  $html .= "<h2>" . _("Show administration menus") . "</h2>\n";
   $html .= "<form method='post' action='?view=user/userinfo";
   if (!empty($_GET['user'])) {
     $html .= "&amp;user=" . urlencode($_GET['user']);
   }
   $html .= "'>\n";
   $editseasons = getEditSeasons($userid);
-  $html .= "<table><tr><td><select multiple='multiple' name='remeditseasonslist[]' id='remeditseasonslist' style='height:200px;width:250px'>\n";
+  $html .= "<div class='addremove'><div class='arleft'><select multiple='multiple' name='remeditseasonslist[]' id='remeditseasonslist'>\n";
   foreach ($editseasons as $season => $id) {
     $html .= "<option value='" . utf8entities($id) . "'>" . utf8entities(SeasonName($season)) . "</option>";
   }
-  $html .= "</select></td><td>\n";
-  $html .= "<p><input class='button' type='submit' name='remeditseasons' value='" . _("Hide") .
+  $html .= "</select><p>" . _("These tournaments are visible in your menu.") . "</p></div>\n";
+  $html .= "<div class='arbuttons'><input class='button' type='submit' name='remeditseasons' value='" . _("Hide") .
     " &raquo;' /><br />
-	      <input class='button' type='submit' name='addeditseasons' value='&laquo; " . _("Show") . "' /></p></td><td>\n";
+	      <input class='button' type='submit' name='addeditseasons' value='&laquo; " . _("Show") . "' /></div>\n";
 
-  $html .= "<select multiple='multiple' name='addeditseasonslist[]' id='addeditseasonslist' style='height:200px;width:250px'>\n";
+  $html .= "<div class='arright'><select multiple='multiple' name='addeditseasonslist[]' id='addeditseasonslist'>\n";
   $seasons = Seasons();
   while ($season = mysqli_fetch_assoc($seasons)) {
     if (empty($editseasons[$season['season_id']])) {
       $html .= "<option value='" . urlencode($season['season_id']) . "'>" . utf8entities($season['name']) . "</option>";
     }
   }
-  $html .= "</select></td></tr></table></form>\n";
+  $html .= "</select><p>" . _("These tournaments are hidden.") . "</p></div></div>\n";
 
   $html .= "<hr />\n";
 

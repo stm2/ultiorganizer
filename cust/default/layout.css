@@ -668,3 +668,33 @@ div.tabcell {
   margin-top: 5px;
   margin-bottom: 5px;
 }
+
+.addremove {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.addremove div.arleft, div.arright {
+  flex: 1 1 30%;
+}
+
+.addremove div.arbuttons {
+  flex: 0 0 5%;
+  padding-left: 1ex;
+  padding-right: 1ex; 
+}
+
+.addremove div.arbuttons input {
+  width:100%;
+}
+
+.addremove>div>select {
+  width: 100%;
+  min-width: 10em;
+  min-height: 15em;
+}
+
+.addremove>div>p {
+  width: 100%;
+  min-width: 10em;
+}
