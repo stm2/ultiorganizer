@@ -8,14 +8,11 @@ include_once 'lib/configuration.functions.php';
 $LAYOUT_ID = SEASONADMIN;
 $info = SeasonInfo($_GET["season"]);
 
+if (empty($info))
+  die("invalid season " . $_GET["season"]);
+
 $title = _("Event").": ".utf8entities(U_($info['name']));
 $html = "";
-
-//common page
-pageTopHeadOpen($title);
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
 
 $html .=  "<h2>".utf8entities(U_($info['name']))."</h2>\n";
 $html .=  "<table style='white-space: nowrap;' border='0'>\n";
@@ -110,8 +107,5 @@ $html .= "<a href='?view=admin/eventdataexport&amp;season=".$info['season_id']."
 $html .= "<a href='?view=admin/eventdataimport&amp;season=".$info['season_id']."'>"._("Import event data")."</a>";
 $html .=  "</p>";
 
-echo $html;
-
-contentEnd();
-pageEnd();
+showPage($title, $html);
 ?>
