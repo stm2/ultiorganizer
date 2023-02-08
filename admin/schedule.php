@@ -443,7 +443,9 @@ if (!empty($zeroGames)) {
       gamePoolName($zeroGames[0])) ."</p>";
 }
 echo "</td></tr></table>\n";
-echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a>";
+echo "<p><a href='?view=admin/movingtimes&season=$seasonId&reservations=" . implode(',', $reservations) . "'>" .
+  _("Manage transfer times") . "</a><br />";
+echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></p>";
 ?>
 <script type="text/javascript">
 //<![CDATA[

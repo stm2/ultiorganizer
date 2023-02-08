@@ -345,7 +345,7 @@ function SeasonReservationgroups($seasonId) {
  *          uo_season.season_id
  * @return array php array of reservations
  */
-function SeasonReservationLocations($seasonId, $group = "all") {
+function SeasonReservationLocations($seasonId, $group = "__all") {
   $query = sprintf(
     "
 		SELECT DISTINCT pr.location, pl.name, pr.fieldname
@@ -353,7 +353,7 @@ function SeasonReservationLocations($seasonId, $group = "all") {
         LEFT JOIN uo_location pl ON (pr.location=pl.id)
 		WHERE pr.season='%s'", mysql_adapt_real_escape_string($seasonId));
 
-  if ($group != "all") {
+  if ($group != "__all") {
     $query .= sprintf(" AND pr.reservationgroup = '%s'", mysql_adapt_real_escape_string($group));
   }
   $query .= "ORDER BY pr.location, pr.fieldname+0";
