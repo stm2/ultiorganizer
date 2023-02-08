@@ -4,7 +4,6 @@ include_once $include_prefix.'lib/player.functions.php';
 include_once $include_prefix.'lib/common.functions.php';
 include_once $include_prefix.'lib/accreditation.functions.php';
 
-$LAYOUT_ID = TEAMPLAYERS;
 $teamId=0;
 $gameId=0;
 $title = _("Roster");
@@ -125,7 +124,7 @@ function validNumber(field)
   include_once 'cust/default/teamplayers.functions.php';
 //}
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $menutabs[_("Roster")]= "?view=user/teamplayers&team=$teamId";

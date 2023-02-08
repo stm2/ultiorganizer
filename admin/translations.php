@@ -1,7 +1,6 @@
 <?php
 include_once 'lib/translation.functions.php';
 
-$LAYOUT_ID = TRANSLATIONS;
 
 $title = _("Translations");	
 
@@ -74,7 +73,7 @@ if (is_file('cust/'.CUSTOMIZATIONS.'/teamplayers.functions.php')) {
 	include_once 'cust/'.CUSTOMIZATIONS.'/teamplayers.functions.php';
 }
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 //help

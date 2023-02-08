@@ -3,7 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = SEASONPOOLS;
 $seriesId = 0;
 $season = 0;
 $title = _("Create SMS");
@@ -25,7 +24,7 @@ if(!empty($_POST["pool"]))
 //common page
 pageTopHeadOpen($title);
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 

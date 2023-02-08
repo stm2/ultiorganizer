@@ -5,7 +5,6 @@ include_once 'lib/series.functions.php';
 include_once 'lib/common.functions.php';
 include_once 'lib/configuration.functions.php';
 
-$LAYOUT_ID = SEASONADMIN;
 $info = SeasonInfo($_GET["season"]);
 
 if (empty($info))

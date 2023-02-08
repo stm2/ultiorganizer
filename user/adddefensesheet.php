@@ -10,7 +10,6 @@ if (version_compare(PHP_VERSION, '5.0.0', '>')) {
 	include_once 'lib/twitter.functions.php';
 }
 
-$LAYOUT_ID = ADDDEFENSESHEET;
 $title = _("Feed in defense sheet");
 $maxtimeouts = 6;
 $maxdefenses = 31;

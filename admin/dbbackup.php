@@ -75,7 +75,6 @@ if (isset($_POST['backup']) && !empty($_POST['tables']) && isSuperAdmin()){
 
 //common page
 $title = _("Database backup");
-$LAYOUT_ID = DBBACKUP;
 
 if(isSuperAdmin()){
 	

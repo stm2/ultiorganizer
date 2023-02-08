@@ -4,7 +4,6 @@ include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 
-$LAYOUT_ID = SERIESTATUS;
 
 $title = _("Statistics")." ";
 $viewUrl="?view=seriesstatus";

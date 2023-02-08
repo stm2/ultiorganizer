@@ -3,7 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
-$LAYOUT_ID = POOLMOVES;
 
 if (isset($_SERVER['HTTP_REFERER']))
   $backurl = utf8entities($_SERVER['HTTP_REFERER']);
@@ -74,7 +73,7 @@ function checkMove2(frompool, infield, pteamname)
 </script>
 <?php
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 $poolinfo = PoolInfo($poolId);
 $basepool = 0;

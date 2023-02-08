@@ -3,7 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/configuration.functions.php';
 require_once('lib/twitteroauth/twitteroauth.php');
 
-$LAYOUT_ID = TWITTERCONFIGURATION;
 $title = _("Twitter configuration");
 $html = "";
 $season = $_GET["season"];
@@ -43,7 +42,7 @@ function setId(id1,id2) {
 </script>
 <?php
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .= "<h2>". _("Twitter accounts to publish game results") ."</h2>";

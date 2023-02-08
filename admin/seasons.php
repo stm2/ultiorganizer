@@ -5,7 +5,6 @@ include_once 'lib/series.functions.php';
 include_once 'lib/common.functions.php';
 include_once 'lib/configuration.functions.php';
 
-$LAYOUT_ID = SEASONS;
 
 $title = _("Events");
 $html = "";
@@ -79,7 +78,7 @@ function setId(id) {
 </script>
 <?php
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .=  "<form method='post' action='?view=admin/seasons'>";

@@ -2,16 +2,14 @@
 include_once 'lib/season.functions.php';
 include_once 'lib/statistical.functions.php';
 
-$LAYOUT_ID = SEASONSTATISTICS;
 $html = "";
 
 $season_stats = AllSeasonStatistics();
 $series_stats = ALLSeriesStatistics();
 //common page
 $title = _("Event statistics");
-$LAYOUT_ID = HELP;
 pageTop($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .= "<h3>"._("Events")."</h3>\n";

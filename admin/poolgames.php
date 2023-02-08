@@ -7,7 +7,6 @@ include_once 'lib/team.functions.php';
 include_once 'lib/game.functions.php';
 include_once 'lib/reservation.functions.php';
 
-$LAYOUT_ID = POOLGAMES;
 
 $poolId = $_GET["pool"];
 $season = $_GET["season"];
@@ -22,7 +21,7 @@ $html = "";
 // common page
 pageTopHeadOpen($title);
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .= "<h2>" . U_(PoolName($poolId)) . "</h2>";

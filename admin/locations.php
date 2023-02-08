@@ -109,7 +109,6 @@ if (isset($_POST['save'])) {
 
 // common page
 $title = _("Game locations");
-$LAYOUT_ID = LOCATIONS;
 $html = '';
 
 include_once 'lib/yui.functions.php';

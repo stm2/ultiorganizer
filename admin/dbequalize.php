@@ -4,7 +4,6 @@ include_once 'lib/team.functions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/series.functions.php';
-$LAYOUT_ID = DBEQUALIZER;
 $title = _("Database equalization");
 $filter = 'teams';
 $baseurl = "?view=admin/dbequalize";

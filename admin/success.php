@@ -4,9 +4,8 @@ $html = "";
 
 //common page
 $title = "";
-$LAYOUT_ID = SUCCESS;
 pageTop($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 if(isset($_SESSION['title'])){

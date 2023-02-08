@@ -3,7 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = SEASONSERIES;
 
 $season = $_GET["season"];
 $html = "";
@@ -50,7 +49,7 @@ if(!empty($_POST['remove_x'])){
 setFocus('name0');
 pageTopHeadOpen($title);
 pageTopHeadClose($title, false, $setFocus);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .= "<form method='post' action='?view=admin/seasonseries&amp;season=$season'>";

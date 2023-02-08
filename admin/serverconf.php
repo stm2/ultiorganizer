@@ -3,7 +3,6 @@ include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
-$LAYOUT_ID = SERVERCONFIGURATION;
 $title = _("Server configuration");
 $html = "";
 
@@ -181,7 +180,7 @@ $settings = GetServerConf();
 
 //common page
 pageTop($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 $html .="<p><a href='admin/test.php'>"._("Show phpinfo()")."</a></p>\n";
 

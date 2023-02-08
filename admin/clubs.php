@@ -4,7 +4,6 @@ include_once 'lib/club.functions.php';
 include_once 'lib/country.functions.php';
 
 $title = _("Clubs and Countries");
-$LAYOUT_ID = CLUBS;
 
 $html = "";
 

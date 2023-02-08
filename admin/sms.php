@@ -5,7 +5,6 @@ include_once 'lib/series.functions.php';
 include_once 'lib/player.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = EVENTVIEWER;
 $title = _("SMS handling");
 //$html = "";
 //

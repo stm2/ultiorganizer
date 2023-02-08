@@ -1,5 +1,4 @@
 <?php
-$LAYOUT_ID = FBPUBLISH;
 
 // common page
 $userid = $_SESSION['uid'];
@@ -46,7 +45,7 @@ if (!IsFacebookEnabled()) {
   
   pageTopHeadOpen($title);
   pageTopHeadClose($title, false);
-  leftMenu($LAYOUT_ID);
+  leftMenu();
   contentStart();
   // help
   $help = "<p>" . _("Facebook feed messages") . ":</p>

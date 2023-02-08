@@ -7,7 +7,6 @@ include_once 'lib/team.functions.php';
 include_once 'lib/game.functions.php';
 include_once 'lib/reservation.functions.php';
 
-$LAYOUT_ID = POOLGAMES;
 
 if(!empty($_GET["season"]))
 	$season = $_GET["season"];
@@ -74,7 +73,7 @@ if(!empty($_POST['generate'])){
 //common page
 pageTopHeadOpen($title);
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 $html .= "<form method='post' action='?view=admin/seriesgames&amp;season=$season&amp;series=$seriesId'>";

@@ -3,7 +3,6 @@ include_once 'lib/season.functions.php';
 include_once 'lib/statistical.functions.php';
 
 $title = _("Event statistics");
-$LAYOUT_ID = CALCSEASONSTATISTICS;
 $html = "";
 
 $season = $_GET["season"];
@@ -36,7 +35,7 @@ include_once 'lib/yui.functions.php';
 echo yuiLoad(array("animation","dragdrop", "connection"));
 
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 $html .= "<form method='post' action='?view=admin/stats&amp;season=$season'>\n";
 $html .= "<p>"._("Calculation of statistics takes some time; please wait without closing browser.")."</p>\n";

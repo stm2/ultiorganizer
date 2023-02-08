@@ -1,7 +1,6 @@
 <?php
 
 // These are needed for the menu structure
-$LAYOUT_ID = EXECUTESQL;
 $title = _("Run SQL");
 $query = "";
 $html = "";
@@ -139,7 +138,7 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
 
 // common page
 pageTop($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 echo $html;

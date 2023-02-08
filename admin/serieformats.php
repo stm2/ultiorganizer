@@ -2,7 +2,6 @@
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = SERIEFORMATS;
 
 $title = _("Rule Templates");
 $html = "";
@@ -10,7 +9,7 @@ $html = "";
 //common page
 pageTopHeadOpen($title);
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 //process itself on submit

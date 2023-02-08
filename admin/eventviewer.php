@@ -6,7 +6,6 @@ include_once 'lib/player.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/reservation.functions.php';
 
-$LAYOUT_ID = EVENTVIEWER;
 $title = _("Event log");
 $html = "";
 

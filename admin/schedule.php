@@ -6,7 +6,6 @@ include_once 'lib/common.functions.php';
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 
-$LAYOUT_ID = SCHEDULE;
 $title = _("Scheduling");
 
 $reservations = array();

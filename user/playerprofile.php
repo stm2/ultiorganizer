@@ -5,7 +5,6 @@ include_once $include_prefix.'lib/season.functions.php';
 include_once $include_prefix.'lib/player.functions.php';
 include_once $include_prefix.'lib/pool.functions.php';
 include_once $include_prefix.'lib/reservation.functions.php';
-$LAYOUT_ID = PLAYERPROFILE;
 $max_file_size = 5 * 1024 * 1024; //5 MB
 $max_new_links = 3;
 $html = "";
@@ -159,7 +158,7 @@ $pp = array(
 	include_once 'script/common.js.inc';
 	include_once 'lib/yui.functions.php';
 	pageTopHeadClose($title);
-	leftMenu($LAYOUT_ID);
+	leftMenu();
 	contentStart();
 
 	//content

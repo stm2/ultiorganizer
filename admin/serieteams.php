@@ -6,7 +6,6 @@ include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 include_once 'lib/game.functions.php';
 include_once 'lib/common.functions.php';
-$LAYOUT_ID = SERIETEAMS;
 $backurl = utf8entities(isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:"");
 
 $seriesId = 0;
@@ -120,7 +119,7 @@ function setId(id) {
 </script>
 <?php
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 echo "<form method='post' action='?view=admin/serieteams&amp;series=$seriesId&amp;pool=$poolId&amp;season=$season'>";

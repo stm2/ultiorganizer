@@ -7,7 +7,6 @@ include_once 'lib/pool.functions.php';
 include_once 'lib/common.functions.php';
 require_once ("lib/HSVClass.php");
 
-$LAYOUT_ID = SCHEDULE;
 $title = _("Team selection");
 define("TEAM_HEIGHT", 15);
 
@@ -32,7 +31,7 @@ pageTopHeadOpen($title);
 include_once 'lib/yui.functions.php';
 echo yuiLoad(array("utilities", "dragdrop"));
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 
 echo JavaScriptWarning();

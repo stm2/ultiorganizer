@@ -12,7 +12,6 @@ if (version_compare(PHP_VERSION, '5.0.0', '>')) {
 
 $gameId = intval($_GET["game"]);
 
-$LAYOUT_ID = ADDSCORESHEET;
 $title = _("Feed in score sheet");
 $maxtimeouts = 6;
 $maxscores = 41;

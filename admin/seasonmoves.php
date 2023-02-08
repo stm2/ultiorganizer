@@ -4,7 +4,6 @@ include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/yui.functions.php';
 
-$LAYOUT_ID = SEASONPOOLS;
 $seriesId = 0;
 $season = 0;
 $order = "to";

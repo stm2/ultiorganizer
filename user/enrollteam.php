@@ -4,7 +4,6 @@ include_once $include_prefix.'lib/series.functions.php';
 include_once $include_prefix.'lib/club.functions.php';
 include_once $include_prefix.'lib/country.functions.php';
 
-$LAYOUT_ID = ENROLLTEAM;
 if (empty($_GET['season'])) {
 	die(_("Season mandatory"));
 }
@@ -64,7 +63,7 @@ function setId(id, name)
 </script>
 <?php
 pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
+leftMenu();
 contentStart();
 //content
 $result = SeasonSeries($season);
