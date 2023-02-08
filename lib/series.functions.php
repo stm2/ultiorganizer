@@ -7,7 +7,7 @@ include_once $include_prefix . 'lib/country.functions.php';
  *
  * @return uo_series.series_id
  */
-function CurrentSeries($season, &$seriesId = null, &$single = 0) {
+function CurrentSeries($season, &$seriesId, &$single, $title = null) {
   $seriesId = null;
   $single = 0;
   if (!empty($_GET["series"])) {
@@ -43,6 +43,11 @@ function CurrentSeries($season, &$seriesId = null, &$single = 0) {
     if (!isset($_GET['series']))
       die("series parameter required");
     $seriesId = $_GET['series'];
+  }
+  
+  if ($seriesId <= 0) {
+    showPage($title ?? _("Error"), "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
+    exit();
   }
 
   return $seriesId;

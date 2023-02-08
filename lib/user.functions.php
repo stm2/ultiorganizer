@@ -129,13 +129,12 @@ function ensureLogin() {
   if (empty($_SESSION['uid']) || $_SESSION['uid'] === "anonymous") {
     if (isset($_POST) && !empty($_POST)) {
       // we must login, then reload this page
-      $html = "<p class='warning'>" .
-        _("You must login to access this page.") . "</p>\n";
-      
+      $html = "<p class='warning'>" . _("You must login to access this page.") . "</p>\n";
+
       // non-JS solution: login in other window, then reload manually
       $html .= "<noscript><p><a href='?view={$mobile}login' target='_blank'>" .
-      _("Please open this login link in a new window, then reload this page.") . "</a></noscript>";
-      
+        _("Please open this login link in a new window, then reload this page.") . "</a></noscript>";
+
       // JS solution: login asynchronosly, then reload
       $html .= "<div id='loginwrapperpopup' style='display:none'>";
       $html .= loginForm("", "", "popup");
@@ -144,35 +143,61 @@ function ensureLogin() {
       showPage(_("Please login"), $html);
       exit();
     }
-    
+
     // login and reload with GET
     header("location:?view=${mobile}login&query=$query&privileged=1");
   }
+}
+
+function ensurePrivileges($check, $title = null, $message = null, $type = null, $options = null) {
+  ensureLogin();
+
+  if (gettype($check) == 'object') {
+    if ($check()) {
+      return true;
+    }
+  } else {
+    if ($check)
+      return true;
+  }
+
+  showUnprivileged($title, $message, $type, $options);
 }
 
 function showUnprivileged($title, $message, $type = null, $options = null) {
   if ($title === null) {
     $title = _("Insufficient rights");
   }
-  
+
   if ($message === null) {
     $message = "<p>" . _("Insufficient rights") . "</p>\n";
     switch ($type) {
-      case "season":
-        $message .= "<p>" . sprintf(_("You are not a season admin for %s."), $options) . "</p>";
-        break;
-      case "season":
-        $message .= "<p>" . sprintf(_("You cannot change series for season %s."), $options) . "</p>";
-        break;
-      default:
-        $message .= "<p>" . _("You are not allowed to do this.") . "</p>";
+    case "season":
+      $message .= "<p>" . sprintf(_("You are not a season admin for %s."), $options) . "</p>";
+      break;
+    case "season":
+      $message .= "<p>" . sprintf(_("You cannot change series for season %s."), $options) . "</p>";
+      break;
+    case "season_series":
+      $message .= "<p>" . sprintf(_("You cannot change any series for season %s."), $options) . "</p>";
+      break;
+    case "series":
+      $message .= "<p>" . sprintf(_("You cannot edit division %s."), SeriesName($options)) . "</p>";
+      break;
+    default:
+      $message .= "<p>" . _("You are not allowed to do this.") . "</p>";
     }
   }
   
-  $message .= "<p><a href='?view=frontpage'>" . _("Go to front page.") . "</p>\n";
+  $backlink = utf8entities($_SERVER['HTTP_REFERER']??"");
   
+  if ($backlink)
+    $backlink = "<a href='$backlink'>" . _("Return") . "</a><br />";
+
+  $message .= "<p>$backlink<a href='?view=frontpage'>" . _("Go to front page.") . "</p>\n";
+
   $message = "<h1>$title</h1>\n" . $message;
-  
+
   showPage($title, $message);
   exit();
 }
@@ -743,12 +768,7 @@ function isSuperAdmin() {
 }
 
 function ensureSuperAdmin($title = null, $message = null) {
-  ensureLogin();
-
-  if (isSuperAdmin())
-    return true;
-
-  showUnprivileged($title, $message);
+  ensurePrivileges(isSuperAdmin(), $title, $message);
 }
 
 function isTranslationAdmin() {
@@ -798,16 +818,11 @@ function isSeasonAdmin($season) {
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);
 }
 
-function ensureSeasonAdmin($season, $title=null, $super = false, $message=null) {
-  ensureLogin();
-  
-  if ($super && isSuperAdmin())
-    return true;
-
-  if (isSeasonAdmin($season))
-    return true;
-  
-  showUnprivileged($title, $message, "season", $season);
+function ensureSeasonAdmin($season, $title = null, $super = false, $message = null) {
+  return ensurePrivileges(
+    function () use ($super, $season) {
+      return ($super && isSuperAdmin()) || isSeasonAdmin($season);
+    }, $title, $message, 'season', $season);
 }
 
 function hasEditSeasonSeriesRight($season) {
@@ -816,12 +831,7 @@ function hasEditSeasonSeriesRight($season) {
 }
 
 function ensureSeasonSeriesAdmin($season, $title = null, $message = null) {
-  ensureLogin();
-
-  if (hasEditSeasonSeriesRight($season))
-    return true;
-
-  showUnprivileged($title, $message, "season_series", $season);
+  return ensurePrivileges(hasEditSeasonSeriesRight($season), $title, $message, "season_series", $season);
 }
 
 function hasEditSeriesRight($seriesId) {
@@ -829,6 +839,10 @@ function hasEditSeriesRight($seriesId) {
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
     isset($_SESSION['userproperties']['userrole']['seriesadmin'][$seriesId]);
+}
+
+function ensureEditSeriesRight($seriesId, $title = null, $message = null) {
+  return ensurePrivileges(hasEditSeriesRight($seriesId), $title, $message, "series", $seriesId);
 }
 
 function hasEditPlacesRight($season) {

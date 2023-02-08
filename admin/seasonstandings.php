@@ -9,20 +9,12 @@ include_once 'lib/pool.functions.php';
 $season = $_GET["season"];
 $single = 0;
 $series_id = -1;
-CurrentSeries($season, $series_id, $single);
+CurrentSeries($season, $series_id, $single, _("Pool Rankings"));
 
 $title = utf8entities(SeasonName($season)) . ": " . _("Pool Rankings");
 $html = "";
 
-if ($series_id <= 0) {
-  showPage($title, "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
-  die();
-}
-
-if (!hasEditSeriesRight($series_id)) {
-  showPage($title, "<p>" . _("Insufficient rights to show division stats.") . "</p>");
-  die;
-}
+ensureEditSeriesRight($series_id);
 
 $_SESSION['hide_played_pools'] = !empty($_SESSION['hide_played_pools']) ? $_SESSION['hide_played_pools'] : 0;
 
