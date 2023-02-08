@@ -6,7 +6,7 @@ include_once 'lib/timetable.functions.php';
 $urlparams = "";
 $season = "";
 $html = "";
-$group = "all";
+$group = "__all";
 if (!empty($_GET["group"])) {
   $group = $_GET["group"];
 }
@@ -33,22 +33,6 @@ if (isset($_POST['schedule']) && isset($_POST['reservations'])) {
   }
   header($url);
   exit();
-}
-if (!empty($_POST['change_times'])) {
-  $times = array();
-  foreach ($_POST['loc'] as $i => $loc) {
-    $times[$i]['location'] = $loc;
-  }
-  foreach ($_POST['field'] as $i => $field) {
-    $times[$i]['field'] = $field;
-  }
-  foreach ($_POST['move'] as $from => $row) {
-    foreach ($row as $to => $time) {
-      $times[$from][$to] = $time;
-    }
-  }
-
-  TimeTableSetMoveTimes($season, $times);
 }
 
 // common page
@@ -88,32 +72,12 @@ if (empty($season)) {
 } else {
   $html .= "<p><a href='?view=admin/addreservation&amp;season=" . $season . "'>" . _("Add reservation") . "</a> | ";
   $html .= "<a href='?view=admin/locations&amp;season=" . $season . "'>" . _("Add location") . "</a> | ";
-  $html .= "<a href='?view=admin/reservations'>" . _("Search") . "</a></p>\n";
+  $html .= "<a href='?view=admin/reservations'>" . _("Search") . "</a> | ";
+  $html .= "<a href='?view=admin/movingtimes&amp;season=" . $season . "'>" . _("Manage transfer times") . "</a></p>\n";
   $html .= "<hr />";
 
-  $groups = SeasonReservationgroups($season);
-  if (count($groups) > 1) {
-    $html .= "<p>\n";
-    foreach ($groups as $grouptmp) {
-      if ($group == $grouptmp['reservationgroup']) {
-        $html .= "<a class='groupinglink' href='?view=admin/reservations&amp;season=$season&amp;group=" .
-          urlencode($grouptmp['reservationgroup']) . "'><span class='selgroupinglink'>" .
-          U_($grouptmp['reservationgroup']) . "</span></a>";
-      } else {
-        $html .= "<a class='groupinglink' href='?view=admin/reservations&amp;season=$season&amp;group=" .
-          urlencode($grouptmp['reservationgroup']) . "'>" . U_($grouptmp['reservationgroup']) . "</a>";
-      }
-      $html .= "&nbsp;&nbsp;&nbsp;&nbsp;";
-    }
-    if ($group == "all") {
-      $html .= "<a class='groupinglink' href='?view=admin/reservations&amp;season=$season&amp;group=all'><span class='selgroupinglink'>" .
-        _("All") . "</span></a>";
-    } else {
-      $html .= "<a class='groupinglink' href='?view=admin/reservations&amp;season=$season&amp;group=all'>" . _("All") .
-        "</a>";
-    }
-    $html .= "</p>\n";
-  }
+  $html .= groupSelection($season, $group, '?view=admin/reservations');
+
   $reservations = SeasonReservations($season, $group);
   if (count($reservations) > 0) {
     $allGamesOther = 0;
@@ -167,55 +131,6 @@ if (empty($season)) {
     $html .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/>\n";
     $html .= "<input type='submit' name='schedule' value='" . utf8entities(_("Schedule selected")) . "'/>\n";
     $html .= "</p>";
-    
-    $locations = SeasonReservationLocations($season, $group);
-
-    $html .= "<h2>" . _("Transfer times") . "</h2>";
-    $html .= "<p>" . _("Minimum times (in minutes) to move between fields") . "</p>\n";
-    $i = 0;
-    foreach ($locations as $location) {
-      $html .= "<input type='hidden' id='loc$i' name='loc[]' value='" . utf8entities($location['location']) . "'/>";
-      $html .= "<input type='hidden' id='field$i' name='field[]' value='" . utf8entities($location['fieldname']) . "'/>";
-      $html .= "<p>" . ($i + 1) . ": " . $location['name'] . " " . _("Field") . " " . $location['fieldname'] . "</p>\n";
-      $i++;
-    }
-
-    $html .= "<table class='admintable transfertable'><tr><th>" . _("from\\to") . "</th>";
-    $i = 0;
-    foreach ($locations as $location) {
-      $html .= "<th>" . ($i + 1) . "</th>";
-      ++$i;
-    }
-    $html .= "</tr>\n<tr>";
-    $i = 0;
-    $movetimes = TimetableMoveTimes($season);
-
-    foreach ($locations as $location1) {
-      $html .= "<td>" . ($i + 1) . "</td>";
-      $j = 0;
-      foreach ($locations as $location2) {
-
-        $html .= "<td><input type='text' size='3' maxlength='5' value='" .
-          (TimeTableMoveTime($movetimes, $location1['location'], $location1['fieldname'], $location2['location'],
-            $location2['fieldname']) / 60) . "' id='move" . $i . "_" . $j . "' name='move[$i][$j]' onkeypress='ChgTime(" .
-          $i . "," . $j . ")'/></td>";
-        $j++;
-      }
-      $html .= "</tr>\n";
-
-      $i++;
-    }
-    /*
-     * $html .= "<input type='text' size='4' maxlength='5' value='0' id='setallvalue' name='setallvalue' />";
-     * $html .= "<input type='submit' name='setallbutton' value='" . utf8entities(_("Set all to this value")) . "'onkeypress='setTimes()'/>";
-     */
-
-    $html .= "</table>";
-
-    $html .= "<input type='submit' name='change_times' value='" . utf8entities(_("Save times")) . "'/>\n";
-
-    $html .= "</form>";
-    
   } else {
     $html .= "<p>" . _("No reservations.") . "</p>";
   }

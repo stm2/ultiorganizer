@@ -304,13 +304,13 @@ function SeasonTeams($season, $onlyvalid = true) {
  *          uo_season.season_id
  * @return array php array of reservations
  */
-function SeasonReservations($seasonId, $group = "all") {
+function SeasonReservations($seasonId, $group = "__all") {
   $query = sprintf(
     "SELECT  pr.*, pl.name FROM uo_reservation pr 
 		LEFT JOIN uo_location pl ON (pr.location=pl.id)
 		WHERE pr.season='%s'", mysql_adapt_real_escape_string($seasonId));
 
-  if ($group != "all") {
+  if ($group != "__all") {
     $query .= sprintf(" AND pr.reservationgroup = '%s'", mysql_adapt_real_escape_string($group));
   }
 

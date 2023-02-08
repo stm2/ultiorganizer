@@ -307,14 +307,10 @@ ul.pagemenu li a.right {
 .groupinglink:link, .groupinglink:visited {
   color: var(--navlinkcolor, #2d2d2d);
   background-color: var(--navlinkbgcolor, inherit);
-  text-align: left;
   text-decoration: underline;
   font-weight: bold;
-  vertical-align: bottom;
   font-variant: small-caps;
-  display: block;
   padding: 0px 5px 0 5px;
-  float: left;
 }
 
 .groupinglink:hover, .groupinglink:focus {
