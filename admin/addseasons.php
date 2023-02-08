@@ -5,7 +5,7 @@ include_once $include_prefix . 'lib/common.functions.php';
 
 $seasonId = "";
 $html = "";
-$backurl = isset($_SERVER['HTTP_REFERER'])?utf8entities($_SERVER['HTTP_REFERER']):"";
+$backurl = utf8entities($_SERVER['HTTP_REFERER']??"");
 
 //season parameters
 $sp = array(
@@ -32,7 +32,7 @@ if (!empty($_GET["season"]))
 
 // process itself on submit
 if (!empty($_POST['add'])) {
-  $backurl = utf8entities($_POST['backurl']);
+  $backurl = utf8entities($_POST['backurl'] ?? '');
   $sp['season_id'] = $_POST['season_id'];
   $sp['name'] = $_POST['seasonname'];
   $sp['type'] = $_POST['type'];
@@ -84,7 +84,7 @@ if (!empty($_POST['add'])) {
     header("location:?view=admin/seasonadmin&season=$seasonId");
   }
 }else if(!empty($_POST['save'])){
-    $backurl = utf8entities($_POST['backurl']);
+  $backurl = utf8entities($_POST['backurl']??'');
   if(empty($_POST['seasonname'])){
     $html .= "<p class='warning'>"._("Name can not be empty").".</p>";
   }else{

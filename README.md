@@ -4,12 +4,12 @@ This is the **Ultimate Organizer**, a web application for online score keeping o
 
 The files are organized as follows:
 
-  * **php files in main directory** Only index.php is called directly. All other pages are called vi http://hostname.org/?view=pageXYZ. The pages in the main directory are accessible to all users.
+  * **php files in main directory** Only index.php is called directly. All other pages are called via http://hostname.org/?view=pageXYZ. The pages in the main directory are accessible to all users.
   * **user** The pages in this directory are accessible to logged in users. Maintaining user and team info and result reporting.
   * **admin** The pages in this directory are for administrators (including series and event administrators).
   * **lib** Contains utilities used by all pages. SQL statements should only go in here!
   * **script** JavaScript files
-  * **conf** Contains config.inc.php, which contains mysql user information and passwort and other server configuration. It should be writable during installation, but later you should restrict access to it as much as possible!
+  * **conf** Contains config.inc.php, which contains mysql user information and password and other server configuration. It should be writable during installation, but later you should restrict access to it as much as possible!
   * **cust** Contains skins for customized Ultiorganizer instances.
   * **locale** Contains translations. To update, simply edit the html files. To update translations in php pages you need the gettext utilities. The simplest way to add translations is by calling `poedit locales/de_DE.utf8/LC_MESSAGES/messages.po`. Then call 'update', add translations and save.
   * **images** Contains icons, flags, and, by default, the image and media upload directory.
@@ -23,7 +23,6 @@ The files are organized as follows:
 
 # Installation
 
-To run Ultiorganizer you need a web server, php 4.4 and a mysql database.
+To run Ultiorganizer you need a web server, php 7 (confirmed to work with php 8) and a mysql database (confirmed to work with mysql 7 and 8).
 
 To install Ultiorganizer simply copy the files to your web server, call http://yourpage.com/install.php and follow the instructions.
-
