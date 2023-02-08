@@ -115,14 +115,11 @@ include_once 'lib/yui.functions.php';
 
 addHeaderCallback(
   function () {
-    global $location;
     echo yuiLoad(array("utilities", "datasource", "autocomplete"));
-
-    echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng');
   });
 
 $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
-$html .= _("Name or address") . ": <input class='input' name='search' value=''/>\n";
+$html .= "<label>" . _("Name or address") . ": <input class='input' name='search' value=''/></label>\n";
 $html .= "<input class='button' type='submit' name='searchbutton' value='" . _("Search") . "'/>\n"; // searchByNameandaddress
 $html .= "<input class='button' type='submit' name='addbutton' value='" . _('Add') . "'/>"; // addLocation
 $html .= "</form>\n";
@@ -150,6 +147,11 @@ if ($mode == 'search') {
     $location['name'] = $new_name;
   } else {
     $html .= "<div id='map'></div>\n";    
+    addHeaderCallback(
+      function () {
+        global $location;
+        echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng');
+      });
   }
   
   $html .= "<div id='editPlace'>\n";
@@ -189,9 +191,8 @@ if ($mode == 'search') {
   $html .= "</p>\n";
   $html .= "</form>";
   $html .= "</div>\n";
+  $html .= TranslationScript("name");
 }
-
-$html .= TranslationScript("name");
 
 showPage($title, $html);
 ?>
