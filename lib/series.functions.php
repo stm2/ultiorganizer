@@ -7,28 +7,45 @@ include_once $include_prefix . 'lib/country.functions.php';
  *
  * @return uo_series.series_id
  */
-function CurrentSeries($season) {
+function CurrentSeries($season, &$seriesId = null, &$single = 0) {
+  $seriesId = null;
+  $single = 0;
   if (!empty($_GET["series"])) {
     $_SESSION['division'] = $_GET["series"];
-    return $_GET["series"];
+    $seriesId = $_GET["series"];
   }
 
-  $series = SeasonSeries($season);
+  if ($seriesId == null) {
+    $series = SeasonSeries($season);
 
-  if (!empty($_SESSION['division'])) {
-    foreach ($series as $ser) {
-      if ($ser['series_id'] == $_SESSION['division']) {
-        return $_SESSION['division'];
+    if (!empty($_SESSION['division'])) {
+      foreach ($series as $ser) {
+        if ($ser['series_id'] == $_SESSION['division']) {
+          $seriesId = $_SESSION['division'];
+        }
       }
     }
   }
+  if ($seriesId == null) {
+    $series = SeasonSeries($season);
 
-  if (count($series)) {
-    $_SESSION['division'] = $series[0]['series_id'];
-    return $series[0]['series_id'];
+    if (count($series)) {
+      $_SESSION['division'] = $series[0]['series_id'];
+      $seriesId = $series[0]['series_id'];
+    }
+  }
+  if ($seriesId == null) {
+    $seriesId = -1;
   }
 
-  return -1;
+  if (iget('single') === '1') {
+    $single = 1;
+    if (!isset($_GET['series']))
+      die("series parameter required");
+    $seriesId = $_GET['series'];
+  }
+
+  return $seriesId;
 }
 
 /**

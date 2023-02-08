@@ -3,20 +3,18 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = SEASONPOOLS;
-
 $season = $_GET["season"];
-$series_id = CurrentSeries($season);
+$single = 0;
+$series_id = -1;
+CurrentSeries($season, $series_id, $single);
 
+$title = utf8entities(SeasonName($season)) . ": " . _("Pools");
 $html = "";
-$title = utf8entities(SeasonName($season)).": "._("Pools");
 
-if ($series_id<=0) {
-  showPage($title, "<p>"._("No divisions defined. Define at least one division first.")."</p>");
-  die;
+if ($series_id <= 0) {
+  showPage($title, "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
+  die();
 }
-
-$seriesinfo = SeriesInfo($series_id );
 
 //pool parameters
 $pp = array(
@@ -77,31 +75,22 @@ if (!empty($_POST['save'])) {
   }
 }
 
-$series = SeasonSeries($season);
-$pools = SeriesPools($series_id);
+$get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
+  $single = $single == 0 ? "" : "&single=1";
+  $link = "?view=admin/seasonpools&season=$season&series={$seriesId}$single";
+  return $htmlEntities ? utf8entities($link) : $link;
+};
 
-//common page
-setFocus('name0');
-pageTopHeadOpen($title);
-pageTopHeadClose($title, false, $setFocus);
-leftMenu($LAYOUT_ID);
-contentStart();
+$url_here = $get_link($season, $series_id, $single, true);
 
+$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
 
-$menutabs = array();
-foreach($series as $row){
-  if (!isset($menutabs[U_($row['name'])]))
-    $menutabs[U_($row['name'])]=array();
-  $menutabs[U_($row['name'])][]="?view=admin/seasonpools&season=".$season."&series=".$row['series_id'];
-}
-$menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
-pageMenu($menutabs,"?view=admin/seasonpools&season=".$season."&series=".$series_id);
+$seriesinfo = SeriesInfo($series_id);
 
-$html .= "<form method='post' action='?view=admin/seasonpools&amp;season=$season&amp;series=$series_id'>";
+$html .= "<form method='post' action='$url_here'>";
 
 $types = PoolTypes();
 
-$row = SeriesInfo($series_id);
 $html .= "<table class='admintable'>\n";
 $html .= "<tr><th>"._("Name")."</th>
 			<th>"._("Order")."</th>
@@ -112,13 +101,13 @@ $html .= "<tr><th>"._("Name")."</th>
 			<th>"._("Operations")."</th>
 			<th></th>
 			</tr>\n";
-$movestotal = 0;
-$cangenerateallgames = true;
 $last_ordering = 0;
 $is_continuation = "";
 $is_placement = "";
 $is_visible = "";
 $is_played = "";
+
+$pools = SeriesPools($series_id);
 
 foreach($pools as $pool){
   $info = PoolInfo($pool['pool_id']);
@@ -132,7 +121,6 @@ foreach($pools as $pool){
   if(intval($info['continuingpool'])){
     $allmoved = PoolIsAllMoved($pool['pool_id']);
     $moves = count(PoolMovingsToPool($pool['pool_id']));
-    $movestotal += $moves;
   }
   if(intval($info['placementpool']) && !intval($info['follower'])){
     $ppools = SeriesPlacementPoolIds($series_id);
@@ -238,14 +226,12 @@ foreach($pools as $pool){
       $html .= "<b><a href='?view=admin/poolgames&amp;season=".$info['season']."&amp;series=".$info['series']."&amp;pool=".$info['pool_id']."'>"._("Play-off games")."</a></b>";
     }else{
       $html .= "<a href='?view=admin/poolgames&amp;season=".$info['season']."&amp;series=".$info['series']."&amp;pool=".$info['pool_id']."'>"._("Play-off games")."</a>";
-      $cangenerateallgames = false;
     }
   }else{
     if (CanGenerateGames($info['pool_id'])) {
       $html .= "<b><a href='?view=admin/poolgames&amp;season=$season&amp;pool=".$info['pool_id']."'>"._("Game management")."</a></b>";
     }else{
       $html .= "<a href='?view=admin/poolgames&amp;season=$season&amp;pool=".$info['pool_id']."'>"._("Game management")."</a>";
-      $cangenerateallgames = false;
     }
   }
   $html .= "</td>";
@@ -309,8 +295,7 @@ $html .= "| <a href='?view=admin/seriesgames&amp;series=".$series_id."'>"._("Gen
 $html .= "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
 $html .= "</form>\n";
 
-echo $html;
-
-contentEnd();
-pageEnd();
+//common page
+setFocus('name0');
+showPage($title, $html);
 ?>

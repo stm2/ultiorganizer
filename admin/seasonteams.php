@@ -6,19 +6,18 @@ include_once 'lib/team.functions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/country.functions.php';
 
-$LAYOUT_ID = SEASONTEAMS;
-$html = "";
 $season = $_GET["season"];
-$series_id = CurrentSeries($season);
+$single = 0;
+$series_id = -1;
+CurrentSeries($season, $series_id, $single);
 
-$title = utf8entities(SeasonName($season)).": "._("Teams");
+$title = utf8entities(SeasonName($season)) . ": " . _("Teams");
+$html = "";
 
-if ($series_id<=0) {
-  showPage($title, "<p>"._("No divisions defined. Define at least one division first.")."</p>");
-  die;
+if ($series_id <= 0) {
+  showPage($title, "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
+  die();
 }
-
-$series = SeasonSeries($season);
 
 //team parameters
 $tp=array(
@@ -86,28 +85,19 @@ if(!empty($_POST['copy'])) {
   SeriesCopyTeams($series_id, $_POST["copyteams"]);
 }
 
-$series_info = SeriesInfo($series_id);
-$teams = SeriesTeams($series_id, true);
+$get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
+  $single = $single == 0 ? "" : "&single=1";
+  $link = "?view=admin/seasonteams&season=$season&series={$seriesId}$single";
+  return $htmlEntities ? utf8entities($link) : $link;
+};
 
-//common page
-setFocus('name0');
-pageTopHeadOpen($title);
-pageTopHeadClose($title, false, $setFocus);
-leftMenu($LAYOUT_ID);
-contentStart();
-
-$menutabs = array();
-foreach($series as $row){
-  if (!isset($menutabs[U_($row['name'])]))
-    $menutabs[U_($row['name'])]=array();
-  $menutabs[U_($row['name'])][]="?view=admin/seasonteams&season=".$season."&series=".$row['series_id'];
-}
-$menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
-pageMenu($menutabs,"?view=admin/seasonteams&season=".$season."&series=".$series_id);
-
-$html .= "<form method='post' action='?view=admin/seasonteams&amp;season=$season&amp;series=".$series_id."'>";
+$url_here = $get_link($season, $series_id, $single, true);
 
 $row = SeriesInfo($series_id);
+
+$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
+
+$html .= "<form method='post' action='$url_here'>";
 
 $html .= "<table class='admintable'>\n";
 
@@ -127,20 +117,15 @@ $html .= "<th></th></tr>\n";
 
 $total=0;
 
+$series_info = SeriesInfo($series_id);
+$teams = SeriesTeams($series_id, true);
+
 foreach($teams as $team){
   $team_id=$team['team_id'];
   $total++;
 
   $teaminfo = TeamFullInfo($team['team_id']);
-  if(!empty($team['name'])){
-    if (intval($seasonInfo['isnationalteams'])) {
-      $teamname = utf8entities(U_($team['name']));
-    } else {
-      $teamname = utf8entities($team['name']);
-    }
-  }else{
-    $teamname = _("No name");
-  }
+
   $html .= "<tr class='admintablerow'>";
   $html .= "<td><input class='input' size='2' maxlength='4' name='seed$team_id' value='".utf8entities($team['rank'])."'/></td>";
   $html .= "<td><input class='input' size='20' maxlength='50' name='name$team_id' value='".utf8entities($team['name'])."'/></td>";
@@ -238,7 +223,7 @@ $html .= "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p
 
 $html .= "</form>\n";
 
-echo $html;
-contentEnd();
-pageEnd();
+
+setFocus('name0');
+showPage($title, $html);
 ?>

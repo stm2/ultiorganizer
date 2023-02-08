@@ -778,7 +778,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<table class='leftmenulinks'>\n";
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(SeasonName($season)) . " " .
         utf8entities(_("Administration")) . "</th>";
-      echo "<td class='menuseasonlevel'><a class='hideseason' style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$season'>x</a></td>";
+      $seaLink = utf8entities($season);
+      echo "<td class='menuseasonlevel'><a class='hideseason' style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$seaLink'>x</a></td>";
       echo "</tr><tr><td colspan='2'>\n";
       foreach ($links as $href => $name) {
         if (empty($href))
@@ -808,7 +809,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Team registration")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($enrollSeasons as $seasonId => $seasonName) {
-        echo "<a class='subnav' href='?view=user/enrollteam&amp;season=" . $seasonId . "'>&raquo; " .
+        $seaLink = utf8entities($seasonId);
+        echo "<a class='subnav' href='?view=user/enrollteam&amp;season=$seaLink '>&raquo; " .
           utf8entities(U_($seasonName)) . "</a>\n";
       }
       echo "</td></tr>\n";
@@ -823,7 +825,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Polls")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($pollSeasons as $spoll) {
-        echo "<a class='subnav' href='?view=user/polls&amp;season=" . $spoll['season_id'] . "'>&raquo; " .
+        $seaLink = utf8entities($spoll['season_id']);
+        echo "<a class='subnav' href='?view=user/polls&amp;season=$seaLink'>&raquo; " .
           utf8entities(U_($spoll['name'])) . "</a>\n";
       }
       echo "</td></tr>\n";
@@ -1014,155 +1017,169 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "</aside>\n";
 }
 
+function add_menu(&$menu, $season, $link, $title) {
+  if (!isset($menu[$season])) {
+    $menu[$season] = array();
+  }
+  $menu[$season][$link] = $title;
+}
+
+function set_menu(&$menu, $season, $type, $value = null) {
+  if (!isset($menu[$season])) {
+    $menu[$season] = array();
+  }
+  if ($value === null) {
+    $menu[$season]["??$type"] = true;
+  } else {
+    if (!isset($menu[$season]["??$type"])) {
+      $menu[$season]["??$type"] = array();
+    }
+    $menu[$season]["??$type"][] = $value;
+  }
+}
+
 /**
  * Get event administration links.
  */
 function getEditSeasonLinks() {
-  $ret = array();
+  $menu = array();
+
   if (isset($_SESSION['userproperties']['editseason'])) {
     $editSeasons = getEditSeasons($_SESSION['uid']);
     foreach ($editSeasons as $season => $propid) {
-      $ret[$season] = array();
-    }
-    $respgamesset = array();
-    $contactsset = array();
-    $deleteset = array();
-    foreach ($ret as $season => $links) {
       if (isSeasonAdmin($season)) {
-        $links['?view=admin/seasonadmin&amp;season=' . $season] = _("Event");
-        $links['?view=admin/seasonseries&amp;season=' . $season] = _("Divisions");
-        $links['?view=admin/seasonteams&amp;season=' . $season] = _("Teams");
-        $links['?view=admin/seasonpools&amp;season=' . $season] = _("Pools");
-        $links['?view=admin/reservations&amp;season=' . $season] = _("Scheduling");
-        $links['?view=admin/seasongames&amp;season=' . $season] = _("Games");
-        $links['?view=admin/seasonstandings&amp;season=' . $season] = _("Rankings");
-        $links['?view=admin/seasonpolls&amp;season=' . $season] = _("Polls");
-        $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
-        $respgamesset[$season] = "set";
-        $contactsset[$season] = "set";
-        $deleteset[$season] = "set";
+        $seaLink = utf8entities($season);
+        add_menu($menu, $season, "?view=admin/seasonadmin&amp;season=$seaLink", _("Event"));
+        add_menu($menu, $season, "?view=admin/seasonseries&amp;season=$seaLink", _("Divisions"));
+        add_menu($menu, $season, "?view=admin/seasonteams&amp;season=$seaLink", _("Teams"));
+        add_menu($menu, $season, "?view=admin/seasonpools&amp;season=$seaLink", _("Pools"));
+        add_menu($menu, $season, "?view=admin/reservations&amp;season=$seaLink", _("Scheduling"));
+        add_menu($menu, $season, "?view=admin/seasongames&amp;season=$seaLink", _("Games"));
+        add_menu($menu, $season, "?view=admin/seasonstandings&amp;season=$seaLink", _("Rankings"));
+        add_menu($menu, $season, "?view=admin/seasonpolls&amp;season=$seaLink", _("Polls"));
+        add_menu($menu, $season, "?view=admin/accreditation&amp;season=$seaLink", _("Accreditation"));
+        set_menu($menu, $season, 'respgames');
+        set_menu($menu, $season, 'contacts');
+        set_menu($menu, $season, 'delete');
       }
-      $ret[$season] = $links;
     }
     if (isset($_SESSION['userproperties']['userrole']['seriesadmin'])) {
+      $adminSeasons = array();
       foreach ($_SESSION['userproperties']['userrole']['seriesadmin'] as $series => $param) {
         $seriesseason = SeriesSeasonId($series);
         // Links already added if superadmin or seasonadmin
-        if (isset($ret[$seriesseason]) && !isSeasonAdmin($seriesseason)) {
-          $links = $ret[$seriesseason];
+        if (!isset($menu[$seriesseason]) || !isSeasonAdmin($seriesseason)) {
           $seriesname = U_(getSeriesName($series));
-          $links['?view=admin/seasonteams&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname . " " .
-            _("Teams");
-          $links['?view=admin/seasongames&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname . " " .
-            _("Games");
-          $links['?view=admin/seasonstandings&amp;season=' . $seriesseason . '&amp;series=' . $series] = $seriesname .
-            " " . _("Pool rankings");
-          $links['?view=admin/accreditation&amp;season=' . $seriesseason] = _("Accreditation");
-          $ret[$seriesseason] = $links;
-          $respgamesset[$seriesseason] = "set";
-          $deleteset[$seriesseason] = "set";
+          $seaLink = utf8entities($seriesseason);
+          add_menu($menu, $seriesseason, "?view=admin/seasonteams&amp;season=$seaLink&amp;single=1&amp;series=$series",
+            $seriesname . " " . _("Teams"));
+          add_menu($menu, $seriesseason, "?view=admin/seasonpools&amp;season=$seaLink&amp;single=1&amp;series=$series",
+            $seriesname . " " . _("Pools"));
+          add_menu($menu, $seriesseason, "?view=admin/seasongames&amp;season=$seaLink&amp;single=1&amp;series=$series",
+            $seriesname . " " . _("Games"));
+          add_menu($menu, $seriesseason, "?view=admin/seasonstandings&amp;season=$seaLink&amp;single=1&amp;series=$series",
+            $seriesname . " " . _("Pool rankings"));
+          $adminSeasons[$seriesseason] = true;
+          set_menu($menu, $seriesseason, 'respgames');
+          set_menu($menu, $seriesseason, 'delete');
         }
+      }
+      foreach ($adminSeasons as $seriesseason => $v) {
+        $seaLink = utf8entities($seriesseason);
+        add_menu($menu, $seriesseason, "?view=admin/reservations&amp;season=$seaLink", _("Scheduling"));
+        add_menu($menu, $seriesseason, "?view=admin/accreditation&amp;season=$seaLink", _("Accreditation"));
       }
     }
 
-    $teamPlayersSet = array();
     if (isset($_SESSION['userproperties']['userrole']['teamadmin'])) {
-
       foreach ($_SESSION['userproperties']['userrole']['teamadmin'] as $team => $param) {
         $teamseason = getTeamSeason($team);
+        $seaLink = utf8entities($teamseason);
         $teamresps = TeamResponsibilities($_SESSION['uid'], $teamseason);
-        if (isset($ret[$teamseason])) {
-          if (count($teamresps) < 2) {
-            $teamname = getTeamName($team);
-            $links = $ret[$teamseason];
-            $links['?view=user/teamplayers&amp;team=' . $team] = _("Team") . ": " . $teamname;
-            $respgamesset[$teamseason] = "set";
-            $teamPlayersSet["" . $team] = "set";
-            $ret[$teamseason] = $links;
-          } else {
-            $links = $ret[$teamseason];
-            $links['?view=user/respteams&amp;season=' . $teamseason] = _("Team responsibilities");
-            $respgamesset[$teamseason] = "set";
-            $ret[$teamseason] = $links;
-          }
+        if (count($teamresps) <= 3) {
+          $teamname = getTeamName($team);
+          add_menu($menu, $teamseason, "?view=user/teamplayers&amp;team=$team", _("Team") . ": " . $teamname);
+          set_menu($menu, $teamseason, 'respgames');
+        } else {
+          add_menu($menu, $teamseason, "?view=user/respteams&amp;season=$seaLink", _("Team responsibilities"));
+          set_menu($menu, $teamseason, 'respgames');
         }
       }
     }
     if (isset($_SESSION['userproperties']['userrole']['accradmin'])) {
-      if (count($_SESSION['userproperties']['userrole']['teamadmin']) <= 4) {
-        foreach ($_SESSION['userproperties']['userrole']['accradmin'] as $team => $param) {
-          if (!isset($teamPlayersSet[$team])) {
-            $teamseason = getTeamSeason($team);
-            if (isset($ret[$teamseason])) {
-              $teamname = getTeamName($team);
-              $links = $ret[$teamseason];
-              $links['?view=user/teamplayers&amp;team=' . $team] = _("Team") . ": " . $teamname;
-              $links['?view=admin/accreditation&amp;season=' . $teamseason] = _("Accreditation");
-              $teamPlayersSet["" . $team] = "set";
-              $ret[$teamseason] = $links;
-            }
-          }
+      foreach ($_SESSION['userproperties']['userrole']['accradmin'] as $team => $param) {
+        $teamseason = getTeamSeason($team);
+        $seaLink = utf8entities($teamseason);
+        $teamname = getTeamName($team);
+        if (count($_SESSION['userproperties']['userrole']['teamadmin']) <= 3) {
+          add_menu($menu, $teamseason, "?view=user/teamplayers&amp;team=$team", _("Team") . ": " . $teamname);
+        } else {
+          add_menu($menu, $season, "?view=user/respteams&amp;season=$season", _("Team responsibilities"));
         }
-      } else {
-        $links = $ret[$season];
-        $links['?view=user/respteams&amp;season=' . $season] = _("Team responsibilities");
-        $links['?view=admin/accreditation&amp;season=' . $season] = _("Accreditation");
-        $ret[$season] = $links;
+        add_menu($menu, $teamseason, "?view=admin/accreditation&amp;season=$seaLink", _("Accreditation"));
       }
     }
     if (isset($_SESSION['userproperties']['userrole']['gameadmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['gameadmin'] as $game => $param) {
         $gameseason = GameSeason($game);
-        if (!isset($ret[$gameseason])) {
-          $ret[$gameseason] = array();
-        }
-        $respgamesset[$gameseason] = "set";
+        set_menu($menu, $gameseason, 'respgames');
       }
     }
     if (isset($_SESSION['userproperties']['userrole']['resgameadmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['resgameadmin'] as $resId => $param) {
         foreach (ReservationSeasons($resId) as $resSeason) {
-          if (isset($ret[$resSeason])) {
-            $respgamesset[$resSeason] = "set";
+          set_menu($menu, $resSeason, 'respgames');
+        }
+      }
+    }
+
+    foreach ($menu as $season => &$submenu) {
+      foreach ($submenu as $link => $value) {
+        if (substr($link, 0, 2) === '??') {
+          switch (substr($link, 2)) {
+          case 'respgames':
+            $submenu["?view=user/respgames&amp;season=$season"] = _("Game responsibilities");
+            break;
+          case 'contacts':
+            $submenu["?view=user/contacts&amp;season=$season"] = _("Contacts");
+            break;
+          case 'delete': // later
+            break;
+          default:
+            debug_to_apache("unknwon menu type $link");
           }
         }
       }
     }
-    foreach ($respgamesset as $season => $set) {
-      $links = $ret[$season];
-      $links['?view=user/respgames&amp;season=' . $season] = _("Game responsibilities");
-      $ret[$season] = $links;
-    }
 
-    foreach ($contactsset as $season => $set) {
-      $links = $ret[$season];
-      $links['?view=user/contacts&amp;season=' . $season] = _("Contacts");
-      $ret[$season] = $links;
-    }
-    
-    foreach ($ret as $season => $links) {
+    foreach ($menu as $season => $links) {
       if (isSeasonAdmin($season)) {
-        $links['?view=admin/addseasonusers&amp;season=' . $season] = _("Event users");
+        add_menu($menu, $season, "?view=admin/addseasonusers&amp;season=$season", _("Event users"));
       }
-      $ret[$season] = $links;
     }
 
-    foreach ($respgamesset as $season => $set) {
-      $links = $ret[$season];
-      if (!empty($deleteset[$season])) {
-        $links[''] = "";
-        $links['?view=admin/delete&amp;season=' . $season] = _("Delete");
-        $ret[$season] = $links;
+    foreach ($menu as $season => &$submenu) {
+      foreach ($submenu as $link => $title) {
+        if (substr($link, 0, 2) === '??') {
+          switch (substr($link, 2)) {
+          case 'delete':
+            add_menu($menu, $season, '', '');
+            add_menu($menu, $season, "?view=admin/delete&amp;season=$season", _("Delete"));
+            break;
+          }
+          unset($submenu[$link]);
+        }
       }
     }
   }
 
-  foreach ($ret as $season => $links) {
+  foreach ($menu as $season => $links) {
     if (!isset($links) || empty($links) || count($links) == 0) {
-      unset($ret[$season]);
+      unset($menu[$season]);
     }
   }
-  return $ret;
+
+  return $menu;
 }
 
 function make_array($var) {
@@ -1232,6 +1249,37 @@ function pageMenu($menuitems, $current = "", $echoed = true) {
     echo $html;
   }
   return $html;
+}
+
+/**
+ * Creates a page menu with the series of a season.
+ *
+ * @param string $season
+ * @param int $currentSeries
+ *          The current (selected) series or ""
+ * @param callable $get_link
+ *          A function($season, $seriesId) -> link url
+ * @param string $predecessor
+ *          Link to previous page (indicated by '...')
+ * @return string
+ */
+function SeriesPageMenu($season, $currentSeries, $single = 0, $get_link, $predecessor = null) {
+  if ($single == 1) {
+    return "<h2>" . utf8entities(SeriesName($currentSeries)) . "</h2>";
+  }
+
+  $series = SeasonSeries($season);
+
+  $menutabs = array();
+  foreach ($series as $row) {
+    if (!isset($menutabs[U_($row['name'])]))
+      $menutabs[U_($row['name'])] = array();
+    $menutabs[U_($row['name'])][] = $get_link($season, $row['series_id']);
+  }
+  if (!empty($predecessor))
+    $menutabs[_("...")] = $predecessor;
+
+  return pageMenu($menutabs, $get_link($season, $currentSeries), false);
 }
 
 function loginForm($query_string, $userId = '', $subId = '') {

@@ -8,19 +8,17 @@ include_once 'lib/game.functions.php';
 include_once 'lib/timetable.functions.php';
 include_once 'lib/yui.functions.php';
 
-$LAYOUT_ID = SEASONGAMES;
-
-$html="";
 $season = $_GET["season"];
-$series = SeasonSeries($season);
-$series_id = CurrentSeries($season);
-$seasoninfo = SeasonInfo($season);
+$single = 0;
+$series_id = -1;
+CurrentSeries($season, $series_id, $single);
 
-$title = utf8entities(SeasonName($season)).": "._("Games");
+$title = utf8entities(SeasonName($season)) . ": " . _("Games");
+$html = "";
 
-if ($series_id<=0) {
-  showPage($title, "<p>"._("No divisions defined. Define at least one division first.")."</p>");
-  die;
+if ($series_id <= 0) {
+  showPage($title, "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
+  die();
 }
 
 $group = "all";
@@ -78,25 +76,24 @@ if(!empty($_POST['remove_x'])){
   $feedback = GameProcessMassInput($_POST);
 }
 
-//common page
-pageTopHeadOpen($title);
-$html .= yuiLoad(array("utilities"));
-?>
-<script type="text/javascript">
+addHeaderCallback(
+  function () {
+    echo yuiLoad(array("utilities"));
+    
+    echo "<script type='text/javascript'>
 <!--
 function ChgName(index) {
   YAHOO.util.Dom.get('gamenameEdited' + index).value = 'yes';
-  YAHOO.util.Dom.get("save").disabled = false;
+  YAHOO.util.Dom.get('save').disabled = false;
 }
 //-->
 </script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
+";
+  });
 
-function seasongameslink($season, $series, $group, $switchvisible, $mass, $showpool=null) {
+function seasongameslink($season, $series, $single, $group, $switchvisible, $mass, $showpool=null) {
   $ret = "?view=admin/seasongames&season=$season" 
+    . ($single == 0 ? "" : "&single=1")
     . ($series?"&series=$series":"")
     . "&group=" . utf8entities($group)
     . ($switchvisible?"&v=$switchvisible":"") 
@@ -105,43 +102,57 @@ function seasongameslink($season, $series, $group, $switchvisible, $mass, $showp
   return $ret;
 }
 
-$tab = 0;
-$menutabs = array();
-foreach($series as $row){
-  if (!isset($menutabs[U_($row['name'])]))
-    $menutabs[U_($row['name'])]=array();
-  $menutabs[U_($row['name'])][]=seasongameslink($season, $row['series_id'], $group, null, $mass, null);
-}
-$menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
-pageMenu($menutabs, seasongameslink($season, $series_id, $group, null, $mass, $showpool));
 
+$get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) use ($group, $mass) {
+  $link = seasongameslink($season, $seriesId, $single, $group, null, $mass, null); 
+  return $htmlEntities ? utf8entities($link) : $link;
+};
+
+$url_here = $get_link($season, $series_id, $single, true);
+
+$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
+
+// $series = SeasonSeries($season);
+$seasoninfo = SeasonInfo($season);
+
+// $menutabs = array();
+// foreach($series as $row){
+//   if (!isset($menutabs[U_($row['name'])]))
+//     $menutabs[U_($row['name'])]=array();
+//   $menutabs[U_($row['name'])][]=seasongameslink($season, $row['series_id'], $group, null, $mass, null);
+// }
+// $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
+// pageMenu($menutabs, seasongameslink($season, $series_id, $group, null, $mass, $showpool));
+
+
+$tab = 0;
 $html .= "<table class='admintable'><tr><td>";
 if (!$showpool) {
   if ($_SESSION['hide_played_pools']) {
-    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "pool", $mass, $showpool)) . "' tabindex='" .
+    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "pool", $mass, $showpool)) . "' tabindex='" .
          ++$tab . "'>" . _("Show played pools") . "</a> ";
   } else {
-    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "pool", $mass, $showpool)) . "' tabindex='" .
+    $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "pool", $mass, $showpool)) . "' tabindex='" .
          ++$tab . "'>" . _("Hide played pools") . "</a> ";
   }
 }
 if ($_SESSION['hide_played_games']) {
-  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
+  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
        _("Show played games") . "</a> ";
 } else {
-  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
+  $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
        _("Hide played games") . "</a> ";
 }
 $html .= "</td><td style='text-align:right;'>";
 if ($mass) {
-  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $group, null, false, $showpool)) . "' tabindex='" .
+  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, false, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Just display values") . "</a></td></tr></table>\n";
 } else {
-  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $group, null, true, $showpool)) . "' tabindex='" .
+  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, true, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Mass input") . "</a></td></tr></table>\n";
 }
 
-$html .= "<form method='post' action='?view=admin/seasongames&amp;season=$season&amp;group=$group'>";
+$html .= "<form method='post' action='$url_here'>";
 
 $pools = SeriesPools($series_id);
 
@@ -252,7 +263,7 @@ $html .= $feedback;
   $html .= "<hr/>";
   $html .= "<p><a href='?view=admin/reservations&amp;season=$season'>"._("Reservation management")."</a></p>";
 //}
-echo $html;
-contentEnd();
-pageEnd();
+
+  
+showPage($title, $html);
 ?>

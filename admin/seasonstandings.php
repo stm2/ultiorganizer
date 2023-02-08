@@ -6,25 +6,23 @@ include_once 'lib/game.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 
-$LAYOUT_ID = SEASONSTANDINGS;
-
 $season = $_GET["season"];
-$series_id = CurrentSeries($season);
+$single = 0;
+$series_id = -1;
+CurrentSeries($season, $series_id, $single);
 
-$title = utf8entities(SeasonName($season)).": "._("Pool Rankings");
+$title = utf8entities(SeasonName($season)) . ": " . _("Pool Rankings");
+$html = "";
 
-if ($series_id<=0) {
-  showPage($title, "<p>"._("No divisions defined. Define at least one division first.")."</p>");
-  die;
+if ($series_id <= 0) {
+  showPage($title, "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
+  die();
 }
 
 if (!hasEditSeriesRight($series_id)) {
   showPage($title, "<p>" . _("Insufficient rights to show division stats.") . "</p>");
   die;
 }
-
-$series = SeasonSeries($season);
-$html = "";
 
 $_SESSION['hide_played_pools'] = !empty($_SESSION['hide_played_pools']) ? $_SESSION['hide_played_pools'] : 0;
 
@@ -95,97 +93,38 @@ if (!empty($_POST['setVisible'])) {
   SetPoolVisibility($_POST['PoolId'], false);
 } 
 
-//common page
-pageTopHeadOpen($title);
-?>
-<script type="text/javascript">
-<!--
-function setAnchor(pool) {
-	var form = document.getElementById("theForm");
-	form.action = "?view=admin/seasonstandings&season=<?php echo utf8entities($season)?>#P"+pool;
-}
+$get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
+  $single = $single == 0 ? "" : "&single=1";
+  $link = "?view=admin/seasonstandings&season=$season&series={$seriesId}$single";
+  return $htmlEntities ? utf8entities($link) : $link;
+};
 
-function setDeleteId(pool, team){
-  var input = document.getElementById("PoolId");
-  input.value = pool;
-  var input = document.getElementById("TeamDeleteId");
-  input.value = team;
-  setAnchor(pool);
-}
+$url_here = $get_link($season, $series_id, $single, true);
 
-function setPoolId(pool) {
-  document.getElementById("PoolId").value = pool;
-  setAnchor(pool);
-}
+$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
 
-function edit(src, prefix, pool){
-  var edit = src.value == "<?php echo _("Edit"); ?>";
-  var table = document.getElementById("poolstanding_"+pool);
-  var displays = table.getElementsByClassName(prefix+"_display");
-  var edits = table.getElementsByClassName(prefix+"_edit");
-  for (i=0;i<displays.length;i=i+1) {
-    YAHOO.util.Dom.setStyle(displays[i], "display", edit?"none":"inline");
-    YAHOO.util.Dom.setStyle(edits[i], "display", edit?"inline":"none");
-  }
-  setAnchor(pool);
-}
+// $html .= "<form method='post' action='${url_here}'>";
 
-function setEditId(prefix, pool){
-  var input = document.getElementById("PoolId");
-  input.value = pool;
-  var input = document.getElementById("editType");
-  input.value = prefix;
-  setAnchor(pool);
-}
+// $series = SeasonSeries($season);
 
-function setUndoMove(frompool, fromplacing, topool) {
-  document.getElementById("PoolId").value = frompool;
-  document.getElementById("undoFromPlacing").value = fromplacing;
-  document.getElementById("undoToPool").value = topool;
-  setAnchor(topool);
-}
-
-function setUndoPool(pool, from) {
-  document.getElementById("PoolId").value = pool;
-  document.getElementById("undoFromPlacing").value = from;
-  setAnchor(pool);
-}
-
-function setConfirm(pool) {
-  document.getElementById("PoolId").value = pool;
-  setAnchor(pool);
-}
-
-function setCVisible(pool) {
-  document.getElementById("PoolId").value = pool;
-  setAnchor(pool);
-}
-
-//-->
-</script>
-<?php
-pageTopHeadClose($title);
-leftMenu($LAYOUT_ID);
-contentStart();
-
-$menutabs = array();
-foreach($series as $row){
-  if (!isset($menutabs[U_($row['name'])]))
-    $menutabs[U_($row['name'])]=array();
-  $menutabs[U_($row['name'])][]="?view=admin/seasonstandings&season=".$season."&series=".$row['series_id'];
-}
-$menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
-pageMenu($menutabs,"?view=admin/seasonstandings&season=".$season."&series=".$series_id);
+// $menutabs = array();
+// foreach($series as $row){
+//   if (!isset($menutabs[U_($row['name'])]))
+//     $menutabs[U_($row['name'])]=array();
+//   $menutabs[U_($row['name'])][]="?view=admin/seasonstandings&season=".$season."&series=".$row['series_id'];
+// }
+// $menutabs[_("...")]="?view=admin/seasonseries&season=".$season;
+// $html .= pageMenu($menutabs,"?view=admin/seasonstandings&season=".$season."&series=".$series_id, false);
 
 $html .= "<p>";
 if($_SESSION['hide_played_pools']){
-  $html .= "<a href='?view=admin/seasonstandings&amp;season=$season&amp;v=pool'>"._("Show played pools")."</a> ";
+  $html .= "<a href='${url_here}&amp;v=pool'>"._("Show played pools")."</a> ";
 }else{
-  $html .= "<a href='?view=admin/seasonstandings&amp;season=$season&amp;v=pool'>"._("Hide played pools")."</a> ";
+  $html .= "<a href='${url_here}&amp;v=pool'>"._("Hide played pools")."</a> ";
 }
 $html .= "</p>";
 
-$html .= "<form method='post' id='theForm' action='?view=admin/seasonstandings&amp;season=$season'>";
+$html .= "<form method='post' id='theForm' action='${url_here}'>";
 $seasoninfo = SeasonInfo($season);
 $pools = SeriesPools($series_id);
 if(!count($pools)){
@@ -311,7 +250,7 @@ foreach ($pools as $spool) {
   } else {
     $html .= "<p>" . _("Pool games not completed:");
   }
-  $html .=" <a href='?view=admin/seasongames&amp;season=".$season."&amp;series=".$series_id."&amp;pool=". $poolId . "'>". _("Games") ."</a></p>\n";
+  $html .=" <a href='?view=admin/seasongames&amp;season=".$season."&amp;series=".$series_id."&amp;single=$single&amp;pool=". $poolId . "'>". _("Games") ."</a></p>\n";
 
   $fromMoves = PoolMovingsFromPool($poolId);
   $toMoves = PoolMovingsToPool($poolId);
@@ -319,13 +258,13 @@ foreach ($pools as $spool) {
   $html .= "<div style='display: table; width: 100%;'><div style='display: table-cell; width:50%; vertical-align:top;'>\n";
   
   if (count($toMoves)) {
-    $html .= moveTable($toMoves, "to", $poolId, $poolinfo, $season, $series_id);
+    $html .= moveTable($toMoves, "to", $poolId, $poolinfo, $season, $series_id, $single);
   }
   
   $html .= "</div><div style='display: table-cell; width:50%; vertical-align:top;'>\n";
   
   if (count($fromMoves)) {
-    $html .= moveTable($fromMoves, "from", $poolId, $poolinfo, $season, $series_id);
+    $html .= moveTable($fromMoves, "from", $poolId, $poolinfo, $season, $series_id, $single);
   }
   
   $html .= "</div></div>\n";
@@ -344,9 +283,81 @@ $html .= "<input type='hidden' id='undoToPool' name='undoToPool'/>\n";
 $html .= "</p>";
 $html .= "</form>\n";
 
-echo $html;
-contentEnd();
-pageEnd();
+addHeaderCallback(
+  function () use ($url_here) {
+    $editstring = _("Edit");
+    echo <<<EOG
+    
+<script type="text/javascript">
+<!--
+function setAnchor(pool) {
+	var form = document.getElementById("theForm");
+	form.action = "?${url_here}#P"+pool;
+}
+
+function setDeleteId(pool, team){
+  var input = document.getElementById("PoolId");
+  input.value = pool;
+  var input = document.getElementById("TeamDeleteId");
+  input.value = team;
+  setAnchor(pool);
+}
+
+function setPoolId(pool) {
+  document.getElementById("PoolId").value = pool;
+  setAnchor(pool);
+}
+
+function edit(src, prefix, pool){
+  var edit = src.value == "$editstring";
+  var table = document.getElementById("poolstanding_"+pool);
+  var displays = table.getElementsByClassName(prefix+"_display");
+  var edits = table.getElementsByClassName(prefix+"_edit");
+  for (i=0;i<displays.length;i=i+1) {
+    YAHOO.util.Dom.setStyle(displays[i], "display", edit?"none":"inline");
+    YAHOO.util.Dom.setStyle(edits[i], "display", edit?"inline":"none");
+  }
+  setAnchor(pool);
+}
+
+function setEditId(prefix, pool){
+  var input = document.getElementById("PoolId");
+  input.value = pool;
+  var input = document.getElementById("editType");
+  input.value = prefix;
+  setAnchor(pool);
+}
+
+function setUndoMove(frompool, fromplacing, topool) {
+  document.getElementById("PoolId").value = frompool;
+  document.getElementById("undoFromPlacing").value = fromplacing;
+  document.getElementById("undoToPool").value = topool;
+  setAnchor(topool);
+}
+
+function setUndoPool(pool, from) {
+  document.getElementById("PoolId").value = pool;
+  document.getElementById("undoFromPlacing").value = from;
+  setAnchor(pool);
+}
+
+function setConfirm(pool) {
+  document.getElementById("PoolId").value = pool;
+  setAnchor(pool);
+}
+
+function setCVisible(pool) {
+  document.getElementById("PoolId").value = pool;
+  setAnchor(pool);
+}
+
+//-->
+</script>
+
+EOG;
+  });
+
+showPage($title, $html);
 
 function poolLink($id, $name) {
   return "<a href='#P". intval($id) . "'>". utf8entities($name) ."</a>";
@@ -443,7 +454,7 @@ function regularRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
   return $html;
 }
 
-function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId) {
+function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId, $single) {
   $html = "<table class='admintable' style='width:100%; margin-left:0pt'>";
   if ($type == "to") {
     $html .= "<tr><th colspan='5'>" . _("Moves to") ." ". $poolinfo['name'] . "</th></tr>\n";
@@ -503,7 +514,7 @@ function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId) {
           "' title='". utf8entities(_("Show pool in public menus")) . "' onclick='setCVisible(" . $poolId . ")'/>&nbsp;";
       }
     }
-    $html .= "<a href='?view=admin/serieteams&amp;season=$seasonId&amp;series=". $seriesId ."&amp;pool=". $poolId ."'>". _("Manage moves") ."</a>";
+    $html .= "<a href='?view=admin/serieteams&amp;season=$seasonId&amp;series=". $seriesId ."&amp;single=$single&amp;pool=". $poolId ."'>". _("Manage moves") ."</a>";
   }
   $html .= "</th>";
   if ($undo)
