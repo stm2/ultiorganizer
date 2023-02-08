@@ -1243,21 +1243,21 @@ function loginForm($query_string, $userId = '', $subId = '') {
   $html .= "<form action='?" . utf8entities($query_string) . "' method='post'>\n";
   $html .= "<table class='formtable'>\n";
   $html .= "<tr><td class='infocell'><label for='myusername$subId'>" . _("Username") . "</label>:</td>";
-  $html .= "<td><input class='input' type='text' id='myusername$subId' name='myusername' size='40' value='$userId'/>&nbsp;</td>";
-  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=register'>" .
+  $html .= "<td><input tabindex='1' class='input' type='text' id='myusername$subId' name='myusername' size='40' value='$userId'/>&nbsp;</td>";
+  $html .= "<td><span class='topheadertext'><a tabindex='4' class='topheaderlink' href='?view=register'>" .
     utf8entities(_("New user?")) . "</a></span></td>\n";
   $html .= "</tr>\n";
   $html .= "<tr><td class='infocell'><label for='mypassword$subId'>" . _("Password") . "</label>:</td>";
-  $html .= "<td><input type='password' class='input' size='40' maxlength='20' id='mypassword$subId' name='mypassword' value=''/></td>";
-  $html .= "<td><span class='topheadertext'><a class='topheaderlink' href='?view=login&amp;recover=1'>" .
+  $html .= "<td><input tabindex='2' type='password' class='input' size='40' maxlength='20' id='mypassword$subId' name='mypassword' value=''/></td>";
+  $html .= "<td><span class='topheadertext'><a tabindex='5' class='topheaderlink' href='?view=login&amp;recover=1'>" .
     utf8entities(_("Recover lost password?")) . "</a></span></td>\n";
   $html .= "</tr>";
   $html .= "</table>\n";
   $html .= "<input type='hidden' name='query' value='" . urlencode($query_string) . "' />";
   if ($subId)
-    $html .= "<p><input type='button' name='login' id='myloginbutton$subId' value='" . utf8entities(_("Login")) . "' /></p>";
+    $html .= "<p><input tabindex='3' type='button' name='login' id='myloginbutton$subId' value='" . utf8entities(_("Login")) . "' /></p>";
   else
-    $html .= "<p><input class='button' type='submit' name='login' id='myloginbutton' value='" . utf8entities(_("Login")) . "' /></p>";
+    $html .= "<p><input tabindex='3' class='button' type='submit' name='login' id='myloginbutton' value='" . utf8entities(_("Login")) . "' /></p>";
   $html .= "</form>";
 
   return $html;
