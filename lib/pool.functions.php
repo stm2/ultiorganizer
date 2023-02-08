@@ -1231,7 +1231,7 @@ function SetPoolTemplate($poolId, $params) {
  */
 function DeletePool($poolId) {
   $poolInfo = PoolInfo($poolId);
-  if (hasEditSeasonSeriesRight($poolInfo['season'])) {
+  if (hasEditSeriesRight($poolInfo['series'])) {
     Log2("pool","delete",PoolName($poolId));
     $query = sprintf("DELETE FROM uo_pool WHERE pool_id=%d",
     (int)$poolId);
@@ -1271,8 +1271,7 @@ function DeletePoolTemplate($poolId) {
  * @return int id to created pool.
  */
 function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
-  $seriesinfo = SeriesInfo($seriesId);
-  if (hasEditSeasonSeriesRight($seriesinfo['season'])) {
+  if (hasEditSeriesRight($seriesId)) {
     $colors = array("F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
             "7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF",/*"00008B",*/"008B8B","B8860B","A9A9A9","006400",
             "BDB76B","8B008B","FF8C00","9932CC",/*"8B0000",*/"E9967A","8FBC8F","00CED1","9400D3","FF1493","00BFFF","1E90FF",
@@ -1319,8 +1318,7 @@ function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
  * @param boolean $follower - new pool is follower for copied pool (used with playoff pools)
  */
 function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=false) {
-  $seriesinfo = SeriesInfo($seriesId);
-  if (hasEditSeasonSeriesRight($seriesinfo['season'])) {
+  if (hasEditSeriesRight($seriesId)) {
     $colors = array("F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
             "7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF","00008B","008B8B","B8860B","A9A9A9","006400",
             "BDB76B","8B008B","FF8C00","9932CC","8B0000","E9967A","8FBC8F","00CED1","9400D3","FF1493","00BFFF","1E90FF",
@@ -1382,7 +1380,7 @@ function AddByePool($name, $type, $ordering, $seriesId) {
  */
 function SetPoolDetails($poolId, $params, $comment=null) {
   $poolinfo = PoolInfo($poolId);
-  if(hasEditSeasonSeriesRight($poolinfo['season'])) {
+  if(hasEditSeriesRight($poolinfo['series'])) {
     $result = DBSetRow("uo_pool",$params,"pool_id=$poolId");
     if ($result && isset($comment)) {
       SetComment(3, $poolId, $comment);
@@ -1398,7 +1396,7 @@ function SetPoolDetails($poolId, $params, $comment=null) {
  */
 function SetPool($poolId, $params) {
   $poolinfo = PoolInfo($poolId);
-  if(hasEditSeasonSeriesRight($poolinfo['season'])) {
+  if(hasEditSeriesRight($poolinfo['series'])) {
     $query = sprintf("UPDATE uo_pool SET name='%s', continuingpool='%s', placementpool='%s',
             visible='%s', type='%s', ordering='%s' WHERE pool_id='%s'",
     mysql_adapt_real_escape_string($params['name']),
@@ -1435,7 +1433,7 @@ function SetPoolVisibility($poolId, $visible) {
  */
 function SetPoolName($poolId, $name) {
   $poolinfo = PoolInfo($poolId);
-  if(hasEditSeasonSeriesRight($poolinfo['season'])) {
+  if(hasEditSeriesRight($poolinfo['series'])) {
     $query = sprintf("UPDATE uo_pool SET
             name='%s'
             WHERE pool_id=%d",
