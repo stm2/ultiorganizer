@@ -85,5 +85,10 @@ function focusFirstInput() {
   if (first !=null) first.focus();
 }
 
+function shortTime(timestamp) {
+  var date = new Date(timestamp*1000);
+  var minutes = date.getMinutes();
+  return minutes < 10 ? (date.getHours() + ":0" + date.getMinutes()) : (date.getHours() + ":" + date.getMinutes()); 
+}
 //-->
 </script>

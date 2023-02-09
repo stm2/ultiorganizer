@@ -79,7 +79,10 @@ function jsSecure($string) {
 }
 
 function pauseEntry($height, $duration, $gameId, $editable = true) {
-  $id = "pause$gameId";
+  if ($editable)
+    $id = "pause$gameId";
+  else
+    $id = "fixed$gameId";
   $tid = "ptime$gameId";
   $names = "ptimes[]";
   $alarm = $duration < 0 ? " negative" : "";
@@ -108,6 +111,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" .
     $height . "px' id='game" . $gameId . "'" . $tooltip . ">";
   $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
+  $html .= "<span class='schedule_time'>" . DefHourFormat($gameInfo['time']) . "</span> - ";
   $html .= $poolname;
   if ($editable) {
     $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
@@ -335,6 +339,10 @@ echo "</form>";
 
 $zeroGames = array();
 
+$jsStartTimes = array();
+$jsGameTimes = array();
+$jsPauseTimes = array();
+
 echo "<div class='workarea' >\n";
 echo "<ul class='draglist' id='unscheduled'  style='min-height:600px'>\n";
 foreach ($gameData as $gameId => $gameInfo) {
@@ -346,6 +354,7 @@ foreach ($gameData as $gameId => $gameInfo) {
     $height = gameHeight($duration);
     $poolname = gamePoolName($gameInfo);
     $maxtimeslot = max($maxtimeslot, $duration);
+    $jsGameTimes[$gameId] = $duration;
     if ($duration > 0)
       echo gameEntry($gameInfo, $height, $duration, $poolname);
     else
@@ -379,6 +388,8 @@ $MINTOP = 30;
       $startTime = strtotime($reservationArray['starttime']);
       $endTime =  strtotime($reservationArray['endtime']);
       $duration = ($endTime - $firstStart) / 60;
+      
+      $jsStartTimes[$reservationId] = $startTime;
 
       echo "<div class='workarea' >\n";
       echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
@@ -386,6 +397,7 @@ $MINTOP = 30;
       $duration = ($startTime - $firstStart) / 60;
       $height = pauseHeight($duration);
       if ($firstStart < $startTime) {
+        $jsPauseTimes[-$reservationId] = $duration;
         echo pauseEntry($height, $duration, -$reservationId, false);
         //$reservedPauses[] = "fixed".$reservationId;
       }
@@ -396,6 +408,7 @@ $MINTOP = 30;
         $duration = ($gameStart - $nextStart) / 60;
         $height = pauseHeight($duration);
         if ($nextStart != $gameStart) {
+          $jsPauseTimes[$gameId] = $duration;
           echo pauseEntry($height, $duration, $gameId);
           $reservedPauses[] = "pause".$gameId;
         }
@@ -407,6 +420,7 @@ $MINTOP = 30;
         $height = gameHeight($duration);
         $gametitle = getGameName($gameInfo);
         $pooltitle = gamePoolName($gameInfo); 
+        $jsGameTimes[$gameId] = $duration;
         if ($duration > 0 && hasEditGamesRight($gameInfo['series'])) {
           echo gameEntry($gameInfo, $height, $duration, $pooltitle);
         } else {
@@ -453,11 +467,46 @@ echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></p>";
 var Dom = YAHOO.util.Dom;
 var redirecturl="";
 var modified=0;
+var startMap = new Map();
+var gameMap = new Map();
+var pauseMap = new Map();
+
+function updateList (list) {
+<?php 
+foreach ($jsStartTimes as $reservationId => $time) {
+echo "    startMap.set($reservationId, $time);\n";
+}
+foreach ($jsGameTimes as $gameId => $duration) {
+echo "    gameMap.set($gameId, $duration);\n";
+}
+foreach ($jsPauseTimes as $id => $duration) {
+  echo "    pauseMap.set($id, $duration);\n";
+}
+?>
+
+  var id = Number(list.id.replace(/[^0-9]*/, ''));
+  var startTime = startMap.get(id);
+  for (child of list.children) {
+    var duration = -1;
+    var gid = Number(child.id.replace(/[a-z]*/, ''));
+    if (child.id.startsWith("game")) {
+      duration = gameMap.get(gid) * 60;
+    } else if (child.id.startsWith("pause")) {
+      duration = pauseMap.get(gid) * 60;
+    }
+      
+    var time = child.getElementsByClassName('schedule_time');
+    if (time.length > 0)
+      time[0].innerHTML = shortTime(startTime);
+    startTime += duration;
+  }
+}
 
 function hide(id) {
   var elem = Dom.get(id);
   var list = Dom.getAncestorByTagName(elem, "ul");
   list.removeChild(elem);
+  updateList(list);
 }
 
 function setModified(newValue) {
@@ -604,17 +653,18 @@ foreach ($reservedPauses as $pauseId) {
     var pauseElement = document.createElement("div");
     var duration = Dom.get("pauseLen").value;
     if (duration > 0) {
+      for(++pauseIndex; Dom.get("pause-" + pauseIndex) !=null || Dom.get("res" + pauseIndex) !=null; ++pauseIndex) {}
       var height = Math.max(10,(duration * minHeight)-2);
       var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
       html = html.replace(/%h%/g, height);
       html = html.replace(/%d%/g, duration);
-      html = html.replace(/%i%/g, pauseIndex);
+      html = html.replace(/%i%/g, -pauseIndex);
       pauseElement.innerHTML = html;
       pauseElement = pauseElement.firstChild;
           
       unscheduled.appendChild(pauseElement);
-      new YAHOO.example.DDList("pause" + pauseIndex);
-      pauseIndex++;
+      new YAHOO.example.DDList("pause-" + pauseIndex);
+      pauseMap.set(-pauseIndex, duration);
     }
   },  
     
@@ -626,7 +676,7 @@ foreach ($reservedPauses as $pauseId) {
       for (i=0;i<items.length;i=i+1) {
         var duration =  parseInt(items[i].firstChild.value);
         const nextId = /[0-9]+/.exec(items[i].id)[0];
-        const type = /[^0-9]+/.exec(items[i].id)[0];
+        const type = /[^0-9-]+/.exec(items[i].id)[0];
         if (type == "game") {
           out += ":" + nextId + "/" + offset;
           offset += duration;
@@ -771,6 +821,7 @@ YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
         var destEl = Dom.get(id);
         var destDD = DDM.getDDById(id);
         destEl.appendChild(this.getEl());
+        updateList(destEl);
         destDD.isEmpty = false;
         DDM.refreshCache();
       }
@@ -808,6 +859,7 @@ YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
       } else {
         p.insertBefore(srcEl, destEl.nextSibling); // insert below
       }
+      updateList(p);
 
       DDM.refreshCache();
     }
