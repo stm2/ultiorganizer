@@ -1433,21 +1433,41 @@ function UnscheduledSeasonGameInfo($seasonId) {
 }
 
 function ScheduleGame($gameId, $epoc, $reservation) {
-	if (hasEditGamesRight(GameSeries($gameId))) {
-		$query = sprintf("UPDATE uo_game SET time='%s', reservation=%d WHERE game_id=%d",
-			EpocToMysql($epoc), (int)$reservation, (int)$gameId);
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	} else { die('Insufficient rights to schedule game'); }
+  $query = sprintf("SELECT time FROM uo_game WHERE game_id=%d", (int) $gameId);
+  $result = DBQueryToValue($query);
+  if ($result === -1)
+    return [-3 => 'Unknown game'];
+  if (EpocToMysql($epoc) != $result) {
+
+    if (hasEditGamesRight(GameSeries($gameId))) {
+      $query = sprintf("UPDATE uo_game SET time='%s', reservation=%d WHERE game_id=%d", EpocToMysql($epoc),
+        (int) $reservation, (int) $gameId);
+      $result = mysql_adapt_query($query);
+      if (!$result) {
+        return [-2 => 'Invalid query: ' . mysql_adapt_error()];
+      }
+    } else {
+      return [-1 => 'Insufficient rights to schedule game'];
+    }
+  }
 }
 
 function UnScheduleGame($gameId) {
-	if (hasEditGamesRight(GameSeries($gameId))) {
-		$query = sprintf("UPDATE uo_game SET time=NULL, reservation=NULL WHERE game_id=%d",
-			(int)$gameId);
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	} else { die('Insufficient rights to schedule game'); }
+  $query = sprintf("SELECT time FROM uo_game WHERE game_id=%d", (int) $gameId);
+  $result = DBQueryToValue($query);
+  if ($result === -1)
+    return [-3 => 'Unknown game'];
+  if (null != $result) {
+    if (hasEditGamesRight(GameSeries($gameId))) {
+      $query = sprintf("UPDATE uo_game SET time=NULL, reservation=NULL WHERE game_id=%d", (int) $gameId);
+      $result = mysql_adapt_query($query);
+      if (!$result) {
+        return [-2 => 'Invalid query: ' . mysql_adapt_error()];
+      }
+    } else {
+      return [-1 => 'Insufficient rights to schedule game'];
+    }
+  }
 }
 
 function ClearReservation($reservationId) {
