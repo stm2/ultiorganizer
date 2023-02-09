@@ -315,27 +315,26 @@ function gameDuration($gameInfo) {
   return empty($gameInfo['gametimeslot']) ? $gameInfo['timeslot'] : $gameInfo['gametimeslot'];
 }
 
-function groupSelection($season, $group, $url) {
+function groupSelection($season, $group, $url_params) {
   $groups = SeasonReservationgroups($season);
   $html = "";
   if (count($groups) > 1) {
     $html .= "<p>\n";
     foreach ($groups as $grouptmp) {
+      $url = MakeUrl($url_params, ['group' => urlencode($grouptmp['reservationgroup'])]);
       if ($group == $grouptmp['reservationgroup']) {
-        $html .= "<a class='groupinglink' href='$url&amp;season=$season&amp;group=" .
-          urlencode($grouptmp['reservationgroup']) . "'><span class='selgroupinglink'>" .
-          U_($grouptmp['reservationgroup']) . "</span></a>";
+        $html .= "<a class='groupinglink' href='$url'><span class='selgroupinglink'>" . U_(
+          $grouptmp['reservationgroup']) . "</span></a>";
       } else {
-        $html .= "<a class='groupinglink' href='$url&amp;season=$season&amp;group=" .
-          urlencode($grouptmp['reservationgroup']) . "'>" . U_($grouptmp['reservationgroup']) . "</a>";
+        $html .= "<a class='groupinglink' href='$url'>" . U_($grouptmp['reservationgroup']) . "</a>";
       }
       $html .= " ";
     }
+    $url = MakeUrl($url_params, ['group' => "__all"]);
     if ($group == "__all") {
-      $html .= "<a class='groupinglink' href='$url&amp;season=$season&amp;group=__all'><span class='selgroupinglink'>" .
-        _("All") . "</span></a>";
+      $html .= "<a class='groupinglink' href='$url'><span class='selgroupinglink'>" . _("All") . "</span></a>";
     } else {
-      $html .= "<a class='groupinglink' href='$url&amp;season=$season&amp;group=__all'>" . _("All") . "</a>";
+      $html .= "<a class='groupinglink' href='$url'>" . _("All") . "</a>";
     }
     $html .= "</p>\n";
   }

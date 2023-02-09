@@ -3,7 +3,7 @@ include_once 'menufunctions.php';
 include_once 'lib/search.functions.php';
 include_once 'lib/reservation.functions.php';
 include_once 'lib/timetable.functions.php';
-$urlparams = "";
+$urlparams = ['view' => 'admin/reservations'];
 $season = "";
 $html = "";
 $group = "__all";
@@ -12,11 +12,11 @@ if (!empty($_GET["group"])) {
 }
 
 if (!empty($_GET["series"])) {
-  $urlparams = "series=" . intval($_GET["series"]);
+  $urlparams['series'] = intval($_GET["series"]);
 } elseif (!empty($_GET["pool"])) {
-  $urlparams = "pool=" . intval($_GET["pool"]);
+  $urlparams['pool'] = intval($_GET["pool"]);
 } elseif (!empty($_GET["season"])) {
-  $urlparams = "season=" . $_GET["season"];
+  $urlparams['season'] = $_GET["season"];
   $season = $_GET["season"];
 }
 
@@ -26,10 +26,12 @@ if (!empty($_POST['remove_x'])) {
   $_POST['searchreservation'] = "1"; // do not hide search results
 }
 if (isset($_POST['schedule']) && isset($_POST['reservations'])) {
-  // $url = "location:?view=admin/scheduling_grid&Reservations=".implode(",", $_POST['reservations']);
-  $url = "location:?view=admin/schedule&reservations=" . implode(",", $_POST['reservations']);
+  $url = "location:";
+  $extra_params = ['view' => 'admin/schedule', 'reservations' => implode(",", $_POST['reservations'])];
   if (!empty($urlparams)) {
-    $url .= "&" . $urlparams;
+    $url .= MakeUrl($urlparams, $extra_params);
+  } else {
+    $url .= MakeUrl($extra_params);
   }
   header($url);
   exit();
@@ -60,12 +62,10 @@ foreach ($searchItems as $name) {
   }
 }
 
-$url = "view=admin/reservations";
-if (!empty($urlparams)) {
-  $url .= "&amp;" . $urlparams;
-}
+$url = MakeUrl($urlparams);
+
 if (empty($season)) {
-  $html .= SearchReservation($url, $hidden, array('schedule' => _("Schedule selected")));
+  $html .= SearchReservation(substr($url, 1), $hidden, array('schedule' => _("Schedule selected")));
   $html .= "<hr />";
   $html .= "<p><a href='?view=admin/addreservation&amp;season=" . $season . "'>" . _("Add reservation") . "</a> | ";
   $html .= "<a href='?view=admin/locations&amp;season=" . $season . "'>" . _("Add location") . "</a></p>";
@@ -76,13 +76,12 @@ if (empty($season)) {
   $html .= "<a href='?view=admin/movingtimes&amp;season=" . $season . "'>" . _("Manage transfer times") . "</a></p>\n";
   $html .= "<hr />";
 
-  $html .= groupSelection($season, $group, '?view=admin/reservations');
+  $html .= groupSelection($season, $group, ['view' => 'admin/reservations', 'season' => $season, 'group' => urlencode($group)]);
 
   $reservations = SeasonReservations($season, $group);
   if (count($reservations) > 0) {
     $allGamesOther = 0;
-    $html .= "<form method='post' id='reservations' action='?view=admin/reservations&amp;season=$season&amp;group=" .
-      urlencode($group) . "'>\n";
+    $html .= "<form method='post' id='reservations' action='$url'>\n";
     $html .= "<table class='admintable'><tr><th>" . checkAllCheckbox('reservations') . "</th>";
     $html .= "<th>" . _("Group") . "</th><th>" . _("Location") . "</th><th>" . _("Date") . "</th>";
     $html .= "<th>" . _("Starts") . "</th><th>" . _("Ends") . "</th><th>" . _("Games") . "</th>";
