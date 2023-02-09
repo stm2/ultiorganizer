@@ -36,7 +36,17 @@ if (isset($_POST['schedule']) && isset($_POST['reservations'])) {
   header($url);
   exit();
 }
-
+if (isset($_POST['moving']) && isset($_POST['reservations'])) {
+  $url = "location:";
+  $extra_params = ['view' => 'admin/movingtimes', 'reservations' => implode(",", $_POST['reservations'])];
+  if (!empty($urlparams)) {
+    $url .= MakeUrl($urlparams, $extra_params);
+  } else {
+    $url .= MakeUrl($extra_params);
+  }
+  header($url);
+  exit();
+}
 // common page
 $title = _("Fields");
 
@@ -72,8 +82,7 @@ if (empty($season)) {
 } else {
   $html .= "<p><a href='?view=admin/addreservation&amp;season=" . $season . "'>" . _("Add reservation") . "</a> | ";
   $html .= "<a href='?view=admin/locations&amp;season=" . $season . "'>" . _("Add location") . "</a> | ";
-  $html .= "<a href='?view=admin/reservations'>" . _("Search") . "</a> | ";
-  $html .= "<a href='?view=admin/movingtimes&amp;season=" . $season . "'>" . _("Manage transfer times") . "</a></p>\n";
+  $html .= "<a href='?view=admin/reservations'>" . _("Search") . "</a></p>\n";
   $html .= "<hr />";
 
   $html .= groupSelection($season, $group, ['view' => 'admin/reservations', 'season' => $season, 'group' => urlencode($group)]);
@@ -100,8 +109,8 @@ if (empty($season)) {
         }
       }
       $allGamesOther += $gamesOther;
-      
-      $disabled = $gamesResponsible==0?" disabled":"";
+
+      $disabled = ($gamesResponsible == 0 && !$gamesOther == 0) ? " disabled" : "";
       $html .= "<tr class='admintablerow'><td><input type='checkbox'$disabled name='reservations[]' value='" .
         utf8entities($row['id']) . "'/></td>";
       $html .= "<td>" . utf8entities(U_($row['reservationgroup'])) . "</td>";
@@ -114,7 +123,7 @@ if (empty($season)) {
       $html .= "<td class='center'>" . ($gamesOther>0?($gamesResponsible." / "):"") . ($gamesOther+$gamesResponsible) . "</td>";
       $html .= "<td class='center'><a href='?view=user/pdfscoresheet&amp;reservation=" . $row['id'] .
         "&amp;season=$season'>" . _("PDF") . "</a></td>";
-      if ($gamesOther+$gamesResponsible == 0) {
+      if ($gamesOther + $gamesResponsible == 0) {
         $html .= "<td class='center'>" . getDeleteButton('remove', $row['id']) . "</td>";
       }
 
@@ -123,13 +132,13 @@ if (empty($season)) {
     $html .= "</table>\n";
 
     if ($allGamesOther > 0) {
-      $html .= _("Reservations where you don't have series edit rights for all games have been disabled.") . "</p>";
+      $html .= "<p>" . _("Reservations where you don't have series edit rights for all games have been disabled.") . "</p>";
     }
 
     $html .= "<p>";
     $html .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/>\n";
     $html .= "<input type='submit' name='schedule' value='" . utf8entities(_("Schedule selected")) . "'/>\n";
-    $html .= "</p>";
+    $html .= "<input type='submit' name='moving' value='" . utf8entities(_("Manage transfer times")) . "'/></p>\n";
   } else {
     $html .= "<p>" . _("No reservations.") . "</p>";
   }

@@ -6,6 +6,15 @@ $season = $_GET['season'] ?? CurrentSeason();
 $title = _("Transfer times");
 $html = "";
 
+if (!empty($_POST['change_reservations'])) {
+  header('location:' . urldecode($_POST['reservation_url']));
+  exit();
+}
+if (!empty($_POST['schedule_reservations'])) {
+  header('location:' . urldecode($_POST['schedule_url']));
+  exit();
+}
+
 $group = "__all";
 if (!empty($_GET["group"])) {
   $group = $_GET["group"];
@@ -83,12 +92,8 @@ $html .= "<p>" .
     "Enter the minimum times (in minutes) required for a team to move from field A to B. This information will be used when checking a schedule after saving it.") .
   "</p>\n";
 
-$html .= "<p><a href='?view=admin/reservations&amp;season=" . $season . "'>" . _("Reservations") . "</a></p><hr />";
-
 $url_params = ['view' => 'admin/movingtimes', 'season' => $season, 'group' => urlencode($group),
   'reservations' => implode(",", $reservations), 'symmetric' => $symmetric];
-
-debug_to_apache(print_r($url_params, true));
 
 $html .= "<form method='post' action='" . MakeUrl($url_params) . "'>\n";
 
@@ -104,9 +109,10 @@ function filterLocations($locations, $reservations, $group) {
       $allowed[$info['location']] = [];
     $allowed[$info['location']][$info['fieldname']] = 1;
   }
-  $locations = array_filter($locations, function ($loc) use ($allowed) {
-    return isset($allowed[$loc['location']]) && $allowed[$loc['location']][$loc['fieldname']];
-  });
+  $locations = array_filter($locations,
+    function ($loc) use ($allowed) {
+      return isset($allowed[$loc['location']]) && isset($allowed[$loc['location']][$loc['fieldname']]);
+    });
   if ($group === "_all") {
     foreach ($locations as $loc) {
       $loc_known[$loc['location']] = $loc['fieldname'];
@@ -216,11 +222,6 @@ if (count($locations) > 25) {
 
     $i++;
   }
-  /*
-   * $html .= "<input type='text' size='4' maxlength='5' value='0' id='setallvalue' name='setallvalue' />";
-   * $html .= "<input type='submit' name='setallbutton' value='" . utf8entities(_("Set all to this value")) . "'onkeypress='setTimes()'/>";
-   */
-
   $html .= "</table>";
 
   $html .= "<input type='submit' name='change_times' value='" . utf8entities(_("Save times")) . "'/>\n";
@@ -228,8 +229,14 @@ if (count($locations) > 25) {
 $html .= "<hr />";
 $html .= $legend;
 
+$html .= "<p><input type='hidden' name='reservation_url' value='" .
+  urlencode(
+    MakeUrl(['view' => 'admin/reservations', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
+  "'/>\n" . "<input type='submit' name='change_reservations' value='" . _("Select reservations") . "' />\n";
+$html .= "<input type='hidden' name='schedule_url' value='" .
+  urlencode(MakeUrl(['view' => 'admin/schedule', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
+  "'>\n" . "<input type='submit' name='schedule_reservations' value='" . _("Schedule") . "'/></p>";
 $html .= "</form>";
 
 showPage($title, $html);
-
 ?>
