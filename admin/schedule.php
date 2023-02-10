@@ -12,12 +12,12 @@ $reservations = array();
 
 if (isset($_GET['reservations'])) {
   $reservations = explode(",", $_GET['reservations']);
-} else if (isset($_SESSION['userproperties']['userrole'])){
+} else if (isset($_SESSION['userproperties']['userrole'])) {
   $reservations = array_flip($_SESSION['userproperties']['userrole']['resadmin']);
 }
 $reservationData = ReservationInfoArray($reservations);
 
-define("MIN_HEIGHT", 1.0);
+$EM_PER_MINUTE = 0.1;
 $MAX_COLUMNS = 4;
 
 $maxtimeslot = 30;
@@ -25,15 +25,15 @@ $seriesId = 0;
 $poolId = 0;
 $seasonId = "";
 
-if(!empty($_GET["series"])) {
+if (!empty($_GET["series"])) {
   $seriesId = intval($_GET["series"]);
 }
 
-if(!empty($_GET["pool"])) {
+if (!empty($_GET["pool"])) {
   $poolId = intval($_GET["pool"]);
 }
 
-if(!empty($_GET["season"])) {
+if (!empty($_GET["season"])) {
   $seasonId = $_GET["season"];
 }
 
@@ -45,33 +45,63 @@ if (!empty($seriesId))
 if (!empty($pool))
   $backurl .= "&pool=$poolId";
 
-
 $seasonfilter = array();
 $seriesfilter = array();
 $poolfilter = array();
 
 $seasons = Seasons();
-while($season = mysqli_fetch_assoc($seasons)){
-  $seasonfilter[] = array('id'=>$season['season_id'],'name'=>U_(SeasonName($season['season_id'])));
+while ($season = mysqli_fetch_assoc($seasons)) {
+  $seasonfilter[] = array('id' => $season['season_id'], 'name' => U_(SeasonName($season['season_id'])));
 }
 
 $series = SeasonSeries($seasonId);
-foreach($series as $ser){
-  $seriesfilter[] = array('id'=>$ser['series_id'],'name'=>U_($ser['name']));
+foreach ($series as $ser) {
+  $seriesfilter[] = array('id' => $ser['series_id'], 'name' => U_($ser['name']));
 }
 
 $pools = SeriesPools($seriesId);
-foreach($pools as $tmppool){
-  $poolfilter[] = array('id'=>$tmppool['pool_id'],'name'=>U_($tmppool['name']));
+foreach ($pools as $tmppool) {
+  $poolfilter[] = array('id' => $tmppool['pool_id'], 'name' => U_($tmppool['name']));
+}
+
+$MIN_HEIGHT = 4; // 4em
+function getHeightFactor($gameData, $reservationData, &$minDuration, &$maxDuration, &$emPerMinute) {
+  global $MIN_HEIGHT;
+  $minDuration = PHP_INT_MAX;
+  $maxDuration = 0;
+  foreach ($gameData as $game) {
+    $duration = gameDuration($game);
+    if ($duration < $minDuration)
+      $minDuration = $duration;
+      if ($duration > $maxDuration) $maxDuration = $duration;
+  }
+  foreach ($reservationData as $dayArray) {
+    foreach ($dayArray as $reservationId => $reservationArray) {
+      foreach ($reservationArray['games'] as $gameId => $gameInfo) {
+        $duration = $gameInfo['timeslot'];
+        if ($duration < $minDuration)
+          $minDuration = $duration;
+          if ($duration > $maxDuration) $maxDuration = $duration;
+      }
+    }
+  }
+  if ($minDuration == PHP_INT_MAX)
+    $minDuration = 90;
+    if ($maxDuration <= 0) $maxDuration = 1;
+    if ($minDuration * 2 < $maxDuration)
+      $minDuration = $maxDuration / 2;
+      
+      $emPerMinute = $MIN_HEIGHT / $minDuration;
 }
 
 function gameHeight($duration) {
-  return max(intval($duration * MIN_HEIGHT), intval(15 * MIN_HEIGHT)) -2;
+  global  $EM_PER_MINUTE;
+  return max(($duration * $EM_PER_MINUTE), (1 * $EM_PER_MINUTE));
 }
 
 function pauseHeight($duration) {
-  // echo "<!--".EpocToMysql($gameStart)." ".EpocToMysql($nextStart)."-->\n";
-  return ($duration * MIN_HEIGHT) - 2;
+  global  $EM_PER_MINUTE;
+  return ($duration * $EM_PER_MINUTE);
 }
 
 function jsSecure($string) {
@@ -86,7 +116,7 @@ function pauseEntry($height, $duration, $gameId, $editable = true) {
   $tid = "ptime$gameId";
   $names = "ptimes[]";
   $alarm = $duration < 0 ? " negative" : "";
-  $html = "<li class='schedule_item$alarm' id='$id' style='min-height:" . $height . "px'>";
+  $html = "<li class='schedule_item$alarm' id='$id' style='min-height:" . $height . "em'>";
   $html .= "<input type='hidden' id='$tid' name='$names' value='" . $duration . "'/>";
   $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
   if ($editable) {
@@ -94,7 +124,7 @@ function pauseEntry($height, $duration, $gameId, $editable = true) {
   } else {
     $html .= "<span style='align:right;float:right;'>#</span>";
   }
-  
+
   return $html;
 }
 
@@ -109,7 +139,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   else
     $tooltip = " title='" . $tooltip . "'";
   $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" .
-    $height . "px' id='game" . $gameId . "'" . $tooltip . ">";
+    $height . "em' id='game" . $gameId . "'" . $tooltip . ">";
   $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
   $html .= "<span class='schedule_time'>" . DefHourFormat($gameInfo['time']) . "</span> - ";
   $html .= $poolname;
@@ -124,11 +154,11 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
 }
 
 function getHName($gameInfo) {
-  return empty($gameInfo['hometeamshortname'])?$gameInfo['hometeamname']:$gameInfo['hometeamshortname'];
+  return empty($gameInfo['hometeamshortname']) ? $gameInfo['hometeamname'] : $gameInfo['hometeamshortname'];
 }
 
 function getVName($gameInfo) {
-  return empty($gameInfo['visitorteamshortname'])?$gameInfo['visitorteamname']:$gameInfo['visitorteamshortname'];
+  return empty($gameInfo['visitorteamshortname']) ? $gameInfo['visitorteamname'] : $gameInfo['visitorteamshortname'];
 }
 
 function getGameName($gameInfo, $short = false) {
@@ -145,7 +175,7 @@ function getGameName($gameInfo, $short = false) {
 }
 
 function gamePoolName($gameInfo) {
-  return U_($gameInfo['seriesname']).", ". U_($gameInfo['poolname']);
+  return U_($gameInfo['seriesname']) . ", " . U_($gameInfo['poolname']);
 }
 
 function tableStart($dayArray, $skip, $max) {
@@ -155,23 +185,29 @@ function tableStart($dayArray, $skip, $max) {
   foreach ($dayArray as $reservationArray) {
     if (++$index <= $skip)
       continue;
-      if ($index > $skip + $max)
-        break;
-        $startTime = strtotime($reservationArray['starttime']);
-        $firstStart = min($firstStart, $startTime);
-        echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field") . " " . $reservationArray['fieldname'] .
-        " " . date("H:i", $startTime) . "</th>\n";
+    if ($index > $skip + $max)
+      break;
+    $startTime = strtotime($reservationArray['starttime']);
+    $firstStart = min($firstStart, $startTime);
+    echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field") . " " . $reservationArray['fieldname'] .
+      " " . date("H:i", $startTime) . "</th>\n";
   }
   echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";
   return $firstStart;
 }
 
 function tableEnd($firstStart, $lastEnd) {
-  echo "<td class='timecolumn'>";
+  global  $EM_PER_MINUTE;
+  echo "<td class='time_column'>";
   if (isset($firstStart)) {
-    echo "<ul class='timelist'>\n";
-    for($t=$firstStart;$t<$lastEnd;$t+=60*60) {
-      echo "<li style='min-height:".(max(10, min(60, ($lastEnd-$t)/60)*MIN_HEIGHT-2))."px'>".date("H:i", $t)."</li>\n";
+    echo "<ul class='time_list'>\n";
+    for ($t = $firstStart + 60 * 60, $lastTick = $firstStart; $t <= $lastEnd; $t += 60 * 60) {
+      $height = pauseHeight(($t - $lastTick) / 60);
+      if ($height >= 2 || $t >= $lastEnd) {
+        echo "<li style='min-height:" . $height . // (max(0, min(100000, ($lastEnd - $t) / 60) * $EM_PER_MINUTE))
+        "em'>" . date("H:i", $t - 60 * 60) . "</li>\n";
+        $lastTick = $t;
+      }
     }
     echo "</ul>";
   }
@@ -179,7 +215,7 @@ function tableEnd($firstStart, $lastEnd) {
   echo "</tr>\n</table>\n";
 }
 
-//common page
+// common page
 pageTopHeadOpen($title);
 
 include_once 'lib/yui.functions.php';
@@ -273,7 +309,7 @@ function KeyUp(event){
 <?php
 
 $scrolling = "onkeydown='KeyDown(event);' onkeyup='KeyUp(event);'";
-pageTopHeadClose($title,false, $scrolling);
+pageTopHeadClose($title, false, $scrolling);
 pageMainStart();
 contentStartWide();
 
@@ -282,56 +318,64 @@ echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a>";
 
 echo "<table class='scheduling'><tr><td class='scheduling_column'>";
 
-//$teams = UnscheduledTeams();
-//$unscheduledTeams = array_flip(UnscheduledTeams());
-if($poolId){
+// $teams = UnscheduledTeams();
+// $unscheduledTeams = array_flip(UnscheduledTeams());
+if ($poolId) {
   $gameData = UnscheduledPoolGameInfo($poolId);
-}elseif($seriesId){
+} elseif ($seriesId) {
   $gameData = UnscheduledSeriesGameInfo($seriesId);
-}elseif(!empty($seasonId)){
+} elseif (!empty($seasonId)) {
   $gameData = UnscheduledSeasonGameInfo($seasonId);
-}else{
+} else {
   $gameData = array();
 }
 
+getHeightFactor($gameData, $reservationData, $MIN_DURATION, $MAX_DURATION, $EM_PER_MINUTE);
+
 echo "<table class='scheduling'><tr><td class='scheduling_column'>\n";
-echo "<h3>"._("Unscheduled")."</h3>\n";
+echo "<h3>" . _("Unscheduled") . "</h3>\n";
 echo "<form action='' method='get'>";
 echo "<p><select class='dropdown' name='eventfilter' onchange='OnEventSelect(this);'>\n";
-echo "<option class='dropdown' value=''>"._("Select event")."</option>";
-foreach($seasonfilter as $season){
-  if($seasonId==$season['id']){
-    echo "<option class='dropdown' selected='selected' value='".utf8entities($season['id'])."'>". utf8entities($season['name']) ."</option>";
-  }else{
-    echo "<option class='dropdown' value='".utf8entities($season['id'])."'>". utf8entities($season['name']) ."</option>";
+echo "<option class='dropdown' value=''>" . _("Select event") . "</option>";
+foreach ($seasonfilter as $season) {
+  if ($seasonId == $season['id']) {
+    echo "<option class='dropdown' selected='selected' value='" . utf8entities($season['id']) . "'>" .
+      utf8entities($season['name']) . "</option>";
+  } else {
+    echo "<option class='dropdown' value='" . utf8entities($season['id']) . "'>" . utf8entities($season['name']) .
+      "</option>";
   }
 }
 echo "</select><br/>\n";
 $disabled = "";
-if(empty($seasonId)){
+if (empty($seasonId)) {
   $disabled = "disabled='disabled'";
 }
 echo "<select class='dropdown' $disabled name='seriesfilter' onchange='OnSeriesSelect(this);'>\n";
-echo "<option class='dropdown' value='0'>"._("All divisions")."</option>";
-foreach($seriesfilter as $series){
-  if($seriesId==$series['id']){
-    echo "<option class='dropdown' selected='selected' value='".utf8entities($series['id'])."'>". utf8entities($series['name']) ."</option>";
-  }else{
-    echo "<option class='dropdown' value='".utf8entities($series['id'])."'>". utf8entities($series['name']) ."</option>";
+echo "<option class='dropdown' value='0'>" . _("All divisions") . "</option>";
+foreach ($seriesfilter as $series) {
+  if ($seriesId == $series['id']) {
+    echo "<option class='dropdown' selected='selected' value='" . utf8entities($series['id']) . "'>" .
+      utf8entities($series['name']) . "</option>";
+  } else {
+    echo "<option class='dropdown' value='" . utf8entities($series['id']) . "'>" . utf8entities($series['name']) .
+      "</option>";
   }
 }
 echo "</select><br/>\n";
 $disabled = "";
-if(!$seriesId){
+if (!$seriesId) {
   $disabled = "disabled='disabled'";
 }
 echo "<select class='dropdown' $disabled name='poolfilter' onchange='OnPoolSelect(this);'>\n";
-echo "<option class='dropdown' value='0'>"._("All pools")."</option>";
-foreach($poolfilter as $pool){
-  if($poolId==$pool['id']){
-    echo "<option class='dropdown' selected='selected' value='".utf8entities($pool['id'])."'>". utf8entities($pool['name']) ."</option>";
-  }else{
-    echo "<option class='dropdown' value='".utf8entities($pool['id'])."'>". utf8entities($pool['name']) ."</option>";
+echo "<option class='dropdown' value='0'>" . _("All pools") . "</option>";
+foreach ($poolfilter as $pool) {
+  if ($poolId == $pool['id']) {
+    echo "<option class='dropdown' selected='selected' value='" . utf8entities($pool['id']) . "'>" .
+      utf8entities($pool['name']) . "</option>";
+  } else {
+    echo "<option class='dropdown' value='" . utf8entities($pool['id']) . "'>" . utf8entities($pool['name']) .
+      "</option>";
   }
 }
 echo "</select></p>\n";
@@ -349,7 +393,7 @@ foreach ($gameData as $gameId => $gameInfo) {
   if (hasEditGamesRight($gameInfo['series'])) {
     $duration = gameDuration($gameInfo);
     if ($duration <= 0) {
-      $zeroGames[] = count($zeroGames) == 0?$gameInfo:$gameId;
+      $zeroGames[] = count($zeroGames) == 0 ? $gameInfo : $gameId;
     }
     $height = gameHeight($duration);
     $poolname = gamePoolName($gameInfo);
@@ -361,48 +405,53 @@ foreach ($gameData as $gameId => $gameInfo) {
       echo gameEntry($gameInfo, $height, $duration, $poolname, false);
   }
 }
-if(count($gameData)==0){
+if (count($gameData) == 0) {
   echo "<li></li>";
 }
 echo "</ul>\n";
 echo "</div>\n</td>\n";
 echo "</tr>\n</table>\n";
 echo "<p>&nbsp;</p>";
-echo "<input type='button' id='pauseButton' value='"._("Add pause")."'/>";
-echo "<div style='white-space:nowrap'><input type='text' id='pauseLen' value='$maxtimeslot' size='3'/>&thinsp;". _("minutes")."</div>\n";
+echo "<input type='button' id='pauseButton' value='" . _("Add pause") . "'/>";
+echo "<div style='white-space:nowrap'><input type='text' id='pauseLen' value='$maxtimeslot' size='3'/>&thinsp;" .
+  _("minutes") . "</div>\n";
 echo "</td><td class='tdcontent' style='vertical-align:top'>\n";
 $reservedPauses = array();
 
 $MINTOP = 30;
 
 {
+  global  $EM_PER_MINUTE;
   foreach ($reservationData as $dayArray) {
     $lastEnd = 0;
     $columnCount = $lastBreak = 0;
     $firstStart = tableStart($dayArray, 0, $MAX_COLUMNS);
-    
+
     foreach ($dayArray as $reservationId => $reservationArray) {
       echo "<td class='scheduling_column'>\n";
       $offset = intval((strtotime($reservationArray['starttime']) - $firstStart) / 60) + $MINTOP;
       $lastEnd = max($lastEnd, strtotime($reservationArray['endtime']));
       $startTime = strtotime($reservationArray['starttime']);
-      $endTime =  strtotime($reservationArray['endtime']);
+      $endTime = strtotime($reservationArray['endtime']);
       $duration = ($endTime - $firstStart) / 60;
+      $height = gameHeight($duration);
       
       $jsStartTimes[$reservationId] = $startTime;
 
       echo "<div class='workarea' >\n";
-      echo "<ul id='res".$reservationId."' class='draglist' style='min-height:".max(10,($duration * MIN_HEIGHT))."px'>\n";
-      
+      debug_to_apache("$startTime $endTime $duration $EM_PER_MINUTE $height");
+      echo "<ul id='res" . $reservationId . "' class='draglist' style='min-height:{$height}em'>\n";
+
       $duration = ($startTime - $firstStart) / 60;
       $height = pauseHeight($duration);
       if ($firstStart < $startTime) {
         $jsPauseTimes[-$reservationId] = $duration;
         echo pauseEntry($height, $duration, -$reservationId, false);
-        //$reservedPauses[] = "fixed".$reservationId;
+        // $reservedPauses[] = "fixed".$reservationId;
       }
-      
+
       $nextStart = $startTime;
+      $heightDebt = 0;
       foreach ($reservationArray['games'] as $gameId => $gameInfo) {
         $gameStart = strtotime($gameInfo['time']);
         $duration = ($gameStart - $nextStart) / 60;
@@ -410,16 +459,15 @@ $MINTOP = 30;
         if ($nextStart != $gameStart) {
           $jsPauseTimes[$gameId] = $duration;
           echo pauseEntry($height, $duration, $gameId);
-          $reservedPauses[] = "pause".$gameId;
+          $reservedPauses[] = "pause" . $gameId;
         }
         $duration = gameDuration($gameInfo);
         if ($duration <= 0) {
-          $zeroGames[] = count($zeroGames) == 0?$gameInfo:$gameId;
+          $zeroGames[] = count($zeroGames) == 0 ? $gameInfo : $gameId;
         }
         $nextStart = $gameStart + ($duration * 60);
         $height = gameHeight($duration);
-        $gametitle = getGameName($gameInfo);
-        $pooltitle = gamePoolName($gameInfo); 
+        $pooltitle = gamePoolName($gameInfo);
         $jsGameTimes[$gameId] = $duration;
         if ($duration > 0 && hasEditGamesRight($gameInfo['series'])) {
           echo gameEntry($gameInfo, $height, $duration, $pooltitle);
@@ -429,7 +477,7 @@ $MINTOP = 30;
       }
       echo "</ul>\n";
       echo "</div>\n</td>\n";
-      
+
       ++$columnCount;
       if (count($dayArray) > $MAX_COLUMNS && ($columnCount - $lastBreak >= $MAX_COLUMNS)) {
         tableEnd($firstStart, $lastEnd);
@@ -442,9 +490,9 @@ $MINTOP = 30;
     }
     if (isset($firstStart)) {
       tableEnd($firstStart, $lastEnd);
-    }    
+    }
     unset($firstStart);
-    $lastEnd=0;
+    $lastEnd = 0;
   }
 }
 
@@ -453,8 +501,11 @@ echo "<td id='user_actions'>";
 echo "<input type='button' id='showButton' value='" . _("Save") . "' /></td>";
 echo "<td class='center'><div id='responseStatus'></div>";
 if (!empty($zeroGames)) {
-  echo "<p>". sprintf(_("Warning: Games with duration 0 found. They can not be scheduled. Edit the game duration or the time slot length of pool %s ..."),
-      gamePoolName($zeroGames[0])) ."</p>";
+  echo "<p>" .
+    sprintf(
+      _(
+        "Warning: Games with duration 0 found. They can not be scheduled. Edit the game duration or the time slot length of pool %s ..."),
+      gamePoolName($zeroGames[0])) . "</p>";
 }
 echo "</td></tr></table>\n";
 echo "<p><a href='?view=admin/movingtimes&season=$seasonId&reservations=" . implode(',', $reservations) . "'>" .
@@ -472,12 +523,12 @@ var gameMap = new Map();
 var pauseMap = new Map();
 
 function updateList (list) {
-<?php 
+<?php
 foreach ($jsStartTimes as $reservationId => $time) {
-echo "    startMap.set($reservationId, $time);\n";
+  echo "    startMap.set($reservationId, $time);\n";
 }
 foreach ($jsGameTimes as $gameId => $duration) {
-echo "    gameMap.set($gameId, $duration);\n";
+  echo "    gameMap.set($gameId, $duration);\n";
 }
 foreach ($jsPauseTimes as $id => $duration) {
   echo "    pauseMap.set($id, $duration);\n";
@@ -617,30 +668,30 @@ function redirectWithConfirm(){
 var Event = YAHOO.util.Event;
 var DDM = YAHOO.util.DragDropMgr;
 var pauseIndex = 1;
-var minHeight = <?php echo MIN_HEIGHT; ?>;
+var emPerMinute = <?php echo $EM_PER_MINUTE; ?>;
 
 
 YAHOO.example.ScheduleApp = {
     init: function() {
-<?php 
+<?php
 echo "    new YAHOO.util.DDTarget(\"unscheduled\");\n";
 foreach ($reservationData as $day => $dayArray) {
   foreach ($dayArray as $reservationId => $reservationArray) {
-    echo "    new YAHOO.util.DDTarget(\"res".$reservationId."\");\n";
+    echo "    new YAHOO.util.DDTarget(\"res" . $reservationId . "\");\n";
     foreach ($reservationArray['games'] as $gameId => $gameInfo) {
       if (hasEditGamesRight($gameInfo['series'])) {
-        echo "    new YAHOO.example.DDList(\"game".$gameId."\");\n";
+        echo "    new YAHOO.example.DDList(\"game" . $gameId . "\");\n";
       }
     }
   }
 }
 foreach ($gameData as $gameId => $gameInfo) {
   if (hasEditGamesRight($gameInfo['series'])) {
-    echo "    new YAHOO.example.DDList(\"game".$gameId."\");\n";
+    echo "    new YAHOO.example.DDList(\"game" . $gameId . "\");\n";
   }
 }
 foreach ($reservedPauses as $pauseId) {
-  echo "    new YAHOO.example.DDList(\"".$pauseId."\");\n";
+  echo "    new YAHOO.example.DDList(\"" . $pauseId . "\");\n";
 }
 
 ?>
@@ -654,7 +705,7 @@ foreach ($reservedPauses as $pauseId) {
     var duration = Dom.get("pauseLen").value;
     if (duration > 0) {
       for(++pauseIndex; Dom.get("pause-" + pauseIndex) !=null || Dom.get("res" + pauseIndex) !=null; ++pauseIndex) {}
-      var height = Math.max(10,(duration * minHeight)-2);
+      var height = Math.max(1,(duration * emPerMinute));
       var html = "<?php echo jsSecure(pauseEntry('%h%', '%d%', '%i%')); ?>";
       html = html.replace(/%h%/g, height);
       html = html.replace(/%d%/g, duration);
@@ -874,8 +925,8 @@ Event.onDOMReady(YAHOO.example.ScheduleApp.init, YAHOO.example.ScheduleApp, true
 </script>
 
 
-<?php 
- echo "</td></tr>\n</table>\n";
+<?php
+echo "</td></tr>\n</table>\n";
 contentEnd();
 pageEnd();
 ?>

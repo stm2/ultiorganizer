@@ -492,7 +492,7 @@ table.scheduling {
   margin: 0px;
 }
 
-td.scheduling_column {
+td.scheduling_column, td.time_column {
   vertical-align: top;
   padding: 0px;
   font-size: .8rem;
@@ -502,24 +502,30 @@ table.scheduling .dropdown {
   width:16em;
 }
 
-ul.draglist, ol.draglist, select.series_select {
+ul.draglist, ol.draglist, ul.time_list, select.series_select {
   font-size: .8rem;
   position: relative;
-  width: 20em;
-  background-color: var(--draglistcolor, #f7f7f7);
   border: 1px solid var(--softbordercolor, #464646);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-ul.draglist li, ol.draglist li {
-  margin: 0px;
+ul.draglist, ol.draglist, select.series_select {
+  background-color: var(--draglistcolor, #f7f7f7);
+  width: 20em;
+}
+ 
+ul.draglist li, ol.draglist li, ul.time_list li {
   cursor: move;
   text-align: center;
   vertical-align: middle;
-  background-color: var(--draglistitemcolor, #d1e6ec);
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
+  margin: -1px;
+}
+
+ul.draglist li, ol.draglist li {
+  background-color: var(--draglistitemcolor, #d1e6ec);
 }
 
 ul.draglist li.negative, ol.draglist li.negative {
