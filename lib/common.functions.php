@@ -1425,11 +1425,15 @@ function uo_create_key_comparator($key, $ascending = true, $null_low = true) {
   return $comparator;
 }
 
+function jsQuote($value) {
+  return str_replace(["'", "\""], ["\\'", "&quot;"], $value);
+}
+
 /**
  * Returns html code for an 'X' delete button, that changes element $element's value to $value by javascript.
  * Your page must include common.js.inc. (It usually does, by way of menufunctions.php.)
  *
- * You must provide the hidden element on your page (e.g. by calling getHidden Input.
+ * You must provide the hidden element on your page (e.g. by calling getHiddenInput).
  *
  * @param string $name
  *          The name of the input element
@@ -1439,15 +1443,17 @@ function uo_create_key_comparator($key, $ascending = true, $null_low = true) {
  *          The id of the (hidden input) element to change.
  * @return string HTML code for an input (class='deletebutton')
  */
-function getDeleteButton($name, $value, $element = 'hiddenDeleteId', $img = 'images/remove.png', $alt = 'X', $confirmMessage = null) {
-  $func = "setId1('" . $element . "', '" . utf8entities($value) . "');";
+function getDeleteButton($name, $value, $element = 'hiddenDeleteId', $img = 'images/remove.png', $alt = 'X',
+  $confirmMessage = null) {
+  $value = jsQuote($value);
+  $func = "setId1('$element', '$value'); return true;";
   if ($confirmMessage !== null) {
-    $confirmMessage = utf8entities($confirmMessage);
-    $func = "if (confirm('$confirmMessage')) $func else return false;";
+    $confirmMessage = jsQuote($confirmMessage);
+    $func = "if (confirm('$confirmMessage')) { $func } else return false;";
   }
 
-  return "<input class='deletebutton' type='image' src='$img' alt='$alt' name='$name' value='" . _("X") .
-    "' onclick=\"$func\"/>";
+  return "<input class='deletebutton' type='image' src='$img' alt='$alt' name='$name' value='" . utf8entities(_("X")) .
+    "' onclick=\"javascript:$func\"/>";
 }
 
 /**

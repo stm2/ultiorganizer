@@ -568,12 +568,7 @@ function getPropId($userid, $name, $value) {
       mysql_adapt_real_escape_string($value));
     $result = mysql_adapt_query($query);
 
-    if (!$result) {
-      die('Invalid query: ' . mysql_adapt_error());
-    }
-
-    $row = mysqli_fetch_row($result);
-    return $row[0];
+    return DBQueryToValue($query);
   } else {
     die('Insufficient rights to get user info');
   }
@@ -1129,7 +1124,7 @@ function AddEditSeason($userid, $season) {
         mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($season));
       $result = mysql_adapt_query($query);
       if (!$result) {
-        die('Invalid query: ' . mysql_adapt_error());
+        die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
       }
       Log1("security", "add", $userid, $season, "editseason");
     }
@@ -1175,7 +1170,7 @@ function AddUserRole($userid, $role) {
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
     $result = mysql_adapt_query($query);
     if (!$result) {
-      die('Invalid query: ' . mysql_adapt_error());
+      die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
     }
     Log1("security", "add", $userid, $role, "userrole");
     

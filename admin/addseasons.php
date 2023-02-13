@@ -66,22 +66,15 @@ if (!empty($_POST['add'])) {
     // add rights for season creator
     AddEditSeason($_SESSION['uid'],$sp['season_id']);
     AddUserRole($_SESSION['uid'], 'seasonadmin:'.$sp['season_id']);
-
+    
     if($sp['istournament']){
       $_SESSION['title'] = _("New tournament added") .":";
     }else{
       $_SESSION['title'] = _("New season added") .":";
     }
-
-    /* FIXME Does anybody need this? I don't get it ... */
-    $_SESSION["var0"] = _("Name").": ".utf8entities($sp['name']);
-    $_SESSION["var1"] = _("Type").": ".utf8entities($sp['type']);
-    $_SESSION["var2"] = _("Starts").": ".ShortDate($sp['starttime']);
-    $_SESSION["var3"] = _("Ends").": ".ShortDate($sp['endtime']);
-    $_SESSION["var4"] = _("Enrollment open").": ".(intval($sp['enrollopen'])?_("yes"):_("no"));
-    $_SESSION['backurl'] = "?view=admin/seasons";
+    
     session_write_close();
-    header("location:?view=admin/seasonadmin&season=$seasonId");
+    header("location:?view=admin/seasonadmin&season=". urlencode($seasonId));
   }
 }else if(!empty($_POST['save'])){
   $backurl = utf8entities($_POST['backurl']??'');
@@ -157,13 +150,13 @@ if(empty($seasonId)){
 }else{
   ensureSeasonAdmin($seasonId, $title);
   $html .= "<h2>"._("Edit season/tournament")."</h2>\n";
-  $html .= "<form method='post' action='?view=admin/addseasons&amp;season=$seasonId'>";
+  $html .= "<form method='post' action='?view=admin/addseasons&amp;season=" . urlencode($seasonId) . "'>";
   $disabled="disabled='disabled'";
 }
 
 $html .= "<table class='formtable'>";
 $html .= "<tr><td class='infocell'>"._("Event id").": </td>\n";
-$html .= "<td><input class='input' size='30'name='season_id' $disabled value='".utf8entities($sp['season_id'])."'></input></td></tr>\n";
+$html .= "<td><input class='input' size='30'name='season_id' $disabled value='". utf8entities($seasonId)."'></input></td></tr>\n";
 $html .= "<tr><td class='infocell'>"._("Name").": </td>
       <td>".TranslatedField2("seasonname", $sp['name'], '')."</td>
     </tr>\n";
@@ -218,8 +211,8 @@ $html .= "/></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Organizer").": </td><td><input class='input' size='50' maxlength='50' name='organizer' value='".utf8entities($sp['organizer'])."'/></td></tr>";
 $html .= "<tr><td class='infocell'>"._("Category").": </td><td><input class='input' size='50' maxlength='50' name='category' value='".utf8entities($sp['category'])."'/></td></tr>";
 
-$html .= "<tr><td class='infocell'>".htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")).":</td>
-    <td><textarea class='input' rows='10' cols='70' name='comment'>".htmlentities($comment)."</textarea></td></tr>";
+$html .= "<tr><td class='infocell'>".utf8entities(_("Comment (you can use <b>, <em>, and <br /> tags)")).":</td>
+    <td><textarea class='input' rows='10' cols='70' name='comment'>".utf8entities($comment)."</textarea></td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Timezone").": </td><td>";
 $dateTimeZone = GetTimeZoneArray();

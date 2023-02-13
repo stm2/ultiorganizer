@@ -18,13 +18,13 @@ function LogEvent($event){
 			$event['description']="";
 		
 		if(strlen($event['description'])>50)
-			$event['description']=substr($event['description'],0,50);
+			$event['description']=mb_strcut($event['description'],0,50);
 		
 		if(strlen($event['id1'])>20)
-			$event['id1']=substr($event['id1'],0,20);
+			$event['id1']=mb_strcut($event['id1'],0,20);
 		
 		if(strlen($event['id2'])>20)
-			$event['id2']=substr($event['id2'],0,20);
+			$event['id2']=mb_strcut($event['id2'],0,20);
 			
 		if(empty($event['user_id'])){
 			if(!empty($_SESSION['uid']))
@@ -49,7 +49,9 @@ function LogEvent($event){
 		mysql_adapt_real_escape_string($event['id2']),
 		mysql_adapt_real_escape_string($event['description']));
 	$result = mysql_adapt_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+	if (!$result) { 
+	 die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+	}
 	return mysql_adapt_insert_id();
 	}	
 
