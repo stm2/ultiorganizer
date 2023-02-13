@@ -203,3 +203,7 @@ a.current {
   padding: 1ex;
   border-radius: 1ex;
 }
+
+.ddmode {
+  display: none;
+}

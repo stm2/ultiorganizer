@@ -704,3 +704,7 @@ div.tabcell {
   width: 100%;
   min-width: 10em;
 }
+
+#user_actions {
+  padding-top: 1em;
+}

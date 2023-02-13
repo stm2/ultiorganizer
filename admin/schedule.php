@@ -10,6 +10,26 @@ $title = _("Scheduling");
 
 $reservations = array();
 
+$ddMode = $_POST['ddmode'] ?? 0;
+if (isset($_POST['save_schedule'])) {
+  foreach ($_POST['games'] as $i => $gameId) {
+    $resId = -1;
+    if ($_POST['gameres'][$i] > 0) {
+      $resId = $_POST['res_code'][$_POST['gameres'][$i] - 1] ?? -2;
+    }
+    if ($resId > 0) {
+      $resInfo = ReservationInfo($resId);
+      $location = $resInfo['name'];
+      $field = $resInfo['fieldname'];
+      $time = $_POST['gamestart'][$i];
+      $time = strtotime(ShortEnDate($resInfo['starttime']) . " " . $time);
+      ScheduleGame($gameId, $time, $resId);
+    } else if ($resId == -1){
+      UnScheduleGame($gameId);
+    }
+  }
+}
+
 if (isset($_GET['reservations'])) {
   $reservations = explode(",", $_GET['reservations']);
 } else if (isset($_SESSION['userproperties']['userrole'])) {
@@ -88,8 +108,8 @@ function getHeightFactor($gameData, $reservationData, &$minDuration, &$maxDurati
   if ($minDuration == PHP_INT_MAX)
     $minDuration = 90;
     if ($maxDuration <= 0) $maxDuration = 1;
-    if ($minDuration * 2 < $maxDuration)
-      $minDuration = $maxDuration / 2;
+    if ($minDuration * 5 < $maxDuration)
+      $minDuration = $maxDuration / 5;
       
       $emPerMinute = $MIN_HEIGHT / $minDuration;
 }
@@ -133,6 +153,7 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $textColor = textColor($color);
   $gameId = $gameInfo['game_id'];
   $gamename = utf8entities(getGameName($gameInfo, true));
+  $sTime = empty($gameInfo['time']) ? "00:00" : DefHourFormat($gameInfo['time']);
   $tooltip = utf8entities(getGameName($gameInfo));
   if ($tooltip == $gamename)
     $tooltip = "";
@@ -141,14 +162,18 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $html = "<li class='schedule_item' style='color:#" . $textColor . ";background-color:#" . $color . ";min-height:" .
     $height . "em' id='game" . $gameId . "'" . $tooltip . ">";
   $html .= "<input type='hidden' id='gtime" . $gameId . "' name='gtimes[]' value='" . $duration . "'/>";
-  $html .= "<span class='schedule_time'>" . DefHourFormat($gameInfo['time']) . "</span> - ";
+  $html .= "<input type='hidden' class='editmode' name='games[]' value='$gameId' />\n";
+  $html .= "<input type='text' class='editmode gamestart' name='gamestart[]' style='display:inline; width:5em' type='text' minlength='5' maxlength='5' value='$sTime'/>\n";
+  $resCode = $gameInfo['res_code'] ?? 0;
+  $html .= "<span class='editmode'>Res #</span><input type='text' class='editmode gameres' name='gameres[]' style='display:inline; width:5em' type='text' value='$resCode'/>\n";
+  $html .= "<span class='ddmode schedule_time'>$sTime</span><span class='ddmode'> - </span>";
   $html .= $poolname;
   if ($editable) {
-    $html .= "<span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
+    $html .= " <span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
   } else {
     $html .= "<span style='align:right;float:right;'>#</span>";
   }
-  $html .= "<br/>" . (empty($gamename) ? "" : "<b>$gamename</b> ") . sprintf(_("%d&thinsp;min."), $duration);
+  $html .= "<br/>\n" . (empty($gamename) ? "" : "<b>$gamename</b> ") . sprintf(_("%d&thinsp;min."), $duration);
   $html .= "</li>\n";
   return $html;
 }
@@ -190,7 +215,7 @@ function tableStart($dayArray, $skip, $max) {
     $startTime = strtotime($reservationArray['starttime']);
     $firstStart = min($firstStart, $startTime);
     echo "<th class='scheduling'>" . $reservationArray['name'] . " " . _("Field") . " " . $reservationArray['fieldname'] .
-      " " . date("H:i", $startTime) . "</th>\n";
+      " " . date("H:i", $startTime) . "<span class='editmode'>: " . sprintf("Res # %d", $reservationArray['res_code']) . "</span></th>\n";
   }
   echo "<th>" . JustDate($reservationArray['starttime']) . "</th></tr><tr>\n";
   return $firstStart;
@@ -316,6 +341,8 @@ contentStartWide();
 echo JavaScriptWarning();
 echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a>";
 
+echo "<form action='' method='post'>";
+echo "<input type='hidden' id='ddmode' name='ddmode' value='$ddMode' />";
 echo "<table class='scheduling'><tr><td class='scheduling_column'>";
 
 // $teams = UnscheduledTeams();
@@ -334,7 +361,6 @@ getHeightFactor($gameData, $reservationData, $MIN_DURATION, $MAX_DURATION, $EM_P
 
 echo "<table class='scheduling'><tr><td class='scheduling_column'>\n";
 echo "<h3>" . _("Unscheduled") . "</h3>\n";
-echo "<form action='' method='get'>";
 echo "<p><select class='dropdown' name='eventfilter' onchange='OnEventSelect(this);'>\n";
 echo "<option class='dropdown' value=''>" . _("Select event") . "</option>";
 foreach ($seasonfilter as $season) {
@@ -379,13 +405,13 @@ foreach ($poolfilter as $pool) {
   }
 }
 echo "</select></p>\n";
-echo "</form>";
 
 $zeroGames = array();
 
 $jsStartTimes = array();
 $jsGameTimes = array();
 $jsPauseTimes = array();
+
 
 echo "<div class='workarea' >\n";
 echo "<ul class='draglist' id='unscheduled'  style='min-height:600px'>\n";
@@ -420,6 +446,17 @@ $reservedPauses = array();
 
 $MINTOP = 30;
 
+$reservationCode = 0;
+{
+  foreach ($reservationData as &$dayArray) {
+    foreach ($dayArray as $reservationId => &$reservationArray) {
+      $reservationArray['res_code'] = ++$reservationCode;      
+    }
+    unset ($reservationArray);
+  }
+  unset ($dayArray);
+}
+
 {
   global  $EM_PER_MINUTE;
   foreach ($reservationData as $dayArray) {
@@ -429,6 +466,7 @@ $MINTOP = 30;
 
     foreach ($dayArray as $reservationId => $reservationArray) {
       echo "<td class='scheduling_column'>\n";
+      echo "<input class='res_code' type='hidden' name='res_code[]' value='$reservationId' />\n";
       $offset = intval((strtotime($reservationArray['starttime']) - $firstStart) / 60) + $MINTOP;
       $lastEnd = max($lastEnd, strtotime($reservationArray['endtime']));
       $startTime = strtotime($reservationArray['starttime']);
@@ -439,7 +477,6 @@ $MINTOP = 30;
       $jsStartTimes[$reservationId] = $startTime;
 
       echo "<div class='workarea' >\n";
-      debug_to_apache("$startTime $endTime $duration $EM_PER_MINUTE $height");
       echo "<ul id='res" . $reservationId . "' class='draglist' style='min-height:{$height}em'>\n";
 
       $duration = ($startTime - $firstStart) / 60;
@@ -451,8 +488,8 @@ $MINTOP = 30;
       }
 
       $nextStart = $startTime;
-      $heightDebt = 0;
       foreach ($reservationArray['games'] as $gameId => $gameInfo) {
+        $gameInfo['res_code'] = $reservationArray['res_code'];
         $gameStart = strtotime($gameInfo['time']);
         $duration = ($gameStart - $nextStart) / 60;
         $height = pauseHeight($duration);
@@ -496,9 +533,14 @@ $MINTOP = 30;
   }
 }
 
-echo "<table><tr>";
-echo "<td id='user_actions'>";
-echo "<input type='button' id='showButton' value='" . _("Save") . "' /></td>";
+echo "<table>";
+echo "<tr><td>";
+echo "<input class='ddmode' type='button' id='editButton' style='display:none;' value='" . _("Edit games directly") . "' />";
+echo "<input class='editmode' type='button' id='ddButton' style='display:none;' value='" . _("Drag and drop mode") . "' />";
+echo "</td></tr>";
+echo "<tr><td id='user_actions'>";
+echo "<input class='ddmode' type='button' id='showButton' value='" . _("Save schedule") . "' />";
+echo "<input class='editmode' type='submit' name='save_schedule' id='submitButton' value='" . _("Save schedule") . "' /></td>";
 echo "<td class='center'><div id='responseStatus'></div>";
 if (!empty($zeroGames)) {
   echo "<p>" .
@@ -507,7 +549,9 @@ if (!empty($zeroGames)) {
         "Warning: Games with duration 0 found. They can not be scheduled. Edit the game duration or the time slot length of pool %s ..."),
       gamePoolName($zeroGames[0])) . "</p>";
 }
-echo "</td></tr></table>\n";
+echo "</td></tr>";
+echo "</table>\n";
+echo "</form>";
 echo "<p><a href='?view=admin/movingtimes&season=$seasonId&reservations=" . implode(',', $reservations) . "'>" .
   _("Manage transfer times") . "</a><br />";
 echo "<a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></p>";
@@ -537,6 +581,7 @@ foreach ($jsPauseTimes as $id => $duration) {
 
   var id = Number(list.id.replace(/[^0-9]*/, ''));
   var startTime = startMap.get(id);
+  if (!startTime) startTime = -60*60;
   for (child of list.children) {
     var duration = -1;
     var gid = Number(child.id.replace(/[a-z]*/, ''));
@@ -547,9 +592,24 @@ foreach ($jsPauseTimes as $id => $duration) {
     }
       
     var time = child.getElementsByClassName('schedule_time');
-    if (time.length > 0)
+    if (time && time.length > 0)
       time[0].innerHTML = shortTime(startTime);
-    startTime += duration;
+    time = child.getElementsByClassName('gamestart');
+    if (time && time.length > 0)
+      time[0].value = shortTime(startTime);
+    var res = child.getElementsByClassName('gameres');
+    if (res && res.length > 0) {
+      var i = 0;
+      res[0].value = 0;
+      for (rescode of document.getElementsByClassName("res_code")) {
+        ++i;
+        if (rescode.value == id)
+            res[0].value = i;
+      }
+    }
+      
+    if (startTime > 0)
+      startTime += duration;
   }
 }
 
@@ -673,6 +733,7 @@ var emPerMinute = <?php echo $EM_PER_MINUTE; ?>;
 
 YAHOO.example.ScheduleApp = {
     init: function() {
+      this.toggleDDMode(<?php echo $ddMode?>);
 <?php
 echo "    new YAHOO.util.DDTarget(\"unscheduled\");\n";
 foreach ($reservationData as $day => $dayArray) {
@@ -697,6 +758,8 @@ foreach ($reservedPauses as $pauseId) {
 ?>
     Event.on("showButton", "click", this.requestString);
     Event.on("pauseButton", "click", this.addPause);
+    Event.on("editButton", "click", this.editMode);
+    Event.on("ddButton", "click", this.ddMode);
   },
     
   addPause: function() {
@@ -759,6 +822,24 @@ echo ";\n";
     Dom.setStyle(responseDiv,"class", "inprogress");
     responseDiv.innerHTML = '&nbsp;';
     var transaction = YAHOO.util.Connect.asyncRequest('POST', 'index.php?view=admin/saveschedule', callback, request);         
+  },
+  editMode: function() {
+    YAHOO.example.ScheduleApp.toggleDDMode(-1);
+  },
+  ddMode: function() {
+    YAHOO.example.ScheduleApp.toggleDDMode(1);
+  },
+  toggleDDMode: function(dd) {
+    if (dd >= 0) DDM.unlock(); else DDM.lock();
+    for(el of document.getElementsByClassName('ddmode')) {
+      el.style.display = dd >= 0 ? 'inline' : 'none';
+    }
+    for(el of document.getElementsByClassName('editmode')) {
+      el.style.display = dd >= 0 ? 'none' : 'inline';
+    }
+    Dom.get('ddmode').value = dd;
+    Dom.get('ddButton').style.display = dd >= 0 ? 'none' : 'inline';
+    Dom.get('editButton').style.display = dd >= 0 ? 'inline' : 'none';
   },
 };
 
