@@ -134,7 +134,7 @@ function pageTopHeadOpen($title) {
   echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">";
 
   echo "<link rel='icon' type='image/png' href='$icon' />
-		<title>" . GetPageTitle() . "" . $title . "</title>\n";
+		<title>" . utf8entities(GetPageTitle() . "" . $title) . "</title>\n";
   echo styles();
 
   include $include_prefix . 'script/common.js.inc';
@@ -229,8 +229,8 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
     echo "</header><!--page_top-->\n";
   }
 
-  $showUrl = MakeUrl($_GET, array('show_menu' => 1));
-  $hideUrl = MakeUrl($_GET, array('show_menu' => -1));
+  $showUrl = urlencode(MakeUrl($_GET, array('show_menu' => 1)));
+  $hideUrl = urlencode(MakeUrl($_GET, array('show_menu' => -1)));
   $hideText = utf8entities(_("Hide Menu"));
   $showText = utf8entities(_("Show Menu"));
 
@@ -245,13 +245,13 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
   
   echo "<div id='show_menu_link' class='$showShow'><a href='$showUrl' onclick='LeftMenu.toggleMenu(this);'>$showText</a></div>\n";
   echo "<div id='hide_menu_link' class='$showHide'><a href='$hideUrl' onclick='LeftMenu.toggleMenu(this);'>$hideText</a></div>\n";
-  echo "<button id='menu_toggle' class='page_menu' title='Toggle menu' onclick='return LeftMenu.toggleMenu(this);'>";
+  echo "<button id='menu_toggle' class='page_menu' title='Toggle menu' onclick='return LeftMenu.toggleMenu(this);'>\n";
   echo hamburgerMenu();
-  echo "</button>";
+  echo "</button>\n";
 
   // navigation bar
   echo "<div class='breadcrumbs'><p class='breadcrumbs_text'>";
-  echo navigationBar($title) . "</p></div>";
+  echo navigationBar($title) . "</p></div>\n";
 }
 
 /**
@@ -307,17 +307,17 @@ function contentEnd() {
   if (!$backurl)
     $backurl = isset($_SERVER['HTTP_REFERER']) ? ($_SERVER['HTTP_REFERER']) : "";
   if ($backurl) {
-    echo "<div class='backlink'><a href='" . utf8entities($backurl) . "'>" . _("Return") . "</a></div>\n";
+    echo "<div class='backlink'><a href='" . $backurl . "'>" . utf8entities(_("Return")) . "</a></div>\n";
   }
 
   echo "<div class='printlink'>";
   foreach ($footers as $link => $caption) {
-    echo " <a href='$link'>$caption</a> |";
+    echo " <a href='" . urlencode($link) . "'>$caption</a> |";
   }
   if (getPrintMode() == 0) {
-    echo " <a href='?" . utf8entities($querystring) . "&amp;print=1'>" . _("Printable version") . "</a></div>\n";
+    echo " <a href='?" . $querystring . "&amp;print=1'>" . utf8entities(_("Printable version")) . "</a></div>\n";
   } else {
-    echo " <a href='?" . utf8entities($querystring) . "'>" . _("Screen version") . "</a></div>\n";
+    echo " <a href='?" . $querystring . "'>" . utf8entities(_("Screen version")) . "</a></div>\n";
   }
   echo "</footer>";
 
@@ -443,7 +443,7 @@ function localeSelection() {
   foreach ($locales as $localestr => $localename) {
     $query_string = StripFromQueryString($_SERVER['QUERY_STRING'], "locale");
     $query_string = StripFromQueryString($query_string, "goindex");
-    $ret .= "<a href='?" . utf8entities($query_string) . "&amp;";
+    $ret .= "<a href='?" . $query_string . "&amp;";
     $ret .= "locale=" . $localestr . "'><img class='localeselection' src='locale/" . $localestr . "/flag.png' alt='" .
       utf8entities($localename) . "'/></a>\n";
   }
@@ -541,12 +541,12 @@ function navigationBar($title) {
     $ptitle = nav_title($i);
     $query = nav_query($i);
     if (empty($ret))
-      $ret = $ptitle;
+      $ret = utf8entities($ptitle);
     else if ($i > 1 && $i < $n &&
       ($i < $n - $max_size || strlen($ptitle) + strlen($ret) + strlen(nav_title(1)) > $max_len)) {
       $ellips = "&hellip;&nbsp;&raquo;";
     } else {
-      $current = "<a href='?" . utf8entities($query) . "&amp;goindex=" . $i . "'>" . $ptitle . "</a> &raquo; ";
+      $current = "<a href='?" . urlencode($query) . "&amp;goindex=" . $i . "'>" . utf8entities($ptitle) . "</a>\n &raquo; ";
       if ($i == 1)
         $current .= $ellips;
       $ret = $current . $ret;
@@ -564,7 +564,7 @@ function seasonSelection() {
   if (mysqli_num_rows($seasons) > 1) {
     echo "<table class='leftmenulinks'><tr><td>";
     echo "<form action='?view=frontpage' method='get' id='seasonsels'>";
-    echo "<div><label for='selseason'>" . _("Select division") .
+    echo "<div><label for='selseason'>" . _("Select season") .
       "<select class='seasondropdown' name='selseason' id='selseason'
 			onchange='var selseason=document.getElementById(\"selseason\"); changeseason(selseason.options[selseason.options.selectedIndex].value);'>\n";
     while ($row = mysqli_fetch_assoc($seasons)) {
@@ -573,8 +573,8 @@ function seasonSelection() {
         $_SESSION['userproperties']['selseason'] == $row['season_id']) {
         $selected = "selected='selected'";
       }
-      echo "<option class='dropdown' $selected value='" . utf8entities($row['season_id']) . "'>" .
-        SeasonName($row['season_id']) . "</option>\n";
+      echo "<option class='dropdown' $selected value=\"" . utf8entities($row['season_id']) . "\">" .
+        utf8entities(SeasonName($row['season_id'])) . "</option>\n";
     }
     echo "</select></label>\n";
     foreach ($_GET as $name => $value) {
@@ -778,7 +778,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<table class='leftmenulinks'>\n";
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(SeasonName($season)) . " " .
         utf8entities(_("Administration")) . "</th>";
-      $seaLink = utf8entities($season);
+      $seaLink = urlencode($season);
       echo "<td class='menuseasonlevel'><a class='hideseason' style='text-decoration: none;' href='?view=frontpage&amp;hideseason=$seaLink'>x</a></td>";
       echo "</tr><tr><td colspan='2'>\n";
       foreach ($links as $href => $name) {
@@ -809,7 +809,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Team registration")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($enrollSeasons as $seasonId => $seasonName) {
-        $seaLink = utf8entities($seasonId);
+        $seaLink = urlencode($seasonId);
         echo "<a class='subnav' href='?view=user/enrollteam&amp;season=$seaLink '>&raquo; " .
           utf8entities(U_($seasonName)) . "</a>\n";
       }
@@ -825,7 +825,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
       echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Polls")) . "</th></tr>\n";
       echo "<tr><td>\n";
       foreach ($pollSeasons as $spoll) {
-        $seaLink = utf8entities($spoll['season_id']);
+        $seaLink = urlencode($spoll['season_id']);
         echo "<a class='subnav' href='?view=user/polls&amp;season=$seaLink'>&raquo; " .
           utf8entities(U_($spoll['name'])) . "</a>\n";
       }
@@ -842,7 +842,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     foreach ($_SESSION['userproperties']['userrole']['playeradmin'] as $profile_id => $propid) {
       $playerInfo = PlayerProfile($profile_id);
       echo "<a class='subnav' href='?view=user/playerprofile&amp;profile=" . $playerInfo['profile_id'] . "'>&raquo; " .
-        $playerInfo['firstname'] . " " . $playerInfo['lastname'] . "</a>\n";
+        utf8entities($playerInfo['firstname'] . " " . $playerInfo['lastname']) . "</a>\n";
     }
     echo "</td></tr>";
     echo "</table>\n";
@@ -1048,7 +1048,7 @@ function getEditSeasonLinks() {
     $editSeasons = getEditSeasons($_SESSION['uid']);
     foreach ($editSeasons as $season => $propid) {
       if (isSeasonAdmin($season)) {
-        $seaLink = utf8entities($season);
+        $seaLink = urlencode($season);
         add_menu($menu, $season, "?view=admin/seasonadmin&amp;season=$seaLink", _("Event"));
         add_menu($menu, $season, "?view=admin/seasonseries&amp;season=$seaLink", _("Divisions"));
         add_menu($menu, $season, "?view=admin/seasonteams&amp;season=$seaLink", _("Teams"));
@@ -1070,7 +1070,7 @@ function getEditSeasonLinks() {
         // Links already added if superadmin or seasonadmin
         if (!isset($menu[$seriesseason]) || !isSeasonAdmin($seriesseason)) {
           $seriesname = U_(getSeriesName($series));
-          $seaLink = utf8entities($seriesseason);
+          $seaLink = urlencode($seriesseason);
           add_menu($menu, $seriesseason, "?view=admin/seasonteams&amp;season=$seaLink&amp;single=1&amp;series=$series",
             $seriesname . " " . _("Teams"));
           add_menu($menu, $seriesseason, "?view=admin/seasonpools&amp;season=$seaLink&amp;single=1&amp;series=$series",
@@ -1085,7 +1085,7 @@ function getEditSeasonLinks() {
         }
       }
       foreach ($adminSeasons as $seriesseason => $v) {
-        $seaLink = utf8entities($seriesseason);
+        $seaLink = urlencode($seriesseason);
         add_menu($menu, $seriesseason, "?view=admin/reservations&amp;season=$seaLink", _("Scheduling"));
         add_menu($menu, $seriesseason, "?view=admin/accreditation&amp;season=$seaLink", _("Accreditation"));
       }
@@ -1094,7 +1094,7 @@ function getEditSeasonLinks() {
     if (isset($_SESSION['userproperties']['userrole']['teamadmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['teamadmin'] as $team => $param) {
         $teamseason = getTeamSeason($team);
-        $seaLink = utf8entities($teamseason);
+        $seaLink = urlencode($teamseason);
         $teamresps = TeamResponsibilities($_SESSION['uid'], $teamseason);
         if (count($teamresps) <= 3) {
           $teamname = getTeamName($team);
@@ -1109,12 +1109,12 @@ function getEditSeasonLinks() {
     if (isset($_SESSION['userproperties']['userrole']['accradmin'])) {
       foreach ($_SESSION['userproperties']['userrole']['accradmin'] as $team => $param) {
         $teamseason = getTeamSeason($team);
-        $seaLink = utf8entities($teamseason);
+        $seaLink = urlencode($teamseason);
         $teamname = getTeamName($team);
         if (count($_SESSION['userproperties']['userrole']['teamadmin']) <= 3) {
           add_menu($menu, $teamseason, "?view=user/teamplayers&amp;team=$team", _("Team") . ": " . $teamname);
         } else {
-          add_menu($menu, $season, "?view=user/respteams&amp;season=$season", _("Team responsibilities"));
+          add_menu($menu, $season, "?view=user/respteams&amp;season=$seaLink", _("Team responsibilities"));
         }
         add_menu($menu, $teamseason, "?view=admin/accreditation&amp;season=$seaLink", _("Accreditation"));
       }
@@ -1135,13 +1135,14 @@ function getEditSeasonLinks() {
 
     foreach ($menu as $season => &$submenu) {
       foreach ($submenu as $link => $value) {
-        if (substr($link, 0, 2) === '??') {
-          switch (substr($link, 2)) {
+        if (mb_substr($link, 0, 2) === '??') {
+          $seaLink = urlencode($season);
+          switch (mb_substr($link, 2)) {
           case 'respgames':
-            $submenu["?view=user/respgames&amp;season=$season"] = _("Game responsibilities");
+            $submenu["?view=user/respgames&amp;season=$seaLink"] = _("Game responsibilities");
             break;
           case 'contacts':
-            $submenu["?view=user/contacts&amp;season=$season"] = _("Contacts");
+            $submenu["?view=user/contacts&amp;season=$seaLink"] = _("Contacts");
             break;
           case 'delete': // later
             break;
@@ -1154,17 +1155,19 @@ function getEditSeasonLinks() {
 
     foreach ($menu as $season => $links) {
       if (isSeasonAdmin($season)) {
-        add_menu($menu, $season, "?view=admin/addseasonusers&amp;season=$season", _("Event users"));
+        $seaLink = urlencode($season);
+        add_menu($menu, $season, "?view=admin/addseasonusers&amp;season=$seaLink", _("Event users"));
       }
     }
 
     foreach ($menu as $season => &$submenu) {
       foreach ($submenu as $link => $title) {
         if (substr($link, 0, 2) === '??') {
+          $seaLink = urlencode($season);
           switch (substr($link, 2)) {
           case 'delete':
             add_menu($menu, $season, '', '');
-            add_menu($menu, $season, "?view=admin/delete&amp;season=$season", _("Delete"));
+            add_menu($menu, $season, "?view=admin/delete&amp;season=$seaLink", _("Delete"));
             break;
           }
           unset($submenu[$link]);

@@ -84,7 +84,8 @@ if(!empty($_POST['copy'])) {
 
 $get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
   $single = $single == 0 ? "" : "&single=1";
-  $link = "?view=admin/seasonteams&season=$season&series={$seriesId}$single";
+  $seaLink = urlencode($season);
+  $link = "?view=admin/seasonteams&season=$seaLink&series={$seriesId}$single";
   return $htmlEntities ? utf8entities($link) : $link;
 };
 

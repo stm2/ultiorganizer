@@ -374,7 +374,7 @@ function SeasonControl() {
   
   $seasons = Seasons();
   while($season = mysqli_fetch_assoc($seasons)){
-    $ret .= "<option value='".urlencode($season['season_id'])."'";
+    $ret .= "<option value=\"".  utf8entities($season['season_id'])."\"";
     if (isset($selected[$season['season_id']])) {
       $ret .=  " selected='selected'";
     }

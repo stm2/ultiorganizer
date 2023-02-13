@@ -16,11 +16,11 @@ $seriesId = iget('series');
 function getLinkUrl($season = null, $series = null, $mode = null) {
   $url = "?view=admin/delete";
   if (!empty($season))
-    $url .= "&amp;season=" . utf8entities($season);
+    $url .= "&amp;season=" . urlencode($season);
   if (!empty($series))
-    $url .= "&amp;series=" . utf8entities($series);
+    $url .= "&amp;series=" . urlencode($series);
   if (!empty($mode))
-    $url .= "&amp;mode=" . utf8entities($mode);
+    $url .= "&amp;mode=" . urlencode($mode);
   return $url;
 }
 

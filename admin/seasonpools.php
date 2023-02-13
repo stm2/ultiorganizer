@@ -74,13 +74,14 @@ if (!empty($_POST['save'])) {
 
 $get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
   $single = $single == 0 ? "" : "&single=1";
-  $link = "?view=admin/seasonpools&season=$season&series={$seriesId}$single";
+  $seaLink = urlencode($season);
+  $link = "?view=admin/seasonpools&season=$seaLink&series={$seriesId}$single";
   return $htmlEntities ? utf8entities($link) : $link;
 };
 
 $url_here = $get_link($season, $series_id, $single, true);
 
-$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
+$html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=" . urlencode($season));
 
 $seriesinfo = SeriesInfo($series_id);
 

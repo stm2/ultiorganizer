@@ -353,12 +353,12 @@ $html .= file_get_contents('script/disable_enter.js.inc');
   $seasons = Seasons();
   while ($season = mysqli_fetch_assoc($seasons)) {
     if (empty($editseasons[$season['season_id']])) {
-      $html .= "<option value='" . urlencode($season['season_id']) . "'>" . utf8entities($season['name']) . "</option>";
+      $html .= "<option value='" . utf8entities($season['season_id']) . "'>" . utf8entities($season['name']) . "</option>";
     }
   }
   $html .= "</select><p>" . _("These tournaments are hidden.") . "</p></div></div>\n";
 
-  $html .= "<hr />\n";
+  $html .= "</form><hr />\n";
 
   $html .= "<h2>" . _("Show pools") . "</h2>\n";
   $poolselectors = getPoolselectors($userid);

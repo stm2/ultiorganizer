@@ -185,12 +185,7 @@ function TeamSeason($teamId)
 				left join uo_series as ser on (team.series = ser.series_id) WHERE team_id=%d",
   (int)$teamId);
 
-  $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-
-  $row = mysqli_fetch_row($result);
-
-  return $row[0];
+  return DBQueryToValue($query);
 }
 
 function TeamComingGames($teamId, $placeId)

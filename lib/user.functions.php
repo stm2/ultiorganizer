@@ -608,7 +608,9 @@ function getUserpropertyArray($userid, $propertyname) {
 function setSelectedSeason() {
   // season selection changed
   if (!empty($_GET["selseason"])) {
-    $_SESSION['userproperties']['selseason'] = $_GET["selseason"];
+    $seasonId = $_GET["selseason"];
+    if (!empty(SeasonInfo($seasonId)))
+      $_SESSION['userproperties']['selseason'] = $seasonId;
   }
 }
 

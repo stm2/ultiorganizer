@@ -33,7 +33,7 @@ if (!empty($_GET["season"]))
 // process itself on submit
 if (!empty($_POST['add'])) {
   $backurl = utf8entities($_POST['backurl'] ?? '');
-  $sp['season_id'] = $_POST['season_id'];
+  $sp['season_id'] = $_POST['added_id'];
   $sp['name'] = $_POST['seasonname'];
   $sp['type'] = $_POST['type'];
   $sp['istournament'] = !empty($_POST['istournament']);
@@ -51,10 +51,10 @@ if (!empty($_POST['add'])) {
   $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
   $comment=$_POST['comment'];
 
-  if(empty($_POST['season_id'])){
+  if(empty($_POST['added_id'])){
     $html .= "<p class='warning'>"._("Event id can not be empty").".</p>";
-  }else if(preg_match('/[ ]/', $_POST['season_id']) || !preg_match('/[a-z0-9.]/i', $_POST['season_id'])){
-    $html .= "<p class='warning'>"._("Event id may not have spaces or special characters").".</p>";
+  }else if(preg_match('/[ \'"]/', $_POST['added_id']) || !preg_match('/[\w_~$@-]{1,10}/iu', $_POST['added_id'])){
+    $html .= "<p class='warning'>"._("Event id may not contain spaces or special characters and may only be 10 characters long").".</p>";
   }else if(empty($_POST['seasonname'])){
     $html .= "<p class='warning'>"._("Name can not be empty").".</p>";
   }else if(empty($_POST['type'])){
@@ -64,7 +64,7 @@ if (!empty($_POST['add'])) {
     $seasonId = $sp['season_id'];
 
     // add rights for season creator
-    AddEditSeason($_SESSION['uid'],$sp['season_id']);
+    AddEditSeason($_SESSION['uid'], $sp['season_id']);
     AddUserRole($_SESSION['uid'], 'seasonadmin:'.$sp['season_id']);
     
     if($sp['istournament']){
@@ -143,12 +143,14 @@ addHeaderCallback(
 
 
 if(empty($seasonId)){
+  $sValue = utf8entities($_POST['added_id'] ?? "");
   ensureSuperAdmin($title);
   $html .= "<h2>"._("Add new season/tournament")."</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons'>";
   $disabled="";
 }else{
   ensureSeasonAdmin($seasonId, $title);
+  $sValue = utf8entities($seasonId);
   $html .= "<h2>"._("Edit season/tournament")."</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons&amp;season=" . urlencode($seasonId) . "'>";
   $disabled="disabled='disabled'";
@@ -156,7 +158,7 @@ if(empty($seasonId)){
 
 $html .= "<table class='formtable'>";
 $html .= "<tr><td class='infocell'>"._("Event id").": </td>\n";
-$html .= "<td><input class='input' size='30'name='season_id' $disabled value='". utf8entities($seasonId)."'></input></td></tr>\n";
+$html .= "<td><input class='input' size='30' name='added_id' $disabled value='$sValue'></input></td></tr>\n";
 $html .= "<tr><td class='infocell'>"._("Name").": </td>
       <td>".TranslatedField2("seasonname", $sp['name'], '')."</td>
     </tr>\n";

@@ -43,6 +43,7 @@ function setId2(id1, id2, v1, v2)
 }
 
 function changeseason(id) {
+  id = encodeURIComponent(id);
   var url = location.href;
 
   var param = "selseason";

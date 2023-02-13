@@ -10,10 +10,14 @@ if (!empty($_GET['user'])) {
 	$target = "view=user/userinfo";
 }
 
-
 $html .= "<h2>".$title."</h2>";
 if ($_GET['selectortype'] == 'currentseason') {
 	$html .= "<h3>"._("Current event")." (".utf8entities(CurrentSeasonName()).")</h3>\n";
+  $html .= "<p>" .
+    utf8entities(
+      _(
+        "This shows the groups of the tournament or season you have currently selected in the drop down menu in the left menu.")) .
+    "</p>\n";
 	$html .= "<form method='post' action='?".$target."'>\n";
 	$html .= "<div><input type='hidden' name='selectortype' value='currentseason'/>\n";
 	$html .= "<input class='button' type='submit' name='selectpoolselector' value='"._("Select")."'/></div>\n";

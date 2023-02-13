@@ -52,7 +52,8 @@ pageTopHeadClose($title, false, $setFocus);
 leftMenu();
 contentStart();
 
-$html .= "<form method='post' action='?view=admin/seasonseries&amp;season=$season'>";
+$seaLink = urlencode($season);
+$html .= "<form method='post' action='?view=admin/seasonseries&amp;season=$seaLink'>";
 $html .= "<h2>"._("Divisions")."</h2>\n";
 
 $series = SeasonSeries($season);

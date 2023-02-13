@@ -8,8 +8,6 @@ include_once 'lib/configuration.functions.php';
 $title = _("Events");
 $html = "";
 
-debug_to_apache(print_r($_POST, true));
-
 // process itself on submit
 if (!empty($_POST['remove_x']) && !empty($_POST['hiddenDeleteId'])) {
   $id = $_POST['hiddenDeleteId'];
@@ -111,9 +109,6 @@ while ($row = mysqli_fetch_assoc($seasons)) {
   $html .= "</tr>\n";
 }
 $html .= "</table>";
-
-$html .= "<input class='deletebutton' type='image' src='remove.png' alt='X' name='abc' value='" . _("X") .
-"' onclick=\"javascript:m='x\\'y&quot;z<'; return confirm(m) && setId1('hiddenDeleteId', m);\"/>";
 
 $html .= "<div>";
 $html .= "<a href='?view=admin/eventdataimport'>" . utf8entities(_("Import event")) . "</a> | ";
