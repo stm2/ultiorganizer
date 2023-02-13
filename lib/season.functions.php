@@ -35,10 +35,13 @@ function SeasonSeriesMult($selected, $seriesname = null) {
   $query = "SELECT seas.name as season_name, ser.series_id as series, ser.name as series_name ";
   $query .= "FROM uo_series as ser LEFT JOIN uo_season as seas on (ser.season = seas.season_id) ";
   $query .= "WHERE ser.season IN (";
+  $terms = "";
   foreach ($selected as $seasonid => $value) {
-    $query .= "'" . mysql_adapt_real_escape_string($seasonid) . "', ";
+    if (!empty($terms))
+      $terms .= ",";
+    $terms .= "'" . mysql_adapt_real_escape_string($seasonid) . "'";
   }
-  $query = substr($query, 0, strlen($query) - 2);
+  $query .= $terms;
   $query .= ")";
   global $DEBUG;
   $DEBUG = true;

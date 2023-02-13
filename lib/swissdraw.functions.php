@@ -335,9 +335,9 @@ function GenerateSwissdrawPools($poolId, $rounds, $generate = true) {
     if ($rounds > 0){ 
       $preflen = (int) log10($rounds) + 1;
       $orderprefix = $poolInfo['ordering'];
-      if (strlen($orderprefix) + $preflen+1 > PoolOrderingLength()) {
+      if (strlen($orderprefix) + $preflen + 1 > PoolOrderingLength()) {
         // try to find a string greater than orderprefix; this often fails
-        $orderprefix = substr($orderprefix, 0, PoolOrderingLength() - $preflen - 1);
+        $orderprefix = mb_strcut($orderprefix, 0, PoolOrderingLength() - $preflen - 1);
         $orderprefix .= 'Z';
       }
     }

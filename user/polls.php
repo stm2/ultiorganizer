@@ -65,7 +65,7 @@ if (!count($serieses)) {
           $html .= "<td>";
 
           if (strlen($option['description']) > $maxl)
-            $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</td>";
+            $html .= utf8entities(mb_strcut($option['description'], 0, $maxl)) . "...</td>";
           else
             $html .= utf8entities($option['description']) . "</td>";
 

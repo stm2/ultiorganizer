@@ -35,7 +35,7 @@ function GetPluginList($category, $type="", $format="") {
 				if($ini['category']==$category
 					&&(empty($type) || $type==$ini['type'])
 					&&(empty($format) || $type==$ini['format'])){
-					$file = substr($file, 0,-4);//remove file extension
+					$file = mb_substr($file, 0,-4);//remove file extension
 					$plugins[]=array('file'=>$file,'title'=>$ini['title'],'description'=>$ini['description']);
 				}
 			}

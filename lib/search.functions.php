@@ -428,10 +428,13 @@ function PoolResults() {
     } else {
       $selected = $_SESSION['userproperties']['editseason'];
     }
+    $terms = "";
     foreach ($selected as $seasonid => $value) {
-      $query .= "'".mysql_adapt_real_escape_string($seasonid)."', ";
+      if (!empty($terms))
+        $terms .= ",";
+      $terms .= "'".mysql_adapt_real_escape_string($seasonid)."'";
     }
-    $query = substr($query, 0, strlen($query) - 2);
+    $query .= $terms;
     $query .= ")";
     if (!empty($_POST['seriesname']) && strlen(trim($_POST['seriesname'])) > 0) {
       $query .= " AND ser.name like '%".mysql_adapt_real_escape_string(trim($_POST['seriesname']))."%'";

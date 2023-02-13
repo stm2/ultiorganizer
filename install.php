@@ -326,6 +326,7 @@ function createtables($mysqlconnectionref) {
   $html = "";
   
   // Create tables if required
+  // FIXME multibyte-safe!?
   if (!($sql_file_contents = file_get_contents("sql/ultiorganizer.sql"))) {
     $html .= "<p style='color:red'>Cannot open file: conf/config.inc.php</p>";
   } else {

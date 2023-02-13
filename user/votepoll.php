@@ -169,7 +169,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
     if (!empty($option['description'])) {
       $html .= "<span class='rank_item_description'>";
       if (strlen($option['description']) > $maxl)
-        $html .= utf8entities(substr($option['description'], 0, $maxl)) . "...</span>";
+        $html .= utf8entities(mb_strcut($option['description'], 0, $maxl)) . "...</span>";
       else
         $html .= utf8entities($option['description']) . "</span>";
     }
