@@ -27,6 +27,15 @@ $res = array(
 	"season"=>$season,
 	"timeslots"=>"");
 
+function time_fix($post, $key, $date) {
+  if (isset($post[$key])) {
+    $time = preg_replace("/^[0-9]+/", "$0:00", $post[$key]);
+  } else {
+    $time = "00:00";
+  }
+  return ToInternalTimeFormat("$date $time");
+}
+
 function check_input($post, $season, &$res) {
   $error = "";
   if (empty($post['date'])) {
@@ -38,10 +47,8 @@ function check_input($post, $season, &$res) {
   $res['fieldname'] = isset($post['fieldname']) ? $post['fieldname'] : "";
   $res['reservationgroup'] = isset($post['reservationgroup']) ? $post['reservationgroup'] : "";
   $res['date'] = isset($post['date']) ? $post['date'] : date('d.m.Y', time());
-  $res['starttime'] = isset($post['starttime']) ? ToInternalTimeFormat($res['date'] . " " . $post['starttime']) : ToInternalTimeFormat(
-    "00:00");
-  $res['endtime'] = isset($post['endtime']) ? ToInternalTimeFormat($res['date'] . " " . $post['endtime']) : ToInternalTimeFormat(
-    "00:00");
+  $res['starttime'] = time_fix($post, 'starttime', $res['date']);
+  $res['endtime'] = time_fix($post, 'endtime', $res['date']);
   $res['date'] = ToInternalTimeFormat($res['date']);
   $res['timeslots'] = isset($post['timeslots']) ? $post['timeslots'] : "";
   $res['season'] = isset($post['resseason']) ? $post['resseason'] : $season;
