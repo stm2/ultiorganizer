@@ -318,6 +318,7 @@ td.scoreinput.bright {
   padding: 0;
   margin: 0;
   border: 1px solid var(--bgcolor, #ffffff);
+  border-color: transparent;
 }
 
 .deletebutton:hover {
