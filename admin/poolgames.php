@@ -375,7 +375,7 @@ if (count($games)) {
     } else {
       $html .= "<td style='width:30%'>" . utf8entities(U_($row['pvisitorteamname'])) . "</td>";
     }
-    $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaVal&amp;game=" . $row['game_id'] . "'>" .
+    $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaValue&amp;game=" . $row['game_id'] . "'>" .
       _("edit") . "</a></td>";
     $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->') .
       "</td>";
@@ -397,7 +397,7 @@ if (count($games)) {
     $html .= "<td style='width:30%'>" . utf8entities($row['visitorteamname']) . "</td>";
     $html .= "<td style='width:5%'>" . intval($row['homescore']) .
       "</td><td style='width:2%'>-</td><td style='width:5%'>" . intval($row['visitorscore']) . "</td>";
-    $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaVal&amp;game=" . $row['game_id'] . "'>" .
+    $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaValue&amp;game=" . $row['game_id'] . "'>" .
       _("edit") . "</a></td>";
     $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->') .
       "</td>";
