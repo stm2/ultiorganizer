@@ -45,7 +45,6 @@ if(!empty($_POST['recalculate'])){
 
 if (!empty($_POST['editType'])) {
   $editPool = $_POST['PoolId'];
-  
   editPoolStandings($_POST['editType'], $editPool, $_POST['startId'], $_POST['editStart'], $_POST['editEnd'], $_POST['seedId'], $_POST['seed'], $_POST['rankId'], $_POST['rank']);
 }
 
@@ -91,6 +90,7 @@ $get_link = function ($season, $seriesId, $single = 0, $htmlEntities = false) {
   return $htmlEntities ? utf8entities($link) : $link;
 };
 
+$url_here_raw = $get_link($season, $series_id, $single, false);
 $url_here = $get_link($season, $series_id, $single, true);
 
 $html .= SeriesPageMenu($season, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$season");
@@ -117,7 +117,6 @@ if($_SESSION['hide_played_pools']){
 $html .= "</p>";
 
 $html .= "<form method='post' id='theForm' action='${url_here}'>";
-$seasoninfo = SeasonInfo($season);
 $pools = SeriesPools($series_id);
 if(!count($pools)){
   $html .= "<p>"._("Add pools first")."</p>\n";
@@ -276,7 +275,7 @@ $html .= "</p>";
 $html .= "</form>\n";
 
 addHeaderCallback(
-  function () use ($url_here) {
+  function () use ($url_here_raw) {
     $editstring = _("Edit");
     echo <<<EOG
     
@@ -284,7 +283,7 @@ addHeaderCallback(
 <!--
 function setAnchor(pool) {
 	var form = document.getElementById("theForm");
-	form.action = "?${url_here}#P"+pool;
+	form.action = "${url_here_raw}#P"+pool;
 }
 
 function setDeleteId(pool, team){
