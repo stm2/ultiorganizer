@@ -341,7 +341,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
 function printVictoryPoints() {
   $ret = "<h3>" . _("Victory Points") . "</h3>";
   $ret .= "<table class='infotable'>";
-  $ret .= "<tr><th>" . _("Score Difference") . "</th><th>" . _("Victory Points") ."</th></tr>\n";
+  $ret .= "<tr><th>" . _("Score Difference") . "</th><th>" . _("VP") ."</th></tr>\n";
   $victory = VictoryPoints();
   foreach ($victory as $vp) {
     $ret .= "<tr><td>" . $vp['pointdiff'] . "</td><td>" . $vp['victorypoints'] . "</td></tr>\n";
