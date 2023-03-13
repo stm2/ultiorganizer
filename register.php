@@ -20,7 +20,7 @@ if(!empty($_POST['save'])) {
 
   if ($error == 0) {
     if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
-      $message .= "<p>"._("Confirmation e-mail has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.")."</p>\n";
+      $message .= "<p>"._("Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.")."</p>\n";
       $mailsent = true;
     }
   } else {
@@ -45,7 +45,7 @@ $help = "<p>"._("Registration is only needed for event organizers, team contact 
 $help .= _("Registration process:")."</p>
 	<ol>
 		<li> "._("Fill registration information in fields below.")."</li>
-		<li> "._("Confirmation mail will be sent immediately to the email address provided. (Note that confirmation mail can be incorrectly filterd as spam by e-mail client and in this case you can find the mail from spam -folder instead of inbox.)")."</li>
+		<li> "._("Confirmation mail will be sent immediately to the email address provided. (Note that confirmation mail can be incorrectly filterd as spam by email client and in this case you can find the mail from spam -folder instead of inbox.)")."</li>
 		<li> "._("Follow the link in the mail to confirm registration.")."</li>
 	</ol>";
 

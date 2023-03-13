@@ -59,7 +59,7 @@ foreach ($places as $placeGameStr) {
 if (!empty($saveErrors)) {
   $response .= "<p>";
   foreach ($saveErrors as $err) {
-    $response .= sprintf(_("Game %s could not be scheduled"), $err['game']) . "<br />";
+    $response .= sprintf(_("Game %s could not be scheduled."), $err['game']) . "<br />";
   }
   $response .= "</p>";
 }

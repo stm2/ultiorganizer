@@ -66,7 +66,7 @@ $help = "<p>" . _("Extra emails") . ":</p>
 	<ol>
 		<li> " . _("Fill in the extra email address below.") . "</li>
 		<li> " . _("Confirmation email will be sent to the email address provided.") . "</li>
-		<li> " . _("Follow the instructions in the e-mail to confirm the address.") . "</li>
+		<li> " . _("Follow the instructions in the email to confirm the address.") . "</li>
 	</ol>";
 $html .= onPageHelpAvailable($help);
 

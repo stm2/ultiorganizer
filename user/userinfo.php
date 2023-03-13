@@ -344,7 +344,7 @@ $html .= file_get_contents('script/disable_enter.js.inc');
   foreach ($editseasons as $season => $id) {
     $html .= "<option value='" . utf8entities($id) . "'>" . utf8entities(SeasonName($season)) . "</option>";
   }
-  $html .= "</select><p>" . _("These tournaments are visible in your menu.") . "</p></div>\n";
+  $html .= "</select><p>" . _("Administration menus for these tournaments are shown.") . "</p></div>\n";
   $html .= "<div class='arbuttons'><input class='button' type='submit' name='remeditseasons' value='" . _("Hide") .
     " &raquo;' /><br />
 	      <input class='button' type='submit' name='addeditseasons' value='&laquo; " . _("Show") . "' /></div>\n";
@@ -356,11 +356,12 @@ $html .= file_get_contents('script/disable_enter.js.inc');
       $html .= "<option value='" . utf8entities($season['season_id']) . "'>" . utf8entities($season['name']) . "</option>";
     }
   }
-  $html .= "</select><p>" . _("These tournaments are hidden.") . "</p></div></div>\n";
+  $html .= "</select><p>" . _("Administration menus for these tournaments are hidden.") . "</p></div></div>\n";
 
   $html .= "</form><hr />\n";
 
   $html .= "<h2>" . _("Show pools") . "</h2>\n";
+  $html .= "<p>" . utf8entities(_("Regular menus for pools matching these criteria are shown on the left.")) . "</p>";
   $poolselectors = getPoolselectors($userid);
   if (!empty($poolselectors)) {
     $html .= "<form method='post' action='?view=user/userinfo";
