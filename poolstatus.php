@@ -3,6 +3,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
+include_once 'lib/standings.functions.php';
 include_once 'lib/timetable.functions.php';
 
 $title = _("Pool Ranking")." ";
@@ -263,15 +264,17 @@ function printSwissdraw($seasoninfo, $poolinfo){
   $ret .= "<table $style >\n";
   $ret .= "<tr><th>#</th><th style='width:200px'>"._("Team")."</th>";
   $ret .= "<th class='center'>"._("Games")."</th>";
-  $ret .= "<th class='center'>"._("Victory Points")."</th>";
-  $ret .= "<th class='center'>"._("Opponent VPs")."</th>";
+  $ret .= "<th class='center'>"._("VP")."</th>";
+  $ret .= "<th class='center'>"._("Opp. VP")."</th>";
   $ret .= "<th class='center'>"._("Margin")."</th>";
   $ret .= "<th class='center'>"._("Goals")."</th>";
+  $ret .= "<th class='center'>"._("PwrR")."</th>";
   $ret .= "</tr>\n";
 
   $standings = PoolTeams($poolinfo['pool_id'], "rank");
 
   if(count($standings)){
+    $pwr = PoolPowerRanking($poolinfo['pool_id']);
     foreach($standings as $row){
       if ($row['valid'] != 2) {
           // $stats = TeamStatsByPoolrg($poolinfo['pool_id'], $row['team_id']);
@@ -290,6 +293,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
         $ret .= "<td class='center'>" . intval($vp['oppvp']) . " / " . intval($vp['oppgames']) . "</td>";
         $ret .= "<td class='center'>" . intval($vp['margin']) . " / " . intval($vp['games']) . "</td>";
         $ret .= "<td class='center'>" . intval($vp['score']) . " / " . intval($vp['games']) . "</td>";
+        $ret .= "<td class='center'>" . sprintf('%.2f', $pwr[$row['team_id']]) . "</td>";
         $ret .= "</tr>\n";
       }
     }

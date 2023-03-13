@@ -672,13 +672,6 @@ function TeamVictoryPointsByPool($poolId,$teamId)
   return $ret;
 }
 
-function VictoryPoints() {
-  $query = "SELECT * FROM uo_victorypoints ORDER BY pointdiff ASC";
-  return DBQueryToArray($query);
-}
-
-
-
 function TeamPoints($teamId)
 {
   $query = sprintf("

@@ -13,11 +13,12 @@ $html = "";
 if(iget("series")){
   $seriesId = iget('series');
   $seriesinfo = SeriesInfo(iget("series"));
-  $viewUrl .= "&amp;series=".$seriesinfo['series_id'];
+  $viewUrl .= "&amp;series=$seriesId";
   $seasoninfo = SeasonInfo($seriesinfo['season']);
   $title.= U_($seriesinfo['name']);
 } else {
-  die("invalid request");
+  showPage($title, "<p>" . utf8entities(_("missing series parameter")) . "</p>\n");
+  exit();
 }
 
 if(iget("sort")){
@@ -29,6 +30,7 @@ $tabs = array(
   _("Games") => MakeUrl(array('view' => 'games', 'series' => $seriesId)),
   _("Show all pools") => MakeUrl(array('view' => 'poolstatus', 'series' => $seriesId)),
 );
+
 foreach (SeriesPools($seriesId, true) as $pool) {
   if (!isset($tabs[$pool['name']]))
     $tabs[$pool['name']]=array();
@@ -39,8 +41,11 @@ $html .= pageMenu($tabs, MakeUrl($_GET), false);
 
 $teamstats = array();
 $allteams = array();
-$teams = SeriesTeams($seriesinfo['series_id']);
-$spiritAvg = SeriesSpiritBoard($seriesinfo['series_id']);
+$teams = SeriesTeams($seriesId);
+$spiritAvg = SeriesSpiritBoard($seriesId);
+
+$powerRanking = SeriesPowerRanking($teams, $seriesId);
+
 foreach ($teams as $team) {
   $stats = TeamStats($team['team_id']);
   $points = TeamPoints($team['team_id']);
@@ -62,12 +67,14 @@ foreach ($teams as $team) {
   $teamstats['spirit']= isset($spiritAvg[$team['team_id']])?$spiritAvg[$team['team_id']]['total']:null;
 
   $teamstats['winavg']=number_format(SafeDivide(intval($stats['wins']), intval($stats['games']))*100,1);
-
+  
+  $teamstats['pwr']=number_format($powerRanking[$team['team_id']], 2);
+  
   $teamstats['ranking'] = 0;
   $allteams[] = $teamstats;
 }
 
-$rankedteams  = SeriesRanking($seriesinfo['series_id']);
+$rankedteams  = SeriesRanking($seriesId);
 
 $rank = 0;
 foreach ($rankedteams as $rteam) {
@@ -81,7 +88,7 @@ foreach ($rankedteams as $rteam) {
 }
 
 
-$html .= CommentHTML(2, $seriesinfo['series_id']);
+$html .= CommentHTML(2, $seriesId);
 
 $html .= "<h2>"._("Division statistics:")." ".utf8entities($seriesinfo['name'])."</h2>";
 $style = "";
@@ -164,6 +171,13 @@ if($sort == "winavg") {
 }else{
   $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=winavg'>"._("Win-%")."</a></th>";
 }
+
+if($sort == "pwr") {
+  $html .= "<th class='center'>"._("PwrR")."</th>";
+}else{
+  $html .= "<th class='center'><a class='thlink' href='".$viewUrl."&amp;Sort=pwr'>"._("PwrR")."</a></th>";
+}
+
 if($seasoninfo['spiritmode']>0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))){
   if($sort == "spirit") {
     $html .= "<th class='center'>"._("Spirit points")."</th>";
@@ -240,6 +254,12 @@ foreach($allteams as $stats){
   }else{
     $html .= "<td class='center'>".$stats['winavg']."%</td>";
   }
+  
+  if($sort == "pwr") {
+    $html .= "<td class='center highlight'>".$stats['pwr']."</td>";
+  }else{
+    $html .= "<td class='center'>".$stats['pwr']."</td>";
+  }
 
   if($seasoninfo['spiritmode']>0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))){
     if($sort == "spirit") {
@@ -252,9 +272,9 @@ foreach($allteams as $stats){
   $html .= "</tr>\n";
 }
 $html .= "</table>\n";
-$html .= "<p><a href='?view=poolstatus&amp;series=".$seriesinfo['series_id']."'>"._("Show all pools")."</a></p>\n";
+$html .= "<p><a href='?view=poolstatus&amp;series=$seriesId'>"._("Show all pools")."</a></p>\n";
 
-$scores = SeriesScoreBoard($seriesinfo['series_id'], "total", 10);
+$scores = SeriesScoreBoard($seriesId, "total", 10);
 
 if (mysqli_num_rows($scores) > 0) {
   
@@ -276,11 +296,11 @@ if (mysqli_num_rows($scores) > 0) {
   }
   
   $html .= "</table>";
-  $html .= "<a href='?view=scorestatus&amp;series=" . $seriesinfo['series_id'] . "'>" . _("Scoreboard") . "</a>";
+  $html .= "<a href='?view=scorestatus&amp;series=$seriesId'>" . _("Scoreboard") . "</a>";
 }
 
 if (ShowDefenseStats()) {
-  $defenses = SeriesDefenseBoard($seriesinfo['series_id'], "deftotal", 10);
+  $defenses = SeriesDefenseBoard($seriesId, "deftotal", 10);
   if (mysqli_num_rows($defenses) > 0) {
     $html .= "<h2>" . _("Defenseboard leaders") . "</h2>\n";
     $html .= "<table cellspacing='0' border='0' width='100%'>\n";
@@ -297,7 +317,7 @@ if (ShowDefenseStats()) {
     }
     
     $html .= "</table>";
-    $html .= "<a href='?view=defensestatus&amp;series=" . $seriesinfo['series_id'] . "'>" . _("Defenseboard") . "</a>";
+    $html .= "<a href='?view=defensestatus&amp;series=$seriesId'>" . _("Defenseboard") . "</a>";
   }
 }
 

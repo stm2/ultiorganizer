@@ -194,7 +194,7 @@ foreach ($pools as $spool) {
   if ($poolinfo['type'] == 3) { // Swissdraw
     $getHeading = 'swissHeading';
     $getRow = 'swissRow';
-    $columns = 9;
+    $columns = 10;
   } else {
     // regular pool or playoff
     $getHeading = 'regularHeading';
@@ -360,17 +360,27 @@ function swissHeading($poolId, $poolinfo, $editbuttons) {
             <th>" . _("Pos.") . "&nbsp;" . ($editbuttons?editButton("rank", $poolId):"") . "</th>
             <th>" . _("Team") . "</th>";
   $html .= "<th class='center'>" . _("Games") . "</th>";
-  $html .= "<th class='center'>" . _("Victory Points") . "</th>";
-  $html .= "<th class='center'>" . _("Opponent VPs") . "</th>";
+  $html .= "<th class='center'>" . _("VP") . "</th>";
+  $html .= "<th class='center'>" . _("Opp. VP") . "</th>";
   $html .= "<th class='center'>" . _("Margin") . "</th>";
   $html .= "<th class='center'>" . _("Goals") . "</th>";
+  $html .= "<th class='center'>" . _("PwrR") . "</th>";
   $html .= "<th></th></tr>";
   return $html;
 }
 
+$lastPoolId = null;
+$pwrCache = null;
+
 function swissRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
+  global $lastPoolId;
+  global $pwrCache;
   $html = "";
   $vp = TeamVictoryPointsByPool($poolId, $row['team_id']);
+  if ($pwrCache == null || $lastPoolId == null || $lastPoolId !== $poolId) {
+    $pwrCache = PoolPowerRanking($poolId);
+    $lastPoolId = $poolId;
+  }
   
   if ($warn)
     $html .= "<tr class='attention'>";
@@ -385,6 +395,7 @@ function swissRow($poolId, $poolinfo, $row, $teamNum, $warn=false) {
   $html .= "<td class='center'>" . intval($vp['oppvp']) . " / " . intval($vp['oppgames'])  . "</td>";
   $html .= "<td class='center'>" . intval($vp['margin']) . " / " . intval($vp['games'])  . "</td>";
   $html .= "<td class='center'>" . intval($vp['score']) . " / " . intval($vp['games'])  . "</td>";
+  $html .= "<td class='center'>" . number_format($pwrCache[$row['team_id']], 2)  . "</td>";
   if (CanDeleteTeamFromPool($poolId, $row['team_id'])) {
     $html .= "<td class='center' style='width:20px;'>
               <input class='deletebutton' type='image' src='images/remove.png' alt='X' title='"._("delete team from pool") ."' name='remove' 

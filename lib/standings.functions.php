@@ -669,4 +669,302 @@ function TeamSeriesStanding($teamId){
 	
 	return intval($standing);
 }
+
+function VictoryPoints() {
+  $query = "SELECT * FROM uo_victorypoints ORDER BY pointdiff ASC";
+  return DBQueryToArray($query);
+}
+
+/* Solves Ax = y for x */
+function gauss_seidel($A, $y, $x = null, $tol = 0.000000001) {
+  $n = count($y);
+  if ($x == null) {
+    $x = array();
+    for ($i = 0; $i < $n; ++$i) {
+      $x[$i] = 0;
+    }
+  }
+  
+  // debug_lr($n, $n, $y, $A);
+  
+  $maxIterations = 10000;
+  for ($i = 0; $i < $n; ++$i) {
+    $xprev[$i] = 0.0;
+  }
+  
+  for ($it = 0; $it < $maxIterations; ++$it) {
+    for ($j = 0; $j < $n; ++$j) {
+      $xprev[$j] = $x[$j];
+    }
+    for ($j = 0; $j < $n; ++$j) {
+      $summ = 0.0;
+      
+      for ($k = 0; $k < $n; ++$k) {
+        if ($k != $j) {
+          $summ = $summ + $A[$j][$k] * $x[$k];
+        }
+        $x[$j] = ($y[$j][0] - $summ) / $A[$j][$j];
+      }
+    }
+    $diff1norm = 0.0;
+    $oldnorm = 0.0;
+    for ($j = 0; $j < $n; ++$j) {
+      $diff1norm += abs($x[$j] - $xprev[$j]);
+      $oldnorm += abs($xprev[$j]);
+    }
+    if ($oldnorm == 0.0) {
+      $oldnorm = 1.0;
+    }
+    $norm = $diff1norm / $oldnorm;
+    if ($norm < $tol && $i != 0) {
+      return $x;
+    }
+  }
+  return null;
+}
+
+function debug_matrix($A) {
+  $msg = "";
+  for ($i = 0; $i < count($A); ++$i) {
+    for ($j = 0; $j < count($A[$i]); ++$j) {
+      $msg .= sprintf("%3d ", $A[$i][$j]);
+    }
+    $msg .= "\n";
+  }
+  $msg .= "\n";
+  return $msg;
+}
+
+function debug_lr($m, $n, $y, $A) {
+  $msg = "m, n = " . $m . ", " . $n;
+  $msg .= "\ny = ";
+  for ($i = 0; $i < count($y); ++$i) {
+    $msg .= $y[$i] . " ";
+  }
+  $msg .= "\nA = \n";
+  
+  $msg .= debug_matrix($A);
+  
+  debug_to_apache($msg);
+}
+
+function mmult($A, $B, $rowsA, $colsA, $rowsB, $colsB, $transposeA = false, $transposeB = false) {
+  $AB = array();
+  
+  $m = $transposeA ? $colsA : $rowsA;
+  $n = $transposeB ? $rowsB : $colsB;
+  $p = $transposeA ? $rowsA : $colsA;
+  
+  for ($i = 0; $i < $m; ++$i) {
+    $AB[$i] = array();
+    for ($j = 0; $j < $n; ++$j) {
+      $AB[$i][$j] = 0;
+      for ($k = 0; $k < $p; ++$k) {
+        $a = $transposeA ? $A[$k][$i] : $A[$i][$k];
+        $b = $transposeB ? $B[$j][$k] : $B[$k][$j];
+        $AB[$i][$j] += $a * $b;
+      }
+    }
+  }
+  return $AB;
+}
+
+function LRSolve($m, $n, $A, $y) {
+  // FIXME
+  // debug_lr($m, $n, $y, $A);
+  $AtA = mmult($A, $A, $m, $n, $m, $n, true);
+  
+  $y0 = array( 0 => $y); // y is an array, y0 is a row vector
+  $Aty = mmult($A, $y0, $m, $n, 1, $m, true, true);
+  
+  $ranking = gauss_seidel($AtA, $Aty);
+  
+  if ($ranking == null) {
+    debug_to_apache("no solution found");
+    $ranking = array();
+    for ($i = 0; $i < $n; ++$i) {
+      $ranking[$i] = -1;
+    }
+  }
+  
+  return $ranking;
+}
+
+function find_components($A, $m, $n) {
+  $comps = array();
+  
+  $teams = array();
+  $games = array();
+  for ($t = 0; $t < $n; ++$t) {
+    if (isset($teams[$t]))
+      continue;
+      $comp = array();
+      $bag = array($t);
+      $teams[$t] = 1;
+      while (!empty($bag)) {
+        $current_team = array_pop($bag);
+        $comp[$current_team] = 1;
+        //       debug_to_apache("checking team " . $current_team . "\n");
+        
+        $game_to_check = array();
+        for ($g = 0; $g < $m; ++$g) {
+          if (!isset($games[$g])) {
+            if ($A[$g][$current_team] != 0) {
+              //             debug_to_apache("adding game " . $g . "\n");
+              $game_to_check[] = $g;
+            }
+          }
+        }
+        foreach ($game_to_check as $game) {
+          //         debug_to_apache("checking game " . $game . "\n");
+          if (!isset($games[$game])) {
+            $games[$game] = 1;
+            for ($tt = 0; $tt < $n; ++$tt) {
+              if ($A[$game][$tt] != 0) {
+                //               debug_to_apache("adding team " . $tt . "\n");
+                $comp[$tt] = 2;
+                if (!isset($teams[$tt])) {
+                  array_push($bag, $tt);
+                  $teams[$tt] = 2;
+                }
+              }
+            }
+          }
+        }
+      }
+      //     debug_to_apache("done\n");
+      //     debug_to_apache(print_r($comp, true));
+      $comps[] = $comp;
+  }
+  
+  return $comps;
+}
+
+function LRRanking($t, $games) {
+  if ($t == 0)
+    return array();
+    
+    if ($t == 1)
+      return array(0 => 0);
+      
+      $ranking = array();
+      
+      $y = array();
+      $game_matrix = array();
+      $row = 0;
+      foreach ($games as $game) {
+        for ($i = 0; $i < $t; ++$i) {
+          $game_matrix[$row][$i] = 0;
+        }
+        $game_matrix[$row][$game['home']] = 1;
+        $game_matrix[$row][$game['visitor']] = -1;
+        $y[$row] = $game['hscore'] - $game['vscore'];
+        ++$row;
+      }
+      
+      //   $A = array(
+      //     array(0, 1, -1, 0, 0, 0, 0),
+      //     array(0, 0, 1, -1, 0, 0, 0),
+      //     array(0, 0, 0, 0, 1, 1, 0),
+      //     array(0, 0, 0, 0, 0, 1, 1),
+      //     array(0, 0, 0, 0, 1, 0, 1),
+      //     array(0, 0, 0, 0, 0, 1, 1),
+      //     array(0, 0, 0, 0, 0, 0, 0)
+      //   );
+      //   debug_to_apache(debug_matrix($A));
+      //   $comps = find_components($A, count($A), 7);
+      //   debug_to_apache(print_r($comps, true));
+      
+      //   $A = array(array(1,-1,0,0));
+      //   $comps = find_components($A, count($A), 4);
+      //   debug_to_apache(debug_matrix($A));
+      //   debug_to_apache(print_r($comps, true));
+      
+      $comps = find_components($game_matrix, count($games), $t);
+      //   debug_to_apache("comps\n" . print_r($comps, true));
+      
+      foreach ($comps as $comp) {
+        for ($i = 0; $i < $t; ++$i) {
+          $game_matrix[$row][$i] = 0;
+        }
+        foreach ($comp as $index => $v) {
+          $game_matrix[$row][$index] = 1;
+        }
+        $y[$row] = 0;
+        ++$row;
+      }
+      
+      $ranking = LRSolve($row, $t, $game_matrix, $y);
+      
+      return $ranking;
+}
+
+function PowerRanking($games, $teams) {
+  // TODO special for bye team??
+  $teami = 0;
+  $teamindex = array();
+  foreach ($teams as $team) {
+    $teamindex[$team['team_id']] = $teami++;
+  }
+  
+  $results = array();
+  foreach ($games as $game) {
+    if (!isset($teamindex[$game['hometeam']])) {
+      $teamindex[$game['hometeam']] = $teami++;
+    }
+    if (!isset($teamindex[$game['visitorteam']])) {
+      $teamindex[$game['visitorteam']] = $teami++;
+    }
+    $results[] = array('home' => $teamindex[$game['hometeam']], 'visitor' => $teamindex[$game['visitorteam']],
+      'hscore' => $game['homescore'], 'vscore' => $game['visitorscore']);
+  }
+  
+  $ranking = LRRanking($teami, $results);
+  //   debug_to_apache(print_r($ranking, true));
+  
+  $scores = array();
+  
+  $i = 0;
+  foreach ($teams as $team) {
+    $scores[$team['team_id']] = $ranking[$i++];
+  }
+  
+  return $scores;
+}
+
+function SeriesPowerRanking($teams, $seriesId) {
+  $query = sprintf(
+    "SELECT g.hometeam, g.visitorteam,
+            g.homescore, g.visitorscore
+            FROM uo_game g
+            LEFT JOIN uo_pool p on (g.pool=p.pool_id)
+            WHERE p.series=%d AND g.hometeam IS NOT NULL AND g.visitorteam IS NOT NULL AND hasstarted>0 AND isongoing=0",
+    intval($seriesId));
+  
+  $games = DBQueryToArray($query);
+  
+  return PowerRanking($games, $teams);
+}
+
+function PoolPowerRanking($poolId) {
+  $query = sprintf(
+    "SELECT p.hometeam, p.visitorteam,
+            p.homescore, p.visitorscore
+            FROM uo_game p
+            LEFT JOIN uo_game_pool ps ON (p.game_id=ps.game)
+            WHERE ps.pool = %d ORDER BY p.hometeam, p.visitorteam", (int) $poolId);
+  
+  $games = DBQueryToArray($query);
+  
+  $query = sprintf(
+    "SELECT uo_team.team_id, uo_team.valid
+        FROM uo_team
+        RIGHT JOIN uo_team_pool ON (uo_team.team_id=uo_team_pool.team)
+        WHERE uo_team_pool.pool = '%s' ORDER BY team_id", (int) $poolId);
+  
+  $teams = DBQueryToArray($query);
+  
+  return PowerRanking($games, $teams);
+}
+
 ?>
