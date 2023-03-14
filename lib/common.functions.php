@@ -1515,6 +1515,25 @@ function almostSecureRandom($min, $max) {
   }
 }
 
+$normal_phase = 0;
+$normal_U = 0;
+$normal_V = 0;
+
+function normalvariate($mu, $sigma) {
+  global $normal_phase, $normal_U, $normal_V;
+
+  if ($normal_phase == 0) {
+    $normal_U = (rand() + 1.) / (getrandmax() + 2.);
+    $normal_V = rand() / (getrandmax() + 1.);
+    $Z = sqrt(-2 * log($normal_U)) * sin(2 * M_PI * $normal_V);
+  } else {
+    $Z = sqrt(-2 * log($normal_U)) * cos(2 * pi() * $normal_V);
+  }
+  $normal_phase = 1 - $normal_phase;
+
+  return $mu + $Z * $sigma;
+}
+
 function scriptedEnable($id) {
   return "<script type='text/javascript'>document.getElementById('$id').disabled=false;</script>";
 }
