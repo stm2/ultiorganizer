@@ -1115,7 +1115,7 @@ function Glickos($teams, $games) {
   foreach ($teams as $team) {
     $players[$team['team_id']] = new Glicko2Player();
   }
-  
+
   $it = 0;
   for ($i = 0; $i <= $it; ++$i) {
     foreach ($games as $game) {
@@ -1149,7 +1149,7 @@ function Glickos($teams, $games) {
             $win = 1;
           else
             $win = 0;
-//           debug_to_apache("rh $rh rv $rv r $win0 p $prob w $win");
+          // debug_to_apache("rh $rh rv $rv r $win0 p $prob w $win");
         }
         if ($win > 0)
           $players[$ht]->AddWin($players[$vt]);
