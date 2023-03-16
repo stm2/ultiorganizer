@@ -98,7 +98,7 @@ function TeamStandings($season, $seriestype) {
 		LEFT JOIN uo_team t ON(t.team_id=ts.team_id)
 		LEFT JOIN uo_country c ON(t.country=c.country_id)
 		WHERE ts.season='%s' AND ser.type='%s'
-		ORDER BY ts.series,ts.standing",
+		ORDER BY ser.ordering ASC,ts.standing",
 		mysql_adapt_real_escape_string($season),
 		mysql_adapt_real_escape_string($seriestype));
 	return DBQueryToArray($query);
