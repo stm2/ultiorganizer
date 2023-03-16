@@ -7,7 +7,7 @@ include_once 'lib/pool.functions.php';
 $season = $_GET["season"];
 $html = "";
 
-$title = utf8entities(U_(SeasonName($season))).": "._("Divisions");
+$title = utf8entities((SeasonName($season))).": "._("Divisions");
 
 //process itself on submit
 if(!empty($_POST['remove_x'])){
@@ -54,7 +54,7 @@ contentStart();
 
 $seaLink = urlencode($season);
 $html .= "<form method='post' action='?view=admin/seasonseries&amp;season=$seaLink'>";
-$html .= "<h2>"._("Divisions")."</h2>\n";
+$html .= "<h2>" . $title . "</h2>\n";
 
 $series = SeasonSeries($season);
 $types = SeriesTypes();
