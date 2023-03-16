@@ -37,6 +37,12 @@ foreach (SeriesPools($seriesId, true) as $pool) {
 
 $html .= pageMenu($tabs, MakeUrl($_GET), false);
 
+function numf($num, $acc) {
+  if ($num == intval($num))
+    return sprintf("%d", $num);
+  return sprintf("%.{$acc}f", $num);
+}
+
 $columns = array();
 
 function add_column(&$columns, $abbr, $name, $prec = null, $acc = null, $classes = 'center') {
@@ -79,25 +85,28 @@ foreach ($elos as $name => $ratings) {
 }
 
 add_column($columns, 'glicko2', _("Glicko2"), 0, 'avg');
-add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
 add_column($columns, 'gRD', _("RD"), 2, 'avg');
-add_column($columns, 'gS', _("sig"), 2, 'avg');
+add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
+// add_column($columns, 'gS', _("sig"), 2, 'avg');
 
 if ($seasoninfo['spiritmode'] > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
   add_column($columns, 'spirit', _("Spirit Points"));
 }
 
-// $accuracies = WinPredictionAccuracy($powerRanking, $teams, $games);
-$accuracies['pwr'] = ScorePredictionAccuracy($powerRanking, $teams, $games);
+function predictionAccuracies($rating, $teams, $games, $debug = false) {
+  return ScorePredictionAccuracy($rating, $teams, $games, $debug);
+}
+
+$accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games, true);
 foreach ($elos as $name => $r) {
-  $accuracies[$name] = ScorePredictionAccuracy($r, $teams, $games);
+  $accuracies[$name] = predictionAccuracies($r, $teams, $games);
 }
 $glickoRanking = [];
 foreach ($teams as $team) {
   $teamId = $team['team_id'];
   $glickoRanking[$teamId] = $glickos[$teamId]['rating'];
 }
-$accuracies['glicko2'] = ScorePredictionAccuracy($glickoRanking, $teams, $games);
+$accuracies['glicko2'] = predictionAccuracies($glickoRanking, $teams, $games);
 foreach ($teams as $team) {
   $teamId = $team['team_id'];
   $stats = TeamStats($teamId);
@@ -128,14 +137,14 @@ foreach ($teams as $team) {
 
   $teamstats['spirit'] = isset($spiritAvg[$teamId]) ? $spiritAvg[$teamId]['total'] : "-";
 
-  $teamstats['winavg'] = number_format(SafeDivide(intval($stats['wins']), intval($stats['games'])) * 100, 1) . "%";
+  $teamstats['winavg'] = numf(SafeDivide(intval($stats['wins']), intval($stats['games'])) * 100, 1) . "%";
 
   $teamstats['pwr'] = $powerRanking[$teamId];
   $teamstats['pwr_acc'] = $accuracies['pwr'][$teamId];
 
   foreach ($elos as $name => $r) {
     $teamstats[$name] = intval($r[$teamId]);
-    $teamstats[$name . "_acc"] = $accuracies[$name][$teamId]; // PredictionAccuracy($r, $teamId, $games);
+    $teamstats[$name . "_acc"] = $accuracies[$name][$teamId]; // predictionAccuracies($r, $teamId, $games);
   }
 
   $teamstats['glicko2'] = $glickos[$teamId]['rating'];
@@ -169,13 +178,13 @@ foreach ($allteams as &$ateam) {
   else
     $rank = intval($rank);
   $ateam['ranking'] = $rank;
-  $rankRanking[$ateam['team_id']] = $rank;
-  $seedRanking[$ateam['team_id']] = $ateam['seed'];
+  $rankRanking[$ateam['team_id']] = count($allteams) - $rank;
+  $seedRanking[$ateam['team_id']] = count($allteams) - $ateam['seed'];
 }
 unset($ateam);
 
-$accuracies['seed'] = ScorePredictionAccuracy($seedRanking, $teams, $games);
-$accuracies['ranking'] = ScorePredictionAccuracy($rankRanking, $teams, $games);
+$accuracies['seed'] = predictionAccuracies($seedRanking, $teams, $games);
+$accuracies['ranking'] = predictionAccuracies($rankRanking, $teams, $games);
 
 foreach ($allteams as &$ateam) {
   $teamId = $ateam['team_id'];
@@ -187,7 +196,6 @@ unset($ateam);
 $html .= CommentHTML(2, $seriesId);
 
 $html .= "<h2>" . _("Division statistics:") . " " . utf8entities($seriesinfo['name']) . "</h2>";
-$style = "";
 
 $html .= "<table border='1' style='width:100%'>\n";
 $html .= "<tr>";
@@ -222,7 +230,7 @@ foreach ($allteams as $stats) {
     }
 
     if ($col['prec'] !== null) {
-      $val = number_format($stats[$key], $col['prec'], ".", '');
+      $val = numf($stats[$key], $col['prec']);
     } else {
       $val = $stats[$key];
     }
@@ -250,7 +258,7 @@ foreach ($columns as $key => $col) {
       $cont = $sums[$key] / count($teams);
     }
     if (is_numeric($cont))
-      $cont = number_format($cont, $col['prec'] + 1, '.', '');
+      $cont = numf($cont, $col['prec'] + 1);
 
     $classes = $col['classes'];
     $html .= "<th class='$classes'>" . utf8entities($cont) . "</th>";
@@ -267,10 +275,13 @@ if (mysqli_num_rows($scores) > 0) {
 
   $html .= "<h2>" . _("Scoreboard leaders") . "</h2>\n";
   $html .= "<table cellspacing='0' border='0' width='100%'>\n";
-  $html .= "<tr><th style='width:200px'>" . _("Player") . "</th><th style='width:200px'>" . _("Team") .
-    "</th><th class='center'>" . _("Games") . "</th>
-<th class='center'>" . _("Assists") . "</th><th class='center'>" . _("Goals") . "</th><th class='center'>" . _("Tot.") .
-    "</th></tr>\n";
+  $html .= "<tr>
+<th style='width:200px'>" . _("Player") . "</th>
+<th style='width:200px'>" . _("Team") . "</th>
+<th class='center'>" . _("Games") . "</th>
+<th class='center'>" . _("Assists") . "</th>
+<th class='center'>" . _("Goals") . "</th>
+<th class='center'>" . _("Tot.") . "</th></tr>\n";
 
   while ($row = mysqli_fetch_assoc($scores)) {
     $html .= "<tr><td>" . utf8entities($row['firstname'] . " " . $row['lastname']) . "</td>";
@@ -327,12 +338,12 @@ if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
     foreach ($categories as $cat) {
       if ($cat['index'] > 0) {
         if ($cat['factor'] != 0)
-          $html .= "<td class='center'><b>" . number_format($teamAvg[$cat['category_id']], 2) . "</b></td>";
+          $html .= "<td class='center'><b>" . numf($teamAvg[$cat['category_id']], 2) . "</b></td>";
         else
-          $html .= "<td class='center'>" . number_format($teamAvg[$cat['category_id']], 2) . "</td>";
+          $html .= "<td class='center'>" . numf($teamAvg[$cat['category_id']], 2) . "</td>";
       }
     }
-    $html .= "<td class='center'><b>" . number_format($teamAvg['total'], 2) . "</b></td>";
+    $html .= "<td class='center'><b>" . numf($teamAvg['total'], 2) . "</b></td>";
     $html .= "</tr>\n";
   }
   $html .= "</table>";

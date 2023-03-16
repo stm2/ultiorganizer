@@ -1115,9 +1115,13 @@ function Glickos($teams, $games) {
   foreach ($teams as $team) {
     $players[$team['team_id']] = new Glicko2Player();
   }
-
-  $it = 0;
-  for ($i = 0; $i <= $it; ++$i) {
+  foreach ($players as $id => $player) {
+    $player->Update();
+    $glickos[$id] = ['rating' => $player->rating, 'rd' => $player->rd, 'sigma' => $player->sigma];
+  }
+  
+  $it = 1;
+  for ($i = 1; $i <= $it; ++$i) {
     foreach ($games as $game) {
       $ht = $game['hometeam'];
       $vt = $game['visitorteam'];
@@ -1192,16 +1196,16 @@ function simpleLR($points) {
   return [$b1, $b2];
 }
 
-function WinPredictionAccuracy($rating, $teams, $games) {
+function WinPredictionAccuracy($rating, $teams, $games, $debug = false) {
   $accuracies = [];
   foreach ($teams as $team) {
     $teamId = $team['team_id'];
-    $accuracies[$teamId] = PredictionAccuracy($rating, $teamId, $games);
+    $accuracies[$teamId] = teamPredictionAccuracy($rating, $teamId, $games, $debug);
   }
   return $accuracies;
 }
 
-function ScorePredictionAccuracy($rating, $teams, $games) {
+function ScorePredictionAccuracy($rating, $teams, $games, $debug = false) {
   $hasTeam = [];
   $diff = [];
   $n = [];
@@ -1218,10 +1222,12 @@ function ScorePredictionAccuracy($rating, $teams, $games) {
   }
   $linr = simpleLR($xy);
   // debug_to_apache(print_r($xy, true));
-  // foreach ($xy as $p){
-  // debug_to_apache("$p[0]\t$p[1]\n");
-  // }
-  // debug_to_apache("b " . $linr[0] . " a " . $linr[1]);
+  if ($debug) {
+    foreach ($xy as $p) {
+      debug_to_apache("$p[0]\t$p[1]");
+    }
+    debug_to_apache("b " . $linr[0] . " a " . $linr[1]);
+  }
   // $linr = [1,0];
 
   foreach ($games as $game) {
@@ -1246,24 +1252,29 @@ function ScorePredictionAccuracy($rating, $teams, $games) {
   return $diff;
 }
 
-function PredictionAccuracy($rating, $teamId, $games) {
+function teamPredictionAccuracy($rating, $teamId, $games, $debug = false) {
   if (empty($rating[$teamId]))
     return 0;
   $score = 0;
   $n = 0;
   foreach ($games as $game) {
     $opp = $game['hometeam'] == $teamId ? $game['visitorteam'] : ($game['visitorteam'] == $teamId ? $game['hometeam'] : null);
+    $ht = $game['hometeam']; $vt = $game['visitorteam'];
+    $hs = $game['homescore']; $vs = $game['visitorscore'];
     if ($opp != null && isset($rating[$opp])) {
       $prediction = $rating[$opp] > $rating[$teamId] ? -1 : ($rating[$opp] < $rating[$teamId] ? 1 : 0);
+      $rh = $rating[$ht]; $rv = $rating[$vt];
       $result = $game['homescore'] - $game['visitorscore'];
       if ($teamId == $game['visitorteam'])
         $result *= -1;
       if (($result > 0 && $prediction > 0) || ($result < 0 && $prediction < 0) || ($result == 0 && $prediction == 0))
         ++$score;
+      if ($debug)
+      debug_to_apache("h $ht v $vt o $opp $hs : $vs r $result rh $rh rv $rv p $prediction s $score");
       ++$n;
     }
   }
-  return $score / $n;
+  return 1 - $score / $n;
 }
 
 ?>
