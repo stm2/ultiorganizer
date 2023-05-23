@@ -63,9 +63,9 @@ $glickos = Glickos($teams, $games);
 
 add_column($columns, 'fname', _("Team"));
 add_column($columns, 'seed', _("Seeding"));
-add_column($columns, 'seed_acc', _("Seeding Acc"), 2, 'avg');
+// add_column($columns, 'seed_acc', _("Seeding Acc"), 2, 'avg');
 add_column($columns, 'ranking', _("Ranking"));
-add_column($columns, 'ranking_acc', _("Ranking Acc"), 2, 'avg');
+// add_column($columns, 'ranking_acc', _("Ranking Acc"), 2, 'avg');
 add_column($columns, 'games', _("Games"), 0, 'avg');
 add_column($columns, 'wins', _("Wins"), 0, 'avg');
 add_column($columns, 'losses', _("Losses"), 0, 'avg');
@@ -74,20 +74,20 @@ add_column($columns, 'against', _("Goals against"), 0, 'avg');
 add_column($columns, 'diff', _("Goals diff"), 0, 'avg');
 add_column($columns, 'winavg', _("Win-%"));
 add_column($columns, 'pwr', _("PwrR"), 2, 'avg');
-add_column($columns, 'pwr_acc', _("PwrR") . " " . _("acc"), 2, 'avg');
+// add_column($columns, 'pwr_acc', _("PwrR") . " " . _("acc"), 2, 'avg');
 
-$active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
-foreach ($elos as $name => $ratings) {
-  if (in_array($name, $active_ratings)) {
-    add_column($columns, $name, _($name), 0, 'avg');
-    add_column($columns, $name . "_acc", _($name) . " " . _("acc"), 2, 'avg');
-  }
-}
+// $active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
+// foreach ($elos as $name => $ratings) {
+//   if (in_array($name, $active_ratings)) {
+//     add_column($columns, $name, _($name), 0, 'avg');
+//     add_column($columns, $name . "_acc", _($name) . " " . _("acc"), 2, 'avg');
+//   }
+// }
 
-add_column($columns, 'glicko2', _("Glicko2"), 0, 'avg');
-add_column($columns, 'gRD', _("RD"), 2, 'avg');
-add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
-// add_column($columns, 'gS', _("sig"), 2, 'avg');
+// add_column($columns, 'glicko2', _("Glicko2"), 0, 'avg');
+// add_column($columns, 'gRD', _("RD"), 2, 'avg');
+// add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
+// // add_column($columns, 'gS', _("sig"), 2, 'avg');
 
 if ($seasoninfo['spiritmode'] > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
   add_column($columns, 'spirit', _("Spirit Points"));
