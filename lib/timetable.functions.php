@@ -621,7 +621,7 @@ function PrevGameDay($id, $gamefilter, $order){
 }
 
 
-function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
+function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter="", $valid = false){
   //common game query
   $query = "SELECT pp.game_id, pp.time, pp.hometeam, pp.visitorteam, pp.homescore,
 			pp.visitorscore, pp.pool AS pool, pool.name AS poolname, pool.timeslot,
@@ -723,10 +723,14 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter=""){
   
   if (!empty($groupfilter)) {
     if ($groupfilter == "none") {
-      $query .= "AND pr.reservationgroup IS NULL";
+      $query .= " AND pr.reservationgroup IS NULL";
     } else if ($groupfilter != "all") {
-      $query .= "AND pr.reservationgroup='" . mysql_adapt_real_escape_string($groupfilter) . "'";
+      $query .= " AND pr.reservationgroup='" . mysql_adapt_real_escape_string($groupfilter) . "'";
     }
+  }
+  
+  if ($valid) {
+    $query .= " AND ps.valid = true";
   }
 
   switch($order)

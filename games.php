@@ -93,7 +93,7 @@ if (!isset($filters['time']))
 if (!isset($filters['group']))
   $filters['group'] = "all";
 
-$games = TimetableGames($id, $filters['gamefilter'], $filters['time'], $filters['order'], $filters['group']);
+$games = TimetableGames($id, $filters['gamefilter'], $filters['time'], $filters['order'], $filters['group'], true);
 $groups = TimetableGrouping($id, $filters['gamefilter'], $filters['time']);
 
 if (!$print && !$singleview) {
