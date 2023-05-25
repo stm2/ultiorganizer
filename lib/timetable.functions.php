@@ -3,8 +3,7 @@ include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/game.functions.php';
 
 
-function TournamentView($games, $grouping=true, &$lines=null){
-
+function TournamentView($games, $grouping=true, &$lines=null, $detail_links = true) {
   $ret = "";
   $prevTournament = "";
   $prevPlace = "";
@@ -59,10 +58,10 @@ function TournamentView($games, $grouping=true, &$lines=null){
       $isTableOpen = true;
       $ret .= SeriesAndPoolHeaders($game, $lines);
     }
-
+    
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-      $ret .= GameRow($game, false,true,true,false,false,true,$rss, true);
+      $ret .= GameRow($game, false,true,true,false,false,true,$rss, $detail_links, $detail_links);
       if ($lines!==null) $lines[] = array("type" => "game", "game" => $game);
     }
 
@@ -89,7 +88,7 @@ function groupHeading($group){
   }
 }
 
-function SeriesView($games, $date=true, $time=false, &$lines=null){
+function SeriesView($games, $date=true, $time=false, &$lines=null, $detail_links = true){
   $ret = "";
   $prevTournament = "";
   $prevPlace = "";
@@ -124,7 +123,7 @@ function SeriesView($games, $date=true, $time=false, &$lines=null){
     }
 
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-    $ret .= GameRow($game, $date, $time, true, false, false, true, $rss);
+    $ret .= GameRow($game, $date, $time, true, false, false, true, $rss, $detail_links, $detail_links);
     if ($lines!==null) $lines[] = array("type"=>"game", "game" => $game);
 
     $prevTournament = $game['reservationgroup'];
@@ -142,7 +141,7 @@ function SeriesView($games, $date=true, $time=false, &$lines=null){
   return $ret;
 }
 
-function PlaceView($games, $grouping=true, &$lines=null){
+function PlaceView($games, $grouping=true, &$lines=null, $detail_links = true){
   $ret = "";
   $prevTournament = "";
   $prevPlace = "";
@@ -193,7 +192,7 @@ function PlaceView($games, $grouping=true, &$lines=null){
 
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-      $ret .= GameRow($game, false, true, false, true, true, true,$rss);
+      $ret .= GameRow($game, false, true, false, true, true, true,$rss, $detail_links, $detail_links);
       if ($lines!==null) $lines[] = array("type"=>"game", "game" => $game);
     }
 
@@ -213,7 +212,7 @@ function PlaceView($games, $grouping=true, &$lines=null){
   return $ret;
 }
 
-function TimeView($games, $grouping=true, &$lines=null){
+function TimeView($games, $grouping=true, &$lines=null, $detail_links = true){
   $ret = "";
   $prevTournament = "";
   $prevTime = "";
@@ -237,7 +236,7 @@ function TimeView($games, $grouping=true, &$lines=null){
 
     if($isTableOpen){
       //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-      $ret .= GameRow($game, false, false, true, true, true, true,$rss);
+      $ret .= GameRow($game, false, false, true, true, true, true,$rss, $detail_links, $detail_links);
       if ($lines!==null) $lines[] = array("type" => "game", "game" => $game);
     }
 
@@ -451,7 +450,7 @@ function SeriesAndPoolHeaders($info, &$lines=null){
   return $ret;
 }
 
-function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true){
+function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true, $history=true){
   $datew = 'max-width:60px';
   $timew = 'max-width:40px';
   $fieldw = 'max-width:60px';
@@ -552,7 +551,7 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
 
   if($info){
     if(!GameHasStarted($game)){
-      if($game['hometeam'] && $game['visitorteam']){
+      if($history && $game['hometeam'] && $game['visitorteam']){
         $t1 = preg_replace('/\s*/m','',$game['hometeamname']);
         $t2 = preg_replace('/\s*/m','',$game['visitorteamname']);
 

@@ -40,6 +40,7 @@ function findPools($games, &$html) {
 }
 
 $groupheader = true;
+$detail_links = false;
 
 if (iget("series")) {
   $id = iget("series");
@@ -50,6 +51,7 @@ if (iget("series")) {
   $id = iget("pool");
   $filters['gamefilter'] = "pool";
   $title = _("Schedule") . " " . utf8entities(U_(PoolSeriesName($id)) . ", " . U_(PoolName($id)));
+  $detail_links = true;
 } elseif (iget("pools")) {
   $id = iget("pools");
   $filters['gamefilter'] = "poolgroup";
@@ -59,6 +61,7 @@ if (iget("series")) {
   $filters['gamefilter'] = "team";
   $orderdefault = 'places';
   $title = _("Schedule") . " " . utf8entities(TeamName($id));
+  $detail_links = true;
 } elseif (iget("season")) {
   $id = iget("season");
   $filters['gamefilter'] = "season";
@@ -140,19 +143,19 @@ if (mysqli_num_rows($games) == 0) {
   $html .= "\n<p>" . _("No games") . ".</p>\n";
 } elseif ($filters['order'] == 'tournaments') {
   $lines[] = array('type' => 'groups', 'groups' => array('date' => false, 'pool' => false));
-  $html .= TournamentView($games, $groupheader, $lines);
+  $html .= TournamentView($games, $groupheader, $lines, $detail_links);
 } elseif ($filters['order'] == 'series') {
   $lines[] = array('type' => 'groups', 'groups' => array('pool' => false));
-  $html .= SeriesView($games, true, true, $lines);
+  $html .= SeriesView($games, true, true, $lines, $detail_links);
 } elseif ($filters['order'] == 'places') {
   $lines[] = array('type' => 'groups', 'groups' => array('date' => false, 'field' => false));
-  $html .= PlaceView($games, $groupheader, $lines);
+  $html .= PlaceView($games, $groupheader, $lines, $detail_links);
 } elseif ($filters['order'] == 'timeslot') {
   $lines[] = array('type' => 'groups', 'groups' => array('date' => false, 'time' => false));
-  $html .= TimeView($games, true, $lines);
+  $html .= TimeView($games, true, $lines, $detail_links);
 } else { // ($filter == 'all')
   $lines[] = array('type' => 'groups', 'groups' => array('date' => true, 'time' => false, 'pool' => false));
-  $html .= SeriesView($games, true, false, $lines);
+  $html .= SeriesView($games, true, false, $lines, $detail_links);
 }
 
 mysqli_data_seek($games, 0);
