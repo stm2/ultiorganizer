@@ -812,6 +812,25 @@ class EventDataXMLHandler{
     }
   }
 
+  function value2sql($value, $type) {
+    if ($type === 'int') {
+      if (is_null($value)) {
+        return "NULL";
+      } elseif (is_numeric($value)) {
+        return "'" . mysql_adapt_real_escape_string($value) . "'";
+      } else {
+        throw new Exception(
+          $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ").");
+      }
+    } else {
+      if ($type === 'datetime' && is_null($value)) {
+        return "NULL";
+      } else {
+        return "'" . mysql_adapt_real_escape_string($value) . "'";
+      }
+    }
+  }
+  
   /**
    * Inserts data into database as new data.
    * @param string $name Name of the table to insert
@@ -821,22 +840,12 @@ class EventDataXMLHandler{
   function InsertRow($name, $row, $ignore = false){
     $columns = GetTableColumns($name);
     $fields = '`' . implode("`,`",array_keys($row)) . '`';
-    
-    
+
     $values = "";
     foreach ($row as $key => $value) {
-      if ($columns[strtolower($key)]==='int') {
-        if (is_null($value)){
-          $values .= "NULL,";
-        } elseif (is_numeric($value))
-          $values .= "'".mysql_adapt_real_escape_string($value)."',";
-        else
-          throw new Exception($this->debug . "Invalid column value '$value' for column $key of table $name. (".json_encode($row).").");
-      } else {
-        $values .= "'".mysql_adapt_real_escape_string($value)."',";
-      }
+      $values .= $this->value2sql($value, $columns[strtolower($key)]) . ",";
     }
-    
+
     $values = mb_substr($values, 0, -1);
 
     if ($ignore)
@@ -1170,19 +1179,8 @@ class EventDataXMLHandler{
     $query = "UPDATE `" . mysql_adapt_real_escape_string($name) . "` SET ";
 
     foreach ($row as $key => $value) {
-      $svalue = '';
-      if ($columns[strtolower($key)] === 'int') {
-        if (is_null($value)) {
-          $svalue = "NULL";
-        } elseif (is_numeric($value)) {
-          $svalue = "'" . mysql_adapt_real_escape_string($value) . "'";
-        } else {
-          throw new Exception(
-            $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ").");
-        }
-      } else {
-        $svalue = "'" . mysql_adapt_real_escape_string($value) . "'";
-      }
+      $svalue = $this->value2sql($value, $columns[strtolower($key)]);
+      
       $query .= '`' . mysql_adapt_real_escape_string($key) . "`=$svalue, ";
     }
 
