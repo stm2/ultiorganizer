@@ -170,7 +170,9 @@ if ($list == "allteams" || $list == "byseeding") {
         $htmlteams = array();
         $teams = SeriesRanking($ser['series_id']);
         foreach ($teams as $team) {
-          if ($team['valid'] != 2) {
+          if (empty($team))
+            $htmlteams[] = "<td>?</td>";
+          else if ($team['valid'] != 2) {
             if ($team) {
                 if ($team['placement'] <= 3)
                     $htmltmp = "<td class='rankingtop'>";
