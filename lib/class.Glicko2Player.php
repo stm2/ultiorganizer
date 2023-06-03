@@ -192,7 +192,7 @@ class Glicko2Player {
 
     $rd = self::DEFAULT_DEV * $phi_p;
     if ($rd > self::DEFAULT_RD) {
-      debug_to_apache("rd $rd");
+//       debug_to_apache("rd $rd");
       $rd = self::DEFAULT_RD;
     }
     $rd = max(self::MIN_RD, $rd);

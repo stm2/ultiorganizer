@@ -97,7 +97,7 @@ function predictionAccuracies($rating, $teams, $games, $debug = false) {
   return ScorePredictionAccuracy($rating, $teams, $games, $debug);
 }
 
-$accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games, true);
+$accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games);
 foreach ($elos as $name => $r) {
   $accuracies[$name] = predictionAccuracies($r, $teams, $games);
 }
