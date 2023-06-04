@@ -1303,6 +1303,8 @@ function SetTeam($params) { /* FIXME: pool obsolete? */
     }
     if(!empty($params['club'])){
       DBQuery("UPDATE uo_team SET club=".(int)$params['club']." WHERE team_id=".(int)$params['team_id']);
+    } else {
+      DBQuery("UPDATE uo_team SET club=NULL WHERE team_id=".(int)$params['team_id']);
     }
 
     return $result;
