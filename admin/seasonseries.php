@@ -168,7 +168,9 @@ $html .= "<div><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/><
 $html .= "</form>\n";
 $html .= "<hr/>\n";
 $html .= "<p>";
-$html .= "<a href='?view=admin/serieformats'>"._("Edit rule templates")."</a> ";
+$html .= "<a href='?view=admin/serieformats'>"._("Edit rule templates")."</a> | ";
+$seasonIdUrl = urlencode($season);
+$html .= "<a href='?view=admin/eventdataimport&amp;season=$seasonIdUrl'>".utf8entities(_("Import event data"))."</a>";
 $html .= "</p>";
 echo $html;
 

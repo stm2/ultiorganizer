@@ -334,9 +334,9 @@ td.scoreinput.bright {
   width: 100%;
 }
 
-.admintable {
-  width: 100%;
-}
+/* .admintable { */
+/*   width: 100%; */
+/* } */
 
 .transfertable input {
   max-width:2em;

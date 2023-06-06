@@ -106,7 +106,7 @@ if (hasTranslationRight()) {
 	while($translation) {
 	  $tkey = $translation['translation_key'];
 	  $values = array();
-	  while($translations && $translation['translation_key'] == $tkey) {
+	  while($translation && $translation['translation_key'] == $tkey) {
 	    $values[$translation['locale']]=$translation['translation'];
 	    $translation = mysqli_fetch_assoc($translations);
 	  }

@@ -123,7 +123,8 @@ $seasoninfo = SeasonInfo($season);
 
 
 $tab = 0;
-$html .= "<table class='admintable'><tr><td>";
+$html .= "<form method='post' action='$url_here'>";
+$html .= "<table class='admintable'><tr><td colspan='4'>";
 if (!$showpool) {
   if ($_SESSION['hide_played_pools']) {
     $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "pool", $mass, $showpool)) . "' tabindex='" .
@@ -135,25 +136,24 @@ if (!$showpool) {
 }
 if ($_SESSION['hide_played_games']) {
   $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
-       _("Show played games") . "</a> ";
+       _("Show played games") . "</a>";
 } else {
   $html .= "<a href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, "game", $mass, $showpool)) . "' tabindex='" . ++$tab . "'>" .
-       _("Hide played games") . "</a> ";
+       _("Hide played games") . "</a>";
 }
-$html .= "</td><td style='text-align:right;'>";
+$html .= "</td><td colspan='3' style='text-align:right;'>";
 if ($mass) {
-  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, false, $showpool)) . "' tabindex='" .
+  $html .= "&nbsp;<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, false, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Just display values") . "</a></td></tr></table>\n";
 } else {
-  $html .= "<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, true, $showpool)) . "' tabindex='" .
-       ++$tab . "'>" . _("Mass input") . "</a></td></tr></table>\n";
+  $html .= "&nbsp;<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, true, $showpool)) . "' tabindex='" .
+       ++$tab . "'>" . _("Mass input") . "</a></td></tr>\n";
 }
 
-$html .= "<form method='post' action='$url_here'>";
 
 $pools = SeriesPools($series_id);
 
-$html .= "<table class='admintable'>\n";
+// $html .= "<table class='admintable'>\n";
 
 $total = 0;
 $MAX_INPUT = 120;
