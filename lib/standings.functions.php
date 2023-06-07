@@ -1043,8 +1043,10 @@ function Elos($teams, $games, $max_it = 1000) {
       foreach ($teams as $team) {
         $teamId = $team['team_id'];
         // scale perfect scores
-        $dist = $n[$teamId] > 10 ? .5 : .02;
-        $wins[$teamId] = .5 * $dist + $wins[$teamId] * ($n[$teamId] - $dist) / $n[$teamId];
+        if ($n[$teamId] > 0) {
+          $dist = $n[$teamId] > 10 ? .5 : .02;
+          $wins[$teamId] = .5 * $dist + $wins[$teamId] * ($n[$teamId] - $dist) / $n[$teamId];
+        }
         // $damp = max(.95, ($n[$teamId] - 1) / $n[$teamId]);
         // $wins[$teamId] = .5 * (1 - $damp) + $wins[$teamId] * $damp;
       }
@@ -1053,13 +1055,15 @@ function Elos($teams, $games, $max_it = 1000) {
       $teamId = $team['team_id'];
       $oppStrength = [0, 0];
       $nopp = 0;
-      foreach ($adv[$teamId] as $opp => $ng) {
-        $oppStrength[0] += $ng * $perf0[$opp][0];
-        $oppStrength[1] += $ng * $perf0[$opp][1];
-        $nopp += $ng;
+      if (isset($adv[$teamId])) {
+        foreach ($adv[$teamId] as $opp => $ng) {
+          $oppStrength[0] += $ng * $perf0[$opp][0];
+          $oppStrength[1] += $ng * $perf0[$opp][1];
+          $nopp += $ng;
+        }
+        $oppStrength[0] /= $nopp;
+        $oppStrength[1] /= $nopp;
       }
-      $oppStrength[0] /= $nopp;
-      $oppStrength[1] /= $nopp;
 
       if ($n[$teamId] == 0)
         $perf1[$teamId] = [$scale, $scale, $scale, $scale];
@@ -1176,6 +1180,9 @@ function Glickos($teams, $games) {
 
 function simpleLR($points) {
   // b_1 = sum(xi-x)(yi-y) / sum(xi-x)**2, b0 = y-b1x;
+  if (empty($points))
+    throw new Exception("empty matrix");
+  
   $xavg = 0;
   $yavg = 0;
   foreach ($points as $p) {
@@ -1191,7 +1198,10 @@ function simpleLR($points) {
     $sum1 += ($p[0] - $xavg) * ($p[1] - $yavg);
     $sum2 += ($p[0] - $xavg) * ($p[0] - $xavg);
   }
-  $b1 = $sum1 / $sum2;
+  if ($sum2 > 0)
+    $b1 = $sum1 / $sum2;
+  else
+    $b1 = $sum1;
   $b2 = $yavg - $b1 * $xavg;
   return [$b1, $b2];
 }
@@ -1220,8 +1230,14 @@ function ScorePredictionAccuracy($rating, $teams, $games, $debug = false) {
       $xy[] = [$rating[$game['hometeam']] - $rating[$game['visitorteam']], $game['homescore'] - $game['visitorscore']];
     }
   }
+
+  if (empty($xy))
+    return $diff;
+
+  if ($debug)
+    debug_to_apache($xy);
+  
   $linr = simpleLR($xy);
-  // debug_to_apache(print_r($xy, true));
   if ($debug) {
     foreach ($xy as $p) {
       debug_to_apache("$p[0]\t$p[1]");
@@ -1247,7 +1263,8 @@ function ScorePredictionAccuracy($rating, $teams, $games, $debug = false) {
     }
   }
   foreach ($teams as $team) {
-    $diff[$team['team_id']] /= $n[$team['team_id']];
+    if ($n[$team['team_id']] > 0)
+      $diff[$team['team_id']] /= $n[$team['team_id']];
   }
   return $diff;
 }
