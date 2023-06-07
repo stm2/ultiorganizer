@@ -546,7 +546,7 @@ function navigationBar($title) {
       ($i < $n - $max_size || strlen($ptitle) + strlen($ret) + strlen(nav_title(1)) > $max_len)) {
       $ellips = "&hellip;&nbsp;&raquo;";
     } else {
-      $current = "<a href='?" . urlencode($query) . "&amp;goindex=" . $i . "'>" . utf8entities($ptitle) . "</a>\n &raquo; ";
+      $current = "<a href='?" . $query . "&amp;goindex=" . $i . "'>" . utf8entities($ptitle) . "</a>\n &raquo; ";
       if ($i == 1)
         $current .= $ellips;
       $ret = $current . $ret;
