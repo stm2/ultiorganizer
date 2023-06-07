@@ -7,8 +7,23 @@ class DFVParsed {
 
   var $raw;
 
+  var $error = 0;
+
+  const FILE_NOT_FOUND = 1;
+
+  const INVALID_DATA = 2;
+
   function __construct($path) {
-    $this->raw = json_decode(file_get_contents($path));
+    // FIXME How to supress E_WARNING when url does not work?
+    $data = file_get_contents($path);
+    if ($data === false) {
+      $this->error = self::FILE_NOT_FOUND;
+    } else {
+      $this->raw = json_decode($data);
+      if ($this->raw == null) {
+        $this->error = self::INVALID_DATA;
+      }
+    }
   }
 
   function search_ref($base, $parent, $search_key, $id) {
@@ -53,6 +68,9 @@ class DFVParsed {
   }
 
   function access($base, $path) {
+    if ($this->error > 0)
+      throw Exception("No valid data found. Error " . $this->error);
+
     if ($base == null)
       $base = $this->raw;
 
@@ -141,31 +159,34 @@ function DFVTournaments($refresh = true) {
     $source = 'https://www.dfv-turniere.de/api/tournaments';
     // $source = 'tournaments.test.json';
     $parsed = new DFVParsed($source);
+    if ($parsed->error > 0) {
+      $data = ["source" => $source, "retrieved" => $retrieved, "tournaments" => null, "error" => $parsed->error];
+    } else {
+      foreach ($parsed->access(null, []) as $tournament) {
+        $new_tournament = ['id' => $parsed->access($tournament, ['id']),
+          'name' => $parsed->access($tournament, ['name']), 'year' => $parsed->access($tournament, ['season', 'year']),
+          'surface' => $parsed->access($tournament, ['season', 'surface'])];
 
-    foreach ($parsed->access(null, []) as $tournament) {
-      $new_tournament = ['id' => $parsed->access($tournament, ['id']),
-        'name' => $parsed->access($tournament, ['name']), 'year' => $parsed->access($tournament, ['season', 'year']),
-        'surface' => $parsed->access($tournament, ['season', 'surface'])];
-
-      foreach ($parsed->access($tournament, ['divisionRegistrations']) as $divreg) {
-        $new_div = ['id' => $parsed->access($divreg, ['id']),
-          'divisionType' => $parsed->access($divreg, ['divisionType']),
-          'divisionAge' => $parsed->access($divreg, ['divisionAge']),
-          'divisionIdentifier' => $parsed->access($divreg, ['divisionIdentifier'])];
-        $new_div['teams'] = [];
-        foreach ($parsed->access($divreg, ['registeredTeams']) as $team) {
-          $new_team = ['id' => $parsed->access($team, ['id']), 'teamName' => $parsed->access($team, ['teamName']),
-            'teamId' => $parsed->access($team, ['roster', 'team', 'id']),
-            'teamClub' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
-            'teamLocation' => $parsed->access($team, ['roster', 'team', 'location', 'city'])];
-          $new_div['teams'][] = $new_team;
+        foreach ($parsed->access($tournament, ['divisionRegistrations']) as $divreg) {
+          $new_div = ['id' => $parsed->access($divreg, ['id']),
+            'divisionType' => $parsed->access($divreg, ['divisionType']),
+            'divisionAge' => $parsed->access($divreg, ['divisionAge']),
+            'divisionIdentifier' => $parsed->access($divreg, ['divisionIdentifier'])];
+          $new_div['teams'] = [];
+          foreach ($parsed->access($divreg, ['registeredTeams']) as $team) {
+            $new_team = ['id' => $parsed->access($team, ['id']), 'teamName' => $parsed->access($team, ['teamName']),
+              'teamId' => $parsed->access($team, ['roster', 'team', 'id']),
+              'teamClub' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
+              'teamLocation' => $parsed->access($team, ['roster', 'team', 'location', 'city'])];
+            $new_div['teams'][] = $new_team;
+          }
+          $new_tournament['divisions'][] = $new_div;
         }
-        $new_tournament['divisions'][] = $new_div;
-      }
 
-      $new_tournaments[] = $new_tournament;
+        $new_tournaments[] = $new_tournament;
+      }
+      $data = ["source" => $source, "retrieved" => $retrieved, "tournaments" => $new_tournaments];
     }
-    $data = ["source" => $source, "retrieved" => $retrieved, "tournaments" => $new_tournaments];
     file_put_contents($filename, json_encode($data), LOCK_EX);
   }
   return $data;
