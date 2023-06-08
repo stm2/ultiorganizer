@@ -38,6 +38,10 @@ function debugMsg ($msg) {
 } 
 
 function debug_to_apache($msg, $newline=true) {
+  if (gettype($msg) == 'array' || gettype($msg) == 'object') {
+    $msg = print_r($msg, true);
+  }
+    
   file_put_contents('php://stderr', $msg . ($newline?"\n":''));
 }
 
