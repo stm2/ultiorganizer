@@ -58,14 +58,23 @@ $powerRanking = PowerRanking($teams, $games);
 
 $rankedteams = SeriesRanking($seriesId);
 
-$elos = Elos($teams, $games);
-$glickos = Glickos($teams, $games);
+$elos = [];
+$glickos = [];
+if (defined('STANDINGS_ELO')) {
+  $elos = Elos($teams, $games);
+  $glickos = Glickos($teams, $games);
+}
 
 add_column($columns, 'fname', _("Team"));
 add_column($columns, 'seed', _("Seeding"));
-// add_column($columns, 'seed_acc', _("Seeding Acc"), 2, 'avg');
-add_column($columns, 'ranking', _("Ranking"));
-// add_column($columns, 'ranking_acc', _("Ranking Acc"), 2, 'avg');
+
+if (defined('STANDINGS_ELO'))
+  add_column($columns, 'seed_acc', _("Seeding Acc"), 2, 'avg');
+
+  add_column($columns, 'ranking', _("Ranking"));
+if (defined('STANDINGS_ELO'))
+  add_column($columns, 'ranking_acc', _("Ranking Acc"), 2, 'avg');
+
 add_column($columns, 'games', _("Games"), 0, 'avg');
 add_column($columns, 'wins', _("Wins"), 0, 'avg');
 add_column($columns, 'losses', _("Losses"), 0, 'avg');
@@ -74,21 +83,24 @@ add_column($columns, 'against', _("Goals against"), 0, 'avg');
 add_column($columns, 'diff', _("Goals diff"), 0, 'avg');
 add_column($columns, 'winavg', _("Win-%"));
 add_column($columns, 'pwr', _("PwrR"), 2, 'avg');
-// add_column($columns, 'pwr_acc', _("PwrR") . " " . _("acc"), 2, 'avg');
 
-// $active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
-// foreach ($elos as $name => $ratings) {
-//   if (in_array($name, $active_ratings)) {
-//     add_column($columns, $name, _($name), 0, 'avg');
-//     add_column($columns, $name . "_acc", _($name) . " " . _("acc"), 2, 'avg');
-//   }
-// }
+if (defined('STANDINGS_ELO'))
+  add_column($columns, 'pwr_acc', _("PwrR") . " " . _("acc"), 2, 'avg');
 
-// add_column($columns, 'glicko2', _("Glicko2"), 0, 'avg');
-// add_column($columns, 'gRD', _("RD"), 2, 'avg');
-// add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
-// // add_column($columns, 'gS', _("sig"), 2, 'avg');
+if (defined('STANDINGS_ELO')) {
+  $active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
+  foreach ($elos as $name => $ratings) {
+    if (in_array($name, $active_ratings)) {
+      add_column($columns, $name, _($name), 0, 'avg');
+      add_column($columns, $name . "_acc", _($name) . " " . _("acc"), 2, 'avg');
+    }
+  }
 
+  add_column($columns, 'glicko2', _("Glicko2"), 0, 'avg');
+  add_column($columns, 'gRD', _("RD"), 2, 'avg');
+  add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), 2, 'avg');
+  // add_column($columns, 'gS', _("sig"), 2, 'avg');
+}
 if ($seasoninfo['spiritmode'] > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
   add_column($columns, 'spirit', _("Spirit Points"));
 }
@@ -97,16 +109,19 @@ function predictionAccuracies($rating, $teams, $games, $debug = false) {
   return ScorePredictionAccuracy($rating, $teams, $games, $debug);
 }
 
-$accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games);
-foreach ($elos as $name => $r) {
-  $accuracies[$name] = predictionAccuracies($r, $teams, $games);
+if (defined('STANDINGS_ELO')) {
+  $accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games);
+  foreach ($elos as $name => $r) {
+    $accuracies[$name] = predictionAccuracies($r, $teams, $games);
+  }
+  $glickoRanking = [];
+  foreach ($teams as $team) {
+    $teamId = $team['team_id'];
+    $glickoRanking[$teamId] = $glickos[$teamId]['rating'];
+  }
+  $accuracies['glicko2'] = predictionAccuracies($glickoRanking, $teams, $games);
 }
-$glickoRanking = [];
-foreach ($teams as $team) {
-  $teamId = $team['team_id'];
-  $glickoRanking[$teamId] = $glickos[$teamId]['rating'];
-}
-$accuracies['glicko2'] = predictionAccuracies($glickoRanking, $teams, $games);
+
 foreach ($teams as $team) {
   $teamId = $team['team_id'];
   $stats = TeamStats($teamId);
@@ -147,10 +162,12 @@ foreach ($teams as $team) {
     $teamstats[$name . "_acc"] = $accuracies[$name][$teamId]; // predictionAccuracies($r, $teamId, $games);
   }
 
+  if (defined('STANDINGS_ELO')) {
   $teamstats['glicko2'] = $glickos[$teamId]['rating'];
   $teamstats['glicko2_acc'] = $accuracies['glicko2'][$teamId];
   $teamstats['gRD'] = $glickos[$teamId]['rd'];
   $teamstats['gS'] = $glickos[$teamId]['sigma'];
+  }
 
   $teamstats['ranking'] = 0;
   $allteams[] = $teamstats;
