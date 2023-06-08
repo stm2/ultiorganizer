@@ -346,6 +346,11 @@ td.scoreinput.bright {
   margin-top: 5px;
 }
 
+.admintable td {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
 .infotable+.infotable {
   margin-top: 5px;
 }
