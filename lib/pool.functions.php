@@ -2586,4 +2586,27 @@ function PoolOrderingLength() {
   return 20;
 }
 
+function NextPools($mode) {
+  $select = 1;
+  if ($mode == "future") {
+    $select = "gg.time >= now()";
+    $order = "ASC";
+  } else if ($mode == 'recent') {
+    $select = "gg.time <= now()";
+    $order = "DESC";
+  }
+  
+  $query = //
+  "SELECT pp.pool_id, pp.name as pool_name, sr.series_id, sr.name as series_name, ss.season_id, ss.name as season_name, min(gg.time) as time
+    FROM uo_pool pp
+    LEFT JOIN `uo_series` sr ON  (pp.series = sr.series_id)
+    LEFT JOIN `uo_season` ss on (sr.season = ss.season_id)
+    LEFT JOIN `uo_game` gg ON (gg.pool = pp.pool_id)
+    WHERE $select AND pp.visible=1 AND sr.valid=1 AND ss.iscurrent=1
+    GROUP BY pp.pool_id
+    ORDER BY ss.starttime $order, ss.endtime $order, sr.ordering ASC, time $order";
+  
+  return DBQueryToArray($query);
+}
+
 ?>
