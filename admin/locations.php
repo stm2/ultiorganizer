@@ -10,14 +10,7 @@ if (!empty($_GET["season"])) {
 
 global $locales;
 
-$location = array(
-  'name' => '',
-  'address' => '',
-  'fields' => 1,
-  'indoor' => 0,
-  'lat' => '0',
-  'lng' => '0'
-);
+$location = array('name' => '', 'address' => '', 'fields' => 1, 'indoor' => 0, 'lat' => '0', 'lng' => '0');
 
 $message = '';
 $mode = '';
@@ -46,15 +39,15 @@ if (isset($_POST['save'])) {
     $location['lat'] = $_POST['lat'];
   if (isset($_POST['lng']))
     $location['lng'] = $_POST['lng'];
-  
+
   if (isset($_POST['id'])) {
     $id = $_POST['id'];
     if (empty(LocationInfo($id))) {
-      $message = "<p>" ._("Invalid location.") . "</p>\n";
+      $message = "<p>" . _("Invalid location.") . "</p>\n";
       $mode = '';
     } else if (!empty($location['name'])) {
-      SetLocation($id, $location['name'], $location['address'], $location['info'], $location['fields'], $location['indoor'], 
-        $location['lat'], $location['lng'], $season);
+      SetLocation($id, $location['name'], $location['address'], $location['info'], $location['fields'],
+        $location['indoor'], $location['lat'], $location['lng'], $season);
       $mode = 'edit';
     } else {
       $message = "<p>" . _("Name cannot be empty. Please edit and save.") . "</p>\n";
@@ -62,8 +55,8 @@ if (isset($_POST['save'])) {
     }
   } else if (isset($_POST['isnew'])) {
     if (!empty($name)) {
-      $id = AddLocation($location['name'], $location['address'], $location['info'], $location['fields'], $location['indoor'],
-        $location['lat'], $location['lng'], $season);
+      $id = AddLocation($location['name'], $location['address'], $location['info'], $location['fields'],
+        $location['indoor'], $location['lat'], $location['lng'], $season);
       $mode = 'edit';
       $message = "<p>" . _("New location has been created.") . "</p>\n";
     } else {
@@ -74,11 +67,17 @@ if (isset($_POST['save'])) {
 } else if (isset($_POST['delete']) && isset($_POST['id'])) {
   $id = $_POST['id'];
   if (empty(LocationInfo($id))) {
-    $message = "<p>" ._("Invalid location.") . "</p>\n";
+    $message = "<p>" . _("Invalid location.") . "</p>\n";
     $mode = '';
   } else {
-    header('location: ?view=admin/locations');
-    exit();
+    $used = LocationUsed($id);
+    if ($used > 0)
+      $message = "<p>" . utf8entities(sprintf(_("Location is used in %s reservations, cannot delete!"), $used)) . "</p>";
+    else {
+      RemoveLocation($id);
+      header('location: ?view=admin/locations');
+      exit();
+    }
   }
 } else if (isset($_POST['searchbutton'])) {
   $mode = 'search';
@@ -91,7 +90,7 @@ if (isset($_POST['save'])) {
   }
   $location = LocationInfo($id);
   if (empty($location)) {
-    $message = "<p>" ._("Invalid location.") . "</p>\n";
+    $message = "<p>" . _("Invalid location.") . "</p>\n";
     $mode = '';
   } else {
     $location['info'] = array();
@@ -102,7 +101,7 @@ if (isset($_POST['save'])) {
     }
   }
 } else if (isset($_POST['addbutton'])) {
-  $new_name =  $_POST['search'];
+  $new_name = $_POST['search'];
   $mode = 'add';
   $message = "<p>" . _("New location not saved. Please edit the details and save.") . "</p>\n";
 }
@@ -113,10 +112,9 @@ $html = '';
 
 include_once 'lib/yui.functions.php';
 
-addHeaderCallback(
-  function () {
-    echo yuiLoad(array("utilities", "datasource", "autocomplete"));
-  });
+addHeaderCallback(function () {
+  echo yuiLoad(array("utilities", "datasource", "autocomplete"));
+});
 
 $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
 $html .= "<label>" . _("Name or address") . ": <input class='input' name='search' value=''/></label>\n";
@@ -132,10 +130,12 @@ if ($mode == 'search') {
   $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
   $html .= "<table><tr><th>name</th><th>address</th><th></th></tr>\n";
   $savedId = null;
-  while ($row = @mysqli_fetch_assoc($result)){
+  while ($row = @mysqli_fetch_assoc($result)) {
     if ($row['id'] !== $savedId) {
-      $html .= "<td>" . U_($row['name']) . "</td><td>". $row['address'] . "</td>";
-      $html .= "<td><a href='?view=admin/locations&amp;location=" . $row['id'] . "&amp;season=$season'><img class='deletebutton' src='images/settings.png' alt='E' title='"._("edit details")."'/></a></td>";
+      $html .= "<td>" . U_($row['name']) . "</td><td>" . $row['address'] . "</td>";
+      $html .= "<td><a href='?view=admin/locations&amp;location=" . $row['id'] .
+        "&amp;season=$season'><img class='deletebutton' src='images/settings.png' alt='E' title='" . _("edit details") .
+        "'/></a></td>";
       $html .= "</tr>\n";
     }
     $savedId = $row['id'];
@@ -146,18 +146,18 @@ if ($mode == 'search') {
     $location['new'] = 1;
     $location['name'] = $new_name;
   } else {
-    $html .= "<div id='map'></div>\n";    
+    $html .= "<div id='map'></div>\n";
     addHeaderCallback(
       function () {
         global $location;
         echo MapScript('map', $location['lat'], $location['lng'], 'lat', 'lng');
       });
   }
-  
+
   $html .= "<div id='editPlace'>\n";
   $html .= "<form method='post' action='?view=admin/locations&amp;season=$season'>\n<div>\n";
   if (!empty($location['new']))
-    $html .= "<input type='hidden' name='isnew' id='isnew' value='". $location['new'] . "'/>\n";
+    $html .= "<input type='hidden' name='isnew' id='isnew' value='" . $location['new'] . "'/>\n";
   if (isset($id))
     $html .= "<input type='hidden' name='id' id='place_id' value='$id'/>\n";
 
@@ -166,7 +166,8 @@ if ($mode == 'search') {
   $html .= "  <tr><th>" . _("Name") . ":</th>";
   $html .= "  <td>" . TranslatedField2("name", $location['name'], "$tWidth", 45) . "</td></tr>\n";
   $html .= "  <tr><th>" . _("Address") . "</th>";
-  $html .= "  <td><input class='controls' type='text' style='width:$tWidth' name='address' id='address' value='" . $location['address'] . "'/>&nbsp;</tr>\n";
+  $html .= "  <td><input class='controls' type='text' style='width:$tWidth' name='address' id='address' value='" .
+    $location['address'] . "'/>&nbsp;</tr>\n";
 
   foreach ($locales as $locale => $name) {
     $locale = str_replace(".", "_", $locale);
@@ -175,13 +176,17 @@ if ($mode == 'search') {
       $location['info'][$locale] . "</textarea></td></tr>";
   }
 
-  $html .= "<tr><th>" . _("Fields") . ":</th><td><input type='text' style='width:$tWidth;' name='fields' id='fields' value='" . $location['fields'] ."'/></td></tr>\n";
-  $is_indoor = intval($location['indoor'])?"checked='checked'":"";
-  $html .= "<tr><th>" . _("Indoor pitch") . ":</th><td><input type='checkbox' name='indoor' id='indoor' $is_indoor/></td></tr>\n";
-  $html .= "<tr><th>" . _("Latitude") .
-  ":</th><td><input type='text' style='width:$tWidth;' name='lat' id='lat' value='" . $location['lat'] ."'/></td></tr>\n";
+  $html .= "<tr><th>" . _("Fields") .
+    ":</th><td><input type='text' style='width:$tWidth;' name='fields' id='fields' value='" . $location['fields'] .
+    "'/></td></tr>\n";
+  $is_indoor = intval($location['indoor']) ? "checked='checked'" : "";
+  $html .= "<tr><th>" . _("Indoor pitch") .
+    ":</th><td><input type='checkbox' name='indoor' id='indoor' $is_indoor/></td></tr>\n";
+  $html .= "<tr><th>" . _("Latitude") . ":</th><td><input type='text' style='width:$tWidth;' name='lat' id='lat' value='" .
+    $location['lat'] . "'/></td></tr>\n";
   $html .= "<tr><th>" . _("Longitude") .
-  ":</th><td><input type='text' style='width:$tWidth;' name='lng' id='lng' value='" . $location['lng'] ."'/></td></tr>\n"; 
+    ":</th><td><input type='text' style='width:$tWidth;' name='lng' id='lng' value='" . $location['lng'] .
+    "'/></td></tr>\n";
   $html .= "</tbody></table>\n";
   $html .= "<p>";
   $html .= "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";
@@ -191,6 +196,21 @@ if ($mode == 'search') {
   $html .= "</p>\n";
   $html .= "</form>";
   $html .= "</div>\n";
+  
+  if (isSuperAdmin()) {
+    $reservations = ReservationsForLocation($id, 10);
+    if (!empty($reservations)) {
+      $html .= "<p>" . utf8entities(_("Most recently used:")) . "</p>";
+      $html .= "<ul>";
+      foreach ($reservations as $res) {
+        debug_to_apache($res);
+        $html .= "<li>" . ShortDate($res['date']) . " - <a href='?view=admin/reservations&amp;season=" .
+          utf8entities($res['season_id']) . "'>" . $res['season_name'] . "</a> (" . $res['count'] . ")</li>\n";
+      }
+      $html .= "</ul>\n";
+    }
+  }
+  
   $html .= TranslationScript("name");
 }
 

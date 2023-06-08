@@ -164,6 +164,11 @@ function AddLocation($name, $address, $info, $fields, $indoor, $lat, $lng, $seas
 	} else { die('Insufficient rights to add location'); }		
 }
 
+function LocationUsed($id) {
+  $query = sprintf("SELECT count(id) FROM uo_reservation WHERE location=%d", (int) $id);
+  return DBQueryToValue($query);
+}
+
 function RemoveLocation($id) {
 	if (isSuperAdmin()) {
 		$query = sprintf("DELETE FROM uo_location WHERE id=%d", (int)$id);
