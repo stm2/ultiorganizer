@@ -513,7 +513,7 @@ function nav_current() {
  */
 function navigationBar($title) {
   $max_len = 300;
-  $max_size = 4;
+  $max_size = 5;
 
   if (isset($_SERVER['QUERY_STRING']))
     $query_string = $_SERVER['QUERY_STRING'];
