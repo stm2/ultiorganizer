@@ -26,9 +26,9 @@ if(!empty($player['profile_id'])){
 $curseason = CurrentSeason();
 
 if ($player['num']){
-  $title = "#". $profile['num'] ." ". utf8entities($profile['firstname'] ." ". $profile['lastname']);
+  $title = "#". $profile['num'] ." ". ($profile['firstname'] ." ". $profile['lastname']);
 }else{
-  $title = utf8entities($profile['firstname'] ." ". $profile['lastname']);
+  $title = ($profile['firstname'] ." ". $profile['lastname']);
 }
 
 if ($player['num']){

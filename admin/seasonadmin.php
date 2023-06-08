@@ -11,7 +11,7 @@ $info = SeasonInfo($seasonId);
 if (empty($info))
   die("invalid season " . $seasonId);
 
-$title = _("Event").": ".utf8entities(U_($info['name']));
+$title = _("Event").": ". U_($info['name']);
 $html = "";
 
 $html .=  "<h2>".utf8entities(U_($info['name']))."</h2>\n";

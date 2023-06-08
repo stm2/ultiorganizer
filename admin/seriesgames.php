@@ -25,7 +25,7 @@ $matches = 1;
 $crosses = 1;
 $homeresp = isset($_POST["homeresp"]);
 
-$title = utf8entities(U_($seriesinfo['name'])).": "._("Games");
+$title =U_($seriesinfo['name']).": "._("Games");
 $html = "";
 
 if(!empty($_POST['generate'])){

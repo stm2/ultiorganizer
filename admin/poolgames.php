@@ -11,7 +11,7 @@ include_once 'lib/reservation.functions.php';
 $poolId = $_GET["pool"];
 $season = $_GET["season"];
 $rounds = 1;
-$title = utf8entities(U_(PoolSeriesName($poolId)) . ", " . U_(PoolName($poolId))) . ": " . _("Games");
+$title = U_(PoolSeriesName($poolId) . ", " . U_(PoolName($poolId))) . ": " . _("Games");
 $poolInfo = PoolInfo($poolId);
 $usepseudoteams = PseudoTeamsOnly($poolId);
 $generatedgames = array();

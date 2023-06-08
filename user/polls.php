@@ -11,12 +11,12 @@ if (empty($_GET['season'])) {
   if (empty($name))
     die(_("Unknown division"));
 
-  $title = sprintf(_("Polls for %s"), utf8entities($name));
+  $title = sprintf(_("Polls for %s"), $name);
   $serieses = array(array('series_id' => $seriesId, 'name' => $name));
 } else {
   $seasonId = $_GET['season'];
   $seasonInfo = SeasonInfo($seasonId);
-  $title = sprintf(_("Polls for %s"), utf8entities($seasonInfo['name']));
+  $title = sprintf(_("Polls for %s"), $seasonInfo['name']);
   $serieses = SeasonSeries($seasonId);
 }
 $html = "";

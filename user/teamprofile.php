@@ -20,7 +20,7 @@ else
 
 $team = TeamInfo($teamId);
 
-$title = _("Team details").": ". utf8entities($team['name']);
+$title = _("Team details").": ". ($team['name']);
 
 //team profile
 $tp = array(

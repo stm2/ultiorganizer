@@ -7,7 +7,7 @@ include_once 'lib/pool.functions.php';
 $season = $_GET["season"];
 $html = "";
 
-$title = utf8entities((SeasonName($season))).": "._("Divisions");
+$title = (SeasonName($season)).": "._("Divisions");
 
 //process itself on submit
 if(!empty($_POST['remove_x'])){

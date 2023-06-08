@@ -224,7 +224,7 @@ if ($userinfo == null || $userid === "anonymous") {
 
 }
 
-$title = _("User information") . ": " . utf8entities($userinfo['name']);
+$title = _("User information") . ": " . ($userinfo['name']);
 $html .= file_get_contents('script/disable_enter.js.inc');
 
 {

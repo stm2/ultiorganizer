@@ -111,7 +111,7 @@ $op = array(
 	  $op['achievements'] = $club['achievements'];
 	}
 
-	$title = _("Club information").": ". utf8entities($club['name']);
+	$title = _("Club information").": ". ($club['name']);
 	$html .= file_get_contents('script/disable_enter.js.inc');
 
 	$menutabs[_("Roster")]= "?view=user/teamplayers&team=$teamId";

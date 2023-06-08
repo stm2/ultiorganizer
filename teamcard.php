@@ -12,7 +12,7 @@ $teamId = intval(iget("team"));
 $teaminfo = TeamInfo($teamId);
 $profile = TeamProfile($teamId);
 
-$title = utf8entities($teaminfo['name']);
+$title = $teaminfo['name'];
 
 $html .= "<h1>";
 $html .= utf8entities($teaminfo['name'])." (".U_($teaminfo['type']).")</h1>";

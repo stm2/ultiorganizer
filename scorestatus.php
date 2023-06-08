@@ -14,19 +14,19 @@ $sort="total";
 
 if(iget("pool")) {
   $poolId = intval(iget("pool"));
-  $title = $title.": ".utf8entities(U_(PoolName($poolId)));
+  $title = $title.": ". (U_(PoolName($poolId)));
 }
 if(iget("pools")) {
   $poolIds = explode(",",iget("pools"));
-  $title = $title.": ".utf8entities(U_(PoolName($poolId)));
+  $title = $title.": ". (U_(PoolName($poolId)));
 }
 if(iget("series")) {
   $seriesId = intval(iget("series"));
-  $title = $title.": ".utf8entities(U_(SeriesName($seriesId)));
+  $title = $title.": ". (U_(SeriesName($seriesId)));
 }
 if(iget("team")) {
   $teamId = intval(iget("team"));
-  $title = $title.": ".utf8entities(TeamName($teamId));
+  $title = $title.": ". (TeamName($teamId));
 }
 if(iget("sort")){
   $sort = iget("sort");

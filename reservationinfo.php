@@ -8,8 +8,8 @@ include_once 'lib/configuration.functions.php';
 $reservationId = intval(iget("reservation"));
 $place = ReservationInfo($reservationId);
 $location = LocationInfo($place['location']);
-$title = _("Reservation") . ": " . utf8entities($place['name']) . " " . _("Field") . " " .
-  utf8entities($place['fieldname']);
+$title = _("Reservation") . ": " . $place['name'] . " " . _("Field") . " " .
+  $place['fieldname'];
 
 // common page
 pageTopHeadOpen($title);

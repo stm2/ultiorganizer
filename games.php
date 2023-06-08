@@ -46,31 +46,31 @@ if (iget("series")) {
   $id = iget("series");
   SetCurrentSeries($id);
   $filters['gamefilter'] = "series";
-  $title = _("Schedule") . " " . utf8entities(U_(SeriesName($id)));
+  $title = _("Schedule") . " " . U_(SeriesName($id));
 } elseif (iget("pool")) {
   $id = iget("pool");
   $filters['gamefilter'] = "pool";
-  $title = _("Schedule") . " " . utf8entities(U_(PoolSeriesName($id)) . ", " . U_(PoolName($id)));
+  $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
   $detail_links = true;
 } elseif (iget("pools")) {
   $id = iget("pools");
   $filters['gamefilter'] = "poolgroup";
-  $title = _("Schedule") . " " . utf8entities(U_(PoolSeriesName($id)) . ", " . U_(PoolName($id)));
+  $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
 } elseif (iget("team")) {
   $id = iget("team");
   $filters['gamefilter'] = "team";
   $orderdefault = 'places';
-  $title = _("Schedule") . " " . utf8entities(TeamName($id));
+  $title = _("Schedule") . " " . TeamName($id);
   $detail_links = true;
 } elseif (iget("season")) {
   $id = iget("season");
   $filters['gamefilter'] = "season";
-  $title = _("Schedule") . " " . utf8entities(U_(SeasonName($id)));
+  $title = _("Schedule") . " " . U_(SeasonName($id));
   $comment = CommentHTML(1, $id);
 } else {
   $id = CurrentSeason();
   $filters['gamefilter'] = "season";
-  $title = _("Schedule") . " " . utf8entities(U_(SeasonName($id)));
+  $title = _("Schedule") . " " . U_(SeasonName($id));
 }
 
 if (!isset($filters['gamefilter']))

@@ -24,7 +24,7 @@ if(iget("sort")){
 $team1 = TeamInfo($teamId1);
 $team2 = TeamInfo($teamId2);
 
-$title = _("Game card").": ".utf8entities($team1['name']) ." vs. ". utf8entities($team2['name']);
+$title = _("Game card").": ". ($team1['name']) ." vs. ". ($team2['name']);
 
 //$seasons = TeamPlayedSeasons($team1['name'], $serie);
 

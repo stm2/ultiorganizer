@@ -12,7 +12,7 @@ $seasoninfo = SeasonInfo(GameSeason($gameId));
 $homecaptain = GameCaptain($gameId, $game_result['hometeam']);
 $awaycaptain = GameCaptain($gameId, $game_result['visitorteam']);
 
-$title = _("Game play").": ".utf8entities($game_result['hometeamname'])." vs. ".utf8entities($game_result['visitorteamname']);
+$title = _("Game play").": ". ($game_result['hometeamname'])." vs. ".utf8entities($game_result['visitorteamname']);
 
 $home_team_score_board = GameTeamScoreBoard($gameId, $game_result['hometeam']);
 $guest_team_score_board = GameTeamScoreBoard($gameId, $game_result['visitorteam']);
@@ -169,7 +169,7 @@ if(GameHasStarted($game_result)){
       }else{
         $title=SecToMin($points[$i][4]). " ".$points[$i][5]."-".$points[$i][6]." ".$points[$i][3]." -> ".$points[$i][2];
       }
-      $html .= "<td style='width:".$width_a."px' class='$color' title='$title'></td>\n";
+      $html .= "<td style='width:".$width_a."px' class='$color' title='" . utf8entities($title) . "'></td>\n";
 
     }
     $html .= "</tr></table>\n";

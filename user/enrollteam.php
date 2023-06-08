@@ -9,7 +9,7 @@ if (empty($_GET['season'])) {
 }
 $season = $_GET['season'];
 $seasonInfo = SeasonInfo($season);
-$title = _("Enrolled teams").": ".utf8entities($seasonInfo['name']);
+$title = _("Enrolled teams").": ". ($seasonInfo['name']);
 
 $orgarray = "";
 $result = ClubList(true);

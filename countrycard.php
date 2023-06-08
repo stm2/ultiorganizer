@@ -6,7 +6,7 @@ $html = "";
 $countryId = intval(iget("country"));
 $profile = CountryInfo($countryId);
 
-$title = utf8entities(_($profile['name']));
+$title = (_($profile['name']));
 
 $html .= "<h1>".utf8entities(_($profile['name']))."</h1>";
 $html .= "<img class='flag' src='images/flags/medium/".$profile['flagfile']."' alt=''/>";

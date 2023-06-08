@@ -77,7 +77,7 @@ function preContent($title) {
     }
   }
   pageTopHeadClose($title);
-  leftMenu($title);
+  leftMenu();
   contentStart();
 }
 

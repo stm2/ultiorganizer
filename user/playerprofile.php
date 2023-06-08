@@ -34,7 +34,7 @@ $backurl = utf8entities($_SERVER['HTTP_REFERER']);
 else
 $backurl = utf8entities("?view=user/teamplayers&team=".$player['team']);
 
-$title = _("Player information").": ". utf8entities($player['firstname'] ." ". $player['lastname']);
+$title = _("Player information").": ". $player['firstname'] ." ". $player['lastname'];
 
 //player profile
 $pp = array(

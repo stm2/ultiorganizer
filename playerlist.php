@@ -9,7 +9,7 @@ include_once 'lib/statistical.functions.php';
 $teamId = intval(iget("team"));
 $teaminfo = TeamInfo($teamId);
 
-$title = _("Roster").": ".utf8entities($teaminfo['name']);
+$title = _("Roster").": ". ($teaminfo['name']);
 $html = "";
 
 $players = TeamPlayerList($teamId );

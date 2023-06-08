@@ -24,7 +24,7 @@ if ($seriesId != $poll['series_id'])
 $series = SeriesInfo($poll['series_id']);
 $info = array();
 
-$title = _("Vote") . ": " . (empty($poll['name'])?utf8entities($series['name']):$poll['name']);
+$title = _("Vote") . ": " . (empty($poll['name'])?($series['name']):$poll['name']);
 $html = "";
 $error = "";
 $feedback = "";
@@ -46,10 +46,10 @@ if (isset($_SESSION['uid'])) {
 $canVote = CanVote($user, $name, $pollId);
 
 if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
-  $html .= "<h2>$title</h2>";
+  $html .= "<h2>" . utf8entities($title) . "</h2>";
   $html .= "<p>" . _("You cannot vote for this poll.") . "</p>";
 } else if (empty($name)) {
-  $html .= "<h2>$title</h2>";
+  $html .= "<h2>" . utf8entities($title) . "</h2>";
   $html .= "<form method='post' action='?view=user/votepoll&amp;series=$seriesId&amp;poll=$pollId'>";
   $html .= "<p><label>" . _("Enter your name (public)") . ": <input class='input' type='text' name='name'/></label></p>\n";
   $html .= "<input id='doname' class='button' name='doname' type='submit' value='" . _("Vote") . "'/></form>\n";
@@ -132,7 +132,7 @@ if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
     $html .= "<p>" . _("Voting has not started yet.") . "</p>";
   }
 
-  $html .= "<h2>$title</h2>\n";
+  $html .= "<h2>" . utf8entities($title) . "</h2>\n";
   if (!empty($poll['description'])) {
     $html .= "<div id='poll_description'><p>" . $poll['description'] . "</p></div>";
   }

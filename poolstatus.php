@@ -46,7 +46,7 @@ if (iget("season")) {
 
 
   $seasoninfo = SeasonInfo($poolinfo['season']);
-  $title.= utf8entities(U_($poolinfo['seriesname']).", ". U_($poolinfo['name']));
+  $title.= U_($poolinfo['seriesname'].", ". U_($poolinfo['name']));
   SetCurrentSeries($poolinfo['series']);
 } else {
   die("invalid request");

@@ -42,7 +42,7 @@ $html = "";
 $hasResults = HasResults($pollId);
 
 if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
-  $html .= "<h2>$title</h2>";
+  $html .= "<h2>" . utf8entities($title) . "</h2>";
   $html .= "<p>" . _("No results yet") . "</p>";
 } else {
 
@@ -69,7 +69,7 @@ if (!($hasResults && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
   if (!$hasResults) {
     $html .= "<p>" . _("Results not published yet.") . "</p>";
   }
-  $html .= "<h2>$title</h2>\n";
+  $html .= "<h2>". utf8entities($title) ."</h2>\n";
   if (!empty($poll['description'])) {
     $html .= "<div id='poll_description'><p>" . $poll['description'] . "</p></div>";
   }

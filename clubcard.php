@@ -8,7 +8,7 @@ $html = "";
 $clubId = iget("club");
 $profile = ClubInfo($clubId);
 
-$title = _("Club Card").": ".utf8entities($profile['name']);
+$title = _("Club Card").": ". ($profile['name']);
 
 $html .= "<h1>".utf8entities($profile['name'])."</h1>";
 
