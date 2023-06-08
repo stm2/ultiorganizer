@@ -226,17 +226,26 @@ if (count($locations) > 25) {
 
   $html .= "<input type='submit' name='change_times' value='" . utf8entities(_("Save times")) . "'/>\n";
 }
-$html .= "<hr />";
-$html .= $legend;
 
-$html .= "<p><input type='hidden' name='reservation_url' value='" .
-  urlencode(
+$html .= "<hr />";
+$html .= "<p><a href='" .
+  utf8entities(
     MakeUrl(['view' => 'admin/reservations', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
-  "'/>\n" . "<input type='submit' name='change_reservations' value='" . _("Select reservations") . "' />\n";
-$html .= "<input type='hidden' name='schedule_url' value='" .
-  urlencode(MakeUrl(['view' => 'admin/schedule', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
-  "'>\n" . "<input type='submit' name='schedule_reservations' value='" . _("Schedule") . "'/></p>";
+  "'/>" . _("Select reservations") . "</a> | ";
+$html .= "<a href='" .
+  utf8entities(MakeUrl(['view' => 'admin/schedule', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
+  "'>" . _("Schedule") . "</a></p>";
+
+$html .= $legend;
 $html .= "</form>";
+
+// $html .= "<p><input type='hidden' name='reservation_url' value='" .
+// urlencode(
+// MakeUrl(['view' => 'admin/reservations', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
+// "'/>\n" . "<input type='submit' name='change_reservations' value='" . _("Select reservations") . "' />\n";
+// $html .= "<input type='hidden' name='schedule_url' value='" .
+// urlencode(MakeUrl(['view' => 'admin/schedule', 'season' => $season, 'reservations' => implode(",", $reservations)])) .
+// "'>\n" . "<input type='submit' name='schedule_reservations' value='" . _("Schedule") . "'/></p>";
 
 showPage($title, $html);
 ?>
