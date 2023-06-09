@@ -54,7 +54,7 @@ function TournamentView($games, $grouping=true, &$lines=null, $detail_links = tr
         $ret .= "</table>\n";
         $isTableOpen = false;
       }
-      $ret .= "<table class='admintable'>\n";
+      $ret .= "<table class='admintable wide'>\n";
       $isTableOpen = true;
       $ret .= SeriesAndPoolHeaders($game, $lines);
     }
@@ -117,7 +117,7 @@ function SeriesView($games, $date=true, $time=false, &$lines=null, $detail_links
         $ret .= "</table>\n";
         $isTableOpen = false;
       }
-      $ret .= "<table class='admintable'>\n";
+      $ret .= "<table class='admintable wide'>\n";
       $isTableOpen = true;
       $ret .= PoolHeaders($game, $lines);
     }
@@ -185,7 +185,7 @@ function PlaceView($games, $grouping=true, &$lines=null, $detail_links = true){
         $ret .= "</table>\n";
         $isTableOpen = false;
       }
-      $ret .= "<table class='admintable'>\n";
+      $ret .= "<table class='admintable wide'>\n";
       $isTableOpen = true;
       $ret .= PlaceHeaders($game, true, $lines);
     }
@@ -230,7 +230,7 @@ function TimeView($games, $grouping=true, &$lines=null, $detail_links = true){
       $text = DefWeekDateFormat($game['time']) ." ". DefHourFormat($game['time']);
       $ret .= "<h3>$text</h3>\n";
       if ($lines!==null) $lines[] = array("type" => "h3", "text" => $text);
-      $ret .= "<table class='admintable'>\n";
+      $ret .= "<table class='admintable wide'>\n";
       $isTableOpen = true;
     }
 

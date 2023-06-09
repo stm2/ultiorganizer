@@ -314,7 +314,7 @@ function printSwissdraw($seasoninfo, $poolinfo){
   }
   $ret .= "</table>\n";
 
-  $ret .= "<table class='admintable'>\n";
+  $ret .= "<table class='admintable wide'>\n";
   $mvgames = array();
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
@@ -470,7 +470,7 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
     }
     $ret .= "</tr></table>\n";
   }
-  $ret .= "<table class='admintable'>\n";
+  $ret .= "<table class='admintable wide'>\n";
   $mvgames = array();
   if($poolinfo['mvgames']==0 || $poolinfo['mvgames']==2){
     $mvgames = PoolMovedGames($poolinfo['pool_id']);
@@ -554,7 +554,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
       if(empty($pool)) {
         $notemplate .= "<p>???</p>";
       } else {
-        $notemplate .= "<table class='admintable'>\n";
+        $notemplate .= "<table class='admintable wide'>\n";
         $games = TimetableGames($pool['pool_id'], "pool", "all", "series");
         while ($game = mysqli_fetch_assoc($games)) {
           $notemplate .= GameRow($game, true, true, false, false, false, true);
