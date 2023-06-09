@@ -730,6 +730,8 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   // echo "<td id='left_menu' class='menu_left'>";
   echo "<aside id='left_menu' class='menu_left$hidden'>\n";
 
+  echo "<a href=?view=frontpage>" . _("Go to front page") . "</a>\n";
+  
   // Administration menu
   if (hasScheduleRights() || isSuperAdmin() || hasTranslationRight()) {}
   $leftmenu = 0;

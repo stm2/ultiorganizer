@@ -170,7 +170,7 @@ function showUnprivileged($title, $message, $type = null, $options = null) {
   }
 
   if ($message === null) {
-    $message = "<p>" . _("Insufficient rights") . "</p>\n";
+    $message = "<p>" . _("Insufficient rights!") . "</p>\n";
     switch ($type) {
     case "season":
       $message .= "<p>" . sprintf(_("You are not a season admin for %s."), $options) . "</p>";
@@ -194,7 +194,7 @@ function showUnprivileged($title, $message, $type = null, $options = null) {
   if ($backlink)
     $backlink = "<a href='$backlink'>" . _("Return") . "</a><br />";
 
-  $message .= "<p>$backlink<a href='?view=frontpage'>" . _("Go to front page.") . "</p>\n";
+  $message .= "<p>$backlink<a href='?view=frontpage'>" . _("Go to front page") . "</p>\n";
 
   $message = "<h1>$title</h1>\n" . $message;
 

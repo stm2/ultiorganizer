@@ -3,7 +3,7 @@ include_once $include_prefix . 'lib/pool.functions.php';
 include_once $include_prefix . 'localization.php';
 
 $html = "";
-$title = _("Frontpage");
+$title = _("Front page");
 
 function pool_list($pre, $pools, $post, $limit) {
   $upcoming = "";
