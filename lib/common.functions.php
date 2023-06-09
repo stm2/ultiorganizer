@@ -1425,6 +1425,26 @@ function uo_create_key_comparator($key, $ascending = true, $null_low = true) {
   return $comparator;
 }
 
+
+function uo_create_multi_key_comparator($keys) {
+  $comps = [];
+  foreach ($keys as $key) {
+    // $key, $ascending = true, $null_low = true
+    $comps[] = uo_create_key_comparator($key[0], $key[1], $key[2]);
+  }
+  $comparator = function ($a, $b) use ($comps) {
+    if ($a === $b) return 0;
+    foreach ($comps as $subcomp) {
+      $v = $subcomp($a, $b);
+      if ($v != 0)
+        return $v;
+    }
+    return 0;
+  };
+  
+  return $comparator;
+}
+
 function jsQuote($value) {
   return str_replace(["'", "\""], ["\\'", "&quot;"], $value);
 }

@@ -305,8 +305,15 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
     $html .= "<p>" . utf8entities(_("Add teams from:")) . " ";
     $html .= "<select class='dropdown' name='importteams'>\n";
     $options = [];
+    mergesort($tournaments,
+      uo_create_multi_key_comparator([['year', true, true], ['surface', true, true], ['id', true, true]]));
+
     foreach ($tournaments as $tournament) {
-      foreach ($tournament['divisions'] as $div) {
+      $divs = $tournament['divisions'];
+      mergesort($divs,
+        uo_create_multi_key_comparator(
+          [['divisionAge', false, true], ['divisionType', true, true], ['divisionIdentifier', false, true]]));
+      foreach ($divs as $div) {
         $name = $tournament['name'];
 
         if (!empty($tournament['year']))
