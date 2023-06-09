@@ -134,7 +134,7 @@ foreach ($allpools as $pool) {
 				$movefrom = PoolGetMoveFrom($pool['pool_id'],$i);
 				if($pseudoteams && $round>0){
 					$realteam = PoolTeamFromStandings($movefrom['frompool'],$movefrom['fromplacing']);
-					if($realteam['team_id']){
+					if($realteam && $realteam['team_id']){
 						$gamesleft = TeamPoolGamesLeft($realteam['team_id'], $movefrom['frompool']);
 
 						if(mysqli_num_rows($gamesleft)==0){
@@ -182,9 +182,9 @@ foreach ($allpools as $pool) {
 		for($i=1;$i<=$totalteams;$i++){
 			$placement = PoolPlacementString($pool['pool_id'],$i);
 			$team = PoolTeamFromStandings($pool['pool_id'],$i);
-			$gamesleft = TeamPoolGamesLeft($team['team_id'], $pool['pool_id']);
+			$gamesleft = $team ? TeamPoolGamesLeft($team['team_id'], $pool['pool_id']) : null;
 
-			if(mysqli_num_rows($gamesleft)==0){
+			if($gamesleft && mysqli_num_rows($gamesleft)==0){
 				$placementname = "";
 				if(intval($seasoninfo['isinternational']) && !empty($team['flagfile'])){
 					$placementname .= "<img height='10' src='../images/flags/tiny/".$team['flagfile']."' alt=''/> ";
