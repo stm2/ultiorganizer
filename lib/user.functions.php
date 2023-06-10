@@ -378,7 +378,6 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
 
   if ($uidcheck != $newUsername || preg_match('/[ ]/', $newUsername) || preg_match('/[^a-z0-9._]/i', $newUsername)) {
     $html .= "<p class='warning'>" . _("User id may not have spaces or special characters") . ".</p>";
-    $error = 1;
   }
 
   if ($checkDuplicate && (IsRegistered($newUsername) || $newUsername === "anonymous")) {
@@ -395,7 +394,6 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
 
     if ($pswcheck != $newPassword1) {
       $html .= "<p class='warning'>" . _("Illegal characters in the password") . ".</p>";
-      $error = 1;
     }
   }
   if (empty($newName)) {
@@ -404,13 +402,18 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
 
   if (empty($newEmail)) {
     $html .= "<p class='warning'>" . _("Email can not be empty") . ".</p>";
-    $error = 1;
   }
 
   if (!validEmail($newEmail)) {
     $html .= "<p class='warning'>" . _("Invalid email address") . ".</p>";
-    $error = 1;
   }
+  if (UserIdForMail($newEmail) !== -1) {
+    $html .= "<p class='warning'>" .
+      _(
+        "Email address already in use. If you have forgotten your login details, please follow this link: <a href='?view=login&recover=1'>Recover lost password / user name</a>") .
+      ".</p>";
+  }
+  
   return $html;
 }
 
@@ -941,7 +944,7 @@ function UserListRightsHtml($userId) {
       break;
     case "teamadmin":
       $rights .= "<span'>" . $value[0] . ": ";
-      if (empty($value[1]))
+      if (empty($value[1]) || empty(TeamName($value[1])))
         $rights .= "???";
       else
         $rights .= utf8entities(TeamName($value[1]));
@@ -1427,7 +1430,6 @@ function ConfirmRegister($token) {
 function AddUser($newUsername, $newPassword, $newName, $newEmail, $creator) {
   $message = UserValid($newUsername, $newPassword, $newPassword, $newName, $newEmail, true);
   if (empty($message)) {
-
     $query = sprintf("INSERT INTO uo_users (userid, password, name, email) VALUES ('%s', MD5('%s'), '%s', '%s')",
       mysql_adapt_real_escape_string($newUsername), mysql_adapt_real_escape_string($newPassword),
       mysql_adapt_real_escape_string($newName), mysql_adapt_real_escape_string($newEmail));

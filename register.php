@@ -7,26 +7,34 @@ $title = _("Register");
 $html .= file_get_contents('script/disable_enter.js.inc');
 
 $mailsent = false;
-if(!empty($_POST['save'])) {
-  $newUsername=$_POST['UserName'];
-  $newPassword=$_POST['Password'];
-  $newName=$_POST['Name'];
-  $newEmail=$_POST['Email'];
+if (!empty($_POST['save'])) {
+  $newUsername = trim($_POST['UserName']);
+  $newPassword = $_POST['Password'];
+  $newName = trim($_POST['Name']);
+  $newEmail = trim($_POST['Email']);
   $error = 0;
   $message = UserValid($newUsername, $newPassword, $_POST['Password2'], $newName, $newEmail, true);
   if (!empty($message)) {
     $error = 1;
+  } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
+    $message .= "<p>" .
+      _(
+        "Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.") .
+      "</p>\n";
+    $mailsent = true;
+  } else {
+    $message .= "<p class='warning'>" .
+      _(
+        "Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.") .
+      "<p>\n";
+    $error = 2;
   }
 
-  if ($error == 0) {
-    if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
-      $message .= "<p>"._("Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.")."</p>\n";
-      $mailsent = true;
-    }
-  } else {
-    $message .= "<p>"._("Correct the errors and try again").".</p>\n";
+  if ($error > 0) {
+    $message .= "<p>" . _("Correct the errors and try again") . ".</p>\n";
   }
 }
+
 $confirmed = false;
 if (!empty($_GET['token'])) {
   $userid = RegisterUIDByToken($_GET['token']);
