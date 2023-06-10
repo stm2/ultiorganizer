@@ -41,7 +41,7 @@ function TeamName($teamId)
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
   $row = mysqli_fetch_assoc($result);
-  $name = $row["name"];
+  $name = $row["name"] ?? null;
   mysql_adapt_free_result($result);
 
   return $name;
