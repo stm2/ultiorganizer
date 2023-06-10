@@ -3,6 +3,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
+include_once 'lib/timetable.functions.php';
 
 $title = _("Statistics") . " ";
 $viewUrl = "?view=seriesstatus";
@@ -68,11 +69,12 @@ if (defined('STANDINGS_ELO')) {
 add_column($columns, 'fname', _("Team"));
 add_column($columns, 'seed', _("Seeding"));
 
-if (defined('STANDINGS_ELO'))
+if (defined('STANDINGS_ELO') || defined('STANDINGS_ACC'))
   add_column($columns, 'seed_acc', _("Seeding Acc"), 2, 'avg');
 
-  add_column($columns, 'ranking', _("Ranking"));
-if (defined('STANDINGS_ELO'))
+add_column($columns, 'ranking', _("Ranking"));
+
+if (defined('STANDINGS_ELO') || defined('STANDINGS_ACC'))
   add_column($columns, 'ranking_acc', _("Ranking Acc"), 2, 'avg');
 
 add_column($columns, 'games', _("Games"), 0, 'avg');
@@ -84,7 +86,7 @@ add_column($columns, 'diff', _("Goals diff"), 0, 'avg');
 add_column($columns, 'winavg', _("Win-%"));
 add_column($columns, 'pwr', _("PwrR"), 2, 'avg');
 
-if (defined('STANDINGS_ELO'))
+if (defined('STANDINGS_ELO') || defined('STANDINGS_ACC'))
   add_column($columns, 'pwr_acc', _("PwrR") . " " . _("acc"), 2, 'avg');
 
 if (defined('STANDINGS_ELO')) {
@@ -109,8 +111,9 @@ function predictionAccuracies($rating, $teams, $games, $debug = false) {
   return ScorePredictionAccuracy($rating, $teams, $games, $debug);
 }
 
+$accuracies = [];
+$accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games);
 if (defined('STANDINGS_ELO')) {
-  $accuracies['pwr'] = predictionAccuracies($powerRanking, $teams, $games);
   foreach ($elos as $name => $r) {
     $accuracies[$name] = predictionAccuracies($r, $teams, $games);
   }
@@ -163,10 +166,10 @@ foreach ($teams as $team) {
   }
 
   if (defined('STANDINGS_ELO')) {
-  $teamstats['glicko2'] = $glickos[$teamId]['rating'];
-  $teamstats['glicko2_acc'] = $accuracies['glicko2'][$teamId];
-  $teamstats['gRD'] = $glickos[$teamId]['rd'];
-  $teamstats['gS'] = $glickos[$teamId]['sigma'];
+    $teamstats['glicko2'] = $glickos[$teamId]['rating'];
+    $teamstats['glicko2_acc'] = $accuracies['glicko2'][$teamId];
+    $teamstats['gRD'] = $glickos[$teamId]['rd'];
+    $teamstats['gS'] = $glickos[$teamId]['sigma'];
   }
 
   $teamstats['ranking'] = 0;
@@ -371,6 +374,24 @@ if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
       $html .= "<li>" . $cat['index'] . " " . $cat['text'] . "</li>";
   }
   $html .= "</ul>\n";
+}
+
+$games = TimetableGames($seriesId, 'series', 'all', 'series');
+
+if (defined('STANDINGS_ELO') || defined('STANDINGS_ACC')) {
+  $html .= "<h2>" . utf8entities(_("Game result accuracies according to PwR")) . "</h2>";
+  $html .= "<table class='admintable wide'>\n";
+  while ($game = mysqli_fetch_assoc($games)) {
+    if (empty($game['hometeam']) || empty($game['hometeam']) || !$game['hasstarted']) {
+      $extra = '-';
+    } else {
+      $diff = $powerRanking[$game['hometeam']] - $powerRanking[$game['visitorteam']];
+      $delta = numf(($game['homescore'] - $game['visitorscore']) - $diff, 1);
+      $extra = ($delta > 0 ? "+" : "") . $delta;
+    }
+    $html .= GameRow($game, true, true, false, false, true, false, false, false, false, $extra);
+  }
+  $html .= "</table>";
 }
 
 SetCurrentSeries($seriesId);

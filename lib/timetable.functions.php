@@ -450,7 +450,7 @@ function SeriesAndPoolHeaders($info, &$lines=null){
   return $ret;
 }
 
-function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true, $history=true){
+function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true, $history=true, $extra = null){
   $datew = 'max-width:60px';
   $timew = 'max-width:40px';
   $fieldw = 'max-width:60px';
@@ -589,6 +589,11 @@ function GameRow($game, $date=false, $time=true, $field=true, $series=false,$poo
       $ret .= "<img src='images/feed-icon-14x14.png' width='10' height='10' alt='RSS'/></a></td>";
     }
   }
+  
+  if ($extra!==null) {
+    $ret .= "<td class='extra-game-column'>$extra</td>";
+  }
+  
   $ret .=  "</tr>\n";
   return $ret;
 }
