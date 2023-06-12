@@ -446,7 +446,7 @@ class EventDataXMLHandler{
           break;
           
         case 'uo_reservation':
-          $this->structure['reservations'][$row['id']] = array('location' => $row['location'], 'starttime' => $row['starttime'], 'reservationgroup' => $row['reservationgroup']);
+          $this->structure['reservations'][$row['id']] = array('location' => $row['location'], 'starttime' => $row['starttime'], 'reservationgroup' => $row['reservationgroup'], 'fieldname' => $row['fieldname']);
           break;
       }
     }
