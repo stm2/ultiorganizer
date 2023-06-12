@@ -392,6 +392,30 @@ form table th+th {
   padding-left: 3px;
 }
 
+.formtable+.formtable {
+  margin-top: 5px;
+}
+
+.formtable td {
+  padding-right: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.formtable th {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-align: center;
+}
+
+.formtable td+td {
+  padding-left: 5px;
+}
+
+.formtable th+th {
+  padding-left: 5px;
+}
+
 .posvalue td {
   color: var(--posvaluecolor, #2f5721);
 }
