@@ -1,5 +1,5 @@
 <?php
-include_once $include_prefix.'lib/common.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
 
 $html = "";
 $message = "";
@@ -19,19 +19,19 @@ if (!empty($_POST['save'])) {
   } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
     $message .= "<p>" .
       _(
-        "Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.") .
+        "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize the registration before you can use the account.") .
       "</p>\n";
     $mailsent = true;
   } else {
     $message .= "<p class='warning'>" .
       _(
-        "Confirmation email has been sent to the email address provided. You have to follow the link in the mail to finalize registration, before you can use the account.") .
+        "The confirmation e-mail could not be sent. There may be a problem with your e-mail address or this might be a temporary error. In the latter case you can try again later.") .
       "<p>\n";
     $error = 2;
   }
 
   if ($error > 0) {
-    $message .= "<p>" . _("Correct the errors and try again") . ".</p>\n";
+    $message .= "<p>" . _("Please correct the errors and try again") . ".</p>\n";
   }
 }
 
@@ -41,67 +41,81 @@ if (!empty($_GET['token'])) {
   if (ConfirmRegister($_GET['token'])) {
     SetUserSessionData($userid);
     AddEditSeason($userid, CurrentSeason());
-    $message = "<p>" . _("Registration was confirmed successfully.") . "</p>\n";
+    $message = "<p>" . _("Your registration was confirmed successfully.") . "</p>\n";
     $confirmed = true;
   } else {
-    $message = "<p class='warning'>" . _("Confirming registration failed.") . "</p>\n";
+    $message = "<p class='warning'>" . _("Confirming your registration failed.") . "</p>\n";
   }
 }
 
-//help
-$help = "<p>"._("Registration is only needed for event organizers, team contact persons and players needing to create or change data in system.")." ";
-$help .= _("Registration process:")."</p>
+// help
+$help = "<p>" .
+  _(
+    "Registration is only needed for event organizers, team contact persons, and players needing to create or change data in system.") .
+  " ";
+$help .= _("Registration process:") . "</p>
 	<ol>
-		<li> "._("Fill registration information in fields below.")."</li>
-		<li> "._("Confirmation mail will be sent immediately to the email address provided. (Note that confirmation mail can be incorrectly filterd as spam by email client and in this case you can find the mail from spam -folder instead of inbox.)")."</li>
-		<li> "._("Follow the link in the mail to confirm registration.")."</li>
+		<li> " . _("Fill your registration information in fields below.") . "</li>
+		<li> " .
+  _(
+    "A confirmation e-mail will be sent immediately to the e-mail address provided. (Note that confirmation e-mail can be incorrectly filterd as spam by your e-mail client and in this case you can find it in the spam folder instead of your inbox.)") .
+  "</li>
+		<li> " . _("Follow the link in the e-mail to confirm your registration.") . "</li>
 	</ol>";
 
-$help .= "<a href='?view=privacy'>"._("Privacy Policy")."</a>";
+$help .= "<a href='?view=privacy'>" . _("Privacy Policy") . "</a>";
 $help .= "<hr/>";
 
-//content
+// content
 
-if(empty($message)){
+if (empty($message)) {
   $html .= $help;
-}else{
+} else {
   $html .= $message;
 }
 
 if (!$confirmed && !$mailsent) {
-  $html.= "<form method='post' action='?view=register";
-  $html.= "'>\n";
-  $html.= "<table class='formtable'>
-		<tr><td class='infocell'><label for='Name'>"._("Name")."</label>:</td>
+  $html .= "<form method='post' action='?view=register";
+  $html .= "'>\n";
+  $html .= "<table class='formtable'>
+		<tr><td class='infocell'><label for='Name'>" . _("Name") .
+    "</label>:</td>
 			<td><input type='text' class='input' maxlength='256' id='Name' name='Name' value='";
-  if (isset($_POST['Name'])) $html.= utf8entities($_POST['Name']);
-  $html.= "'/></td></tr>
-		<tr><td class='infocell'><label for='UserName'>"._("Username")."</label>:</td>
+  if (isset($_POST['Name']))
+    $html .= utf8entities($_POST['Name']);
+  $html .= "'/></td></tr>
+		<tr><td class='infocell'><label for='UserName'>" . _("Username") .
+    "</label>:</td>
 			<td><input type='text' class='input' maxlength='20' id='UserName' name='UserName' value='";
-  if (isset($_POST['UserName'])) $html.= utf8entities($_POST['UserName']);
-  $html.= "'/></td></tr>
-		<tr><td class='infocell'><label for='Password'>"._("Password")."</label>:</td>
+  if (isset($_POST['UserName']))
+    $html .= utf8entities($_POST['UserName']);
+  $html .= "'/></td></tr>
+		<tr><td class='infocell'><label for='Password'>" . _("Password") .
+    "</label>:</td>
 			<td><input type='password' class='input' maxlength='20' id='Password' name='Password' value='";
-  if (isset($_POST['Password'])) $html.= utf8entities($_POST['Password']);
-  $html.= "'/></td></tr>
-		<tr><td class='infocell'><label for='Password2'>"._("Repeat password")."</label>:</td>
+  if (isset($_POST['Password']))
+    $html .= utf8entities($_POST['Password']);
+  $html .= "'/></td></tr>
+		<tr><td class='infocell'><label for='Password2'>" . _("Repeat password") .
+    "</label>:</td>
 			<td><input type='password' class='input' maxlength='20' id='Password2' name='Password2' value='";
-  if (isset($_POST['Password'])) $html.= utf8entities($_POST['Password']);
-  $html.= "'/></td></tr>
-		<tr><td class='infocell'><label for='Email'>"._("Email")."</label>:</td>
+  if (isset($_POST['Password']))
+    $html .= utf8entities($_POST['Password']);
+  $html .= "'/></td></tr>
+		<tr><td class='infocell'><label for='Email'>" . _("E-mail") .
+    "</label>:</td>
 			<td><input type='text' class='input' maxlength='100' id='Email' name='Email' size='40' value='";
-  if (isset($_POST['Email'])) $html.= utf8entities($_POST['Email']);
-  $html.= "'/></td></tr>";
+  if (isset($_POST['Email']))
+    $html .= utf8entities($_POST['Email']);
+  $html .= "'/></td></tr>";
 
-  $html.= "<tr><td colspan = '2' align='right'><br/>
-	      <input class='button' type='submit' name='save' value='"._("Register")."' />
+  $html .= "<tr><td colspan = '2' align='right'><br/>
+	      <input class='button' type='submit' name='save' value='" . _("Register") . "' />
 	      </td></tr>\n";
 
-  	
-  $html.= "</table>\n";
-  $html.= "</form>";
+  $html .= "</table>\n";
+  $html .= "</form>";
 }
-
 
 showPage($title, $html);
 
