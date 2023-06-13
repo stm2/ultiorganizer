@@ -21,6 +21,8 @@ if (!empty($_GET['user'])) {
 } else {
   $userid = $_SESSION['uid'];
 }
+if (empty($userid))
+  die('Invalid user');
 
 if (IsFacebookEnabled() && $_SESSION['uid'] == $userid) {
   global $serverConf;
@@ -229,12 +231,7 @@ $html .= file_get_contents('script/disable_enter.js.inc');
 
 {
   $html .= $message;
-
-  $html .= "<form method='post' action='?view=user/userinfo";
-  if (!empty($_GET['user'])) {
-    $html .= "&amp;user=" . urlencode($_GET['user']);
-  }
-  $html .= "'>\n";
+  $html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
   $html .= "<table cellpadding='8'>
 		<tr><td class='infocell'>" . _("Name") .
     ":</td>
@@ -334,11 +331,7 @@ $html .= file_get_contents('script/disable_enter.js.inc');
   $html .= "<hr />\n";
 
   $html .= "<h2>" . _("Show administration menus") . "</h2>\n";
-  $html .= "<form method='post' action='?view=user/userinfo";
-  if (!empty($_GET['user'])) {
-    $html .= "&amp;user=" . urlencode($_GET['user']);
-  }
-  $html .= "'>\n";
+  $html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
   $editseasons = getEditSeasons($userid);
   $html .= "<div class='addremove'><div class='arleft'><select multiple='multiple' name='remeditseasonslist[]' id='remeditseasonslist'>\n";
   foreach ($editseasons as $season => $id) {
@@ -364,11 +357,8 @@ $html .= file_get_contents('script/disable_enter.js.inc');
   $html .= "<p>" . utf8entities(_("Regular menus for pools matching these criteria are shown on the left.")) . "</p>";
   $poolselectors = getPoolselectors($userid);
   if (!empty($poolselectors)) {
-    $html .= "<form method='post' action='?view=user/userinfo";
-    if (!empty($_GET['user'])) {
-      $html .= "&amp;user=" . urlencode($_GET['user']);
-    }
-    $html .= "'>\n<table cellpadding='2'>\n";
+    $html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
+    $html .= "<table cellpadding='2'>\n";
     foreach ($poolselectors as $selector => $param) {
       if ($selector == 'currentseason') {
         $html .= "<tr><td>" . _("Current event");
@@ -398,11 +388,7 @@ $html .= file_get_contents('script/disable_enter.js.inc');
   }
 }
 
-$html .= "<form method='get' action='?view=user/select_poolselector";
-if (!empty($_GET['user'])) {
-  $html .= "&amp;user=" . urlencode($_GET['user']);
-}
-$html .= "'>";
+$html .= "<form method='get' action='?view=user/select_poolselector&amp;user=" . urlencode($userid) . "'>\n";
 $html .= "<p><select class='dropdown' name='selectortype'>\n";
 $html .= "<option value='currentseason'>" . _("Current event") . "</option>\n";
 $html .= "<option value='team'>" . _("Team pools") . "</option>\n";
@@ -423,11 +409,8 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
   $html .= "<h2>" . _("User roles") . "</h2>\n";
   $userroles = getUserroles($userid);
   if (!empty($userroles)) {
-    $html .= "<form method='post' action='?view=user/userinfo";
-    if (!empty($_GET['user'])) {
-      $html .= "&amp;user=" . urlencode($_GET['user']);
-    }
-    $html .= "'>\n<table>\n";
+    $html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
+    $html .= "<table>\n";
     foreach ($userroles as $role => $param) {
       if ($role == 'superadmin') {
         $html .= "<tr><td>";
@@ -529,11 +512,7 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
 }
 
 if (hasEditUsersRight()) {
-  $html .= "<form method='get' action='?view=admin/select_userrole";
-  if (!empty($_GET['user'])) {
-    $html .= "&amp;user=" . urlencode($_GET['user']);
-  }
-  $html .= "'>";
+  $html .= "<form method='get' action='?view=admin/select_userrrole&amp;user=" . urlencode($userid) . "'>";
   $html .= "<p>\n";
   $html .= "<select class='dropdown' name='userrole'>\n";
   $html .= "<option value='superadmin'>" . _("Administrator") . "</option>\n";
@@ -557,11 +536,7 @@ if (hasEditUsersRight()) {
   $html .= "</form>\n";
 }
 $html .= "<hr/>\n";
-$html .= "<form method='post' action='?view=user/userinfo";
-if (!empty($_GET['user'])) {
-  $html .= "&amp;user=" . urlencode($_GET['user']);
-}
-$html .= "'>\n";
+$html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
 $html .= "<table cellpadding='8'>";
 $html .= "<tr><td class='infocell'>" . _("New  password") . ":</td>";
 $html .= "<td><input class='input' type='password' maxlength='20' id='Password1' name='Password1' /></td></tr>";
@@ -571,6 +546,16 @@ $html .= "<tr><td colspan = '2' align='right'>";
 $html .= "<input class='button' type='submit' name='changepsw' value='" . _("Change Password") . "' />";
 $html .= "</td></tr>\n";
 $html .= "</table>\n";
+$html .= "</form>\n";
+
+$html .= "<hr/>\n";
+$html .= "<form method='post' action='?view=user/confirmdeletion&amp;user=" . urlencode($userid) . "'>\n";
+if ($userid == $_SESSION['uid']) {
+  $deletion = utf8entities(_("Delete your account"));
+} else {
+  $deletion = utf8entities(_("Delete this account"));
+}
+$html .= "<input class='button' type='submit' name='delete' value='$deletion' />";
 $html .= "</form>\n";
 
 showPage($title, $html);

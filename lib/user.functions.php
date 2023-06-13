@@ -45,9 +45,9 @@ function Forbidden($user) {
 
 function asyncLogin($id) {
   global $include_prefix;
-  include_once $include_prefix.'lib/yui.functions.php';
+  include_once $include_prefix . 'lib/yui.functions.php';
   $html = yuiLoad(array("utilities"));
-  
+
   $html .= <<<EOS
 
 <script type="text/javascript">
@@ -114,7 +114,7 @@ var Dom = YAHOO.util.Dom;
 })();
 </script>
 EOS;
-  
+
   return $html;
 }
 
@@ -188,9 +188,9 @@ function showUnprivileged($title, $message, $type = null, $options = null) {
       $message .= "<p>" . _("You are not allowed to do this.") . "</p>";
     }
   }
-  
-  $backlink = utf8entities($_SERVER['HTTP_REFERER']??"");
-  
+
+  $backlink = utf8entities($_SERVER['HTTP_REFERER'] ?? "");
+
   if ($backlink)
     $backlink = "<a href='$backlink'>" . _("Return") . "</a><br />";
 
@@ -413,7 +413,7 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
         "Email address already in use. If you have forgotten your login details, please follow this link: <a href='?view=login&recover=1'>Recover lost password / user name</a>") .
       ".</p>";
   }
-  
+
   return $html;
 }
 
@@ -697,6 +697,17 @@ function setSuperAdmin($userid, $value) {
         die('Invalid query: ' . mysql_adapt_error());
       }
     }
+  } else {
+    die('Insufficient rights to change superadmin userrole');
+  }
+}
+
+function getSuperAdmins() {
+  if (isSuperAdmin()) {
+    $query = "SELECT us.id, us.userid FROM uo_userproperties up 
+        LEFT JOIN uo_users us on (us.userid = up.userid) 
+        WHERE up.name='userrole' AND up.value='superadmin' AND us.id is not null GROUP BY userid";
+    return DBQueryToArray($query);
   } else {
     die('Insufficient rights to change superadmin userrole');
   }
@@ -1133,7 +1144,7 @@ function AddEditSeason($userid, $season) {
       }
       Log1("security", "add", $userid, $season, "editseason");
     }
-    
+
     invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
@@ -1178,7 +1189,7 @@ function AddUserRole($userid, $role) {
       die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
     }
     Log1("security", "add", $userid, $role, "userrole");
-    
+
     invalidateSessions();
     if ($userid == $_SESSION['uid']) {
       SetUserSessionData($userid);
@@ -1251,7 +1262,7 @@ function GetTeamAdmins($teamId) {
 
 function DeleteUser($userid) {
   if ($userid != "anonymous") {
-    if (hasEditUsersRight()) {
+    if (hasEditUsersRight() || $userid = $_SESSION['uid']) {
       $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
       $result = mysql_adapt_query($query);
       if (!$result) {
@@ -1442,7 +1453,7 @@ function AddUser($newUsername, $newPassword, $newName, $newEmail, $creator) {
     if (!$result) {
       die('Invalid query: ' . mysql_adapt_error());
     }
-    FinalizeNewUser($row['userid'], $row['email']);
+    FinalizeNewUser($newUsername, $newEmail);
     Log1("user", "add", $newUsername, $creator, "added by administrator");
   }
   return $message;
