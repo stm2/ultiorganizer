@@ -13,21 +13,27 @@ if (!empty($_POST['save'])) {
   $newName = trim($_POST['Name']);
   $newEmail = trim($_POST['Email']);
   $error = 0;
-  $message = UserValid($newUsername, $newPassword, $_POST['Password2'], $newName, $newEmail, true);
-  if (!empty($message)) {
-    $error = 1;
-  } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
-    $message .= "<p>" .
-      _(
-        "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize the registration before you can use the account.") .
-      "</p>\n";
-    $mailsent = true;
-  } else {
-    $message .= "<p class='warning'>" .
-      _(
-        "The confirmation e-mail could not be sent. There may be a problem with your e-mail address or this might be a temporary error. In the latter case you can try again later.") .
+  if (empty($_POST['privacy'])) {
+    $message .= "<p class='warning'>" . _("You must accept the privacy policy by checking the appropriate box below.") .
       "<p>\n";
-    $error = 2;
+    $error = 1;
+  } else {
+    $message = UserValid($newUsername, $newPassword, $_POST['Password2'], $newName, $newEmail, true);
+    if (!empty($message)) {
+      $error = 1;
+    } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
+      $message .= "<p>" .
+        _(
+          "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize registration, before you can use the account.") .
+        "</p>\n";
+      $mailsent = true;
+    } else {
+      $message .= "<p class='warning'>" .
+        _(
+          "The confirmation e-mail could not be sent. There may be a problem with your e-mail address or this might be a temporary error. In the latter case you can try again later.") .
+        "<p>\n";
+      $error = 2;
+    }
   }
 
   if ($error > 0) {
@@ -63,7 +69,6 @@ $help .= _("Registration process:") . "</p>
 		<li> " . _("Follow the link in the e-mail to confirm your registration.") . "</li>
 	</ol>";
 
-$help .= "<a href='?view=privacy'>" . _("Privacy Policy") . "</a>";
 $help .= "<hr/>";
 
 // content
@@ -104,10 +109,21 @@ if (!$confirmed && !$mailsent) {
   $html .= "'/></td></tr>
 		<tr><td class='infocell'><label for='Email'>" . _("E-mail") .
     "</label>:</td>
-			<td><input type='text' class='input' maxlength='100' id='Email' name='Email' size='40' value='";
+			<td><input type='text' class='input' maxlength='100' id='Email' name='Email' size='30' value='";
   if (isset($_POST['Email']))
     $html .= utf8entities($_POST['Email']);
-  $html .= "'/></td></tr>";
+  $html .= "'/></td>\n";
+
+  $html .= "<tr><td colspan='2'>" . utf8entities(_("You can read about our privacy policy by following this link:")) .
+    " <a target='_blank' href='?view=privacy'>" . utf8entities(_("Privacy Policy")) . "</a></td></tr>\n";
+  $html .= "<tr><td><input type='checkbox' id='privacy' name='privacy' /></td>";
+  $html .= "<td class='infocell'><label for='confirm_privacy'>" .
+    utf8entities(
+      _(
+        "I accept the privacy policy. I agree that this site stores my personal data (including name and e-mail given above) as declared in the privacy policy.")) .
+    "</label></td></tr>\n";
+
+  $html .= "";
 
   $html .= "<tr><td colspan = '2' align='right'><br/>
 	      <input class='button' type='submit' name='save' value='" . _("Register") . "' />
