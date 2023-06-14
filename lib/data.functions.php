@@ -12,6 +12,225 @@
  *
  */
 class EventDataXMLHandler {
+  
+  // FIXME include defense, userproperties (?)
+  /**
+   * Converts element data into xml-format.
+   *
+   * xml-structure
+   * <uo_season>
+   * <uo_reservation></uo_reservation>
+   * <uo_movingtime></uo_movingtime>
+   * <uo_series>
+   * <uo_team>
+   * <uo_player></uo_player>
+   * </uo_team>
+   * <uo_scheduling_name></uo_scheduling_name>
+   * <uo_pool>
+   * <uo_team_pool></uo_team_pool>
+   * <uo_game>
+   * <uo_goal></uo_goal>
+   * <uo_gameevent></uo_gameevent>
+   * <uo_played></uo_played>
+   * </uo_game>
+   * </uo_pool>
+   * <uo_game_pool></uo_game_pool>
+   * <uo_moveteams></uo_moveteams>
+   * </uo_series>
+   * </uo_season>
+   *
+   * @param string $eventId
+   *          Event to convert into xml-format.
+   * @return string event data in xml
+   *
+   * @param array $series An array of series ids to export, or null to export all series
+   * @param boolean $template If true, results are not exported. This includes game results, players and game events (scores). 
+   * @throws Exception
+   */
+  
+  function EventToXML($eventId, $series = null, $template = false) {
+    if (isSeasonAdmin($eventId)) {
+      $ret = "";
+      $ret .= "<?xml version='1.0' encoding='UTF-8'?>\n";
+      // uo_season
+      $ret .= $this->write_season($eventId, $template);
+      
+      // uo_reservation
+      // uo_movingtime
+      $ret .= $this->write_reservations($eventId, $template, $series);
+      
+      // uo_series
+      $seriesResult = $this->selectSeries($eventId, $series);
+      while ($ser = mysqli_fetch_assoc($seriesResult)) {
+        $ret .= $this->write_series($ser, $template);
+      }
+      
+      $ret .= "</uo_season>\n";
+      
+      return $ret;
+    } else {
+      throw new Exception(_('Insufficient rights to export data.'));
+    }
+  }
+  
+  /**
+   * @deprecated Status unknown
+   */
+  function XMLGetSeason($filename) {
+    $reader = new XMLReader();
+    $reader->open($filename);
+    $reader->read();
+    
+    $content = array();
+    if ($reader->nodeType !== XMLReader::ELEMENT || $reader->name !== "uo_season") {
+      $content['error'] = _("Invalid XML file (no 'uo_season' element).");
+      return $content;
+    }
+    $content['season_id'] = $reader->getAttribute("season_id");
+    $content['name'] = $reader->getAttribute("name");
+    
+    while ($reader->read() && $reader->name !== "uo_series") {
+      ;
+    }
+    if ($reader->name == "uo_series") {
+      $content['series'] = array();
+      do {
+        if ($reader->name === "uo_series")
+          $content['series'][$reader->getAttribute('series_id')] = $reader->getAttribute('name');
+      } while ($reader->next());
+    }
+    $reader->close();
+    return $content;
+  }
+  
+  /**
+   * Reads an XML file into an array:
+   * 
+   * <code>
+   * [ 
+   * 'season_id' => $seasonId, 
+   * 'season_name' => $season_name,
+   * 'series' => 
+   *   [
+   *   $seriesId => 
+   *     [
+   *     'name' => $name,
+   *     'teams' => 
+   *       [
+   *       $teamId => 
+   *         [
+   *         'name' => $name
+   *         ],
+   *       ...
+   *       ]
+   *     ],
+   *   ...
+   *   ]
+   * 'reservations' => 
+   *   [
+   *   $reservation_id => 
+   *     [
+   *     'location' => $location,
+   *     'starttime' => $time,
+   *     'reservationgroup' => $group,
+   *     'fieldname' => $field
+   *     ],
+   *   ...
+   *   ]
+   * ]
+   *   
+   * 
+   * @param string $filename
+   * @return array
+   */
+  function XMLStructure($filename) {
+    // create parser and set callback functions
+    $xmlparser = xml_parser_create();
+    xml_set_element_handler($xmlparser, array($this, "start_tag_structure"), array($this, "end_tag_structure"));
+    if (!($fp = fopen($filename, "r"))) {
+      die("cannot open " . $filename);
+    }
+    
+    $this->structure = array();
+    $this->structure['error'] = "";
+    
+    // remove extra spaces
+    while ($data = fread($fp, 4096)) {
+      // $data=pregi_replace(";>"."[[:space:]]+"."< ;",">< ",$data);
+      if (!xml_parse($xmlparser, $data, feof($fp))) {
+        $reason = xml_error_string(xml_get_error_code($xmlparser));
+        $reason .= xml_get_current_line_number($xmlparser);
+        die($reason);
+      }
+    }
+    xml_parser_free($xmlparser);
+    return $this->structure;
+  }
+  
+  /**
+   * Creates or updates event in the database from given xml-file.
+   *
+   * @param string $filename
+   *          Name of XML-file uploaded
+   * @param string $eventId
+   *          Event to Update or empty if new event created
+   * @param string $mode
+   *          new - for new event, replace - to update existing event
+   *
+   * @return
+   */
+  function XMLToEvent($filename, $eventId = "", $mode = "new", $replacers, $mock = false) {
+    $this->mode = $mode;
+    $this->eventId = $eventId;
+    $this->replacers = $replacers;
+    $this->mock = $mock;
+    $this->debug = "";
+    
+    if ($this->mock)
+      $this->debug .= print_r($replacers, true);
+      
+      if ((empty($this->eventId) && isSuperAdmin()) || isSeasonAdmin($eventId)) {
+        // create parser and set callback functions
+        $xmlparser = xml_parser_create();
+        xml_set_element_handler($xmlparser, array($this, "start_tag"), array($this, "end_tag"));
+        
+        if (!($fp = fopen($filename, "r"))) {
+          die("cannot open " . $filename);
+        }
+        DBTransaction();
+        try {
+          
+          // remove extra spaces
+          while ($data = fread($fp, 4096)) {
+            $data = preg_replace(";>" . "[[:space:]]+" . "< ;", ">< ", $data);
+            if (!xml_parse($xmlparser, $data, feof($fp))) {
+              $reason = xml_error_string(xml_get_error_code($xmlparser));
+              $reason .= xml_get_current_line_number($xmlparser);
+              $this->error = $reason;
+              throw new Exception($this->error);
+            }
+          }
+          
+          foreach ($this->followers as $pool => $follow) {
+            $query = "UPDATE `uo_pool` SET `follower`='" . ((int) $this->uo_pool[$follow]) . "' WHERE `pool_id`='$pool'";
+            if ($this->mock) {
+              $this->debug .= $query . "\n";
+            } else {
+              DBQuery($query);
+            }
+          }
+          DBCommit();
+        } catch (Exception $e) {
+          DBRollback();
+          $this->error = $e->getMessage();
+        }
+        xml_parser_free($xmlparser);
+      } else {
+        $this->error = _('Insufficient rights to import data.');
+      }
+  }
+  
+  
 
   var $eventId;
 
@@ -71,36 +290,6 @@ class EventDataXMLHandler {
 
   // //////////////// WRITER ///////////////////////////
 
-  // FIXME include defense, userproperties (?)
-  /**
-   * Converts element data into xml-format.
-   *
-   * xml-structure
-   * <uo_season>
-   * <uo_reservation></uo_reservation>
-   * <uo_movingtime></uo_movingtime>
-   * <uo_series>
-   * <uo_team>
-   * <uo_player></uo_player>
-   * </uo_team>
-   * <uo_scheduling_name></uo_scheduling_name>
-   * <uo_pool>
-   * <uo_team_pool></uo_team_pool>
-   * <uo_game>
-   * <uo_goal></uo_goal>
-   * <uo_gameevent></uo_gameevent>
-   * <uo_played></uo_played>
-   * </uo_game>
-   * </uo_pool>
-   * <uo_game_pool></uo_game_pool>
-   * <uo_moveteams></uo_moveteams>
-   * </uo_series>
-   * </uo_season>
-   *
-   * @param string $eventId
-   *          Event to convert into xml-format.
-   * @return string event data in xml
-   */
   function write_season($eventId, $template) {
     $seasons = DBQuery("SELECT * FROM `uo_season` WHERE `season_id`='" . mysql_adapt_real_escape_string($eventId) . "'");
     $row = mysqli_fetch_assoc($seasons);
@@ -324,30 +513,6 @@ class EventDataXMLHandler {
     return $ret;
   }
 
-  function EventToXML($eventId, $series = null, $template = false) {
-    if (isSeasonAdmin($eventId)) {
-      $ret = "";
-      $ret .= "<?xml version='1.0' encoding='UTF-8'?>\n";
-      // uo_season
-      $ret .= $this->write_season($eventId, $template);
-
-      // uo_reservation
-      // uo_movingtime
-      $ret .= $this->write_reservations($eventId, $template, $series);
-
-      // uo_series
-      $seriesResult = $this->selectSeries($eventId, $series);
-      while ($ser = mysqli_fetch_assoc($seriesResult)) {
-        $ret .= $this->write_series($ser, $template);
-      }
-
-      $ret .= "</uo_season>\n";
-
-      return $ret;
-    } else {
-      throw new Exception(_('Insufficient rights to export data.'));
-    }
-  }
 
   /**
    * Converts database row to xml.
@@ -396,56 +561,6 @@ class EventDataXMLHandler {
   }
 
   // //////////////// READER ///////////////////////////
-  function XMLGetSeason($filename) {
-    $reader = new XMLReader();
-    $reader->open($filename);
-    $reader->read();
-
-    $content = array();
-    if ($reader->nodeType !== XMLReader::ELEMENT || $reader->name !== "uo_season") {
-      $content['error'] = _("Invalid XML file (no 'uo_season' element).");
-      return $content;
-    }
-    $content['season_id'] = $reader->getAttribute("season_id");
-    $content['name'] = $reader->getAttribute("name");
-
-    while ($reader->read() && $reader->name !== "uo_series") {
-      ;
-    }
-    if ($reader->name == "uo_series") {
-      $content['series'] = array();
-      do {
-        if ($reader->name === "uo_series")
-          $content['series'][$reader->getAttribute('series_id')] = $reader->getAttribute('name');
-      } while ($reader->next());
-    }
-    $reader->close();
-    return $content;
-  }
-
-  function XMLStructure($filename) {
-    // create parser and set callback functions
-    $xmlparser = xml_parser_create();
-    xml_set_element_handler($xmlparser, array($this, "start_tag_structure"), array($this, "end_tag_structure"));
-    if (!($fp = fopen($filename, "r"))) {
-      die("cannot open " . $filename);
-    }
-
-    $this->structure = array();
-    $this->structure['error'] = "";
-
-    // remove extra spaces
-    while ($data = fread($fp, 4096)) {
-      // $data=pregi_replace(";>"."[[:space:]]+"."< ;",">< ",$data);
-      if (!xml_parse($xmlparser, $data, feof($fp))) {
-        $reason = xml_error_string(xml_get_error_code($xmlparser));
-        $reason .= xml_get_current_line_number($xmlparser);
-        die($reason);
-      }
-    }
-    xml_parser_free($xmlparser);
-    return $this->structure;
-  }
 
   function get_attribute(&$row, $name, $value) {
     if ($value === self::NULL_MARKER) {
@@ -514,68 +629,6 @@ class EventDataXMLHandler {
    */
   function end_tag_structure($parser, $name) {}
 
-  /**
-   * Creates or updates event from given xml-file.
-   *
-   * @param string $filename
-   *          Name of XML-file uploaded
-   * @param string $eventId
-   *          Event to Update or empty if new event created
-   * @param string $mode
-   *          new - for new event, replace - to update existing event
-   *          
-   * @return
-   */
-  function XMLToEvent($filename, $eventId = "", $mode = "new", $replacers, $mock = false) {
-    $this->mode = $mode;
-    $this->eventId = $eventId;
-    $this->replacers = $replacers;
-    $this->mock = $mock;
-    $this->debug = "";
-
-    if ($this->mock)
-      $this->debug .= print_r($replacers, true);
-
-    if ((empty($this->eventId) && isSuperAdmin()) || isSeasonAdmin($eventId)) {
-      // create parser and set callback functions
-      $xmlparser = xml_parser_create();
-      xml_set_element_handler($xmlparser, array($this, "start_tag"), array($this, "end_tag"));
-
-      if (!($fp = fopen($filename, "r"))) {
-        die("cannot open " . $filename);
-      }
-      DBTransaction();
-      try {
-
-        // remove extra spaces
-        while ($data = fread($fp, 4096)) {
-          $data = preg_replace(";>" . "[[:space:]]+" . "< ;", ">< ", $data);
-          if (!xml_parse($xmlparser, $data, feof($fp))) {
-            $reason = xml_error_string(xml_get_error_code($xmlparser));
-            $reason .= xml_get_current_line_number($xmlparser);
-            $this->error = $reason;
-            throw new Exception($this->error);
-          }
-        }
-
-        foreach ($this->followers as $pool => $follow) {
-          $query = "UPDATE `uo_pool` SET `follower`='" . ((int) $this->uo_pool[$follow]) . "' WHERE `pool_id`='$pool'";
-          if ($this->mock) {
-            $this->debug .= $query . "\n";
-          } else {
-            DBQuery($query);
-          }
-        }
-        DBCommit();
-      } catch (Exception $e) {
-        DBRollback();
-        $this->error = $e->getMessage();
-      }
-      xml_parser_free($xmlparser);
-    } else {
-      $this->error = _('Insufficient rights to import data.');
-    }
-  }
 
   /**
    * Callback function for element start.
