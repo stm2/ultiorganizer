@@ -23,31 +23,44 @@ function SearchSeason($resultTarget, $hiddenProperties, $submitbuttons) {
 
 function SearchSeries($resultTarget, $hiddenProperties, $submitbuttons, $season = NULL) {
   $querystring = $_SERVER['QUERY_STRING'];
-  if (empty($season)){
-    $ret = "<form method='post' action='?".utf8entities($querystring)."'>\n";
-    $ret .= "<table><tr><td>"._("Event").":</td><td>";
+  $ret = "";
+  if (empty($season)) {
+    $ret = "<form method='post' action='?" . utf8entities($querystring) . "'>\n";
+    $ret .= "<table><tr><td>" . _("Event") . ":</td><td>";
     $ret .= SeasonControl();
     $ret .= "</td></tr>\n";
     $ret .= "<tr><td>";
-    $ret .= _("Division")."</td><td>";
+    $ret .= _("Division") . "</td><td>";
     $ret .= "<input type='text' name='seriesname' value='";
-    if (isset($_POST['seriesname'])) $ret .= $_POST['seriesname'];
+    if (isset($_POST['seriesname']))
+      $ret .= $_POST['seriesname'];
     $ret .= "'/>\n";
     $ret .= "</td></tr>\n";
     $ret .= "<tr><td>";
-    $ret .= "<input type='submit' name='searchser' value='"._("Search")."'/>";
+    $ret .= "<input type='submit' name='searchser' value='" . _("Search") . "'/>";
     $ret .= "</td></tr>\n";
     $ret .= "</table>\n";
     $ret .= "</form>";
   }
-  $ret .= "<form method='post' id='series' action='?".$resultTarget."'>\n";
+  $ret .= "<form method='post' id='series' action='?" . $resultTarget . "'>\n";
   $ret .= "<p>";
-  $ret .= SeriesResults($season);
+  $results = SeriesResults($season);
+  $ret .= $results;
   foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
+    $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
+  }
+  $submit = true;
+  if (empty($results)) {
+    $submit = false;
+    if (!empty($_POST['searchser'])) {
+      $ret .= "<p>" . utf8entities(_("No results found")) . "</p>\n";
+    } else {
+      $ret .= "<br />";
+    }
   }
   foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
+    if ($submit || $name == 'cancel')
+      $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
   }
   $ret .= "</p>";
   $ret .= "</form>";
@@ -397,20 +410,25 @@ function SeriesResults($season = NULL) {
     } else {
       $selected = $_SESSION['userproperties']['editseason'];
     }
-    
-    $result = SeasonSeriesMult($selected, $_POST['seriesname']);
-    
-    if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    $ret = "<table class='results'><tr><th>" . checkAllCheckbox('series') . "</th>";
-    $ret .= "<th>"._("Division")."</th><th>"._("Event")."</th></tr>\n";
-    while ($row = mysqli_fetch_assoc($result)) {
-      $ret .= "<tr><td><input type='checkbox' name='series[]' value='".utf8entities($row['series'])."' /></td>";
-      $ret .= "<td>".utf8entities($row['series_name'])."</td>";
-      $ret .= "<td>".utf8entities($row['season_name'])."</td>";
-      $ret .= "</tr>\n";
+
+    $result = SeasonSeriesMult($selected, $_POST['seriesname'] ?? null);
+
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
     }
-    $ret .= "</table>\n";
-    return $ret;
+    if ($result->num_rows > 0) {
+      $ret = "<table class='results'><tr><th>" . checkAllCheckbox('series') . "</th>";
+      $ret .= "<th>" . _("Division") . "</th><th>" . _("Event") . "</th></tr>\n";
+      while ($row = mysqli_fetch_assoc($result)) {
+        $ret .= "<tr><td><input type='checkbox' name='series[]' value='" . utf8entities($row['series']) . "' /></td>";
+        $ret .= "<td>" . utf8entities($row['series_name']) . "</td>";
+        $ret .= "<td>" . utf8entities($row['season_name']) . "</td>";
+        $ret .= "</tr>\n";
+      }
+      $ret .= "</table>\n";
+      return $ret;
+    } else
+      return "";
   }
 }
 

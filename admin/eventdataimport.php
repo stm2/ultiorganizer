@@ -3,6 +3,7 @@ include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/data.functions.php';
 include_once 'lib/location.functions.php';
+include_once 'lib/search.functions.php';
 
 $title = _("Event data import");
 
@@ -23,9 +24,9 @@ $html = JavaScriptWarning();
 $scripts = "";
 
 if (empty($seasonId)) {
-  $html .= "<h2>" . $title . "</h2>";
+  $html .= "<h2>" . utf8entities($title) . "</h2>";
 } else {
-  $html .= "<h2>" . $title . " (" . SeasonName($seasonId) . ")</h2>";
+  $html .= "<h2>" . utf8entities($title . " (" . SeasonName($seasonId)) . ")</h2>";
 }
 
 $mode = 'select';
@@ -153,6 +154,7 @@ if (isset($_POST['load']) && isSuperAdmin()) {
     $seasonInfo = $eventdatahandler->XMLStructure($filename); // $eventdatahandler->XMLGetSeason($filename);
     if (empty($seasonInfo['error'])) {
       $mode = 'rename';
+      $source = 'xml';
       $return_url = '?view=admin/eventdataimport&amp;season=' . $seasonId;
     } else {
       $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
@@ -162,6 +164,12 @@ if (isset($_POST['load']) && isSuperAdmin()) {
       sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected."), $filename,
         $_FILES['restorefile']['error']) . "</p>\n";
   }
+} elseif (isset($_POST['import'])) {
+  $html .= "Import " . print_r($_POST['series'], true);
+  $mode = 'rename';
+  $source = 'series';
+  $seasonInfo = ['season_id' => 1, 'season_name' => 'mock series', 'reservations' => [],
+    'series' => [3 => ['name' => 'mock series', 'teams' => [6 => ['name' => 'mock team 1']]]]];
 } elseif (isset($_POST['new']) && isSuperAdmin()) {
   $mode = 'new';
 } elseif (isset($_POST['replace'])) {
@@ -172,28 +180,33 @@ if (isset($_POST['load']) && isSuperAdmin()) {
   }
 }
 if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
-  set_time_limit(300);
-  $eventdatahandler = new EventDataXMLHandler();
+  if ($_POST['source'] == 'xml') {
+    set_time_limit(300);
+    $eventdatahandler = new EventDataXMLHandler();
 
-  try {
-    $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
+    try {
+      $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
 
-    if (empty($eventdatahandler->error))
-      $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
-    else
-      $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
-        $eventdatahandler->error . "</p>\n";
-  } catch (Exception $e) {
-    $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
-      "</p>\n";
+      if (empty($eventdatahandler->error))
+        $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
+      else
+        $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
+          $eventdatahandler->error . "</p>\n";
+    } catch (Exception $e) {
+      $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
+        "</p>\n";
+    }
+
+    if (!empty($_POST['mock']))
+      $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" .
+        $eventdatahandler->debug . "</textarea>\n";
+
+    // unlink($filename);
+    $imported = true;
+  } else if ($_POST['source'] == 'series') {
+    $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" . "</textarea>\n";
   }
 
-  if (!empty($_POST['mock']))
-    $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" .
-      $eventdatahandler->debug . "</textarea>\n";
-
-  // unlink($filename);
-  $imported = true;
   $mode = 'select';
 }
 
@@ -218,6 +231,7 @@ if ($imported) {
 }
 
 if ($mode == 'rename') {
+
   function locationsSorted(&$reservations) {
     $locationsSorted = [];
     foreach ($reservations as $rkey => $rval) {
@@ -229,28 +243,28 @@ if ($mode == 'rename') {
       }
       if ($location['date'] > $rval['starttime'])
         $location['date'] = $rval['starttime'];
-        $location['reservations'][$rkey] = $rval;
-        unset($location);
+      $location['reservations'][$rkey] = $rval;
+      unset($location);
     }
-    uasort($locationsSorted,
-      function ($a, $b) {
-        return $a['date'] <=> $b['date'];
-      });
+    uasort($locationsSorted, function ($a, $b) {
+      return $a['date'] <=> $b['date'];
+    });
     return $locationsSorted;
   }
-  
+
   function reservationsSorted(&$reservations) {
     uasort($reservations,
       function ($a, $b) {
         $cmp1 = $a['starttime'] <=> $b['starttime'];
         if ($cmp1 != 0)
           return $cmp1;
-          return $a['fieldname'] <=> $b['fieldname'];
+        return $a['fieldname'] <=> $b['fieldname'];
       });
     return $reservations;
   }
-  
+
   if (!empty($seasonId)) {
+    $html .= "<input type='hidden' name='source' value='$source'/>";
     $html .= "<fieldset>";
     $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
     $html .= "<label for='insert_mode'>" .
@@ -393,7 +407,7 @@ if ($mode == 'rename') {
 }
 
 if ($mode == 'select') {
-  $html .= "<br /><p><span class='profileheader'>" . _("Select file to import") . ": </span></p>\n";
+  $html .= "<h3>" . _("Select XML file to import") . ": </h3>\n";
 
   $html .= "<p><input class='input' type='file' size='80' name='restorefile'/>";
   $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='30000000'/></p>";
@@ -406,11 +420,18 @@ $html .= "<p><input class='button' type='submit' name='$button_name' value='$but
 $html .= "<input class='button' type='button' name='return'  value='" . _("Return") .
   "' onclick=\"window.location.href='$return_url'\"/></p>";
 
+if ($mode == 'select') {
+  $html .= "<h3>" . _("Select division from other tournament") . "</h3>\n";
+  $target = "view=admin/eventdataimport";
+  if (!empty($seasonId))
+    $target .= "&amp;season=$seasonId";
+  $html .= SearchSeries($target, [], array('import' => _("Import")));
+}
+
 $html .= "</form>";
 
 $html .= $scripts;
 
-// showPage($title, $html);
 echo $html;
 contentEnd();
 pageEnd();
