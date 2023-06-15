@@ -9,8 +9,6 @@ $title = _("Event data import");
 
 $seasonId = "";
 
-$imported = false;
-
 // check access rights before user can upload data into server
 if (!empty($_GET['season'])) {
   $seasonId = $_GET["season"];
@@ -23,22 +21,20 @@ $html = JavaScriptWarning();
 
 $scripts = "";
 
+// $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "</textarea>\n";
+
+$seasonPar = "";
 if (empty($seasonId)) {
   $html .= "<h2>" . utf8entities($title) . "</h2>";
 } else {
   $html .= "<h2>" . utf8entities($title . " (" . SeasonName($seasonId)) . ")</h2>";
+  $seasonPar = "&amp;season=" . utf8entities($seasonId);
 }
 
-$mode = 'select';
-
 if (empty($seasonId)) {
-  $button_name = 'new';
-  $button_label = _("Import");
   $return_url = "?view=admin/seasons";
 } else {
-  $button_name = 'replace';
-  $button_label = _("Update");
-  $return_url = "?view=admin/seasonadmin&amp;season=" . $seasonId;
+  $return_url = "?view=admin/seasonadmin$seasonPar";
 }
 
 function get_replacers($post) {
@@ -81,7 +77,7 @@ function get_replacers($post) {
         $replacers['date'][$resId] = strtotime($date1) - strtotime($date0);
     }
   }
-  foreach ($post['series'] as $i => $serId) {
+  foreach ($post['rename_series'] as $i => $serId) {
     $replacers['series_name'][$serId] = $post['seriesnames'][$i];
   }
   foreach ($post['teams'] as $i => $teamId) {
@@ -144,296 +140,386 @@ $map
   return $script;
 }
 
-$filename = "" . UPLOAD_DIR . "tmp/restorefile.xml";
-
-if (isset($_POST['load']) && isSuperAdmin()) {
-  if (move_uploaded_file($_FILES['restorefile']['tmp_name'], $filename)) {
-    set_time_limit(300);
-    $eventdatahandler = new EventDataXMLHandler();
-
-    $seasonInfo = $eventdatahandler->XMLStructure($filename); // $eventdatahandler->XMLGetSeason($filename);
-    if (empty($seasonInfo['error'])) {
-      $mode = 'rename';
-      $source = 'xml';
-      $return_url = '?view=admin/eventdataimport&amp;season=' . $seasonId;
-    } else {
-      $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
-    }
+function source_selection($new = true) {
+  global $seasonPar;
+  if ($new) {
+    $html = "<p>" . utf8entities(_("You can import from a file or from another division.")) . "</p>\n";
   } else {
-    $html .= "<p>" .
-      sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected."), $filename,
-        $_FILES['restorefile']['error']) . "</p>\n";
+    $html = "<p>" . utf8entities(_("Would you like to start over?")) . "</p>\n";
   }
-} elseif (isset($_POST['import'])) {
-  $html .= "Import " . print_r($_POST['series'], true);
-  $mode = 'rename';
-  $source = 'series';
-  $seasonInfo = ['season_id' => 1, 'season_name' => 'mock series', 'reservations' => [],
-    'series' => [3 => ['name' => 'mock series', 'teams' => [6 => ['name' => 'mock team 1']]]]];
-} elseif (isset($_POST['new']) && isSuperAdmin()) {
-  $mode = 'new';
-} elseif (isset($_POST['replace'])) {
-  if ($_POST['rename_mode'] === 'replace_mode') {
-    $mode = 'replace';
-  } elseif ($_POST['rename_mode'] === 'insert_mode') {
-    $mode = 'insert';
-  }
-}
-if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
-  if ($_POST['source'] == 'xml') {
-    set_time_limit(300);
-    $eventdatahandler = new EventDataXMLHandler();
-
-    try {
-      $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), !empty($_POST['mock']));
-
-      if (empty($eventdatahandler->error))
-        $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
-      else
-        $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
-          $eventdatahandler->error . "</p>\n";
-    } catch (Exception $e) {
-      $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
-        "</p>\n";
-    }
-
-    if (!empty($_POST['mock']))
-      $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" .
-        $eventdatahandler->debug . "</textarea>\n";
-
-    // unlink($filename);
-    $imported = true;
-  } else if ($_POST['source'] == 'series') {
-    $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" . "</textarea>\n";
-  }
-
-  $mode = 'select';
+  $html .= "<a href='?view=admin/eventdataimport$seasonPar&amp;source=xml'>" . utf8entities(_("Import from file")) .
+    "</a><br />\n";
+  $html .= "<a href='?view=admin/eventdataimport$seasonPar&amp;source=database'>" .
+    utf8entities(_("Import from other division")) . "</a>";
+  return $html;
 }
 
-pageTopHeadOpen($title);
+$filename = "" . UPLOAD_DIR . "tmp/restorefile.xml";
 include_once 'lib/yui.functions.php';
 $html .= yuiLoad(array("utilities", "datasource", "autocomplete", "calendar"));
 
-pageTopHeadClose($title);
-leftMenu();
-contentStart();
-
-// common page
 ini_set("post_max_size", "30M");
 ini_set("upload_max_filesize", "30M");
 ini_set("memory_limit", -1);
 
-$html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataimport&amp;season=" . $seasonId .
-  "'>\n";
-if ($imported) {
-  unset($_POST['restore']);
-  unset($_POST['replace']);
-}
+$step = $_POST['step'] ?? "";
 
-if ($mode == 'rename') {
+if (empty($_GET['source']) || isset($_POST['cancel'])) {
+  $html .= source_selection();
+} else {
+  $sourcePar = "&amp;source=" . $_GET['source'];
+  $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataimport$seasonPar$sourcePar'>\n";
 
-  function locationsSorted(&$reservations) {
-    $locationsSorted = [];
-    foreach ($reservations as $rkey => $rval) {
-      if (isset($locationsSorted[$rval['location']])) {
-        $location = &$locationsSorted[$rval['location']];
+  if (empty($step) || (!empty($_POST['load_series']) && empty($_POST['series']))) {
+    if ($_GET['source'] == 'xml') {
+      $html .= getHiddenInput('step', 'select_xml', null);
+      $html .= "<h3>" . _("Select XML file to import") . ": </h3>\n";
+
+      $html .= "<p><input class='input' type='file' size='80' name='restorefile'/>";
+      $html .= getHiddenInput('MAX_FILE_SIZE', 30000000, null) . "</p>\n";
+
+      $button_name = 'load';
+      $button_label = utf8entities(_("Check file..."));
+
+      $html .= "<p><input class='button' type='submit' name='$button_name' value='$button_label'/>";
+      $html .= "<input class='button' type='button' name='return'  value='" . _("Return") .
+        "' onclick=\"window.location.href='$return_url'\"/></p>";
+    } else {
+      if (!empty($_POST['load']) && empty($_POST['series'])) {
+        $html .= "<p class='alert'>" . utf8entities(_("No series selected!")) . "</p>\n";
+      }
+
+      $html .= "<h3>" . _("Select division from other tournament") . "</h3>\n";
+      $target = "view=admin/eventdataimport$seasonPar$sourcePar";
+      if (!empty($seasonId))
+        $target .= "&amp;season=$seasonId";
+      $html .= SearchSeries($target, ['step' => 'select_division'], array('load_series' => _("Check divison(s)...")));
+    }
+  }
+
+  if ($step == 'select_xml') {
+    if (move_uploaded_file($_FILES['restorefile']['tmp_name'], $filename)) {
+      set_time_limit(300);
+      $eventdatahandler = new EventDataXMLHandler();
+
+      $seasonInfo = $eventdatahandler->XMLStructure($filename); // $eventdatahandler->XMLGetSeason($filename);
+      if (empty($seasonInfo['error'])) {
+        $step = 'load_data';
+        $source = 'xml';
+        $return_url = '?view=admin/eventdataimport&amp;season=' . $seasonId;
       } else {
-        $location = ['date' => $rval['starttime'], 'reservations' => []];
-        $locationsSorted[$rval['location']] = &$location;
+        $html .= "<p class='alert'>" . $seasonInfo['error'] . "</p>\n";
       }
-      if ($location['date'] > $rval['starttime'])
-        $location['date'] = $rval['starttime'];
-      $location['reservations'][$rkey] = $rval;
-      unset($location);
+    } else {
+      $html .= "<p>" .
+        sprintf(_("Invalid file: %s (error code %s). Make sure that the directory is not write-protected."), $filename,
+          $_FILES['restorefile']['error']) . "</p>\n";
     }
-    uasort($locationsSorted, function ($a, $b) {
-      return $a['date'] <=> $b['date'];
-    });
-    return $locationsSorted;
+    if (empty($source)) {
+      $html .= "<hr />" . source_selection();
+    }
   }
 
-  function reservationsSorted(&$reservations) {
-    uasort($reservations,
-      function ($a, $b) {
-        $cmp1 = $a['starttime'] <=> $b['starttime'];
-        if ($cmp1 != 0)
-          return $cmp1;
-        return $a['fieldname'] <=> $b['fieldname'];
+  if ($step == 'select_division' && !empty($_POST['series'])) {
+    $html .= getHiddenInput('import_series', $_POST['series'], null);
+    $html .= getHiddenInput('step', 'select_template', null);
+    $html .= "<label for='template'>" . utf8entities(_("Import as template, without results")) .
+      "<input class='input' type='checkbox' id='template' name='template' /></label>\n";
+    $html .= "<p><input class='button' type='submit' name='import' value='" . utf8entities(_("Choose mode...")) . "'/>";
+  }
+
+  if ($step == 'select_template') {
+    $eventdatahandler = new EventDataXMLHandler();
+
+    $importedSeason = null;
+    $imported = [];
+    foreach ($_POST['import_series'] as $ser) {
+      $serInfo = SeriesInfo($ser);
+      if ($importedSeason != null && $serInfo['season'] != $importedSeason) {
+        $html .= "<p class='alert'>" .
+          utf8entities(sprintf(_("Warning: Divisions of multiple seasons found, ignoring '%s'."), $serInfo['name'])) .
+          "</p>\n";
+      } else {
+        $importedSeason = $serInfo['season'];
+        $imported[] = $ser;
+        $html .= getHiddenInput('selected_series[]', $ser, null);
+      }
+    }
+    try {
+      $template = $_POST['template'] ?? '';
+      $data = $eventdatahandler->EventToXML($importedSeason, $imported, $template == 'on');
+      $html .= getHiddenInput('template', $template, null);
+
+      $seasonInfo = $eventdatahandler->XMLStructure(null, $data);
+      if (empty($seasonInfo['error'])) {
+        $step = 'load_data';
+        $source = 'series';
+        $return_url = '?view=admin/eventdataimport&amp;season=' . $seasonId;
+      } else {
+        $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
+      }
+    } catch (Exception $e) {
+      $html .= "<p id='statusMessage' class='warning' >" . utf8entities($e->getMessage()) . "</p>\n";
+      $html .= "<script>setTimeout(\"document.getElementById('statusMessage').style.display='none';\",2000);</script>";
+    }
+    if (empty($source)) {
+      $html .= "<hr />" . source_selection();
+    }
+  }
+
+  if ($step == 'load_data') {
+
+    function locationsSorted(&$reservations) {
+      $locationsSorted = [];
+      foreach ($reservations as $rkey => $rval) {
+        if (isset($locationsSorted[$rval['location']])) {
+          $location = &$locationsSorted[$rval['location']];
+        } else {
+          $location = ['date' => $rval['starttime'], 'reservations' => []];
+          $locationsSorted[$rval['location']] = &$location;
+        }
+        if ($location['date'] > $rval['starttime'])
+          $location['date'] = $rval['starttime'];
+        $location['reservations'][$rkey] = $rval;
+        unset($location);
+      }
+      uasort($locationsSorted, function ($a, $b) {
+        return $a['date'] <=> $b['date'];
       });
-    return $reservations;
-  }
+      return $locationsSorted;
+    }
 
-  if (!empty($seasonId)) {
-    $html .= "<input type='hidden' name='source' value='$source'/>";
-    $html .= "<fieldset>";
-    $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
-    $html .= "<label for='insert_mode'>" .
-      _(
-        "This operation inserts one or more new divisions into the database with the content of the file. It will only add, not alter any data or change user rights.") .
-      "</label></p>\n";
-    $html .= "<p><input type='radio' id='replace_mode' name='rename_mode' value='replace_mode' />";
-    $html .= "<label for='replace_mode'>" .
-      _(
-        "This operation updates and adds event data in the database with the content of the file. It will not delete any data or change user rights.") .
-      "</label></p>\n";
-    $html .= "</fieldset>";
-  }
-  $html .= "<br /><table class='formtable'><tr><td colspan='4' class='infocell'>" . _("Confirm or replace event data:") .
-    "</td></tr>\n";
-  if (!empty($seasonId)) {
-    $html .= "<td class='infocell'>" . _("Event ID") .
-      "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
-    $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" .
-      utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";
-  } else {
-    $html .= "<td>" . _("Event ID") .
-      "</td><td><input class='input' size='30' maxlength='30' name='new_season_id' value='" .
-      utf8entities($seasonInfo['season_id']) . "'/></td>\n";
-    $html .= "<td>" . _("Event Name") .
-      "</td><td><input class='input' size='30' maxlength='50' name='new_season_name' value='" .
-      utf8entities($seasonInfo['season_name']) . "'/></td></tr>\n";
-  }
-  $html .= "</table><br />\n";
-  $html .= "<table class='formtable'>\n";
+    function reservationsSorted(&$reservations) {
+      uasort($reservations,
+        function ($a, $b) {
+          $cmp1 = $a['starttime'] <=> $b['starttime'];
+          if ($cmp1 != 0)
+            return $cmp1;
+          return $a['fieldname'] <=> $b['fieldname'];
+        });
+      return $reservations;
+    }
 
-  if (!empty($seasonInfo['reservations'])) {
-    $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
-    $locations = array();
-    $dates = array();
-    $dateIds = array();
-    $resgroups = array();
-    $listeners = array('location' => array());
-    foreach (locationsSorted($seasonInfo['reservations']) as $loc => $locres) {
-      foreach (reservationsSorted($locres['reservations']) as $rkey => $rval) {
-        $id = "rlocation" . utf8entities($rkey);
-        $value = utf8entities($rval['location']);
-        $label = "<input type='hidden' id='reservation" . utf8entities($rkey) . "' name='reservations[]' value='" .
-          utf8entities($rkey) . "' />" . sprintf(_("Location %s map to"), $value);
-        if (isset($locations[$rval['location']])) {
-          $origin = $listeners['location'][$rval['location']]['origin'];
-          $postText = "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
-            sprintf(_("copy of location %s"), $value);
-          $listeners['location'][$rval['location']]['copys'][] = $rkey;
-        } else {
-          $label2 = sprintf(_("Change all locations %s to this value"), $value);
-          $postText = copy_box($rkey, "copyloc", $label2, "toggleDependent(\"location\", this, $rkey)");
-          $locations[$rval['location']] = $id;
-          $listeners['location'][$rval['location']] = array('origin' => $rkey, 'copys' => array(),
-            'getDisplay' => function ($id) {
-              return "rlocation" . utf8entities($id) . "Name";
-            });
-        }
+    $html .= getHiddenInput('step', 'rename', null);
+    $html .= getHiddenInput('source', $source, null);
+    if (!empty($seasonId)) {
+      $html .= "<fieldset>";
+      $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
+      $html .= "<label for='insert_mode'>" .
+        _(
+          "This operation inserts one or more new divisions into the event. It will only add, not alter any data or change user rights.") .
+        "</label></p>\n";
+      $html .= "<p><input type='radio' id='replace_mode' name='rename_mode' value='replace_mode' />";
+      $html .= "<label for='replace_mode'>" .
+        _(
+          "This operation updates and adds event data in the database. It will not delete any data or change user rights.") .
+        "</label></p>\n";
+      $html .= "</fieldset>";
+    } else {
+      $html .= "<fieldset>";
+      $html .= "<p><input type='radio' checked='checked' id='new_mode' name='rename_mode' value='new_mode' />";
+      $html .= "<label for='new_mode'>" .
+        _(
+          "This operation creates a new season and inserts one or more new divisions. It will only not change user rights.") .
+        "</label></p>\n";
+      $html .= "</fieldset>";
+    }
+    $html .= "<br /><table class='formtable'><tr><td colspan='4' class='infocell'>" . _(
+      "Confirm or replace event data:") . "</td></tr>\n";
+    if (!empty($seasonId)) {
+      $html .= "<td class='infocell'>" . _("Event ID") .
+        "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
+      $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" .
+        utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";
+    } else {
+      $html .= "<td>" . _("Event ID") .
+        "</td><td><input class='input' size='30' maxlength='30' name='new_season_id' value='" .
+        utf8entities($seasonInfo['season_id']) . "'/></td>\n";
+      $html .= "<td>" . _("Event Name") .
+        "</td><td><input class='input' size='30' maxlength='50' name='new_season_name' value='" .
+        utf8entities($seasonInfo['season_name']) . "'/></td></tr>\n";
+    }
+    $html .= "</table><br />\n";
+    $html .= "<table class='formtable'>\n";
 
-        $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") .
-          "</th><th></th></tr>\n";
-        $html .= "<tr><td><label for='{$id}Name'>$label</label></td><td>";
-        $html .= LocationInput2($id, 'rlocations', LocationInfo($rval['location'])['name'], $rval['location']);
-        $html .= "</td><td>" . $postText . "</td></tr>\n";
+    if (!empty($seasonInfo['reservations'])) {
+      $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
+      $locations = array();
+      $dates = array();
+      $dateIds = array();
+      $resgroups = array();
+      $listeners = array('location' => array());
+      foreach (locationsSorted($seasonInfo['reservations']) as $loc => $locres) {
+        foreach (reservationsSorted($locres['reservations']) as $rkey => $rval) {
+          $id = "rlocation" . utf8entities($rkey);
+          $value = utf8entities($rval['location']);
+          $label = "<input type='hidden' id='reservation" . utf8entities($rkey) . "' name='reservations[]' value='" .
+            utf8entities($rkey) . "' />" . sprintf(_("Location %s map to"), $value);
+          if (isset($locations[$rval['location']])) {
+            $origin = $listeners['location'][$rval['location']]['origin'];
+            $postText = "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+              sprintf(_("copy of location %s"), $value);
+            $listeners['location'][$rval['location']]['copys'][] = $rkey;
+          } else {
+            $label2 = sprintf(_("Change all locations %s to this value"), $value);
+            $postText = copy_box($rkey, "copyloc", $label2, "toggleDependent(\"location\", this, $rkey)");
+            $locations[$rval['location']] = $id;
+            $listeners['location'][$rval['location']] = array('origin' => $rkey, 'copys' => array(),
+              'getDisplay' => function ($id) {
+                return "rlocation" . utf8entities($id) . "Name";
+              });
+          }
 
-        $scripts .= LocationScript($id);
+          $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") .
+            "</th><th></th></tr>\n";
+          $html .= "<tr><td><label for='{$id}Name'>$label</label></td><td>";
+          $html .= LocationInput2($id, 'rlocations', LocationInfo($rval['location'])['name'], $rval['location']);
+          $html .= "</td><td>" . $postText . "</td></tr>\n";
 
-        $id = "resgroup" . utf8entities($rkey);
-        $value = utf8entities($rval['reservationgroup']);
-        $html .= "<tr><td><label for='$id'>" . _("Reservation Group") . "</label>:</td><td>" .
-          "<input type='text' class='input' name='$id' id='$id' value='$value'/></td><td>";
+          $scripts .= LocationScript($id);
 
-        if (isset($resgroups[$rval['reservationgroup']])) {
-          $origin = $listeners['reservationgroup'][$rval['reservationgroup']]['origin'];
-          $html .= "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
-            sprintf(_("copy of reservation group %s"), $value) . "</td></tr>\n";
-          $listeners['reservationgroup'][$rval['reservationgroup']]['copys'][] = $rkey;
-        } else {
-          $label = sprintf(_("Change all reservation groups %s to this value"), $value);
-          $html .= copy_box($rkey, "copyrgroup", $label, "toggleDependent(\"reservationgroup\", this, $rkey)") .
-            "</td></tr>\n";
-          $resgroups[$rval['reservationgroup']] = $id;
-          $listeners['reservationgroup'][$rval['reservationgroup']] = array('origin' => $rkey, 'copys' => array(),
-            'getDisplay' => function ($id) {
-              return "resgroup" . utf8entities($id);
-            });
-        }
+          $id = "resgroup" . utf8entities($rkey);
+          $value = utf8entities($rval['reservationgroup']);
+          $html .= "<tr><td><label for='$id'>" . _("Reservation Group") . "</label>:</td><td>" .
+            "<input type='text' class='input' name='$id' id='$id' value='$value'/></td><td>";
 
-        $id = "olddates" . utf8entities($rkey);
-        $shortdate = ShortDate($rval['starttime']);
-        $olddate = utf8entities($shortdate);
-        $nid = "newdates" . utf8entities($rkey);
-        $html .= "<tr><td><label for='$nid'>" . _("Date") . " (" . _("dd.mm.yyyy") . ")</label>:</td><td>" .
-          "<input type='hidden' name='olddates[]' id='$id' value='$olddate' />" . getCalendarInput($nid, $shortdate) .
-          "</td><td>";
-        $dateIds[] = $nid;
+          if (isset($resgroups[$rval['reservationgroup']])) {
+            $origin = $listeners['reservationgroup'][$rval['reservationgroup']]['origin'];
+            $html .= "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+              sprintf(_("copy of reservation group %s"), $value) . "</td></tr>\n";
+            $listeners['reservationgroup'][$rval['reservationgroup']]['copys'][] = $rkey;
+          } else {
+            $label = sprintf(_("Change all reservation groups %s to this value"), $value);
+            $html .= copy_box($rkey, "copyrgroup", $label, "toggleDependent(\"reservationgroup\", this, $rkey)") .
+              "</td></tr>\n";
+            $resgroups[$rval['reservationgroup']] = $id;
+            $listeners['reservationgroup'][$rval['reservationgroup']] = array('origin' => $rkey, 'copys' => array(),
+              'getDisplay' => function ($id) {
+                return "resgroup" . utf8entities($id);
+              });
+          }
 
-        if (isset($dates[$olddate])) {
-          $origin = $listeners['date'][$shortdate]['origin'];
-          $html .= "<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
-            sprintf(_("copy of date %s"), $olddate) . "</td></tr>\n";
-          $listeners['date'][$shortdate]['copys'][] = $rkey;
-        } else {
-          $label = sprintf(_("Change all dates %s to this value"), $olddate);
-          $html .= copy_box($rkey, "copydate", $label, "toggleDependent(\"date\", this, $rkey)") . "</td></tr>\n";
-          $dates[$olddate] = $id;
-          $listeners['date'][$shortdate] = array('origin' => $rkey, 'copys' => array(),
-            'getDisplay' => function ($id) {
-              return "newdates" . utf8entities($id);
-            });
+          $id = "olddates" . utf8entities($rkey);
+          $shortdate = ShortDate($rval['starttime']);
+          $olddate = utf8entities($shortdate);
+          $nid = "newdates" . utf8entities($rkey);
+          $html .= "<tr><td><label for='$nid'>" . _("Date") . " (" . _("dd.mm.yyyy") . ")</label>:</td><td>" .
+            "<input type='hidden' name='olddates[]' id='$id' value='$olddate' />" . getCalendarInput($nid, $shortdate) .
+            "</td><td>";
+          $dateIds[] = $nid;
+
+          if (isset($dates[$olddate])) {
+            $origin = $listeners['date'][$shortdate]['origin'];
+            $html .= "<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+              sprintf(_("copy of date %s"), $olddate) . "</td></tr>\n";
+            $listeners['date'][$shortdate]['copys'][] = $rkey;
+          } else {
+            $label = sprintf(_("Change all dates %s to this value"), $olddate);
+            $html .= copy_box($rkey, "copydate", $label, "toggleDependent(\"date\", this, $rkey)") . "</td></tr>\n";
+            $dates[$olddate] = $id;
+            $listeners['date'][$shortdate] = array('origin' => $rkey, 'copys' => array(),
+              'getDisplay' => function ($id) {
+                return "newdates" . utf8entities($id);
+              });
+          }
         }
       }
-    }
-    $scripts .= getCalendarScript($dateIds);
+      $scripts .= getCalendarScript($dateIds);
 
-    $scripts .= link_script($listeners);
+      $scripts .= link_script($listeners);
+    }
+
+    $html .= "</table><br />\n";
+    $html .= "<table class='formtable'>\n";
+
+    $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
+    foreach ($seasonInfo['series'] as $skey => $sval) {
+      $id = "seriesnames" . utf8entities($skey);
+      $html .= "<tr><td  class='infocell'><label for='$id'>" . _("Division Name") . "</label></td><td>" .
+        "<input type='hidden' id='import_series" . utf8entities($skey) . "' name='rename_series[]' value='" .
+        utf8entities($skey) . "' />" . "<input class='input' maxlength='50' id='$id' name='seriesnames[]' value='" .
+        utf8entities($sval['name']) . "'/></td></tr>\n";
+      foreach ($sval['teams'] as $tkey => $tval) {
+        $tid = "teamnames" . utf8entities($tkey);
+        $html .= "<tr><td>" . "<input type='hidden' id='teams" . utf8entities($tkey) . "' name='teams[]' value='" .
+          utf8entities($tkey) . "' /><label for='$tid'>" . _("Team Name") .
+          "</label></td><td colspan='2'><input class='input' maxlength='50' id='$tid' name='teamnames[]' value='" .
+          utf8entities($tval['name']) . "'/></td></tr>\n";
+      }
+    }
+    $html .= "</table>\n";
+
+    $html .= "<input class='button' type='submit' name='import' value='" . utf8entities(_("Import")) . "'/>";
+    $html .= "<input class='button' type='submit' name='mock' value='" . utf8entities(_("Mock (test only)")) . "'/>";
   }
 
-  $html .= "</table><br />\n";
-  $html .= "<table class='formtable'>\n";
+  if ($step == 'rename') {
+    switch ($_POST['rename_mode']) {
+    case 'new_mode':
+      if (isSuperAdmin()) {
+        $mode = 'new';
+      } else {
+        die("Insufficient rights");
+      }
+      break;
+    case 'replace_mode':
+      $mode = 'replace';
+      break;
+    case 'insert_mode':
+      $mode = 'insert';
+      break;
+    }
+    if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
+      set_time_limit(300);
+      $eventdatahandler = new EventDataXMLHandler();
+      $mock = !empty($_POST['mock']);
+      try {
+        if ($_POST['source'] == 'xml') {
+          $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), $mock);
 
-  $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
-  foreach ($seasonInfo['series'] as $skey => $sval) {
-    $id = "seriesnames" . utf8entities($skey);
-    $html .= "<tr><td  class='infocell'><label for='$id'>" . _("Division Name") . "</label></td><td>" .
-      "<input type='hidden' id='series" . utf8entities($skey) . "' name='series[]' value='" . utf8entities($skey) .
-      "' />" . "<input class='input' maxlength='50' id='$id' name='seriesnames[]' value='" . utf8entities($sval['name']) .
-      "'/></td></tr>\n";
-    foreach ($sval['teams'] as $tkey => $tval) {
-      $tid = "teamnames" . utf8entities($tkey);
-      $html .= "<tr><td>" . "<input type='hidden' id='teams" . utf8entities($tkey) . "' name='teams[]' value='" .
-        utf8entities($tkey) . "' /><label for='$tid'>" . _("Team Name") .
-        "</label></td><td colspan='2'><input class='input' maxlength='50' id='$tid' name='teamnames[]' value='" .
-        utf8entities($tval['name']) . "'/></td></tr>\n";
+          // unlink($filename);
+        } else if ($_POST['source'] == 'series') {
+          $template = $_POST['template'] ?? '';
+          $importedSeason = SeriesInfo($_POST['selected_series']['0'])['season'];
+          $data = $eventdatahandler->EventToXML($importedSeason, $_POST["selected_series"], $template == 'on');
+
+          $eventdatahandler->XMLToEvent(null, $seasonId, $mode, get_replacers($_POST), $mock, $data);
+        }
+
+        if (empty($eventdatahandler->error))
+          $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
+        else
+          $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
+            $eventdatahandler->error . "</p>\n";
+      } catch (Exception $e) {
+        $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
+          "</p>\n";
+      }
+
+      if ($mock) {
+        $html .= "<p>" .
+          _("Your data was not actually imported. The debug output is shown below. Do you want to import now?") . "</p>";
+
+        foreach ($_POST as $key => $val) {
+          if ($key != 'mock')
+            $html .= getHiddenInput($key, $val, null);
+        }
+
+        $html .= "<p><input class='button' type='submit' name='import' value='" . utf8entities(_("Import")) . "'/>";
+        $html .= "<input class='button' type='submit' name='cancel' value='" . utf8entities(_("Cancel")) . "'/></p>";
+
+        $html .= "<p>" . _("Debug output:");
+        $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($_POST, true) . "\n\n" .
+          $eventdatahandler->debug . "</textarea></p>\n";
+      }
     }
   }
-  $html .= "<tr><td>&nbsp;</td><td></td></tr>\n<tr><td class='infocell'><label for='mock'>" . _("Mock (test only)") .
-    "</label></td><td><input class='input' type='checkbox' name='mock' id='mock'/></td></tr>\n";
-  $html .= "</table>\n";
+
+  $html .= "</form>";
+  $html .= "<hr />" . source_selection(false);
 }
-
-if ($mode == 'select') {
-  $html .= "<h3>" . _("Select XML file to import") . ": </h3>\n";
-
-  $html .= "<p><input class='input' type='file' size='80' name='restorefile'/>";
-  $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='30000000'/></p>";
-
-  $button_name = 'load';
-  $button_label = _("Check file ...");
-}
-
-$html .= "<p><input class='button' type='submit' name='$button_name' value='$button_label'/>";
-$html .= "<input class='button' type='button' name='return'  value='" . _("Return") .
-  "' onclick=\"window.location.href='$return_url'\"/></p>";
-
-if ($mode == 'select') {
-  $html .= "<h3>" . _("Select division from other tournament") . "</h3>\n";
-  $target = "view=admin/eventdataimport";
-  if (!empty($seasonId))
-    $target .= "&amp;season=$seasonId";
-  $html .= SearchSeries($target, [], array('import' => _("Import")));
-}
-
-$html .= "</form>";
 
 $html .= $scripts;
 
-echo $html;
-contentEnd();
-pageEnd();
-
+showPage($title, $html);
 ?>

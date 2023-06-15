@@ -1477,15 +1477,48 @@ function getDeleteButton($name, $value, $element = 'hiddenDeleteId', $img = 'ima
 }
 
 /**
- * Return html code for a hidden input field with id (and name) $id.
+ * Return html code for a hidden input field with given name, id, and value attributes.
+ * $name and $id must be html encoded! The values will be converted to html encoded equivalents.
  *
+ * @param string $name
+ *          the name attribute; cannot be null; if $value is an array, the names of the input elements will be $name[]
+ * @param int|string|array $value
+ *          the value attribute; if null, there will be no value attribute; if it is an array, there will be one input field for every value of the array
  * @param string $id
- *          element id
+ *          the id attribute; if null, there will be no id attribute; if empty, it will be identical to the name attribute; if $value is an array, the ids of the input elements will be $name$key, where $key is the array key
  * @return string HTML code for hidden input.
  *        
  */
-function getHiddenInput($id = 'hiddenDeleteId') {
-  return "<input type='hidden' id='$id' name='$id'/>";
+function getHiddenInput($name = 'hiddenDeleteId', $value = null, $id = '') {
+  $html = '';
+  if ($name === null) {
+    throw new Exception('name cannot be null');
+  }
+  if (gettype($value) == 'array') {
+    foreach ($value as $key => $val) {
+      if ($id === '') {
+        $kid = " id='$name$key'";
+      } else if ($id === null) {
+        $kid = "";
+      } else {
+        $kid = " id='$id$key'";
+      }
+      $html .= "<input type='hidden'$kid name='{$name}[]' value='" . utf8entities($val) . "'/>\n";
+    }
+  } else {
+    if ($id === '') {
+      $kid = " id='$name'";
+    } else if ($id === null) {
+      $kid = "";
+    } else {
+      $kid = " id='$id'";
+    }
+    if ($value !== null) {
+      $value = " value='" . utf8entities($value) . "'";
+    }
+    $html .= "<input type='hidden'$kid name='$name'$value/>\n";
+  }
+  return $html;
 }
 
 function mailto_address($email, $name = null) {
