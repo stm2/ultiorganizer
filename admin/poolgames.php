@@ -452,7 +452,7 @@ if (!$poolInfo['played']) {
 }
 
 // stores id to delete
-$html .= "<p>" . getHiddenInput() . "</p>";
+$html .= "<p>" . getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId') . "</p>";
 $html .= "</form>\n";
 
 echo $html;

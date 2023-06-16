@@ -1,5 +1,6 @@
 <?php
 
+include_once $include_prefix.'lib/common.functions.php';
 include_once $include_prefix.'lib/season.functions.php';
 include_once $include_prefix . 'lib/yui.functions.php';
 
@@ -10,12 +11,8 @@ function SearchSeason($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "</td></tr>\n";
   $ret .= "</table>\n";
   $ret .= "<p>";
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-  }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
+  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
   return $ret;
@@ -46,9 +43,8 @@ function SearchSeries($resultTarget, $hiddenProperties, $submitbuttons, $season 
   $ret .= "<p>";
   $results = SeriesResults($season);
   $ret .= $results;
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
-  }
+  $ret .= getHiddenInput($hiddenProperties);
+  
   $submit = true;
   if (empty($results)) {
     $submit = false;
@@ -60,7 +56,7 @@ function SearchSeries($resultTarget, $hiddenProperties, $submitbuttons, $season 
   }
   foreach ($submitbuttons as $name => $value) {
     if ($submit || $name == 'cancel')
-      $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
+      $ret .= getSubmitButtons([$name => $value]);
   }
   $ret .= "</p>";
   $ret .= "</form>";
@@ -97,12 +93,8 @@ function SearchPool($resultTarget, $hiddenProperties, $submitbuttons) {
   } else {
     $ret .= "<p>";
     $ret .= $results;
-    foreach ($hiddenProperties as $name => $value) {
-      $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
-    }
-    foreach ($submitbuttons as $name => $value) {
-      $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
-    }
+    $ret .= getHiddenInput('', $hiddenProperties);
+    $ret .= getSubmitButtons($submitbuttons);
     $ret .= "</p>";
     $ret .= "</form>";
   }
@@ -135,12 +127,8 @@ function SearchTeam($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='teams' action='?".$resultTarget."'>\n";
   $ret .= "<p>";
   $ret .= TeamResults();
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-  }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
+  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
   return $ret;
@@ -191,15 +179,11 @@ function SearchUser($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='users' action='?".$resultTarget."'>\n";
   $ret .= "<div>";
   $ret .= UserResults();
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-  }
   if (!empty($_POST['registerrequest'])) {
-    $ret .= "<input type='hidden' name='registerrequest' value='registerrequest'/>\n";
+    $ret .= getHiddenInput('registerrequest', 'registerrequest');
   }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
+  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</div>";
   $ret .= "</form>";
   return $ret;
@@ -242,15 +226,11 @@ function SearchPlayer($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='users' action='?".$resultTarget."'>\n";
   $ret .= "<div>";
   $ret .= PlayerResults();
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-  }
   if (!empty($_POST['registerrequest'])) {
-    $ret .= "<input type='hidden' name='registerrequest' value='registerrequest'/>\n";
+    $ret .= getHiddenInput('registerrequest', 'registerrequest');
   }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
+  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</div>";
   $ret .= "</form>";
   return $ret;
@@ -299,14 +279,10 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= "<form method='post' id='reservations' action='?" . $resultTarget . "'>\n";
     $ret .= $results;
     $ret .= "<p>";
-    foreach ($hiddenProperties as $name => $value) {
-      $ret .= "<input type='hidden' name='" . urlencode($name) . "' value='" . urlencode($value) . "'/>\n";
-    }
-    $ret .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/>\n";
+    $ret .= getHiddenInput();
+    $ret .= getHiddenInput('', $hiddenProperties);
     if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
-      foreach ($submitbuttons as $name => $value) {
-        $ret .= "<input type='submit' name='" . $name . "' value='" . utf8entities($value) . "'/>\n";
-      }
+      $ret .= getSubmitButtons($submitbuttons);
     }
     $ret .= "</p>";
     $ret .= "</form>";
@@ -360,12 +336,8 @@ function SearchGame($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='games' action='?".$resultTarget."'>\n";
   $ret .= GameResults();
   $ret .= "<p>";
-  foreach ($hiddenProperties as $name => $value) {
-    $ret .= "<input type='hidden' name='".urlencode($name)."' value='".urlencode($value)."'/>\n";
-  }
-  foreach ($submitbuttons as $name => $value) {
-    $ret .= "<input type='submit' name='".$name."' value='".utf8entities($value)."'/>\n";
-  }
+  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
   
@@ -596,13 +568,13 @@ function UserResults() {
     $ret .= "<th>"._("Name")."</th><th>"._("Username")."</th><th>"._("Email")."</th><th>"._("Rights")."</th><th>"._("Last login")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td style='vertical-align:text-top;'>";
-      if (urlencode($row['userid']) != 'anonymous') {
-        $ret .= "<input type='checkbox' name='users[]' value='".urlencode($row['userid'])."'/>";
+      if ($row['userid'] != 'anonymous') {
+        $ret .= "<input type='checkbox' name='users[]' value='".utf8entities($row['userid'])."'/>";
       } else {
         $ret .= "&nbsp;";
       }
       $ret .= "</td>";
-      $ret .= "<td style='vertical-align:text-top;'><a href='?view=user/userinfo&amp;user=".urlencode($row['userid'])."'>".utf8entities($row['user_name'])."</a></td>";
+      $ret .= "<td style='vertical-align:text-top;'><a href='?view=user/userinfo&amp;user=".utf8entities($row['userid'])."'>".utf8entities($row['user_name'])."</a></td>";
       $ret .= "<td style='vertical-align:text-top;'>".utf8entities($row['userid'])."</td>";
       $ret .= "<td style='vertical-align:text-top;'>".utf8entities($row['email'])."</td>";
       
@@ -688,9 +660,9 @@ function PlayerResults() {
     $ret .= "<th>"._("Name")."</th><th>"._("Team")."</th><th>"._("Email")."</th></tr>\n";
     while ($row = mysqli_fetch_assoc($result)) {
       $ret .= "<tr><td>";
-      $ret .= "<input type='checkbox' name='players[]' value='".urlencode($row['profile_id'])."'/>";
+      $ret .= "<input type='checkbox' name='players[]' value='".utf8entities($row['profile_id'])."'/>";
       $ret .= "</td>";
-      $ret .= "<td><a href='?view=playercard&amp;player=".urlencode($row['player_id'])."'>".utf8entities($row['user_name'])."</a></td>";
+      $ret .= "<td><a href='?view=playercard&amp;player=".utf8entities($row['player_id'])."'>".utf8entities($row['user_name'])."</a></td>";
       $ret .= "<td>".utf8entities($row['teamname'])."</td>";
       $ret .= "<td>".utf8entities($row['email'])."</td>";
       $ret .= "</tr>\n";

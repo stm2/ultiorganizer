@@ -115,7 +115,7 @@ foreach($countries as $row){
 $html .= "</table>";
 $html .= "<p><input class='button' type='submit' name='savecountry' value='"._("Save")."'/></p>";
 
-$html .= "<p>" . getHiddenInput() . "</p>";
+$html .= "<p>" . getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId') . "</p>";
 $html .= "</form>\n";
 
 showPage($title, $html);

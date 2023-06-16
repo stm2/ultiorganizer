@@ -113,7 +113,7 @@ $html .= "</table>\n";
 
 
 $html .= "<p><input class='button' name='savebutton' type='submit' value='"._("Save")."'/></p>";
-$html .= "<div>" . getHiddenInput() . "</div>";
+$html .= "<div>" . getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId') . "</div>";
 $html .= "</form>";
 
 showPage($title, $html);

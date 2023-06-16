@@ -1480,45 +1480,75 @@ function getDeleteButton($name, $value, $element = 'hiddenDeleteId', $img = 'ima
  * Return html code for a hidden input field with given name, id, and value attributes.
  * $name and $id must be html encoded! The values will be converted to html encoded equivalents.
  *
- * @param string $name
- *          the name attribute; cannot be null; if $value is an array, the names of the input elements will be $name[]
+ * You can provide an array of values. If you also provide a name, an array of inputs with name='$name[]' will be created. Otherwise, the array keys will be used as names.
+ *
  * @param int|string|array $value
  *          the value attribute; if null, there will be no value attribute; if it is an array, there will be one input field for every value of the array
+ * @param string $name
+ *          the name attribute; if $value is an array, and this is not null, the names of the input elements will be $name[]; if $value is an array and this is null, the names of the input elements will be the array keys; if $value is not an array, this may not be null.
  * @param string $id
- *          the id attribute; if null, there will be no id attribute; if empty, it will be identical to the name attribute; if $value is an array, the ids of the input elements will be $name$key, where $key is the array key
+ *          the id attribute; if null, there will be no id attribute; if equal to '=', it will be identical to the name attribute; if $value is an array, the ids of the input elements will be $name$key, where $key is the array key
  * @return string HTML code for hidden input.
  *        
  */
-function getHiddenInput($name = 'hiddenDeleteId', $value = null, $id = '') {
+function getHiddenInput($value = null, $name = null, $id = null) {
   $html = '';
-  if ($name === null) {
-    throw new Exception('name cannot be null');
-  }
+
   if (gettype($value) == 'array') {
-    foreach ($value as $key => $val) {
-      if ($id === '') {
-        $kid = " id='$name$key'";
-      } else if ($id === null) {
-        $kid = "";
-      } else {
-        $kid = " id='$id$key'";
+    if ($name !== null) {
+      foreach ($value as $key => $val) {
+        if ($id === '=') {
+          $kid = " id='" . utf8entities("$name$key") . "'";
+        } else if ($id === null) {
+          $kid = "";
+        } else {
+          $kid = " id='" . utf8entities("$id$key") . "'";
+        }
+        $html .= "<input type='hidden'$kid name='{$name}[]' value='" . utf8entities($val) . "'/>\n";
       }
-      $html .= "<input type='hidden'$kid name='{$name}[]' value='" . utf8entities($val) . "'/>\n";
+    } else {
+      foreach ($value as $key => $val) {
+        if ($id === null) {
+          $kid = '';
+        } else if ($id == '=') {
+          $kid = " id='" . utf8entities($key) . "'";
+        } else {
+          $kid = " id='" . utf8entities("$id$key") . "'";
+        }
+        $html .= "<input type='hidden'$kid name='{$key}' value='" . utf8entities($val) . "'/>\n";
+      }
     }
   } else {
-    if ($id === '') {
-      $kid = " id='$name'";
+    if ($name === null) {
+      throw new Exception('name cannot be null');
+    }
+    if ($id === '=') {
+      $kid = " id='" . utf8entities($name) . "'";
     } else if ($id === null) {
       $kid = "";
     } else {
-      $kid = " id='$id'";
+      $kid = " id='" . utf8entities($id) . "'";
     }
     if ($value !== null) {
       $value = " value='" . utf8entities($value) . "'";
     }
-    $html .= "<input type='hidden'$kid name='$name'$value/>\n";
+    $html .= "<input type='hidden'$kid name='" . utf8entities($name) . "'$value/>\n";
   }
   return $html;
+}
+
+/**
+ * Returns html for submit buttons.
+ * 
+ * @param array $submitbuttons an array of $name => $value pairs for the buttons
+ * @return string
+ */
+function getSubmitButtons($submitbuttons) {
+  $ret = "";
+  foreach ($submitbuttons as $name => $value) {
+    $ret .= "<input type='submit' name='" . utf8entities($name) . "' value='" . utf8entities($value) . "'/>\n";
+  }
+  return $ret;
 }
 
 function mailto_address($email, $name = null) {
