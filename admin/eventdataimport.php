@@ -147,10 +147,12 @@ function source_selection($new = true) {
   } else {
     $html = "<p>" . utf8entities(_("Would you like to start over?")) . "</p>\n";
   }
-  $html .= "<a href='?view=admin/eventdataimport$seasonPar&amp;source=xml'>" . utf8entities(_("Import from file")) .
+  
+  $html .= "<a href='?view=admin/eventdataexport$seasonPar'>" . utf8entities(_("Export to a file")) . "</a><br />\n";
+  $html .= "<a href='?view=admin/eventdataimport$seasonPar&amp;source=xml'>" . utf8entities(_("Import from a file")) .
     "</a><br />\n";
   $html .= "<a href='?view=admin/eventdataimport$seasonPar&amp;source=database'>" .
-    utf8entities(_("Import from other division")) . "</a>";
+    utf8entities(_("Import from another division")) . "</a>";
   return $html;
 }
 
@@ -164,6 +166,8 @@ ini_set("memory_limit", -1);
 
 $step = $_POST['step'] ?? "";
 
+// $html .= "<form method='post' action='?view=admin/eventdataimport'><input type='hidden' name='a&amp;b' value='c &d'/><input type='submit' /></form>\n";
+
 if (empty($_GET['source']) || isset($_POST['cancel'])) {
   $html .= source_selection();
 } else {
@@ -172,24 +176,24 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
 
   if (empty($step) || (!empty($_POST['load_series']) && empty($_POST['series']))) {
     if ($_GET['source'] == 'xml') {
-      $html .= getHiddenInput('step', 'select_xml', null);
-      $html .= "<h3>" . _("Select XML file to import") . ": </h3>\n";
+      $html .= getHiddenInput('select_xml', 'step');
+      $html .= "<h3>" . utf8entities(_("Select XML file to import")) . ": </h3>\n";
 
       $html .= "<p><input class='input' type='file' size='80' name='restorefile'/>";
-      $html .= getHiddenInput('MAX_FILE_SIZE', 30000000, null) . "</p>\n";
+      $html .= getHiddenInput(30000000, 'MAX_FILE_SIZE') . "</p>\n";
 
       $button_name = 'load';
       $button_label = utf8entities(_("Check file..."));
 
       $html .= "<p><input class='button' type='submit' name='$button_name' value='$button_label'/>";
-      $html .= "<input class='button' type='button' name='return'  value='" . _("Return") .
+      $html .= "<input class='button' type='button' name='return'  value='" . utf8entities(_("Return")) .
         "' onclick=\"window.location.href='$return_url'\"/></p>";
     } else {
-      if (!empty($_POST['load']) && empty($_POST['series'])) {
+      if (!empty($_POST['load_series']) && empty($_POST['series'])) {
         $html .= "<p class='alert'>" . utf8entities(_("No series selected!")) . "</p>\n";
       }
 
-      $html .= "<h3>" . _("Select division from other tournament") . "</h3>\n";
+      $html .= "<h3>" . utf8entities(_("Select division from another tournament")) . "</h3>\n";
       $target = "view=admin/eventdataimport$seasonPar$sourcePar";
       if (!empty($seasonId))
         $target .= "&amp;season=$seasonId";
@@ -221,10 +225,16 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
   }
 
   if ($step == 'select_division' && !empty($_POST['series'])) {
-    $html .= getHiddenInput('import_series', $_POST['series'], null);
-    $html .= getHiddenInput('step', 'select_template', null);
+    $html .= getHiddenInput($_POST['series'], 'import_series');
+    $html .= getHiddenInput('select_template', 'step');
+    $html .= "<p>" . utf8entities(_("Selected divisions:")) . "</p>\n";
+    $html .= "<ul>";
+    foreach ($_POST['series'] as $serieId) {
+      $html .= "<li>" . utf8entities(SeriesName($serieId)) ."</li>\n"; 
+    }
+    $html .= "</ul>";
     $html .= "<label for='template'>" . utf8entities(_("Import as template, without results")) .
-      "<input class='input' type='checkbox' id='template' name='template' /></label>\n";
+      "<input class='input' checked type='checkbox' id='template' name='template' /></label>\n";
     $html .= "<p><input class='button' type='submit' name='import' value='" . utf8entities(_("Choose mode...")) . "'/>";
   }
 
@@ -242,13 +252,13 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
       } else {
         $importedSeason = $serInfo['season'];
         $imported[] = $ser;
-        $html .= getHiddenInput('selected_series[]', $ser, null);
+        $html .= getHiddenInput($ser, 'selected_series[]');
       }
     }
     try {
       $template = $_POST['template'] ?? '';
       $data = $eventdatahandler->EventToXML($importedSeason, $imported, $template == 'on');
-      $html .= getHiddenInput('template', $template, null);
+      $html .= getHiddenInput($template, 'template');
 
       $seasonInfo = $eventdatahandler->XMLStructure(null, $data);
       if (empty($seasonInfo['error'])) {
@@ -300,8 +310,8 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
       return $reservations;
     }
 
-    $html .= getHiddenInput('step', 'rename', null);
-    $html .= getHiddenInput('source', $source, null);
+    $html .= getHiddenInput('rename', 'step');
+    $html .= getHiddenInput($source, 'source');
     if (!empty($seasonId)) {
       $html .= "<fieldset>";
       $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='rename_mode' value='insert_mode' />";
@@ -324,13 +334,13 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
         "</label></p>\n";
       $html .= "</fieldset>";
     }
-    $html .= "<br /><table class='formtable'><tr><td colspan='4' class='infocell'>" . _(
-      "Confirm or replace event data:") . "</td></tr>\n";
+    $html .= "<br /><table class='formtable'><tr><td colspan='4' class='infocell'>" .
+      _("Confirm or replace event data:") . "</td></tr>\n";
     if (!empty($seasonId)) {
       $html .= "<td class='infocell'>" . _("Event ID") .
         "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
       $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" .
-        utf8entities($seasonInfo['season_name']) . "'/>" . utf8entities($seasonInfo['season_name']) . "</td></tr>\n";
+        utf8entities(SeasonName($seasonId)) . "'/>" . utf8entities(SeasonName($seasonId)) . "</td></tr>\n";
     } else {
       $html .= "<td>" . _("Event ID") .
         "</td><td><input class='input' size='30' maxlength='30' name='new_season_id' value='" .
@@ -449,8 +459,8 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
     }
     $html .= "</table>\n";
 
-    $html .= "<input class='button' type='submit' name='import' value='" . utf8entities(_("Import")) . "'/>";
     $html .= "<input class='button' type='submit' name='mock' value='" . utf8entities(_("Mock (test only)")) . "'/>";
+    $html .= "<input class='button' type='submit' name='import' value='" . utf8entities(_("Import")) . "'/>";
   }
 
   if ($step == 'rename') {
@@ -474,8 +484,9 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
       $eventdatahandler = new EventDataXMLHandler();
       $mock = !empty($_POST['mock']);
       try {
+        $replacers = get_replacers($_POST);
         if ($_POST['source'] == 'xml') {
-          $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, get_replacers($_POST), $mock);
+          $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, $replacers, $mock);
 
           // unlink($filename);
         } else if ($_POST['source'] == 'series') {
@@ -483,14 +494,20 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
           $importedSeason = SeriesInfo($_POST['selected_series']['0'])['season'];
           $data = $eventdatahandler->EventToXML($importedSeason, $_POST["selected_series"], $template == 'on');
 
-          $eventdatahandler->XMLToEvent(null, $seasonId, $mode, get_replacers($_POST), $mock, $data);
+          $eventdatahandler->XMLToEvent(null, $seasonId, $mode, $replacers, $mock, $data);
         }
 
-        if (empty($eventdatahandler->error))
-          $html .= "<p>" . sprintf(_("Successfully imported %s."), $_POST['new_season_name']) . "</p>\n";
-        else
-          $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" .
+        $html .= "<ul>";
+        foreach ($replacers['series_name'] as $newSeriesName) {
+          $html .= "<li>" . utf8entities($newSeriesName) ."</li>\n";
+        }
+        $html .= "</ul>";
+        if (empty($eventdatahandler->error)) {
+          $html .= "<p>" . sprintf(_("Successfully imported into %s."), $_POST['new_season_name']) . "</p>\n";
+        } else {
+          $html .= "<p>" . sprintf(_("Error while importing int %s:"), $_POST['new_season_name']) . "<br />" .
             $eventdatahandler->error . "</p>\n";
+        }
       } catch (Exception $e) {
         $html .= "<p>" . sprintf(_("Error while importing %s:"), $_POST['new_season_name']) . "<br />" . $e->getMessage() .
           "</p>\n";
@@ -502,7 +519,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
 
         foreach ($_POST as $key => $val) {
           if ($key != 'mock')
-            $html .= getHiddenInput($key, $val, null);
+            $html .= getHiddenInput($val, $key);
         }
 
         $html .= "<p><input class='button' type='submit' name='import' value='" . utf8entities(_("Import")) . "'/>";
