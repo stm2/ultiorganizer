@@ -505,7 +505,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
         if (empty($eventdatahandler->error)) {
           $html .= "<p>" . sprintf(_("Successfully imported into %s."), $_POST['new_season_name']) . "</p>\n";
         } else {
-          $html .= "<p>" . sprintf(_("Error while importing int %s:"), $_POST['new_season_name']) . "<br />" .
+          $html .= "<p>" . sprintf(_("Error while importing into %s:"), $_POST['new_season_name']) . "<br />" .
             $eventdatahandler->error . "</p>\n";
         }
       } catch (Exception $e) {
