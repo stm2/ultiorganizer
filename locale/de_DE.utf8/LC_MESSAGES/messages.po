@@ -7034,7 +7034,7 @@ msgid ""
 "I accept the privacy policy. I agree that this site stores my personal data "
 "(including name and e-mail given above) as declared in the privacy policy."
 msgstr ""
-"I akzeptiere die Datenschutzrichtlinien. Ich stimme zu, dass diese Seite "
+"Ich akzeptiere die Datenschutzrichtlinien. Ich stimme zu, dass diese Seite "
 "meine persönlichen Daten (einschließlich Name und E-Mail wie oben angegeben) "
 "benutzt, wie es die Datenschutzrichtlinien erklären."
 
