@@ -19,7 +19,7 @@ if (isset($_POST['confirmdeletion'])) {
     $html .= "<p class='alert'>" .
       utf8entities(
         _(
-          "This is the only super admin account. It cannot be deleted. Plese create a separate super admin account first.")) .
+          "This is the only super admin account. It cannot be deleted. Please create a separate super admin account first.")) .
       "</p>\n";
     showPage($title, $html);
     exit();
