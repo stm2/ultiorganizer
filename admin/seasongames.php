@@ -144,7 +144,7 @@ if ($_SESSION['hide_played_games']) {
 $html .= "</td><td colspan='3' style='text-align:right;'>";
 if ($mass) {
   $html .= "&nbsp;<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, false, $showpool)) . "' tabindex='" .
-       ++$tab . "'>" . _("Just display values") . "</a></td></tr></table>\n";
+       ++$tab . "'>" . _("Just display values") . "</a></td></tr>\n";
 } else {
   $html .= "&nbsp;<a class='button' href='" . utf8entities(seasongameslink($season, $series_id, $single, $group, null, true, $showpool)) . "' tabindex='" .
        ++$tab . "'>" . _("Mass input") . "</a></td></tr>\n";

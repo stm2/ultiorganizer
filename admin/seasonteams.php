@@ -166,6 +166,7 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
       $html .= get_field(20, 50, "club$team_id", $team['clubname'], $short);
     }
 
+    $width = "";
     if ($country) {
       if ($short) {
         $html .= "<td>" . CountryName($team['country']) . "</td>";
