@@ -566,7 +566,7 @@ var startMap = new Map();
 var gameMap = new Map();
 var pauseMap = new Map();
 
-function updateList (list) {
+function updateLists (list) {
 <?php
 foreach ($jsStartTimes as $reservationId => $time) {
   echo "    startMap.set($reservationId, $time);\n";
@@ -578,7 +578,12 @@ foreach ($jsPauseTimes as $id => $duration) {
   echo "    pauseMap.set($id, $duration);\n";
 }
 ?>
+  for (list2 of document.getElementsByClassName("draglist")) {
+    updateList(list2);
+  }
+}
 
+function updateList(list) {
   var id = Number(list.id.replace(/[^0-9]*/, ''));
   var startTime = startMap.get(id);
   if (!startTime) startTime = -60*60;
@@ -617,7 +622,7 @@ function hide(id) {
   var elem = Dom.get(id);
   var list = Dom.getAncestorByTagName(elem, "ul");
   list.removeChild(elem);
-  updateList(list);
+  updateLists(list);
 }
 
 function setModified(newValue) {
@@ -953,7 +958,7 @@ YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
         var destEl = Dom.get(id);
         var destDD = DDM.getDDById(id);
         destEl.appendChild(this.getEl());
-        updateList(destEl);
+        updateLists(destEl);
         destDD.isEmpty = false;
         DDM.refreshCache();
       }
@@ -991,7 +996,7 @@ YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
       } else {
         p.insertBefore(srcEl, destEl.nextSibling); // insert below
       }
-      updateList(p);
+      updateLists(p);
 
       DDM.refreshCache();
     }
