@@ -63,6 +63,21 @@ class PDF extends FPDF {
   function setLogo($logo) {
     $this->logo = $logo;
   }
+  
+  function PrintScoreSheets() {
+    $sGid = $gameRow['game_id'];
+    // $sGid .= getChkNum($sGid);
+    
+    $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
+    $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
+    $sGid, $home, $visitor,
+    U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']), $gameRow["time"],
+    U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']));
+    
+    if ($printlist)
+      $pdf->PrintPlayerList($gameRow['homeplayers'], $gameRow['visitorplayers']);
+      
+  }
 
   function PrintScoreSheet($seasonname, $gameId, $hometeamname, $visitorteamname, $poolname, $time, $placename) {
     $this->game['seasonname'] = utf8_decode($seasonname);

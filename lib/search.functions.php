@@ -255,7 +255,7 @@ function SearchPlayer($resultTarget, $hiddenProperties, $submitbuttons) {
   return $ret;
 }
 
-function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
+function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons, $season, $delete=false) {
   $querystring = $_SERVER['QUERY_STRING'];
   $ret = "<form method='post' action='?".utf8entities($querystring)."'>\n";
   $ret .= "<table style='width:100%'>";
@@ -293,12 +293,13 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "</table>\n";
   $ret .= "</form>";
   
-  $results = ReservationResults($_POST, isset($_GET['season'])?$_GET['season']:null);
+  $results = ReservationResults($_POST, $season, $delete);
   if (!empty($results)) {
     $ret .= "<form method='post' id='reservations' action='?" . $resultTarget . "'>\n";
     $ret .= $results;
     $ret .= "<p>";
-    //$ret .= getHiddenInput();
+    if ($delete)
+      $ret .= getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId');
     $ret .= getHiddenInput($hiddenProperties);
     if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
       $ret .= getSubmitButtons($submitbuttons);
@@ -750,7 +751,7 @@ function PlayerResults() {
   }
 }
 
-function ReservationResults($post, $season = null) {
+function ReservationResults($post, $season = null, $delete = false) {
   if (empty($post['searchreservation']) && empty($season)) {
     return "";
   } else {
@@ -810,7 +811,7 @@ function ReservationResults($post, $season = null) {
       $ret .= "<td>".DefHourFormat($row['endtime'])."</td>";
       $ret .= "<td class='center'>".$row['games']."</td>";
       $ret .= "<td class='center'><a href='?view=user/pdfscoresheet&amp;reservation=".$row['reservation_id']."'>"._("PDF")."</a></td>";
-      if(intval($row['games'])==0){
+      if($delete && intval($row['games'])==0){
         $ret .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' name='remove' alt='"._("X")."' onclick=\"setId(".$row['reservation_id'].");\"/></td>";
       }
       

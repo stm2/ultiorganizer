@@ -142,6 +142,9 @@ function ResponsibleReservationGames($placeId, $gameResponsibilities) {
   if (!$result) {
     die('Invalid query: ' . mysql_adapt_error());
   }
+  debug_to_apache($gameResponsibilities);
+  debug_to_apache("RESULT");
+  debug_to_apache($result);
   
   return $result;
 }

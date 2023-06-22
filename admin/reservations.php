@@ -75,7 +75,7 @@ foreach ($searchItems as $name) {
 $url = MakeUrl($urlparams);
 
 if (empty($season)) {
-  $html .= SearchReservation(substr($url, 1), $hidden, array('schedule' => _("Schedule selected")));
+  $html .= SearchReservation(substr($url, 1), $hidden, array('schedule' => _("Schedule selected")), null, true);
   $html .= "<hr />";
   $html .= "<p><a href='?view=admin/addreservation&amp;season=" . $season . "'>" . _("Add reservation") . "</a> | ";
   $html .= "<a href='?view=admin/locations&amp;season=" . $season . "'>" . _("Add location") . "</a></p>";

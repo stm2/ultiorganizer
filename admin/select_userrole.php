@@ -65,10 +65,10 @@ if ($_GET['userrole'] == 'superadmin') {
 	$html .= SearchSeries($target, array('userrole' => 'seriesadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));
 } elseif ($_GET['userrole'] == 'resadmin') {
 	$html .= "<h3>"._("Scheduling right")."</h3>\n";
-	$html .= SearchReservation($target, array('userrole' => 'resadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));
+	$html .= SearchReservation($target, array('userrole' => 'resadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")), null);
 } elseif ($_GET['userrole'] == 'resgameadmin') {
 	$html .= "<h3>"._("Reservation game input responsible")."</h3>\n";
-	$html .= SearchReservation($target, array('userrole' => 'resgameadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));
+	$html .= SearchReservation($target, array('userrole' => 'resgameadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")), null);
 } elseif ($_GET['userrole'] == 'gameadmin') {
 	$html .= "<h3>"._("Reservation game input responsible")."</h3>\n";
 	$html .= SearchGame($target, array('userrole' => 'gameadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));

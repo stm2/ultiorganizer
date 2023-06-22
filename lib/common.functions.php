@@ -1531,7 +1531,12 @@ function getHiddenInput($value = null, $name = null, $id = null) {
         } else {
           $kid = " id='" . utf8entities("$id$key") . "'";
         }
-        $html .= "<input type='hidden'$kid name='{$key}' value='" . utf8entities($val) . "'/>\n";
+        if (gettype($val) == 'array') {
+          foreach ($val as $vv)
+            $html .= "<input type='hidden'$kid name='{$key}[]' value='" . utf8entities($vv) . "'/>\n";
+        } else {
+          $html .= "<input type='hidden'$kid name='{$key}' value='" . utf8entities($val) . "'/>\n";
+        }
       }
     }
   } else {

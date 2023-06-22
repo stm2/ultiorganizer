@@ -569,7 +569,7 @@ function GameName($gameInfo, $time = true, $short = false) {
   if ($time) {
     $gametitle = ShortDate($gameInfo['time']) . " " . DefHourFormat($gameInfo['time']) . " ";
   }
-  if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
+  if (isset($gameInfo['hometeam']) && isset($gameInfo['visitorteam'])) {
     if ($short) {
       $gametitle .= mb_substr(getHName($gameInfo), 0, 10) . " - " . mb_substr(getVName($gameInfo), 0, 10);
     } else {
