@@ -673,7 +673,20 @@ function PrevGameDay($id, $gamefilter, $order){
 }
 
 
-function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter="", $valid = false){
+function TimetableGames($id, $gamefilter, $timefilter, $order = null, $groupfilter = "", $valid = false) {
+  if ($id === null) {
+    return DBQuery(
+      "SELECT 0 as game_id, '' as time, '' as hometeam, '' as visitorteam, 0 as homescore, 0 as visitorscore, 
+         0 AS pool, '' AS poolname, '' AS timeslot, 
+         0 AS series_id, '' AS seriesname, '' AS season, 0 AS type, '' AS fieldname, '' AS reservationgroup, 
+         0 AS reservation_id, '' AS starttime, '' AS endtime, 0 AS place_id, 0 AS scoresheet, 
+         '' AS placename, '' AS address, 0 AS isongoing, 
+         0 AS hasstarted, '' hometeamname, '' AS visitorteamname, '' AS phometeamname, '' AS pvisitorteamname, 
+         '' AS color, '' AS gamename, '' homeshortname, '' AS visitorshortname, 
+         0 AS homecountryid, '' AS homecountry, 0 AS visitorcountryid, '' AS visitorcountry, '' AS homeflag, '' AS visitorflag, 
+         '' AS timezone, 0 as homevalid, 0 as visitorvalid");
+  }
+  
   //common game query
   $query = "SELECT pp.game_id, pp.time, pp.hometeam, pp.visitorteam, pp.homescore,
 			pp.visitorscore, pp.pool AS pool, pool.name AS poolname, pool.timeslot,
@@ -730,7 +743,10 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter="", 
     case "game":
       $query .= " WHERE pp.game_id=".(int)$id;
       break;
+      
+    default: $query .= " WHERE 1";
   }
+  
 
   switch($timefilter)
   {
@@ -825,6 +841,8 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter="", 
     case "crossmatch":
       $query .= " ORDER BY homepool.`rank` ASC, game_id ASC";
       break;
+      
+    default: // nothing
   }
 
   $result = mysql_adapt_query($query);

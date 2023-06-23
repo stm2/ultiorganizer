@@ -178,6 +178,14 @@ if (!empty($source["teams"])) {
   $subject = _("Teams") . " " . $subject;
 }
 
+if (!empty($source['empty'])) {
+  $num = (int) $source['num_games'];
+  $games = [];
+  for ($i = 0; $i < $num; $i++) {
+    $games[] = null; // DBResourceToArray(TimetableGames(null, null, 'all'))[0];
+  }
+}
+
 function searchModes() {
   global $season;
   $html = "";
@@ -189,6 +197,8 @@ function searchModes() {
     utf8entities(_("Score sheets for a reservation")) . "</a></li>\n";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=game'>" .
     utf8entities(_("Score sheets for a game")) . "</a></li>\n";
+  $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=empty'>" .
+    utf8entities(_("Blank score sheets")) . "</a></li>\n";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=team'>" .
     utf8entities(_("Roster for a team")) . "</a></li>\n";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=division'>" .
@@ -250,7 +260,7 @@ if (isset($_POST['create'])) {
       $printed |= print_series_rosters($seriesId);
     }
   } else {
-    $seasonname = SeasonName($season);
+    $seasonname = $_POST['season_name'] ?? SeasonName($season);
 
     $printlist = $_POST['roster'] == 'force_roster';
     if ($_POST['roster'] != 'no_roster') {
@@ -312,18 +322,7 @@ if (isset($_POST['create'])) {
     } else {
       $printed = true;
 
-      $sGid = $gameRow['game_id'];
-      // $sGid .= getChkNum($sGid);
-
-      $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
-      $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
-
-      $pdf->PrintScoreSheet(U_($seasonname), $sGid, $home, $visitor,
-        U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']), $gameRow["time"],
-        U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']));
-
-      if ($printlist)
-        $pdf->PrintPlayerList($gameRow['homeplayers'], $gameRow['visitorplayers']);
+      $pdf->PrintShortScoreSheets(U_($seasonname), $games);
     }
   }
 
@@ -365,7 +364,37 @@ if (isset($_POST['create'])) {
   if (empty($source))
     $source = [];
 
-  if ($mode == 'pool') {
+  if ($mode == 'empty') {
+    $html .= "<h2>" . _("Empty Sheets") . "</h2>";
+    $html .= "<form method='post' action='?view=user/pdfscoresheet'>\n";
+    // if (!empty($_GET)) {
+    // $html .= getHiddenInput($_GET);
+    // }
+    // if (!empty($_POST)) {
+    // $html .= getHiddenInput($_POST);
+    // }
+
+    $html .= getHiddenInput('1', 'empty');
+    $html .= "<input name='season_name' value='" . utf8entities(SeasonName($season)) . "'/><br />\n";
+    $html .= "<input type='number' min=0 name='num_games' value='5' /><br />\n";
+
+    $html .= "<fieldset>";
+    $html .= "<p><input type='radio' id='force_roster' name='roster' value='force_roster' />";
+    $html .= "<label for='force_roster'>" . _("Always print rosters.") . "</label></p>\n";
+    $html .= "<p><input type='radio' checked id='no_roster' name='roster' value='no_roster' />";
+    $html .= "<label for='no_roster'>" . _("Never print rosters.") . "</label></p>\n";
+    $html . "</fieldset>\n";
+
+    $html .= "<fieldset>";
+    $html .= "<p><input type='radio' checked id='short_sheet' name='sheet_type' value='short' />";
+    $html .= "<label for='default_roster'>" . _("Short sheets (multiple games per page)") . "</label></p>\n";
+    $html .= "<p><input type='radio' id='long_sheet' name='sheet_type' value='long' />";
+    $html .= "<label for='default_roster'>" . _("Long sheets (one game per page)") . "</label></p>\n";
+    $html . "</fieldset>\n";
+
+    $html .= "<input type='submit' name='create' value='" . utf8entities($create) . "'/>\n";
+    $html .= "</form>";
+  } else if ($mode == 'pool') {
     $html .= "<h2>" . _("Search Pools") . "</h2>";
     $html .= SearchPool('view=user/pdfscoresheet', $source, ['submit' => $create]);
   } else if ($mode == 'reservation') {

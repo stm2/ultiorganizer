@@ -23,10 +23,24 @@ class PDF extends FPDF {
 
   var $minFontSize = 6;
 
+  var $footerleft;
+
+  var $footercenter;
+
+  var $footerright;
+
   function __construct($orientation = 'P', $unit = 'mm', $format = 'A4') {
     parent::__construct($orientation, $unit, $format);
     $this->organization = U_("Organization");
     $this->logo = "cust/" . CUSTOMIZATIONS . "/logo.png";
+
+    // $this->AddFont('Helvetica','','HelveticaNeue LightCond.ttf',true);
+    // $this->AddFont('Helvetica','B','HelveticaNeue MediumCond.ttf',true);
+    $this->AddFont('Arial', '', 'DejaVuSans.ttf', true);
+    $this->AddFont('Arial', 'B', 'DejaVuSans-Bold.ttf', true);
+    $this->AddFont('Dingbats', '', 'DejaVuSans.ttf', true);
+
+    $this->setFooter(null, null, utf8_decode(date('Y-m-d H:i:s P', time())));
   }
 
   function getScoresheetInstructions() {
@@ -63,20 +77,117 @@ class PDF extends FPDF {
   function setLogo($logo) {
     $this->logo = $logo;
   }
-  
-  function PrintScoreSheets() {
-    $sGid = $gameRow['game_id'];
-    // $sGid .= getChkNum($sGid);
-    
-    $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
-    $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
-    $sGid, $home, $visitor,
-    U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']), $gameRow["time"],
-    U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']));
-    
-    if ($printlist)
-      $pdf->PrintPlayerList($gameRow['homeplayers'], $gameRow['visitorplayers']);
-      
+
+  function Header() {
+    // $this->SetFont('Arial', 'B', 8);
+    // $this->Cell(0,0,"xyz");
+  }
+
+  function PrintShortScoreSheets($seasonname, $games) {
+    $this->setFooter(null, $seasonname, null);
+    $g = 0;
+    foreach ($games as $game) {
+      if ($g++ % 5 == 0) {
+        $this->AddPage();
+        $this->setEmptyStyle();
+      }
+      $this->PrintShortScore($game);
+    }
+    while ($g++ % 5 != 0) {
+      $this->PrintShortScore(null);
+    }
+  }
+
+  function PrintShortScore($gameRow) {
+    $width = ($this->w - $this->rMargin - $this->x) / 17;
+    $height = 10;
+    // function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '') {
+    if ($gameRow == null) {
+      $gamedescription = _("Time and Place");
+      $color = 150;
+    } else {
+      $gamedescription = // U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']) . " " .
+      ShortTimeFormat($gameRow["time"]) . " " . U_($gameRow["placename"]) . " " . _("Field") . " " .
+        U_($gameRow['fieldname']);
+      $color = 0;
+    }
+    $this->SetFont('Arial', 'B', 10);
+    $xx = $this->GetX();
+    $yy = $this->GetY();
+
+    $this->SetTextColor($color);
+    $this->Cell(11.5 * $width, $height, $gamedescription, 'LTB', 0, 'L', true);
+    $this->SetFont('Arial', '', 8);
+    $this->SetTextColor(0);
+    $this->Cell(5.5 * $width, $height, "Gender ratio A = male / female", 'RTB', 1, 'R', true);
+
+    $this->SetFont('Arial', '', 6);
+    for ($i = 0; $i <= 15; ++$i) {
+      $this->Cell($i == 0 ? $width / 2 : $width, $height / 3, $i > 0 ? "$i" : "", 'LRTB', 0, 'C');
+    }
+    $this->SetFont('Arial', 'B', 7);
+    $this->Cell($width * 3 / 2, $height / 3, "Final", 'LRTB', 0, 'C');
+    $this->SetFont('Arial', 'B', 8);
+    $this->Ln();
+    for ($team = 'X'; $team != ''; $team = $team == 'X' ? 'Y' : '') {
+      $this->Cell($width / 2, $height, $team, 'LRTB', 0, 'C');
+      for ($i = 1; $i <= 15; ++$i) {
+        $this->Cell($width, $height, "  ", 'LRTB', 0, 'C');
+      }
+      $this->Cell($width * 3 / 2, $height, "  ", 'LRTB', 0, 'C');
+      $this->Ln();
+    }
+    // TODO utf8_decode?
+    if ($gameRow == null) {
+      $teams = ['X' => [false, _("Team X")], 'Y' => [false, _("Team Y")]];
+    } else {
+      $teams = [
+        'X' => empty($gameRow["hometeamname"]) ? [false, U_($gameRow["phometeamname"])] : [true,
+          $gameRow["hometeamname"]],
+        'Y' => empty($gameRow["visitorteamname"]) ? [false, U_($gameRow["pvisitorteamname"])] : [true,
+          $gameRow["visitorteamname"]]];
+    }
+    for ($team = 'X'; $team != ''; $team = $team == 'X' ? 'Y' : '') {
+      $this->Cell($width / 2, $height, $team, 'LRTB', 0, 'C');
+      if ($teams[$team][0]) {
+        $this->SetTextColor(0);
+      } else {
+        $this->SetTextColor(150);
+      }
+      $this->Cell(6 * $width, $height, $teams[$team][1], 'LRTB', 0, 'L');
+      $this->SetTextColor(0);
+      $xx = $this->GetX() + $this->cMargin;
+      $yy = $this->GetY() + $height - $this->cMargin;
+      $this->Cell(3 * $width, $height, "", 'LRTB', 0, 'L');
+      $this->SetFont('ZapfDingbats', '', 10);
+      $this->Text($xx, $yy - $height / 2, "o");
+      $w = $this->GetStringWidth("o ");
+      $this->SetFont('Arial', 'B', 8);
+      $this->Text($xx + $w, $yy - $height / 2, "1st Offence");
+      $this->SetFont('Arial', 'B', 8);
+      $this->Text($xx, $yy, "Time-outs");
+      $w = $this->GetStringWidth("Time-outs ");
+      $this->SetFont('ZapfDingbats', '', 10);
+      $this->Text($xx + $w, $yy, " oooo");
+      $this->SetFont('Arial', 'B', 8);
+      $this->SetTextColor(150);
+      $this->Cell(7.5 * $width, $height, "Signature Captain $team", 'LRTB', 0, 'L');
+      $this->SetTextColor(0);
+      $this->Ln();
+    }
+
+    // foreach ($games as $gameRow) {
+
+    // $sGid = $gameRow['game_id'];
+    // // $sGid .= getChkNum($sGid);
+
+    // $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
+    // $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
+    // $sGid, $home, $visitor,
+    // U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']), $gameRow["time"],
+    // U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']));
+
+    // }
   }
 
   function PrintScoreSheet($seasonname, $gameId, $hometeamname, $visitorteamname, $poolname, $time, $placename) {
@@ -647,12 +758,38 @@ class PDF extends FPDF {
     }
   }
 
+  function setFooter($left = null, $center = null, $right = null) {
+    if ($left !== null) {
+      $this->footerleft = $left;
+    }
+    if ($center !== null) {
+      $this->footercenter = $center;
+    }
+    if ($right !== null) {
+      $this->footerright = $right;
+    }
+  }
+
   function Footer() {
-    $this->SetXY(-50, -8);
     $this->SetFont('Arial', '', 6);
     $this->SetTextColor(0);
-    $txt = utf8_decode(date('Y-m-d H:i:s P', time()));
-    $this->Cell(0, 0, $txt, 0, 2, 'R', false);
+    $x = $this->rMargin;
+    $y = -8;
+    $width = ($this->w - $this->rMargin - $this->x);
+    if (!empty($this->footerleft)) {
+      $this->SetXY($x, $y);
+      $this->Write(6, $this->footerleft);
+    }
+    if (!empty($this->footercenter)) {
+      $w = $this->GetStringWidth($this->footercenter);
+      $this->SetXY($x + $width / 2 - $w / 2, $y);
+      $this->Write(6, $this->footercenter);
+    }
+    if (!empty($this->footerright)) {
+      $w = $this->GetStringWidth($this->footerright);
+      $this->SetXY($x + $width - $w, $y);
+      $this->Write(6, $this->footerright);
+    }
   }
 
   function TextColor($bgcolor) {
