@@ -720,11 +720,11 @@ function TimetableGames($id, $gamefilter, $timefilter, $order = null, $groupfilt
       break;
 
     case "series":
-      $query .= " WHERE pp.valid=true AND ps.series_id='".(int)$id."'";
+      $query .= " WHERE pp.valid=true AND ps.series_id=".(int)$id."";
       break;
 
     case "pool":
-      $query .= " WHERE pp.valid=true AND pp.pool='".(int)$id."'";
+      $query .= " WHERE pp.valid=true AND pp.pool=".(int)$id."";
       break;
 
     case "poolgroup":
@@ -844,7 +844,7 @@ function TimetableGames($id, $gamefilter, $timefilter, $order = null, $groupfilt
       
     default: // nothing
   }
-
+  
   $result = mysql_adapt_query($query);
   if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 

@@ -34,12 +34,6 @@ class PDF extends FPDF {
     $this->organization = U_("Organization");
     $this->logo = "cust/" . CUSTOMIZATIONS . "/logo.png";
 
-    // $this->AddFont('Helvetica','','HelveticaNeue LightCond.ttf',true);
-    // $this->AddFont('Helvetica','B','HelveticaNeue MediumCond.ttf',true);
-    $this->AddFont('Arial', '', 'DejaVuSans.ttf', true);
-    $this->AddFont('Arial', 'B', 'DejaVuSans-Bold.ttf', true);
-    $this->AddFont('Dingbats', '', 'DejaVuSans.ttf', true);
-
     $this->setFooter(null, null, utf8_decode(date('Y-m-d H:i:s P', time())));
   }
 
@@ -78,57 +72,72 @@ class PDF extends FPDF {
     $this->logo = $logo;
   }
 
-  function Header() {
-    // $this->SetFont('Arial', 'B', 8);
-    // $this->Cell(0,0,"xyz");
-  }
-
-  function PrintShortScoreSheets($seasonname, $games) {
-    $this->setFooter(null, $seasonname, null);
-    $g = 0;
-    foreach ($games as $game) {
-      if ($g++ % 5 == 0) {
-        $this->AddPage();
-        $this->setEmptyStyle();
-      }
-      $this->PrintShortScore($game);
-    }
-    while ($g++ % 5 != 0) {
+  function fillPage($g, $perpage) {
+    --$g;
+    while ($g++ % $perpage != 0) {
       $this->PrintShortScore(null);
     }
   }
 
+  function PrintShortScoreSheets($seasonname, $games) {
+    $this->setFooter(null, $seasonname, null);
+
+    $perpage = 6;
+    $g = 0;
+    $lastplace = $lastfield = null;
+    foreach ($games as $game) {
+      if ($g++ % $perpage == 0 ||
+        ($game != null && ($game['placename'] != $lastplace || $game['fieldname'] != $lastfield))) {
+        if ($g > 1)
+          $this->fillPage($g, $perpage);
+        $this->AddPage();
+        $this->setEmptyStyle();
+        $this->setPreFilledStyle();
+        $g = $perpage + 1;
+      }
+      $this->PrintShortScore($game);
+      if ($game != null) {
+        $lastplace = $game['placename'];
+        $lastfield = $game['fieldname'];
+      }
+    }
+    if ($g > 0)
+      $this->fillPage(++$g, $perpage);
+  }
+
   function PrintShortScore($gameRow) {
     $width = ($this->w - $this->rMargin - $this->x) / 17;
-    $height = 10;
-    // function Cell($w, $h = 0, $txt = '', $border = 0, $ln = 0, $align = '', $fill = false, $link = '') {
+    $height = 8.1;
+    $fontsize = 10;
+    $smallfont = 7;
+    $dingfont = 12;
+
     if ($gameRow == null) {
       $gamedescription = _("Time and Place");
       $color = 150;
     } else {
       $gamedescription = // U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']) . " " .
-      ShortTimeFormat($gameRow["time"]) . " " . U_($gameRow["placename"]) . " " . _("Field") . " " .
-        U_($gameRow['fieldname']);
+      ShortTimeFormat($gameRow["time"]) . " - " . utf8_decode(U_($gameRow["placename"])) . " " . _("Field") . " " .
+        utf8_decode(U_($gameRow['fieldname']));
       $color = 0;
     }
-    $this->SetFont('Arial', 'B', 10);
-    $xx = $this->GetX();
-    $yy = $this->GetY();
-
+    $this->SetFont('Arial', 'B', $fontsize);
     $this->SetTextColor($color);
     $this->Cell(11.5 * $width, $height, $gamedescription, 'LTB', 0, 'L', true);
-    $this->SetFont('Arial', '', 8);
+
+    $this->SetFont('Arial', '', $fontsize);
     $this->SetTextColor(0);
     $this->Cell(5.5 * $width, $height, "Gender ratio A = male / female", 'RTB', 1, 'R', true);
 
-    $this->SetFont('Arial', '', 6);
+    $this->SetFont('Arial', '', $smallfont);
     for ($i = 0; $i <= 15; ++$i) {
-      $this->Cell($i == 0 ? $width / 2 : $width, $height / 3, $i > 0 ? "$i" : "", 'LRTB', 0, 'C');
+      $this->Cell($i == 0 ? $width / 2 : $width, $smallfont / 2, $i > 0 ? "$i" : "", 'LRTB', 0, 'C');
     }
-    $this->SetFont('Arial', 'B', 7);
-    $this->Cell($width * 3 / 2, $height / 3, "Final", 'LRTB', 0, 'C');
-    $this->SetFont('Arial', 'B', 8);
+    $this->SetFont('Arial', 'B', $smallfont);
+    $this->Cell($width * 3 / 2, $smallfont / 2, "Final", 'LRTB', 0, 'C');
     $this->Ln();
+
+    $this->SetFont('Arial', 'B', $fontsize);
     for ($team = 'X'; $team != ''; $team = $team == 'X' ? 'Y' : '') {
       $this->Cell($width / 2, $height, $team, 'LRTB', 0, 'C');
       for ($i = 1; $i <= 15; ++$i) {
@@ -137,16 +146,18 @@ class PDF extends FPDF {
       $this->Cell($width * 3 / 2, $height, "  ", 'LRTB', 0, 'C');
       $this->Ln();
     }
-    // TODO utf8_decode?
+
     if ($gameRow == null) {
       $teams = ['X' => [false, _("Team X")], 'Y' => [false, _("Team Y")]];
     } else {
       $teams = [
-        'X' => empty($gameRow["hometeamname"]) ? [false, U_($gameRow["phometeamname"])] : [true,
-          $gameRow["hometeamname"]],
-        'Y' => empty($gameRow["visitorteamname"]) ? [false, U_($gameRow["pvisitorteamname"])] : [true,
-          $gameRow["visitorteamname"]]];
+        'X' => empty($gameRow["hometeamname"]) ? [false, utf8_decode(U_($gameRow["phometeamname"]))] : [true,
+          utf8_decode($gameRow["hometeamname"])],
+        'Y' => empty($gameRow["visitorteamname"]) ? [false, utf8_decode(U_($gameRow["pvisitorteamname"]))] : [true,
+          utf8_decode($gameRow["visitorteamname"])]];
     }
+
+    $this->SetFont('Arial', 'B', $fontsize);
     for ($team = 'X'; $team != ''; $team = $team == 'X' ? 'Y' : '') {
       $this->Cell($width / 2, $height, $team, 'LRTB', 0, 'C');
       if ($teams[$team][0]) {
@@ -154,22 +165,27 @@ class PDF extends FPDF {
       } else {
         $this->SetTextColor(150);
       }
-      $this->Cell(6 * $width, $height, $teams[$team][1], 'LRTB', 0, 'L');
+      $this->Cell(5.5 * $width, $height, $teams[$team][1], 'LRTB', 0, 'L');
       $this->SetTextColor(0);
       $xx = $this->GetX() + $this->cMargin;
       $yy = $this->GetY() + $height - $this->cMargin;
-      $this->Cell(3 * $width, $height, "", 'LRTB', 0, 'L');
-      $this->SetFont('ZapfDingbats', '', 10);
+      $this->Cell(3.5 * $width, $height, "", 'LRTB', 0, 'L');
+
+      $this->SetFont('ZapfDingbats', '', $dingfont);
       $this->Text($xx, $yy - $height / 2, "o");
       $w = $this->GetStringWidth("o ");
-      $this->SetFont('Arial', 'B', 8);
+
+      $this->SetFont('Arial', 'B', $fontsize);
       $this->Text($xx + $w, $yy - $height / 2, "1st Offence");
-      $this->SetFont('Arial', 'B', 8);
+
+      $this->SetFont('Arial', 'B', $fontsize);
       $this->Text($xx, $yy, "Time-outs");
       $w = $this->GetStringWidth("Time-outs ");
-      $this->SetFont('ZapfDingbats', '', 10);
-      $this->Text($xx + $w, $yy, " oooo");
-      $this->SetFont('Arial', 'B', 8);
+
+      $this->SetFont('ZapfDingbats', '', $dingfont);
+      $this->Text($xx + $w, $yy, " o o o o");
+
+      $this->SetFont('Arial', 'B', $fontsize);
       $this->SetTextColor(150);
       $this->Cell(7.5 * $width, $height, "Signature Captain $team", 'LRTB', 0, 'L');
       $this->SetTextColor(0);
@@ -192,12 +208,21 @@ class PDF extends FPDF {
 
   function PrintScoreSheet($seasonname, $gameId, $hometeamname, $visitorteamname, $poolname, $time, $placename) {
     $this->game['seasonname'] = utf8_decode($seasonname);
-    $this->game['game_id'] = $gameId . "" . getChkNum($gameId);
-    $this->game['hometeamname'] = utf8_decode($hometeamname);
-    $this->game['visitorteamname'] = utf8_decode($visitorteamname);
-    $this->game['poolname'] = utf8_decode($poolname);
-    $this->game['time'] = $time;
-    $this->game['placename'] = utf8_decode($placename);
+    if ($gameId == null) {
+      $this->game['game_id'] = "";
+      $this->game['hometeamname'] = "";
+      $this->game['visitorteamname'] = "";
+      $this->game['poolname'] = "";
+      $this->game['time'] = "";
+      $this->game['placename'] = "";
+    } else {
+      $this->game['game_id'] = $gameId . "" . getChkNum($gameId);
+      $this->game['hometeamname'] = utf8_decode($hometeamname);
+      $this->game['visitorteamname'] = utf8_decode($visitorteamname);
+      $this->game['poolname'] = utf8_decode($poolname);
+      $this->game['time'] = $time;
+      $this->game['placename'] = utf8_decode($placename);
+    }
 
     $this->AddPage();
 
@@ -773,8 +798,8 @@ class PDF extends FPDF {
   function Footer() {
     $this->SetFont('Arial', '', 6);
     $this->SetTextColor(0);
-    $x = $this->rMargin;
-    $y = -8;
+    $x = $this->lMargin;
+    $y = -12;
     $width = ($this->w - $this->rMargin - $this->x);
     if (!empty($this->footerleft)) {
       $this->SetXY($x, $y);
@@ -787,7 +812,7 @@ class PDF extends FPDF {
     }
     if (!empty($this->footerright)) {
       $w = $this->GetStringWidth($this->footerright);
-      $this->SetXY($x + $width - $w, $y);
+      $this->SetXY(-1.3 * $this->rMargin - $w, $y);
       $this->Write(6, $this->footerright);
     }
   }

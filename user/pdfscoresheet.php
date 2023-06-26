@@ -140,12 +140,13 @@ if (!empty($source["reservations"])) {
     $games = array_merge($games,
       DBResourceToArray(ResponsibleReservationGames($rr == "none" ? null : $rr, $gameResponsibilities)));
 
-    $reservationname = html_entity_decode(ReservationName(ReservationInfo($source['reservation'])));
+    $reservationname = html_entity_decode(ReservationName(ReservationInfo($rr)));
     if (empty($subject))
       $subject .= $reservationname;
     else if (mb_strlen($subject) < 80)
       $subject .= ", " . $reservationname;
   }
+  mergesort($games, uo_create_multi_key_comparator([['placename', true, true], ['fieldname', true, true], ['time', true, true]])); 
   $subject = _("Reservations") . " " . $subject;
 }
 
@@ -184,6 +185,22 @@ if (!empty($source['empty'])) {
   for ($i = 0; $i < $num; $i++) {
     $games[] = null; // DBResourceToArray(TimetableGames(null, null, 'all'))[0];
   }
+}
+
+function modeSelect($default) {
+  $html = "<select class='dropdown' name='roster'>";
+  if ($default)
+    $html .= "<option value='default_roster'>" . utf8entities(_("Print rosters if teams have rosters set.")) .
+      "</option>\n";
+  $html .= "<option value='force_roster'>" . utf8entities(_("Always print rosters.")) . "</option>\n";
+  $html .= "<option value='no_roster'>" . utf8entities(_("Never print rosters.")) . "</option>\n";
+  $html .= "</select><br />\n";
+
+  $html .= "<select class='dropdown' name='sheet_type'>";
+  $html .= "<option value='short'>" . utf8entities(_("Short sheets (multiple games per page)")) . "</option>\n";
+  $html .= "<option value='long'>" . utf8entities(_("Long sheets (one game per page)")) . "</option>\n";
+  $html .= "</select><br />\n";
+  return $html;
 }
 
 function searchModes() {
@@ -265,6 +282,8 @@ if (isset($_POST['create'])) {
     $printlist = $_POST['roster'] == 'force_roster';
     if ($_POST['roster'] != 'no_roster') {
       foreach ($games as &$gameRow) {
+        if ($gameRow == null)
+          continue;
         $homeplayers = array();
 
         $playerlist = TeamPlayerList($gameRow["hometeam"]);
@@ -301,27 +320,29 @@ if (isset($_POST['create'])) {
       }
     }
 
-    // FIXME!!
-    if (false) {
+    if ($_POST['sheet_type'] == 'long') {
       foreach ($games as $gameRow) {
         $printed = true;
+        if ($gameRow == null) {
+          $sGid = '';
+          $home = $visitor = $poolname = $time = $placename = null;
+        } else {
+          $sGid = $gameRow['game_id'];
+          // $sGid .= getChkNum($sGid);
 
-        $sGid = $gameRow['game_id'];
-        // $sGid .= getChkNum($sGid);
-
-        $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
-        $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
-
-        $pdf->PrintScoreSheet(U_($seasonname), $sGid, $home, $visitor,
-          U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']), $gameRow["time"],
-          U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']));
+          $home = empty($gameRow["hometeamname"]) ? U_($gameRow["phometeamname"]) : $gameRow["hometeamname"];
+          $visitor = empty($gameRow["visitorteamname"]) ? U_($gameRow["pvisitorteamname"]) : $gameRow["visitorteamname"];
+          $poolname = U_($gameRow['seriesname']) . ", " . U_($gameRow['poolname']);
+          $time = $gameRow["time"];
+          $placename = U_($gameRow["placename"]) . " " . _("Field") . " " . U_($gameRow['fieldname']);
+        }
+        $pdf->PrintScoreSheet(U_($seasonname), $sGid, $home, $visitor, $poolname, $time, $placename);
 
         if ($printlist)
-          $pdf->PrintPlayerList($gameRow['homeplayers'], $gameRow['visitorplayers']);
+          $pdf->PrintPlayerList($gameRow['homeplayers'] ?? [], $gameRow['visitorplayers'] ?? []);
       }
     } else {
       $printed = true;
-
       $pdf->PrintShortScoreSheets(U_($seasonname), $games);
     }
   }
@@ -343,14 +364,7 @@ if (isset($_POST['create'])) {
     $html .= getHiddenInput($_POST);
   }
 
-  $html .= "<fieldset>";
-  $html .= "<p><input type='radio' checked id='default_roster' name='roster' value='default_roster' />";
-  $html .= "<label for='default_roster'>" . _("Print rosters if teams have rosters set.") . "</label></p>\n";
-  $html .= "<p><input type='radio' id='force_roster' name='roster' value='force_roster' />";
-  $html .= "<label for='force_roster'>" . _("Always print rosters.") . "</label></p>\n";
-  $html .= "<p><input type='radio' id='no_roster' name='roster' value='no_roster' />";
-  $html .= "<label for='no_roster'>" . _("Never print rosters.") . "</label></p>\n";
-  $html . "</fieldset>\n";
+  $html .= modeSelect(true);
 
   $html .= "<input type='submit' name='create' value='" . utf8entities($create) . "'/>\n";
   $html .= "</form>";
@@ -378,19 +392,7 @@ if (isset($_POST['create'])) {
     $html .= "<input name='season_name' value='" . utf8entities(SeasonName($season)) . "'/><br />\n";
     $html .= "<input type='number' min=0 name='num_games' value='5' /><br />\n";
 
-    $html .= "<fieldset>";
-    $html .= "<p><input type='radio' id='force_roster' name='roster' value='force_roster' />";
-    $html .= "<label for='force_roster'>" . _("Always print rosters.") . "</label></p>\n";
-    $html .= "<p><input type='radio' checked id='no_roster' name='roster' value='no_roster' />";
-    $html .= "<label for='no_roster'>" . _("Never print rosters.") . "</label></p>\n";
-    $html . "</fieldset>\n";
-
-    $html .= "<fieldset>";
-    $html .= "<p><input type='radio' checked id='short_sheet' name='sheet_type' value='short' />";
-    $html .= "<label for='default_roster'>" . _("Short sheets (multiple games per page)") . "</label></p>\n";
-    $html .= "<p><input type='radio' id='long_sheet' name='sheet_type' value='long' />";
-    $html .= "<label for='default_roster'>" . _("Long sheets (one game per page)") . "</label></p>\n";
-    $html . "</fieldset>\n";
+    $html .= modeSelect(false);
 
     $html .= "<input type='submit' name='create' value='" . utf8entities($create) . "'/>\n";
     $html .= "</form>";
