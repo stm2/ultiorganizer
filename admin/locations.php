@@ -203,7 +203,6 @@ if ($mode == 'search') {
       $html .= "<p>" . utf8entities(_("Most recently used:")) . "</p>";
       $html .= "<ul>";
       foreach ($reservations as $res) {
-        debug_to_apache($res);
         $html .= "<li>" . ShortDate($res['date']) . " - <a href='?view=admin/reservations&amp;season=" .
           utf8entities($res['season_id']) . "'>" . $res['season_name'] . "</a> (" . $res['count'] . ")</li>\n";
       }
