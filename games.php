@@ -183,8 +183,8 @@ if (!$print) {
     MakeUrl(
       array('view' => 'ical', $filters['gamefilter'] => $id, 'time' => $filters['time'], 'order' => $filters['order'])),
     _("iCalendar (.ical)"));
-  addFooter(utf8entities(MakeUrl($filters, array('format' => 'grid'))), _("Grid (PDF)"));
-  addFooter(utf8entities(MakeUrl($filters, array('format' => 'list'))), _("List (PDF)"));
+  addFooter(MakeUrl($filters, array('format' => 'grid')), _("Grid (PDF)"));
+  addFooter(MakeUrl($filters, array('format' => 'list')), _("List (PDF)"));
 }
 
 showPage($title, $html);

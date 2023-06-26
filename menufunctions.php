@@ -312,7 +312,7 @@ function contentEnd() {
 
   echo "<div class='printlink'>";
   foreach ($footers as $link => $caption) {
-    echo " <a href='" . urlencode($link) . "'>$caption</a> |";
+    echo " <a href='" . $link . "'>$caption</a> |";
   }
   if (getPrintMode() == 0) {
     echo " <a href='?" . $querystring . "&amp;print=1'>" . utf8entities(_("Printable version")) . "</a></div>\n";
