@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-18 18:02+0200\n"
+"POT-Creation-Date: 2023-06-26 16:34+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -943,7 +943,9 @@ msgstr "Einige Spiele"
 
 #: admin/addseasonusers.php:255
 msgid "All team admins have scorekeeping rights for teams' games."
-msgstr "All team admins have scorekeeping rights for teams' games."
+msgstr ""
+"Alle Teamadministratoren haben Ergebniseingaberechte für die Spiele ihrer "
+"Teams."
 
 #: admin/addseasonusers.php:262
 msgid "User Id (s)"
