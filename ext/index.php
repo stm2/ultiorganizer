@@ -1,11 +1,13 @@
 <?php
 
-include_once 'lib/season.functions.php';
-include_once 'lib/common.functions.php';
-include_once 'lib/series.functions.php';
-include_once 'lib/team.functions.php';
-include_once 'lib/country.functions.php';
-include_once 'lib/configuration.functions.php';
+if (!isset($include_prefix)) die("this page should not be called directly");
+
+include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
+include_once $include_prefix . 'lib/series.functions.php';
+include_once $include_prefix . 'lib/team.functions.php';
+include_once $include_prefix . 'lib/country.functions.php';
+include_once $include_prefix . 'lib/configuration.functions.php';
 
 $title = _("Ultiorganizer links");
 $html = "";
@@ -26,7 +28,8 @@ $defaultcss=CUSTOMIZATIONS;
 
 $styles = array(urlencode("$baseurl/ext/$defaultcss.css"),urlencode("$baseurl/ext/black.css"),urlencode("$baseurl/ext/noborder.css"));
 $stylenames = array(_("default"),_("black and white"),_("no borders"));
-
+
+
 if(!empty($_POST['update'])){
 	$selstyle = $_POST['ownstyle'];
 	if(empty($selstyle) || strlen($selstyle)<8)
@@ -283,7 +286,8 @@ if(!empty($selteam)){
 		type='text/html' width='300px' height='200px'&gt;&lt;/object&gt;
 		</code></p>\n";
 		
-	$html .= "<p><object data='$baseurl/ext/teamscoreboard.php?Team=$selteam&amp;season=$season&amp;Style=$selstyle' type='text/html' width='300px' height='200px'></object></p>\n";}
+	$html .= "<p><object data='$baseurl/ext/teamscoreboard.php?Team=$selteam&amp;season=$season&amp;Style=$selstyle' type='text/html' width='300px' height='200px'></object></p>\n";
+}
 $html .= "</form>\n";
 
 showPage($title, $html);
