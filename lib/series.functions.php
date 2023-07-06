@@ -811,9 +811,8 @@ function CanDeleteSeries($seriesId) {
  * @return array PHP array of users
  */
 function SeriesTeamResponsibles($seriesId) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
   $season = SeriesSeasonId($seriesId);
-  if (isset($seasonrights[$season])) {
+  if (isSeasonAdmin($season)) {
     $query = sprintf(
       "SELECT u.userid, u.name, u.email
 			FROM uo_users u

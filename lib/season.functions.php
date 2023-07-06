@@ -421,8 +421,7 @@ function SeasonAllGames($season) {
  * @return array php array of users
  */
 function SeasonTeamAdmins($seasonId, $group = false) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
-  if (isset($seasonrights[$seasonId])) {
+  if (isSeasonAdmin($seasonId)) {
     if ($group) {
       $namefield = "";
       $groupclause = " GROUP BY u.userid";
@@ -456,9 +455,8 @@ function SeasonTeamAdmins($seasonId, $group = false) {
  * @return array php array of users
  */
 function SeasonAccreditationAdmins($seasonId, $group = false) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
-  if (isset($seasonrights[$seasonId])) {
-    if ($group) {
+  if (isSeasonAdmin($seasonId)) {
+      if ($group) {
       $namefield = "GROUP_CONCAT(j.name SEPARATOR ',')";
       $groupclause = " GROUP BY u.userid ";
       $orderclause = "";
@@ -491,14 +489,37 @@ function SeasonAccreditationAdmins($seasonId, $group = false) {
  * @return array php array of users
  */
 function SeasonGameAdmins($seasonId) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
-  if (isset($seasonrights[$seasonId])) {
+  if (isSeasonAdmin($seasonId)) {
     $query = sprintf(
       "SELECT u.userid, u.name, u.email, COUNT(*) AS games FROM uo_users u
   			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
   			LEFT JOIN uo_game g ON (SUBSTRING_INDEX(up.value, ':', -1)=g.game_id)
-  			WHERE g.game_id IN (SELECT gp.game FROM uo_game_pool gp 
-				LEFT JOIN uo_pool pool ON (pool.pool_id=gp.pool) 
+               LEFT JOIN uo_game_pool gp on (g.game_id = gp.game)
+               LEFT JOIN uo_pool pool ON (pool.pool_id=gp.pool)
+			LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
+			WHERE up.name = 'userrole' AND up.value LIKE 'gameadmin:%%' AND ser.season='%s' AND gp.timetable=1
+  			GROUP BY u.userid
+			ORDER BY u.name", mysql_adapt_real_escape_string($seasonId));
+    return DBQueryToArray($query);
+  } else {
+    die('Insufficient rights');
+  }
+}
+
+/**
+ * Alternative execution
+ * 
+ * @param string $seasonId
+ * @return array php array of users
+ */
+function SeasonGameAdmins2($seasonId) {
+  if (isSeasonAdmin($seasonId)) {
+    $query = sprintf(
+      "SELECT u.userid, u.name, u.email, COUNT(*) AS games FROM uo_users u
+  			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
+  			LEFT JOIN uo_game g ON (SUBSTRING_INDEX(up.value, ':', -1)=g.game_id)
+  			WHERE up.name = 'userrole' AND up.value LIKE 'gameadmin:%%' AND g.game_id IN (SELECT gp.game FROM uo_game_pool gp
+				LEFT JOIN uo_pool pool ON (pool.pool_id=gp.pool)
 				LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
 				WHERE ser.season='%s' AND gp.timetable=1)
   			GROUP BY u.userid
@@ -519,8 +540,7 @@ function SeasonGameAdmins($seasonId) {
  * @return array php array of users
  */
 function SeasonSeriesAdmins($seasonId, $group = false, $order = null) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
-  if (isset($seasonrights[$seasonId])) {
+  if (isSeasonAdmin($seasonId)) {
     if ($group) {
       $namefield = "GROUP_CONCAT(sr.series_id SEPARATOR ',') AS series_ids, GROUP_CONCAT(sr.name SEPARATOR ',') as seriesnames";
       $groupclause = "GROUP BY u.userid";
@@ -579,8 +599,7 @@ function SeriesAdmins($seriesId) {
  * @return array php array of users
  */
 function SeasonAdmins($seasonId) {
-  $seasonrights = getEditSeasons($_SESSION['uid']);
-  if (isset($seasonrights[$seasonId])) {
+  if (isSeasonAdmin($seasonId)) {
     $query = sprintf(
       "SELECT u.userid, u.name, u.email
 			FROM uo_users u
