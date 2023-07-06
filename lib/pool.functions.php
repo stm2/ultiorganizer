@@ -175,12 +175,11 @@ function PoolListAll() {
  * Get list of pool types.
  * @return array Hardcoded PHP array of pool types.
  */
-function PoolTypes() {
-  return array(
-      "roundrobin"=>1,
-      "playoff"=>2,
-      "swissdraw"=>3,
-      "crossmatch"=>4);
+function PoolTypes($name = null) {
+  $types = array("roundrobin" => 1, "playoff" => 2, "swissdraw" => 3, "crossmatch" => 4);
+  if ($name == null)
+    return $types;
+  return $types[$name] ?? null;
 }
 
 /**

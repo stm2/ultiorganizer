@@ -18,65 +18,97 @@ $seriesId = intval($_GET["series"]);
 if(!empty($_GET["season"]))
 $season = $_GET["season"];
 
+$pools = SeriesPools($seriesId);
+
 $title = _("Continuing pool");
+
+function js_string_encode($userinput) {
+  return str_replace(["'", '"'], ["\\&#39;", '\\&quot;'], ($userinput));
+}
 
 //common page
 pageTopHeadOpen($title);
 include_once 'lib/yui.functions.php';
 echo yuiLoad(array("utilities", "slider", "colorpicker", "datasource", "autocomplete"));
 ?>
+
 <script type="text/javascript">
-<!--
-function setId(id1,id2) 
-	{
-	var input = document.getElementById("hiddenDeleteId");
-	input.value = id1 + ":" + id2;
-	}
+//<![CDATA[
 
-function setId2(ids) 
-	{
-	var input = document.getElementById("hiddenDeleteId");
-	input.value = ids;
-	}
-	
-function checkMove(frompool, infield, outfield, pteamname) 
-	{
-	var frompool = document.getElementById(frompool);
-    var input = document.getElementById(infield);
-	var output = document.getElementById(outfield);
-	var pteamname = document.getElementById(pteamname);
+const ROUNDROBIN = <?php echo PoolTypes('roundrobin'); ?>;
+const PLAYOFF = <?php echo PoolTypes('playoff'); ?>;
+const SWISSDRAW = <?php echo PoolTypes('swissdraw'); ?>;
+const CROSSMATCH = <?php echo PoolTypes('crossmatch'); ?>;
 
-	if(input.value.length>0){
-		output.disabled = false;
-		pteamname.disabled = false;
-	}else{
-		output.disabled = true;
-		pteamname.disabled = true;
-	}
-	pteamname.value = frompool[frompool.selectedIndex].innerHTML + " " + input.value;
-	}
-	
-function checkMove2(frompool, infield, pteamname) 
-	{
-	var frompool = document.getElementById(frompool);
-    var input = document.getElementById(infield);
-	var pteamname = document.getElementById(pteamname);
+const WINNER = "<?php echo js_string_encode(_("{pool} winner {gameno}")); ?>";
+const LOSER = "<?php echo js_string_encode(_("{pool} loser {gameno}")); ?>";
 
-	if(input.value.length>0){
-		pteamname.disabled = false;
-	}else{
-		pteamname.disabled = true;
-	}
-	pteamname.value = frompool[frompool.selectedIndex].innerHTML + " " + input.value;
-	}	
-//-->
+var poolMap = new Map();
+
+{
+<?php
+foreach ($pools as $pool) {
+  echo "  poolMap.set('" . $pool['pool_id'] . "', " . $pool['type'] . ");\n";
+}
+?>
+}
+function setId(id1, id2) {
+  var input = document.getElementById("hiddenDeleteId");
+  input.value = id1 + ":" + id2;
+}
+
+function setId2(ids) {
+  var input = document.getElementById("hiddenDeleteId");
+  input.value = ids;
+}
+
+function teamName(poolselector, positionInput) {
+  var frompool = poolselector[poolselector.selectedIndex].value;
+  if (positionInput.value == '') return null;
+  if (poolMap.get(frompool) == ROUNDROBIN || poolMap.get(frompool) == SWISSDRAW)
+    return poolselector[poolselector.selectedIndex].innerHTML + " " + positionInput.value;
+  else if (poolMap.get(frompool) == PLAYOFF || poolMap.get(frompool) == CROSSMATCH) {
+    let pool = poolselector[poolselector.selectedIndex].innerHTML;
+    let gameno = Math.floor((parseInt(positionInput.value) + 1) / 2);
+    if (isNaN(gameno)) return null;
+    let winner = (positionInput.value % 2) == 1;
+    let phrase = winner ? WINNER : LOSER;
+    return phrase.replace(/\{pool\}/, pool).replace(/\{gameno\}/, gameno);
+  }
+  return null;
+}
+
+function checkMove(frompool, infield, outfield, pteamname) {
+  var frompool = document.getElementById(frompool);
+  var input = document.getElementById(infield);
+  var output = outfield != null ? document.getElementById(outfield) : null;
+  var pteamname = document.getElementById(pteamname);
+
+  if (input.value.length>0) {
+    if (output!=null)
+      output.disabled = false;
+    pteamname.disabled = false;
+  }else {
+    if (output!=null)
+      output.disabled = true;
+    pteamname.disabled = true;
+  }
+  pteamname.value = teamName(frompool, input);
+}
+
+//]]>
 </script>
+
 <?php
 pageTopHeadClose($title);
 leftMenu();
 contentStart();
 $poolinfo = PoolInfo($poolId);
-$basepool = 0;
+$typeRR = $poolinfo['type'] === PoolTypes('roundrobin');
+$typePlayoff = $poolinfo['type'] === PoolTypes('playoff');
+$typeSwiss = $poolinfo['type'] === PoolTypes('swissdraw');
+$typeCross = $poolinfo['type'] === PoolTypes('crossmatch');
+
 $err="";
 //process itself on submit
 if(!empty($_POST['add']))
@@ -84,7 +116,7 @@ if(!empty($_POST['add']))
   $backurl = utf8entities($_POST['backurl']);
 
   //series pool
-  if($poolinfo['type']==1 || $poolinfo['type']==3){
+  if($typeRR || $typeSwiss){
     $total_teams = 10;
 
     for($i=0;$i<$total_teams;$i++){
@@ -137,14 +169,14 @@ if(!empty($_POST['add']))
 }else if(!empty($_POST['remove_x'])){
   $backurl = utf8entities($_POST['backurl']);
 
-  if ($poolinfo['type'] == 1 || $poolinfo['type'] == 3) {
+  if ($typeRR || $typeSwiss) {
     $move = preg_split('/:/', $_POST['hiddenDeleteId']);
     if(PoolIsMoved($move[0],$move[1])){
       $err .= "<p class='warning'>"._("Team has already moved.")."</p>\n";
     }else{
       PoolDeleteMove($move[0],$move[1]);
     }
-  }else{
+  } else {
     $moves = preg_split('/:/', $_POST['hiddenDeleteId']);
 
     foreach($moves as $m){
@@ -165,40 +197,42 @@ echo "<h1>".utf8entities(U_(PoolSeriesName($poolId)).", ". U_(PoolName($poolId))
 
 
 $poolinfo = PoolInfo($poolId);
-$pools = SeriesPools($seriesId);
 
 //round robin or swissdrawn pool
-if($poolinfo['type']==1 || $poolinfo['type']==3){
-
-  echo "<table border='0' width='500'><tr>
-		<th>"._("From pool")."</th>
-		<th>"._("From position")."</th>
-		<th>"._("To pool")."</th>
-		<th>"._("To position")."</th>
-		<th>"._("Move games")."</th>
-		<th>"._("Name in Schedule")."</th>
-		<th>"._("Delete")."</th></tr>";
+if($typeRR || $typeSwiss){
 
   $moves = PoolMovingsToPool($poolId);
+  if (!empty($moves)) {
+    echo "<table border='0' width='500'><tr>
+		<th>" . _("From pool") . "</th>
+		<th>" . _("From position") . "</th>
+		<th>" . _("To pool") . "</th>
+		<th>" . _("To position") . "</th>
+		<th>" . _("Move games") . "</th>
+		<th>" . _("Name in Schedule") . "</th>
+		<th>" . _("Delete") . "</th></tr>";
 
-  foreach($moves as $row){
-    echo "<tr>";
-    echo "<td>".utf8entities($row['name'])."</td>";
-    echo "<td class='center'>".intval($row['fromplacing'])."</td>";
-    echo "<td>".utf8entities(PoolName($poolId))."</td>";
-    echo "<td class='center'>".intval($row['torank'])."</td>";
-    if (intval($poolinfo['mvgames']) == 0)
-      echo "<td>" . _("all") . "</td>";
-    else if (intval($poolinfo['mvgames']) == 1)
-      echo "<td>" . _("nothing") . "</td>";
-    else if (intval($poolinfo['mvgames']) == 2)
-      echo "<td>" . _("mutual") . "</td>";
-    echo "<td>" . utf8entities(U_($row['sname'])) . "</td>";
-    echo "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId(".$row['frompool'].",".$row['fromplacing'].");\"/></td>";
-    echo "</tr>\n";
+    foreach ($moves as $row) {
+      echo "<tr>";
+      echo "<td>" . utf8entities($row['name']) . "</td>";
+      echo "<td class='center'>" . intval($row['fromplacing']) . "</td>";
+      echo "<td>" . utf8entities(PoolName($poolId)) . "</td>";
+      echo "<td class='center'>" . intval($row['torank']) . "</td>";
+      if (intval($poolinfo['mvgames']) == 0)
+        echo "<td>" . _("all") . "</td>";
+      else if (intval($poolinfo['mvgames']) == 1)
+        echo "<td>" . _("nothing") . "</td>";
+      else if (intval($poolinfo['mvgames']) == 2)
+        echo "<td>" . _("mutual") . "</td>";
+      echo "<td>" . utf8entities(U_($row['sname'])) . "</td>";
+      echo "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" .
+        _("X") . "' onclick=\"setId(" . $row['frompool'] . "," . $row['fromplacing'] . ");\"/></td>";
+      echo "</tr>\n";
+    }
+    echo "</table>";
+    echo "<hr/>\n";
   }
-  echo "</table>";
-  echo "<hr/>\n";
+  
   echo "<h2>"._("Make transfer rule").":</h2>\n";
 
   echo "<table>";
@@ -215,12 +249,17 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
     echo "<tr>\n";
     echo "<td><select class='dropdown' id='frompool$i' name='frompool$i' onchange=\"checkMove('frompool$i','movefrom$i','moveto$i','pteamname$i');\">";
     foreach($pools as $pool){
-      if($pool['pool_id']!=$poolId){
-        echo "<option class='dropdown' value='".utf8entities($pool['pool_id'])."'>". utf8entities(U_($pool['name'])) ."</option>";
+      if ($pool['pool_id'] != $poolId) {
+        $selected = '';
+        if ($typeSwiss && $pool['type'] == PoolTypes('swissdraw') && $pool['pool_id'] == $poolId - 1) {
+          $selected = " selected='selected' ";
+        }
+        echo "<option class='dropdown'$selected value='" . utf8entities($pool['pool_id']) . "'>" . utf8entities(
+          U_($pool['name'])) . "</option>";
       }
     }
     echo "</select></td>\n";
-    echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove('frompool$i','movefrom$i','moveto$i','pteamname$i');\"/></td>\n";
+    echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' oninput=\"checkMove('frompool$i','movefrom$i','moveto$i','pteamname$i');\"/></td>\n";
     echo "<td><input class='input' id='moveto$i' name='moveto$i' disabled='disabled' maxlength='3' size='3' value='".($i+1)."'/></td>\n";
     //echo "<td><input class='input' id='pteamname$i' name='pteamname$i' size='50' maxlength='100' value=''/>\n";
     echo "<td>".TranslatedField2("pteamname$i","");
@@ -233,7 +272,7 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
   echo "</table>";
 
   //playoff or crossmatch pool
-}else if($poolinfo['type']==2 || $poolinfo['type']==4){
+}else if ($typePlayoff || $typeCross){
 
   $moves = PoolMovingsToPool($poolId);
 
@@ -285,49 +324,27 @@ if($poolinfo['type']==1 || $poolinfo['type']==3){
 		</tr>";
 
   $total_teams = 8;
+  for ($i = 0; $i < $total_teams; $i++) {
+    echo "<tr><td colspan='3'><b>" . _("Pair") . " " . ($i / 2 + 1) . "</b></td></tr>\n";
 
-  for($i=0;$i<$total_teams;$i++){
-
-    echo "<tr><td><b>"._("Pair")." ". ($i/2+1) ."</b></td></tr>\n";
-    echo "<tr>\n";
-    echo "<td><select class='dropdown' id='frompool$i' name='frompool$i' onchange=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\">";
-    foreach($pools as $pool){
-      if($pool['pool_id']!=$poolId){
-        echo "<option class='dropdown' ";
-        // added convenience when scheduling
-        // TODO: retrieve name or id of most likely pool where moves come from
-        if ($pool['name']=='Round 5 Swissdraw') {
-        	echo " selected='selected' ";
+    for ($j = $i; $j < $i + 2; $j++) {
+      echo "<tr>\n";
+      echo "<td><select class='dropdown' id='frompool$j' name='frompool$j' onchange=\"checkMove('frompool$j','movefrom$j', null, 'pteamname$j');\">";
+      foreach ($pools as $pool) {
+        if ($pool['pool_id'] != $poolId) {
+          echo "<option class='dropdown' value='" . utf8entities($pool['pool_id']) . "'>" .
+            utf8entities(U_($pool['name'])) . "</option>";
         }
-        echo "value='".utf8entities($pool['pool_id'])."'>". utf8entities(U_($pool['name'])) ."</option>";
       }
+      echo "</select></td>\n";
+      echo "<td><input class='input' id='movefrom$j' name='movefrom$j' maxlength='3' size='3' value='' oninput=\"checkMove('frompool$j','movefrom$j', null, 'pteamname$j');\"/></td>\n";
+      echo "<td>" . TranslatedField2("pteamname$j", "", '20em');
+      echo TranslationScript("pteamname$j");
+      echo "</td>";
+      echo "</tr>\n";
     }
-    echo "</select></td>\n";
-    echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\"/></td>\n";
-    echo "<td>".TranslatedField2("pteamname$i","", '20em');
-    echo TranslationScript("pteamname$i");
-    echo "</td>";
-    echo "</tr>\n";
+
     $i++;
-    echo "<tr>\n";
-    echo "<td><select class='dropdown' id='frompool$i' name='frompool$i' onchange=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\">";
-    foreach($pools as $pool){
-      if($pool['pool_id']!=$poolId){
-        echo "<option class='dropdown' ";
-        // added convenience when scheduling
-        // TODO: retrieve name or id of most likely pool where moves come from
-        if ($pool['name']=='Round 5 Swissdraw') {
-        	echo " selected='selected' ";
-        }
-        echo "value='".utf8entities($pool['pool_id'])."'>". utf8entities(U_($pool['name'])) ."</option>";
-      }
-    }
-    echo "</select></td>\n";
-    echo "<td><input class='input' id='movefrom$i' name='movefrom$i' maxlength='3' size='3' value='' onkeyup=\"checkMove2('frompool$i','movefrom$i','pteamname$i');\"/></td>\n";
-    echo "<td>".TranslatedField2("pteamname$i","", '20em');
-    echo TranslationScript("pteamname$i");
-    echo "</td>";
-    echo "</tr>\n";
   }
   echo "</table>";
 }
