@@ -1,3 +1,3 @@
 <?php
-header("location:/scorekeeper/?view=result");
+header("location:../scorekeeper/?view=result");
 ?>
