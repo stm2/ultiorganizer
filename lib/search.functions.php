@@ -11,7 +11,7 @@ function SearchSeason($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "</td></tr>\n";
   $ret .= "</table>\n";
   $ret .= "<p>";
-  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getHiddenInput($hiddenProperties);
   $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
@@ -93,7 +93,7 @@ function SearchPool($resultTarget, $hiddenProperties, $submitbuttons) {
   } else {
     $ret .= "<p>";
     $ret .= $results;
-    $ret .= getHiddenInput('', $hiddenProperties);
+    $ret .= getHiddenInput($hiddenProperties);
     $ret .= getSubmitButtons($submitbuttons);
     $ret .= "</p>";
     $ret .= "</form>";
@@ -127,7 +127,7 @@ function SearchTeam($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='teams' action='?".$resultTarget."'>\n";
   $ret .= "<p>";
   $ret .= TeamResults();
-  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getHiddenInput($hiddenProperties);
   $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
@@ -182,7 +182,7 @@ function SearchUser($resultTarget, $hiddenProperties, $submitbuttons) {
   if (!empty($_POST['registerrequest'])) {
     $ret .= getHiddenInput('registerrequest', 'registerrequest');
   }
-  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getHiddenInput($hiddenProperties);
   $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</div>";
   $ret .= "</form>";
@@ -229,7 +229,7 @@ function SearchPlayer($resultTarget, $hiddenProperties, $submitbuttons) {
   if (!empty($_POST['registerrequest'])) {
     $ret .= getHiddenInput('registerrequest', 'registerrequest');
   }
-  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getHiddenInput($hiddenProperties);
   $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</div>";
   $ret .= "</form>";
@@ -280,7 +280,7 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= $results;
     $ret .= "<p>";
     $ret .= getHiddenInput();
-    $ret .= getHiddenInput('', $hiddenProperties);
+    $ret .= getHiddenInput($hiddenProperties);
     if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
       $ret .= getSubmitButtons($submitbuttons);
     }
@@ -336,7 +336,7 @@ function SearchGame($resultTarget, $hiddenProperties, $submitbuttons) {
   $ret .= "<form method='post' id='games' action='?".$resultTarget."'>\n";
   $ret .= GameResults();
   $ret .= "<p>";
-  $ret .= getHiddenInput('', $hiddenProperties);
+  $ret .= getHiddenInput($hiddenProperties);
   $ret .= getSubmitButtons($submitbuttons);
   $ret .= "</p>";
   $ret .= "</form>";
