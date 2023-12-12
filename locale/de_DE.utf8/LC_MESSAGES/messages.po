@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-26 16:34+0200\n"
+"POT-Creation-Date: 2023-07-06 11:44+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -129,7 +129,7 @@ msgstr "Turnier"
 #: cust/gummis/pdfprinter.php:1043 cust/gummis/pdfprinter.php:1076
 #: cust/slkl/pdfprinter.php:933 cust/wfdf/pdfprinter.php:965
 #: cust/windmill/pdfprinter.php:957 gameplay.php:178
-#: mobile/addscoresheet.php:190 test/bla.php:25 user/adddefensesheet.php:177
+#: mobile/addscoresheet.php:190 test/bla.php:42 user/adddefensesheet.php:177
 #: user/adddefensesheet.php:369 user/addmedialink.php:149
 #: user/addmedialink.php:167 user/addscoresheet.php:357
 #: user/addscoresheet.php:544
@@ -251,7 +251,7 @@ msgstr "Saison"
 #: admin/locations.php:192 admin/seasongames.php:250 admin/seasonmoves.php:226
 #: admin/seasonpolls.php:93 admin/seasonpools.php:283
 #: admin/seasonseries.php:162 admin/seasonstandings.php:537
-#: admin/seasonteams.php:365 admin/seasonteams.php:479
+#: admin/seasonteams.php:366 admin/seasonteams.php:480
 #: admin/select_teams.php:119 admin/serieteams.php:223 admin/serverconf.php:393
 #: admin/translations.php:136 mobile/addfirstoffence.php:45
 #: mobile/addhalftime.php:34 mobile/addofficial.php:25
@@ -273,9 +273,9 @@ msgstr "Speichern"
 #: admin/addseasonpools.php:253 admin/addseasons.php:255
 #: admin/addseasonseries.php:133 admin/addseasonteams.php:220
 #: admin/addserieformats.php:182 admin/adduser.php:91 admin/clubs.php:48
-#: admin/clubs.php:86 admin/locations.php:122 admin/poolmoves.php:335
+#: admin/clubs.php:86 admin/locations.php:122 admin/poolmoves.php:349
 #: admin/seasonpools.php:279 admin/seasons.php:116 admin/seasonseries.php:155
-#: admin/seasonteams.php:227 admin/seasonteams.php:481
+#: admin/seasonteams.php:228 admin/seasonteams.php:482
 #: admin/serieformats.php:49 admin/translations.php:132
 #: user/addextraemail.php:88 user/addpolloption.php:223 user/enrollteam.php:143
 #: user/teamplayers.php:258 user/userinfo.php:403 user/userinfo.php:534
@@ -288,7 +288,7 @@ msgstr "Hinzufügen"
 #: admin/addteamadmins.php:83 admin/dbbackup.php:114 admin/dbequalize.php:121
 #: admin/dbrestore.php:24 admin/dbrestoring.php:500 admin/editgame.php:224
 #: admin/eventdataimport.php:189 admin/executesql.php:134 admin/failed.php:25
-#: admin/poolmoves.php:337 admin/schedule.php:342 admin/schedule.php:557
+#: admin/poolmoves.php:351 admin/schedule.php:342 admin/schedule.php:557
 #: admin/seasonmoves.php:227 admin/select_teams.php:124
 #: admin/serieteams.php:343 admin/success.php:25 lib/user.functions.php:195
 #: menufunctions.php:310 plugins/lisence_modifier.php:66
@@ -476,7 +476,7 @@ msgstr "Überkreuz"
 msgid "Special playoff template"
 msgstr "Spezielle Playout-Baum-Vorlage"
 
-#: admin/addseasonpools.php:307 admin/poolmoves.php:178
+#: admin/addseasonpools.php:307 admin/poolmoves.php:209
 #: admin/seasonmoves.php:162
 msgid "Move games"
 msgstr "Spiele mitnehmen"
@@ -506,7 +506,7 @@ msgstr "Sichtbar"
 msgid "Played"
 msgstr "Gespielt"
 
-#: admin/addseasonpools.php:353 admin/poolmoves.php:21
+#: admin/addseasonpools.php:353 admin/poolmoves.php:23
 msgid "Continuing pool"
 msgstr "Folge-Gruppe"
 
@@ -532,7 +532,7 @@ msgstr "Farbe"
 #: admin/select_userrole.php:59 admin/select_userrole.php:62
 #: admin/select_userrole.php:65 admin/select_userrole.php:68
 #: admin/select_userrole.php:71 admin/select_userrole.php:74
-#: admin/select_userrole.php:77 ext/index.php:61
+#: admin/select_userrole.php:77 ext/index.php:64
 #: plugins/generate_players.php:59 plugins/generate_teams.php:57
 #: plugins/import_csv_players.php:79 plugins/simulate_games.php:174
 #: plugins/update_pool_colors.php:67 user/select_poolselector.php:23
@@ -866,10 +866,10 @@ msgid "Invalid user"
 msgstr "Ungültiger Benutzer"
 
 #: admin/addseasonusers.php:129 admin/addseasonusers.php:307
-#: admin/addteamadmins.php:63 admin/poolmoves.php:197 admin/poolmoves.php:271
+#: admin/addteamadmins.php:63 admin/poolmoves.php:228 admin/poolmoves.php:307
 #: admin/seasonmoves.php:167 admin/seasonpools.php:241
 #: admin/seasonseries.php:118 admin/seasonstandings.php:402
-#: admin/seasonstandings.php:451 admin/seasonteams.php:204
+#: admin/seasonstandings.php:451 admin/seasonteams.php:205
 #: admin/serieformats.php:45 admin/serverconf.php:354
 #: admin/translations.php:122 lib/common.functions.php:1475
 #: lib/search.functions.php:736
@@ -1414,7 +1414,7 @@ msgid "Select pools for deletion (experimental!)"
 msgstr "Gruppen zur Löschung auswählen (experimentell!)"
 
 #: admin/delete.php:41 admin/deletepoll.php:54 admin/locations.php:194
-#: admin/poolmoves.php:180 admin/poolmoves.php:248 admin/seasonpolls.php:79
+#: admin/poolmoves.php:211 admin/poolmoves.php:284 admin/seasonpolls.php:79
 #: admin/users.php:38 menufunctions.php:1172 mobile/deletescore.php:24
 #: mobile/deletescore.php:44 scorekeeper/deletescore.php:51
 #: user/addpolloption.php:226 user/teamplayers.php:167 user/votepoll.php:202
@@ -1492,10 +1492,10 @@ msgid "Reset played games"
 msgstr "Beendete Spiele zurücksetzen"
 
 #: admin/delete.php:239 admin/eventdataimport.php:526 admin/seasonpools.php:284
-#: admin/seasonseries.php:163 admin/seasonteams.php:278
-#: admin/seasonteams.php:341 admin/seasonteams.php:346
-#: admin/seasonteams.php:366 admin/seasonteams.php:425
-#: admin/seasonteams.php:483 admin/select_userrole.php:33
+#: admin/seasonseries.php:163 admin/seasonteams.php:279
+#: admin/seasonteams.php:342 admin/seasonteams.php:347
+#: admin/seasonteams.php:367 admin/seasonteams.php:426
+#: admin/seasonteams.php:484 admin/select_userrole.php:33
 #: admin/select_userrole.php:56 admin/select_userrole.php:59
 #: admin/select_userrole.php:62 admin/select_userrole.php:65
 #: admin/select_userrole.php:68 admin/select_userrole.php:71
@@ -1847,7 +1847,7 @@ msgstr "IDs auflösen"
 msgid "Only user"
 msgstr "Nur Benutzer"
 
-#: admin/eventviewer.php:82 admin/seasonteams.php:302
+#: admin/eventviewer.php:82 admin/seasonteams.php:303
 msgid "Refresh"
 msgstr "Neu laden"
 
@@ -1941,7 +1941,7 @@ msgid "Search"
 msgstr "Suchen"
 
 #: admin/locations.php:137 admin/seasongames.php:235 admin/seasonpools.php:237
-#: admin/seasonteams.php:201
+#: admin/seasonteams.php:202
 msgid "edit details"
 msgstr "Detail ändern"
 
@@ -2236,75 +2236,83 @@ msgstr "Erzeugung eines einzelnen Spiels"
 msgid "Create"
 msgstr "Erzeugen"
 
-#: admin/poolmoves.php:98 admin/poolmoves.php:125
+#: admin/poolmoves.php:43
+msgid "{pool} winner {gameno}"
+msgstr "{pool} Sieger {gameno}"
+
+#: admin/poolmoves.php:44
+msgid "{pool} loser {gameno}"
+msgstr "{pool} Verlierer {gameno}"
+
+#: admin/poolmoves.php:130 admin/poolmoves.php:157
 msgid "No scheduling name given"
 msgstr "Kein Spielplanname gegeben"
 
-#: admin/poolmoves.php:101 admin/poolmoves.php:128
+#: admin/poolmoves.php:133 admin/poolmoves.php:160
 msgid "Transfer already exists"
 msgstr "Transfer existiert schon"
 
-#: admin/poolmoves.php:143 admin/poolmoves.php:153
+#: admin/poolmoves.php:175 admin/poolmoves.php:185
 msgid "Team has already moved."
 msgstr "Team wurde schon transferiert."
 
-#: admin/poolmoves.php:174 admin/poolmoves.php:206 admin/poolmoves.php:241
-#: admin/poolmoves.php:247 admin/poolmoves.php:282 admin/seasonmoves.php:157
+#: admin/poolmoves.php:205 admin/poolmoves.php:237 admin/poolmoves.php:277
+#: admin/poolmoves.php:283 admin/poolmoves.php:318 admin/seasonmoves.php:157
 #: admin/seasonstandings.php:463 admin/serieteams.php:261
 #: admin/smsmoves.php:100 lib/swissdraw.functions.php:198
 #: plugins/reassign_playoffpools.php:47
 msgid "From pool"
 msgstr "Von Gruppe"
 
-#: admin/poolmoves.php:175 admin/poolmoves.php:207 admin/poolmoves.php:283
+#: admin/poolmoves.php:206 admin/poolmoves.php:238 admin/poolmoves.php:319
 #: admin/seasonmoves.php:158 admin/smsmoves.php:101
 msgid "From position"
 msgstr "Von Position"
 
-#: admin/poolmoves.php:176 admin/seasonmoves.php:159
+#: admin/poolmoves.php:207 admin/seasonmoves.php:159
 #: admin/seasonstandings.php:466 admin/serieteams.php:265
 #: admin/smsmoves.php:102 lib/swissdraw.functions.php:202
 #: plugins/reassign_playoffpools.php:51
 msgid "To pool"
 msgstr "Nach Gruppe"
 
-#: admin/poolmoves.php:177 admin/poolmoves.php:208 admin/seasonmoves.php:160
+#: admin/poolmoves.php:208 admin/poolmoves.php:239 admin/seasonmoves.php:160
 #: admin/smsmoves.php:103
 msgid "To position"
 msgstr "Nach Position"
 
-#: admin/poolmoves.php:179 admin/poolmoves.php:209 admin/poolmoves.php:243
-#: admin/poolmoves.php:245 admin/poolmoves.php:284 admin/serieteams.php:266
+#: admin/poolmoves.php:210 admin/poolmoves.php:240 admin/poolmoves.php:279
+#: admin/poolmoves.php:281 admin/poolmoves.php:320 admin/serieteams.php:266
 #: lib/swissdraw.functions.php:203 plugins/reassign_playoffpools.php:52
 msgid "Name in Schedule"
 msgstr "Name im Spielplan"
 
-#: admin/poolmoves.php:191 admin/seasonmoves.php:195
+#: admin/poolmoves.php:222 admin/seasonmoves.php:195
 msgid "all"
 msgstr "alles"
 
-#: admin/poolmoves.php:193 admin/seasonmoves.php:197
+#: admin/poolmoves.php:224 admin/seasonmoves.php:197
 msgid "nothing"
 msgstr "nichts"
 
-#: admin/poolmoves.php:195 admin/seasonmoves.php:199
+#: admin/poolmoves.php:226 admin/seasonmoves.php:199
 msgid "mutual"
 msgstr "gegenseitig"
 
-#: admin/poolmoves.php:202 admin/poolmoves.php:279
+#: admin/poolmoves.php:233 admin/poolmoves.php:315
 msgid "Make transfer rule"
 msgstr "Neue Transfer-Regel"
 
-#: admin/poolmoves.php:242 admin/poolmoves.php:246 admin/serieteams.php:262
+#: admin/poolmoves.php:278 admin/poolmoves.php:282 admin/serieteams.php:262
 #: lib/swissdraw.functions.php:199 plugins/reassign_playoffpools.php:48
 msgid "From pos."
 msgstr "Von Pos."
 
-#: admin/poolmoves.php:261
+#: admin/poolmoves.php:297
 msgid "vs."
 msgstr "gg."
 
-#: admin/poolmoves.php:291
+#: admin/poolmoves.php:325
 msgid "Pair"
 msgstr "Paar"
 
@@ -2410,7 +2418,7 @@ msgstr "%d&thinsp;min."
 msgid "Unscheduled"
 msgstr "Nicht im Spielplan"
 
-#: admin/schedule.php:365 ext/export.php:36 ext/index.php:64
+#: admin/schedule.php:365 ext/export.php:36 ext/index.php:67
 #: plugins/generate_players.php:50 plugins/generate_teams.php:48
 #: plugins/import_csv_players.php:70 plugins/import_csv_teams.php:80
 #: plugins/import_csv_wu23c2010.php:222 plugins/import_csv_wucc2010.php:165
@@ -2424,7 +2432,7 @@ msgstr "Turnier wählen"
 msgid "All divisions"
 msgstr "Alle Klassen"
 
-#: admin/schedule.php:397 ext/index.php:218
+#: admin/schedule.php:397 ext/index.php:221
 msgid "All pools"
 msgstr "Alle Gruppen"
 
@@ -2454,11 +2462,11 @@ msgstr ""
 "aufgenommen werden. Änderung Sie die Spieldauer oder die Länge des Zeitslots "
 "für die Gruppe %s ..."
 
-#: admin/schedule.php:708
+#: admin/schedule.php:713
 msgid "Save changes?"
 msgstr "Änderungen speichern?"
 
-#: admin/schedule.php:713
+#: admin/schedule.php:718
 msgid ""
 "Do you want to leave anyway? If you select Yes, you will lose all your "
 "changes."
@@ -2466,7 +2474,7 @@ msgstr ""
 "Wollen Sie trotzdem die Seite verlassen? Wenn Sie Ja auswählen, gehen Ihre "
 "Änderungen verloren."
 
-#: admin/schedule.php:851
+#: admin/schedule.php:856
 msgid "Unknown error."
 msgstr "Unbekannter Fehler."
 
@@ -2709,7 +2717,7 @@ msgstr "Eigenschaften ändern"
 msgid "Vote"
 msgstr "Abstimmen"
 
-#: admin/seasonpolls.php:100 ext/index.php:99 plugins/generate_players.php:62
+#: admin/seasonpolls.php:100 ext/index.php:102 plugins/generate_players.php:62
 #: plugins/generate_teams.php:60 plugins/import_csv_players.php:82
 #: plugins/reassign_playoffpools.php:243
 msgid "Select division"
@@ -3010,7 +3018,7 @@ msgstr "Abkürzung"
 msgid "Contact person"
 msgstr "Kontaktperson"
 
-#: admin/seasonteams.php:128 admin/seasonteams.php:197 clubcard.php:133
+#: admin/seasonteams.php:128 admin/seasonteams.php:198 clubcard.php:133
 #: clubcard.php:157 countrycard.php:26 countrycard.php:51
 #: cust/bula/pdfprinter.php:107 cust/bula/pdfprinter.php:229
 #: cust/default/pdfprinter.php:166 cust/default/pdfprinter.php:264
@@ -3026,87 +3034,87 @@ msgstr "Kontaktperson"
 msgid "Roster"
 msgstr "Spielerliste"
 
-#: admin/seasonteams.php:193 menufunctions.php:1285 user/respgames.php:73
+#: admin/seasonteams.php:194 menufunctions.php:1285 user/respgames.php:73
 msgid "..."
 msgstr "..."
 
-#: admin/seasonteams.php:264
+#: admin/seasonteams.php:265
 #, php-format
 msgid "No matching divisions ('%s')"
 msgstr "Keine passenden Klassen ('%s')"
 
-#: admin/seasonteams.php:267 admin/seasonteams.php:305
+#: admin/seasonteams.php:268 admin/seasonteams.php:306
 msgid "Add teams from:"
 msgstr "Teams hinzufügen von:"
 
-#: admin/seasonteams.php:274
+#: admin/seasonteams.php:275
 #, php-format
 msgid "List only divisions with matching type ('%s')"
 msgstr "Nur Klassen mit passendem Type ('%s') auflisten"
 
-#: admin/seasonteams.php:276 admin/seasonteams.php:339
+#: admin/seasonteams.php:277 admin/seasonteams.php:340
 msgid "Load..."
 msgstr "Laden..."
 
-#: admin/seasonteams.php:293
+#: admin/seasonteams.php:294
 msgid "Error: could not read DFV data!"
 msgstr "Fehler: konnte DFV-Daten nicht einlesen!"
 
-#: admin/seasonteams.php:299
+#: admin/seasonteams.php:300
 #, php-format
 msgid "Data retrieved from DFV (%s) at %s"
 msgstr "Daten von DFV (%s) abgerufen am %s"
 
-#: admin/seasonteams.php:373
+#: admin/seasonteams.php:374
 msgid "Import teams from other division"
 msgstr "Teams aus anderer Division einlesen"
 
-#: admin/seasonteams.php:375
+#: admin/seasonteams.php:376
 msgid "Import teams from DFV"
 msgstr "Teams von DFV einlesen"
 
-#: admin/seasonteams.php:389
+#: admin/seasonteams.php:390
 #, php-format
 msgid "Teams from %s"
 msgstr "Teams von %s"
 
-#: admin/seasonteams.php:413
+#: admin/seasonteams.php:414
 msgid "Add new teams"
 msgstr "Neue Teams hinzufügen"
 
-#: admin/seasonteams.php:416
+#: admin/seasonteams.php:417
 #, php-format
 msgid "Rename %s teams with lowest seed #"
 msgstr ""
 "Erste %s Teams (nach aufsteigend sortierter Setzreihenfolge) umbenennen"
 
-#: admin/seasonteams.php:420
+#: admin/seasonteams.php:421
 msgid "Leave seed # blank for teams you do not want to import."
 msgstr ""
 "Lassen Sie Setzreihenfolge # leer, wenn Sie ein Team nicht importieren "
 "wollen."
 
-#: admin/seasonteams.php:423
+#: admin/seasonteams.php:424
 msgid "Import..."
 msgstr "Importieren..."
 
-#: admin/seasonteams.php:469
+#: admin/seasonteams.php:470
 msgid "Teams have not been saved!"
 msgstr "Teams wurden nicht gespeichert!"
 
-#: admin/seasonteams.php:471
+#: admin/seasonteams.php:472
 msgid "Replace teams?"
 msgstr "Teams ersetzen?"
 
-#: admin/seasonteams.php:473
+#: admin/seasonteams.php:474
 msgid "Add teams?"
 msgstr "Teams hinzufügen?"
 
-#: admin/seasonteams.php:490
+#: admin/seasonteams.php:491
 msgid "Add Team Admins"
 msgstr "Teamadministratoren hinzufügen"
 
-#: admin/seasonteams.php:491
+#: admin/seasonteams.php:492
 msgid "Print team rosters"
 msgstr "Spielerlisten drucken"
 
@@ -5287,7 +5295,7 @@ msgstr "Summer"
 msgid "Final"
 msgstr "Finale"
 
-#: cust/slkl/translations.inc.php:9 lib/pool.functions.php:264
+#: cust/slkl/translations.inc.php:9 lib/pool.functions.php:263
 #: statistics.php:40
 msgid "Bronze"
 msgstr "Bronze"
@@ -5440,27 +5448,27 @@ msgstr "Ändern"
 msgid "No image"
 msgstr "Kein Bild"
 
-#: ext/index.php:10 menufunctions.php:985
+#: ext/index.php:12 menufunctions.php:985
 msgid "Ultiorganizer links"
 msgstr "Ultiorganizer links"
 
-#: ext/index.php:28
+#: ext/index.php:30
 msgid "default"
 msgstr "standard"
 
-#: ext/index.php:28
+#: ext/index.php:30
 msgid "black and white"
 msgstr "schwarz und weiß"
 
-#: ext/index.php:28
+#: ext/index.php:30
 msgid "no borders"
 msgstr "ohne Ränder"
 
-#: ext/index.php:56
+#: ext/index.php:59
 msgid "Embedding Ultiorganizer into other pages"
 msgstr "Ultiorganizer in andere Seiten einbinden"
 
-#: ext/index.php:58
+#: ext/index.php:61
 msgid ""
 "You can embed the following statistics from ultiorganizer directly into your "
 "own pages"
@@ -5468,65 +5476,65 @@ msgstr ""
 "Sie können die folgenden Stats aus Ultiorganizer direkt auf Ihrer eigenen "
 "Seite einbinden"
 
-#: ext/index.php:80
+#: ext/index.php:83
 msgid "Select grouping"
 msgstr "Gruppe"
 
-#: ext/index.php:116
+#: ext/index.php:119
 msgid "Select country"
 msgstr "Land wählen"
 
-#: ext/index.php:121
+#: ext/index.php:124
 msgid "Select pool"
 msgstr "Gruppe wählen"
 
-#: ext/index.php:138
+#: ext/index.php:141
 msgid "Select team"
 msgstr "Team wählen"
 
-#: ext/index.php:155
+#: ext/index.php:158
 msgid "Select style"
 msgstr "Stil wählen"
 
-#: ext/index.php:168
+#: ext/index.php:171
 msgid "or a link to a style definition of your own"
 msgstr "oder einen Link zu einer eigenen Stil-Datei (CSS)"
 
-#: ext/index.php:172
+#: ext/index.php:175
 msgid "Select and Update"
 msgstr "Auswahl und Update"
 
-#: ext/index.php:175
+#: ext/index.php:178
 msgid "RSS"
 msgstr "RSS"
 
-#: ext/index.php:178 ext/index.php:181 ext/index.php:184 ext/index.php:196
-#: ext/index.php:203 ext/rss.php:46 ext/rss.php:52 ext/rss.php:200
+#: ext/index.php:181 ext/index.php:184 ext/index.php:187 ext/index.php:199
+#: ext/index.php:206 ext/rss.php:46 ext/rss.php:52 ext/rss.php:200
 #: ext/rss.php:202
 msgid "Ultimate results"
 msgstr "Endergebnisse"
 
-#: ext/index.php:190 lib/url.functions.php:67
+#: ext/index.php:193 lib/url.functions.php:67
 msgid "Twitter"
 msgstr "Twitter"
 
-#: ext/index.php:210
+#: ext/index.php:213
 msgid "Score counter"
 msgstr "Ergebnis-Zähler"
 
-#: ext/index.php:228
+#: ext/index.php:231
 msgid "All games in selected grouping"
 msgstr "Alle Spiele in gewählter Gruppierung"
 
-#: ext/index.php:239
+#: ext/index.php:242
 msgid "Selected pool rankings and scoreboard"
 msgstr ""
 
-#: ext/index.php:256
+#: ext/index.php:259
 msgid "Selected country's teams pool rankings and game result"
 msgstr ""
 
-#: ext/index.php:265
+#: ext/index.php:268
 msgid "Selected team's games and scoreboard"
 msgstr "Spiele und Scoreboard eines ausgewählten Teams"
 
@@ -6020,15 +6028,15 @@ msgstr "Gesamtpunkte"
 msgid "Option suggestion"
 msgstr "Wahlmöglichkeiten vorschlagen"
 
-#: lib/pool.functions.php:231 lib/pool.functions.php:258
+#: lib/pool.functions.php:230 lib/pool.functions.php:257
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: lib/pool.functions.php:260 statistics.php:40
+#: lib/pool.functions.php:259 statistics.php:40
 msgid "Gold"
 msgstr "Gold"
 
-#: lib/pool.functions.php:262 statistics.php:40
+#: lib/pool.functions.php:261 statistics.php:40
 msgid "Silver"
 msgstr "Silber"
 
