@@ -85,16 +85,16 @@ if(!empty($_POST['save']) && empty($errors)) {
 
 }else{
   $html .= "<label for='game'>"._("Game number from Scoresheet").":</label>";
-  $html .= "<input type='number' id='game' name='game' size='6' maxlength='5' value='$game' onkeyup='validNumber(this);'/> ";
+  $html .= "<input type='number' id='game' name='game' size='6' maxlength='5' value='$game' onkeyup='validNumber(this);'/><br />";
 
   $html .= "<label for='home'>"._("Home team goals").":</label>";
-  $html .= "<input type='number' id='home' name='home' size='3' maxlength='3' onkeyup='validNumber(this);'/> ";
+  $html .= "<input type='number' id='home' name='home' size='3' maxlength='3' onkeyup='validNumber(this);'/><br /> ";
   
   $html .= "<label for='away'>"._("Visitor team goals").":</label>";
-  $html .= "<input type='number' id='away' name='away' size='3' maxlength='3' onkeyup='validNumber(this);'/> ";
+  $html .= "<input type='number' id='away' name='away' size='3' maxlength='3' onkeyup='validNumber(this);'/><br /> ";
   
-  $html .= "<input type='submit' name='save' data-ajax='false' value='"._("Save")."'/>";
-  $html .= "<a href='?view=login' data-role='button' data-ajax='false'>"._("Games list")."</a>";
+  $html .= "<input type='submit' name='save' data-ajax='false' value='"._("Save")."'/><br /><br />";
+  $html .= "<a href='?view=login' data-role='button' data-ajax='false'>"._("Games list")."</a><br />";
 }
 
 
