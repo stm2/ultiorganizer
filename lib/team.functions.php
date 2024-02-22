@@ -179,6 +179,13 @@ function TeamPlayedSeasons($name, $type)
   return $result;
 }
 
+function TeamSeries($teamId)
+{
+  $query = sprintf("SELECT series FROM uo_team as team WHERE team_id=%d", (int)$teamId);
+  
+  return DBQueryToValue($query);
+}
+
 function TeamSeason($teamId)
 {
   $query = sprintf("SELECT ser.season as season FROM uo_team as team

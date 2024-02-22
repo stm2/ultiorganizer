@@ -283,27 +283,82 @@ function showSeasonSelection($seasonId, $series_id, $importstage) {
   return $html;
 }
 
+function matching_division(array $tournament, array $division, array $tournament_filters, array $division_filters) : bool {
+  foreach ($tournament_filters as $key => $value) {
+    if (!empty($value) && $tournament[$key] != $value) return false;    
+  }
+  foreach ($division_filters as $key => $value) {
+    if (!empty($value) && $division[$key] != $value) return false;
+  }
+  
+  return true;
+}
+
+function add_filter(string &$html, string $id, string $name, array $options, string $default = '') :string {
+  $html .= "<tr><td><label for='{$id}'>$name</label></td><td><select id='{$id}' name='$id' />";
+  $html .= "<option value=''/>\n";
+  $selected = $_POST[$id] ?? $default;
+  foreach ($options as $opt => $dummy) {
+    $select = ($opt == $selected) ? "selected='1' " : ""; 
+    $html .= "<option value='$opt' $select>$opt</opt>\n";
+  }
+  $html .= "</select></td></tr>\n";
+  return $selected;
+}
+  
+function fill_choices(array $tournaments, $tournament_attributes, $division_attributes): array {
+  $choices = [];
+  foreach ($tournaments as $tournament) {
+    foreach ($tournament_attributes as $att) {
+      $choices[$att][$tournament[$att]] = 1;
+    }
+    $divs = $tournament['divisions'];
+    foreach ($divs as $div) {
+      foreach ($division_attributes as $att) {
+        $choices[$att][$div[$att]] = 1;
+      }
+    }
+  }
+  return $choices;
+}
+
 function showDFVSelection($seasonId, $series_id, $importstage) {
   $data = DFVTournaments(($_GET['refresh'] ?? 0) == 1);
-  $tournaments = $data['tournaments'];
+  $tournaments = $data['tournaments'] ?? null;
 
   $seaLink = urlencode($seasonId);
   $html = "";
 
   if ($tournaments == null) {
-    $html .= "<p>" . utf8entities(_("Error: could not read DFV data!")) . "</p>";
+    $html .= "<p>" . utf8entities(_("Error: could not read DFV data!"));
     $tournaments = [];
+  } else {
+    $html .= "<p>" .
+      utf8entities(
+        sprintf(_("Data retrieved from DFV (%s) at %s"), utf8entities($data['source']),
+          utf8entities(EpocToMysql($data['retrieved']))));
   }
-
-  $html .= "<p>" .
-    utf8entities(
-      sprintf(_("Data retrieved from DFV (%s) at %s"), utf8entities($data['source']),
-        utf8entities(EpocToMysql($data['retrieved'])))) . " " .
-    "<a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series=${series_id}&amp;importstage=$importstage&amp;refresh=1'>" .
+  $html .= " <a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series=${series_id}&amp;importstage=$importstage&amp;refresh=1'>" .
     utf8entities(_("Refresh")) . "</a></p>\n";
 
+  if (!empty($data['error']))
+    $html .= "<p>" . $data['error'] . "</p>\n";
+
+    
   if (count($tournaments)) {
-    $html .= "<p>" . utf8entities(_("Add teams from:")) . " ";
+    $html .= "<table>";
+    $choices = fill_choices($tournaments, ['year', 'surface'], ['divisionType', 'divisionAge']);
+    
+    $year_filter = add_filter($html, 'year_filter', _('Year'), $choices['year'], date('Y', time()));
+    $surface_filter = add_filter($html, 'surface_filter', _('Surface'), $choices['surface']);
+    $division_filter = add_filter($html, 'division_filter', _('Division'), $choices['divisionType'], division_to_dfv(SeriesInfo($series_id)['type']));
+    $age_filter = add_filter($html, 'age_filter', _('Age'), $choices['divisionAge']);
+    
+    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='filter_division' type='submit' value='" . utf8entities(_("Show matching divisions...")) .
+    "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
+    
+    $html .= "<tr><td>" . utf8entities(_("Add teams from:")) . "</td><td>";
+    
     $html .= "<select class='dropdown' name='importteams'>\n";
     $options = [];
     mergesort($tournaments,
@@ -315,18 +370,22 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
         uo_create_multi_key_comparator(
           [['divisionAge', false, true], ['divisionType', true, true], ['divisionIdentifier', false, true]]));
       foreach ($divs as $div) {
-        $name = $tournament['name'];
+        if (matching_division($tournament, $div, 
+          ['year' => $year_filter, 'surface' => $surface_filter], 
+          ['divisionType' => $division_filter, 'divisionAge' => $age_filter])) {
+          $name = $tournament['name'];
 
-        if (!empty($tournament['year']))
-          $name .= " - " . $tournament['year'];
-        if (!empty($tournament['surface']))
-          $name .= " (" . $tournament['surface'] . ")";
-        if (!empty($div['divisionIdentifier']))
-          $name .= " - " . $div['divisionIdentifier'];
-        $name .= " (" . $div['divisionType'] . ", " . $div['divisionAge'] . ")";
+          if (!empty($tournament['year']))
+            $name .= " - " . $tournament['year'];
+          if (!empty($tournament['surface']))
+            $name .= " (" . $tournament['surface'] . ")";
+          if (!empty($div['divisionIdentifier']))
+            $name .= " - " . $div['divisionIdentifier'];
+          $name .= " (" . $div['divisionType'] . ", " . $div['divisionAge'] . ")";
 
-        $val = $div['teams'];
-        $options[$div['id']] = ['name' => $name, 'val' => $val];
+          $val = $div['teams'];
+          $options[$div['id']] = ['name' => $name, 'val' => $val];
+        }
       }
     }
 
@@ -335,9 +394,9 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
       $html .= "<option class='dropdown' value='$val'>" . utf8entities($div['name']) . "</option>";
     }
 
-    $html .= "</select><br />\n";
+    $html .= "</select></td></tr></table>\n";
 
-    $html .= "<input id='refresh' class='button' name='refresh' type='submit' value='" . utf8entities(_("Load...")) .
+    $html .= "<p><input id='refresh' class='button' name='refresh' type='submit' value='" . utf8entities(_("Load...")) .
       "'/>";
     $html .= "<input id='cancel_load' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
       "'/>";
@@ -396,36 +455,43 @@ if ($importstage == 0 || isset($_POST['cancel'])) {
       }
       unset($team);
     } else {
-      $teams = json_decode($_POST['importteams'], true);
-      foreach ($teams as $i => &$team) {
-        $team['rank'] = $i + 1;
-        $team['name'] = $team['teamName'];
-        $team['clubname'] = $team['teamLocation'];
-        $team['abbreviation'] = null;
-        $team['country'] = null;
+      if (!empty($_POST['importteams'])) {
+        $teams = json_decode($_POST['importteams'], true);
+        $valid = 0;
+        foreach ($teams as $i => &$team) {
+          $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';
+          $team['name'] = $team['teamName'];
+          $team['clubname'] = $team['teamLocation'];
+          $team['abbreviation'] = null;
+          $team['country'] = null;
+        }
+        unset($team);
       }
-      unset($team);
     }
+    
+    if (!empty($teams)) {
+      $html .= shortTeamTable($series_id, $teams, $club, $country);
 
-    $html .= shortTeamTable($series_id, $teams, $club, $country);
+      $html .= "<fieldset>";
+      $html .= "<p><input type='radio' checked='checked' id='add_mode' name='import_mode' value='add_mode' />";
+      $html .= "<label for='add_mode'>" . utf8entities(_("Add new teams")) . "</label></p>\n";
+      $html .= "<p><input type='radio' id='rename_mode' name='import_mode' value='rename_mode' />";
+      $teams = SeriesTeams($series_id, true);
+      $html .= "<label for='rename_mode'>" .
+        utf8entities(sprintf(_("Rename %s teams with lowest seed #"), count($teams))) . "</label></p>\n";
+      $html .= "</fieldset>";
 
-    $html .= "<fieldset>";
-    $html .= "<p><input type='radio' checked='checked' id='add_mode' name='import_mode' value='add_mode' />";
-    $html .= "<label for='add_mode'>" . utf8entities(_("Add new teams")) . "</label></p>\n";
-    $html .= "<p><input type='radio' id='rename_mode' name='import_mode' value='rename_mode' />";
-    $teams = SeriesTeams($series_id, true);
-    $html .= "<label for='rename_mode'>" . utf8entities(sprintf(_("Rename %s teams with lowest seed #"), count($teams))) .
-      "</label></p>\n";
-    $html .= "</fieldset>";
+      $html .= "<p>" . utf8entities(_("Leave seed # blank for teams you do not want to import.")) . "</p>";
 
-    $html .= "<p>" . utf8entities(_("Leave seed # blank for teams you do not want to import.")) . "</p>";
-
-    $html .= "<p>";
-    $html .= "<input id='import' class='button' name='import' type='submit' value='" . utf8entities(_("Import...")) .
-      "'/>";
-    $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
-      "'/>";
-    $html .= "</p>";
+      $html .= "<p>";
+      $html .= "<input id='import' class='button' name='import' type='submit' value='" . utf8entities(_("Import...")) .
+        "'/>";
+      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" . utf8entities(
+        _("Cancel")) . "'/>";
+      $html .= "</p>";
+    } else {
+      $html .= "<p>" . _("No teams") . "</p>\n";
+    }
   }
 } else if (isset($_POST['import'])) {
   $renamemode = ($_POST['import_mode'] == 'rename_mode');

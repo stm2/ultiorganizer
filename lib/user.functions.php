@@ -1248,7 +1248,7 @@ function RemoveSeasonUserRole($userid, $role, $seasonId) {
 function GetTeamAdmins($teamId) {
   $season = TeamSeason($teamId);
 
-  if (isSeasonAdmin($season)) {
+  if (isSeasonAdmin($season) || hasEditSeriesRight(TeamSeries($teamId))) {
     $query = sprintf(
       "SELECT pu.userid, pu.name, pu.email FROM uo_userproperties pup
 				LEFT JOIN uo_users pu ON(pup.userid=pu.userid)

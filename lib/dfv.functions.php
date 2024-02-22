@@ -97,6 +97,8 @@ class DFVParsed {
   }
 }
 
+$dfv_refresh_interval = 86400; // 24h
+
 /**
  *
  * Gets tournament data from dfv-turniere.de API or from local cache if available. If refresh == true, the cache is deleted.
@@ -132,9 +134,11 @@ class DFVParsed {
  *         </code>
  */
 function DFVTournaments($refresh = true) {
+  global $dfv_refresh_interval;
   $filename = UPLOAD_DIR . "dfv/dfv_tournaments.json";
   recur_mkdirs(UPLOAD_DIR . "dfv", 0775);
-
+  $data = [];
+  
   if (!$refresh && file_exists($filename)) {
     $data = file_get_contents($filename);
     if ($data === false) {
@@ -144,12 +148,14 @@ function DFVTournaments($refresh = true) {
       if ($data === null || !is_array($data) || !isset($data['retrieved']) || !isset($data['tournaments']) ||
         !is_array($data['tournaments'])) {
         debug_to_apache("invalid content in $filename");
-      } else {
-        $refresh = false;
       }
     }
   }
-
+  
+  if (empty($data) ||  time() - $data['retrieved'] >= $dfv_refresh_interval) {
+    $refresh = true;
+  }
+  
   if ($refresh) {
     $retrieved = time();
     ini_set("post_max_size", "30M");
@@ -177,7 +183,9 @@ function DFVTournaments($refresh = true) {
             $new_team = ['id' => $parsed->access($team, ['id']), 'teamName' => $parsed->access($team, ['teamName']),
               'teamId' => $parsed->access($team, ['roster', 'team', 'id']),
               'teamClub' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
-              'teamLocation' => $parsed->access($team, ['roster', 'team', 'location', 'city'])];
+              'teamLocation' => $parsed->access($team, ['roster', 'team', 'location', 'city']),
+              'status' => $parsed->access($team, ['status'])
+            ];
             $new_div['teams'][] = $new_team;
           }
           $new_tournament['divisions'][] = $new_div;
@@ -187,7 +195,15 @@ function DFVTournaments($refresh = true) {
       }
       $data = ["source" => $source, "retrieved" => $retrieved, "tournaments" => $new_tournaments];
     }
-    file_put_contents($filename, json_encode($data), LOCK_EX);
+    if (!file_put_contents($filename, json_encode($data), LOCK_EX))
+      $data['error'] = _('Warning: Could not cache DFV data locally!');
   }
   return $data;
+}
+
+function division_to_dfv($ulti_division) {
+  // return array("open", "women", "mixed", "master open", "master women", "master mixed", "grand master", "U19 open",
+  // "U19 women", "U19 mixed", "U23 open", "U23 women", "U23 mixed", "junior open", "junior women");
+  $translation = [ 'open' => 'OPEN' , 'women' => 'WOMEN', 'mixed' => 'MIXED' ];
+  return $translation[$ulti_division] ?? '';
 }
