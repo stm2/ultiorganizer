@@ -383,7 +383,9 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
           $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") .
             "</th><th></th></tr>\n";
           $html .= "<tr><td><label for='{$id}Name'>$label</label></td><td>";
-          $html .= LocationInput2($id, 'rlocations', LocationInfo($rval['location'])['name'], $rval['location']);
+          // FIXME location id refers to old location
+          $lname = LocationInfo($rval['location'])['name'] ?? '';
+          $html .= LocationInput2($id, 'rlocations', $lname, $rval['location']);
           $html .= "</td><td>" . $postText . "</td></tr>\n";
 
           $scripts .= LocationScript($id);
