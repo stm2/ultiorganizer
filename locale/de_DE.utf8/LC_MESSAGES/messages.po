@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-12-12 14:29+0100\n"
+"POT-Creation-Date: 2024-02-22 11:31+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -55,8 +55,8 @@ msgid "Games played without accreditation"
 msgstr "Spiele ohne Zulassung"
 
 #: admin/accreditation.php:75 admin/accreditation.php:96
-#: admin/accreditation.php:114 cust/default/pdfprinter.php:1291
-#: cust/dfv/pdfprinter.php:921 cust/gummis/pdfprinter.php:1072
+#: admin/accreditation.php:114 cust/default/pdfprinter.php:1295
+#: cust/dfv/pdfprinter.php:921 cust/gummis/pdfprinter.php:1295
 #: defensestatus.php:49 defensestatus.php:51 ext/poolscoreboard.php:32
 #: ext/teamscoreboard.php:41 gamecard.php:191 gamecard.php:196 gameplay.php:569
 #: poolstatus.php:132 poolstatus.php:165 poolstatus.php:200 poolstatus.php:232
@@ -70,8 +70,8 @@ msgstr "Spieler"
 #: admin/seasonstandings.php:361 admin/seasonstandings.php:414
 #: admin/seasonstandings.php:468 admin/serieteams.php:263 admin/smsmoves.php:41
 #: admin/smsmoves.php:104 clubcard.php:126 clubcard.php:148 countrycard.php:19
-#: countrycard.php:71 countrycard.php:79 cust/default/pdfprinter.php:1201
-#: cust/gummis/pdfprinter.php:982 defensestatus.php:54 defensestatus.php:56
+#: countrycard.php:71 countrycard.php:79 cust/default/pdfprinter.php:1205
+#: cust/gummis/pdfprinter.php:1205 defensestatus.php:54 defensestatus.php:56
 #: ext/countrystatus.php:46 ext/eventpools.php:43 ext/poolscoreboard.php:33
 #: ext/poolstatus.php:35 gamecard.php:89 gamecard.php:200 gamecard.php:205
 #: lib/search.functions.php:117 lib/search.functions.php:155
@@ -89,9 +89,9 @@ msgstr "Team"
 
 #: admin/accreditation.php:75 admin/accreditation.php:96
 #: admin/accreditation.php:115 admin/editgame.php:14
-#: cust/bula/pdfprinter.php:240 cust/default/pdfprinter.php:466
+#: cust/bula/pdfprinter.php:240 cust/default/pdfprinter.php:470
 #: cust/dfv/pdfprinter.php:229 cust/fpudd/pdfprinter.php:260
-#: cust/gummis/pdfprinter.php:273 cust/slkl/pdfprinter.php:229
+#: cust/gummis/pdfprinter.php:470 cust/slkl/pdfprinter.php:229
 #: cust/wfdf/pdfprinter.php:235 cust/windmill/pdfprinter.php:238
 #: gamecard.php:125 lib/search.functions.php:804 poolstatus.php:671
 #: poolstatus.php:779 user/pdfscoresheet.php:68
@@ -123,10 +123,10 @@ msgstr "Turnier"
 
 #: admin/accreditation.php:114 admin/eventviewer.php:85
 #: admin/seasonadmin.php:35 admin/smsmoves.php:108 cust/bula/pdfprinter.php:999
-#: cust/default/pdfprinter.php:1203 cust/default/pdfprinter.php:1262
-#: cust/default/pdfprinter.php:1295 cust/dfv/pdfprinter.php:889
-#: cust/dfv/pdfprinter.php:925 cust/gummis/pdfprinter.php:984
-#: cust/gummis/pdfprinter.php:1043 cust/gummis/pdfprinter.php:1076
+#: cust/default/pdfprinter.php:1207 cust/default/pdfprinter.php:1266
+#: cust/default/pdfprinter.php:1299 cust/dfv/pdfprinter.php:889
+#: cust/dfv/pdfprinter.php:925 cust/gummis/pdfprinter.php:1207
+#: cust/gummis/pdfprinter.php:1266 cust/gummis/pdfprinter.php:1299
 #: cust/slkl/pdfprinter.php:933 cust/wfdf/pdfprinter.php:965
 #: cust/windmill/pdfprinter.php:957 gameplay.php:178
 #: mobile/addscoresheet.php:190 test/bla.php:42 user/adddefensesheet.php:177
@@ -252,7 +252,7 @@ msgstr "Saison"
 #: admin/locations.php:192 admin/seasongames.php:250 admin/seasonmoves.php:226
 #: admin/seasonpolls.php:93 admin/seasonpools.php:283
 #: admin/seasonseries.php:162 admin/seasonstandings.php:537
-#: admin/seasonteams.php:366 admin/seasonteams.php:480
+#: admin/seasonteams.php:425 admin/seasonteams.php:546
 #: admin/select_teams.php:119 admin/serieteams.php:223 admin/serverconf.php:393
 #: admin/translations.php:136 mobile/addfirstoffence.php:45
 #: mobile/addhalftime.php:34 mobile/addofficial.php:25
@@ -276,7 +276,7 @@ msgstr "Speichern"
 #: admin/addserieformats.php:182 admin/adduser.php:91 admin/clubs.php:48
 #: admin/clubs.php:86 admin/locations.php:122 admin/poolmoves.php:352
 #: admin/seasonpools.php:279 admin/seasons.php:116 admin/seasonseries.php:155
-#: admin/seasonteams.php:228 admin/seasonteams.php:482
+#: admin/seasonteams.php:228 admin/seasonteams.php:548
 #: admin/serieformats.php:49 admin/translations.php:132
 #: user/addextraemail.php:88 user/addpolloption.php:223 user/enrollteam.php:143
 #: user/teamplayers.php:258 user/userinfo.php:403 user/userinfo.php:534
@@ -334,12 +334,12 @@ msgstr "Reihenfolge"
 #: admin/seasonstats.php:31 admin/seasonteams.php:117 admin/serieformats.php:25
 #: admin/serieteams.php:189 admin/serverconf.php:345
 #: cust/bula/pdfprinter.php:132 cust/bula/pdfprinter.php:142
-#: cust/bula/pdfprinter.php:253 cust/default/pdfprinter.php:381
-#: cust/default/pdfprinter.php:389 cust/default/pdfprinter.php:474
+#: cust/bula/pdfprinter.php:253 cust/default/pdfprinter.php:385
+#: cust/default/pdfprinter.php:393 cust/default/pdfprinter.php:478
 #: cust/dfv/pdfprinter.php:145 cust/dfv/pdfprinter.php:155
 #: cust/dfv/pdfprinter.php:242 cust/fpudd/pdfprinter.php:170
-#: cust/fpudd/pdfprinter.php:273 cust/gummis/pdfprinter.php:188
-#: cust/gummis/pdfprinter.php:196 cust/gummis/pdfprinter.php:281
+#: cust/fpudd/pdfprinter.php:273 cust/gummis/pdfprinter.php:385
+#: cust/gummis/pdfprinter.php:393 cust/gummis/pdfprinter.php:478
 #: cust/slkl/pdfprinter.php:135 cust/slkl/pdfprinter.php:145
 #: cust/slkl/pdfprinter.php:242 cust/wfdf/pdfprinter.php:125
 #: cust/wfdf/pdfprinter.php:135 cust/wfdf/pdfprinter.php:248
@@ -440,11 +440,11 @@ msgstr "Gruppe ändern"
 
 #: admin/addseasonpools.php:267 admin/addseasonteams.php:167
 #: admin/dbequalize.php:99 admin/dbequalize.php:130 admin/dbequalize.php:172
-#: admin/seasonpolls.php:39 admin/seasonstats.php:29 admin/stats.php:56
-#: clubcard.php:126 clubcard.php:148 countrycard.php:19 countrycard.php:71
-#: countrycard.php:79 cust/bula/pdfprinter.php:52
-#: cust/default/pdfprinter.php:283 cust/dfv/pdfprinter.php:45
-#: cust/gummis/pdfprinter.php:90 cust/slkl/pdfprinter.php:51
+#: admin/seasonpolls.php:39 admin/seasonstats.php:29 admin/seasonteams.php:354
+#: admin/stats.php:56 clubcard.php:126 clubcard.php:148 countrycard.php:19
+#: countrycard.php:71 countrycard.php:79 cust/bula/pdfprinter.php:52
+#: cust/default/pdfprinter.php:287 cust/dfv/pdfprinter.php:45
+#: cust/gummis/pdfprinter.php:287 cust/slkl/pdfprinter.php:51
 #: cust/wfdf/pdfprinter.php:46 cust/windmill/pdfprinter.php:51 gamecard.php:127
 #: lib/search.functions.php:30 lib/search.functions.php:73
 #: lib/search.functions.php:111 lib/search.functions.php:394
@@ -483,7 +483,7 @@ msgid "Move games"
 msgstr "Spiele mitnehmen"
 
 #: admin/addseasonpools.php:311 admin/addseasonpools.php:313 games.php:113
-#: lib/reservation.functions.php:335 lib/reservation.functions.php:337
+#: lib/reservation.functions.php:336 lib/reservation.functions.php:338
 #: user/respgames.php:101 user/respgames.php:103
 msgid "All"
 msgstr "Alles"
@@ -564,7 +564,7 @@ msgstr "Teams"
 msgid "Club"
 msgstr "Verein"
 
-#: admin/addseasonpools.php:402
+#: admin/addseasonpools.php:402 admin/seasonteams.php:493
 msgid "No teams"
 msgstr "Keine Teams"
 
@@ -631,13 +631,13 @@ msgstr "Sekunden"
 
 #: admin/addseasonpools.php:443 admin/addserieformats.php:143
 #: admin/serieformats.php:25 cust/bula/pdfprinter.php:873
-#: cust/default/pdfprinter.php:222 cust/default/pdfprinter.php:1173
+#: cust/default/pdfprinter.php:226 cust/default/pdfprinter.php:1177
 #: cust/dfv/pdfprinter.php:771 cust/fpudd/pdfprinter.php:812
-#: cust/gummis/pdfprinter.php:954 cust/wfdf/pdfprinter.php:847
-#: cust/windmill/pdfprinter.php:831 gameplay.php:492
-#: mobile/addscoresheet.php:195 scorekeeper/addscoresheet.php:258
-#: scorekeeper/addtimeouts.php:47 user/adddefensesheet.php:237
-#: user/addscoresheet.php:416
+#: cust/gummis/pdfprinter.php:226 cust/gummis/pdfprinter.php:1177
+#: cust/wfdf/pdfprinter.php:847 cust/windmill/pdfprinter.php:831
+#: gameplay.php:492 mobile/addscoresheet.php:195
+#: scorekeeper/addscoresheet.php:258 scorekeeper/addtimeouts.php:47
+#: user/adddefensesheet.php:237 user/addscoresheet.php:416
 msgid "Time-outs"
 msgstr "Time-outs"
 
@@ -956,26 +956,26 @@ msgstr "Benutzer-ID(s)"
 #: admin/movingtimes.php:143 admin/movingtimes.php:168
 #: admin/reservations.php:118 admin/schedule.php:217 admin/smsmoves.php:109
 #: cust/bula/pdfprinter.php:53 cust/bula/pdfprinter.php:366
-#: cust/bula/pdfprinter.php:505 cust/default/pdfprinter.php:154
-#: cust/default/pdfprinter.php:284 cust/default/pdfprinter.php:619
+#: cust/bula/pdfprinter.php:505 cust/default/pdfprinter.php:158
+#: cust/default/pdfprinter.php:288 cust/default/pdfprinter.php:623
 #: cust/dfv/pdfprinter.php:46 cust/dfv/pdfprinter.php:285
 #: cust/dfv/pdfprinter.php:459 cust/fpudd/pdfprinter.php:386
-#: cust/fpudd/pdfprinter.php:496 cust/gummis/pdfprinter.php:91
-#: cust/gummis/pdfprinter.php:426 cust/slkl/pdfprinter.php:52
-#: cust/slkl/pdfprinter.php:357 cust/slkl/pdfprinter.php:479
-#: cust/wfdf/pdfprinter.php:47 cust/wfdf/pdfprinter.php:366
-#: cust/wfdf/pdfprinter.php:496 cust/windmill/pdfprinter.php:52
-#: cust/windmill/pdfprinter.php:364 cust/windmill/pdfprinter.php:481
-#: lib/reservation.functions.php:22 lib/reservation.functions.php:30
-#: lib/reservation.functions.php:73 lib/search.functions.php:261
-#: lib/search.functions.php:316 lib/search.functions.php:730
-#: lib/search.functions.php:758 lib/timetable.functions.php:284
-#: lib/timetable.functions.php:364 lib/timetable.functions.php:421
-#: lib/timetable.functions.php:478 lib/user.functions.php:1708
-#: mobile/respgames.php:106 mobile/respgames.php:110 reservationinfo.php:11
-#: reservationinfo.php:25 scorekeeper/respgames.php:101
-#: user/adddefensesheet.php:208 user/addscoresheet.php:387
-#: user/pdfscoresheet.php:342
+#: cust/fpudd/pdfprinter.php:496 cust/gummis/pdfprinter.php:158
+#: cust/gummis/pdfprinter.php:288 cust/gummis/pdfprinter.php:623
+#: cust/slkl/pdfprinter.php:52 cust/slkl/pdfprinter.php:357
+#: cust/slkl/pdfprinter.php:479 cust/wfdf/pdfprinter.php:47
+#: cust/wfdf/pdfprinter.php:366 cust/wfdf/pdfprinter.php:496
+#: cust/windmill/pdfprinter.php:52 cust/windmill/pdfprinter.php:364
+#: cust/windmill/pdfprinter.php:481 lib/reservation.functions.php:22
+#: lib/reservation.functions.php:30 lib/reservation.functions.php:73
+#: lib/search.functions.php:261 lib/search.functions.php:316
+#: lib/search.functions.php:730 lib/search.functions.php:758
+#: lib/timetable.functions.php:284 lib/timetable.functions.php:364
+#: lib/timetable.functions.php:421 lib/timetable.functions.php:478
+#: lib/user.functions.php:1708 mobile/respgames.php:106
+#: mobile/respgames.php:110 reservationinfo.php:11 reservationinfo.php:25
+#: scorekeeper/respgames.php:101 user/adddefensesheet.php:208
+#: user/addscoresheet.php:387 user/pdfscoresheet.php:346
 #, php-format
 msgid "Field"
 msgstr "Feld"
@@ -1495,9 +1495,9 @@ msgstr "Beendete Spiele zurücksetzen"
 
 #: admin/delete.php:239 admin/eventdataimport.php:526 admin/seasonpools.php:284
 #: admin/seasonseries.php:163 admin/seasonteams.php:279
-#: admin/seasonteams.php:342 admin/seasonteams.php:347
-#: admin/seasonteams.php:367 admin/seasonteams.php:426
-#: admin/seasonteams.php:484 admin/select_userrole.php:33
+#: admin/seasonteams.php:401 admin/seasonteams.php:406
+#: admin/seasonteams.php:426 admin/seasonteams.php:490
+#: admin/seasonteams.php:550 admin/select_userrole.php:33
 #: admin/select_userrole.php:56 admin/select_userrole.php:59
 #: admin/select_userrole.php:62 admin/select_userrole.php:65
 #: admin/select_userrole.php:68 admin/select_userrole.php:71
@@ -1536,8 +1536,8 @@ msgid "Game played"
 msgstr "Spiel beendet"
 
 #: admin/editgame.php:134 cust/bula/pdfprinter.php:1026
-#: cust/default/pdfprinter.php:1317 cust/dfv/pdfprinter.php:950
-#: cust/gummis/pdfprinter.php:1098 cust/slkl/pdfprinter.php:960
+#: cust/default/pdfprinter.php:1321 cust/dfv/pdfprinter.php:950
+#: cust/gummis/pdfprinter.php:1321 cust/slkl/pdfprinter.php:960
 #: cust/wfdf/pdfprinter.php:990 cust/windmill/pdfprinter.php:984
 #: user/adddefensesheet.php:303 user/addscoresheet.php:482
 msgid "Final score"
@@ -1569,8 +1569,8 @@ msgid "Add media"
 msgstr "Medien hinzufügen"
 
 #: admin/editgame.php:151 admin/smsmoves.php:39 cust/bula/pdfprinter.php:52
-#: cust/default/pdfprinter.php:283 cust/dfv/pdfprinter.php:45
-#: cust/gummis/pdfprinter.php:90 cust/slkl/pdfprinter.php:51
+#: cust/default/pdfprinter.php:287 cust/dfv/pdfprinter.php:45
+#: cust/gummis/pdfprinter.php:287 cust/slkl/pdfprinter.php:51
 #: cust/wfdf/pdfprinter.php:46 cust/windmill/pdfprinter.php:51
 #: lib/search.functions.php:79 lib/search.functions.php:442
 #: lib/season.functions.php:791 plugins/update_pool_colors.php:73 teams.php:152
@@ -1850,7 +1850,7 @@ msgstr "IDs auflösen"
 msgid "Only user"
 msgstr "Nur Benutzer"
 
-#: admin/eventviewer.php:82 admin/seasonteams.php:303
+#: admin/eventviewer.php:82 admin/seasonteams.php:342
 msgid "Refresh"
 msgstr "Neu laden"
 
@@ -1954,10 +1954,10 @@ msgstr "Adresse"
 
 #: admin/locations.php:174 cust/bula/pdfprinter.php:134
 #: cust/bula/pdfprinter.php:144 cust/bula/pdfprinter.php:256
-#: cust/default/pdfprinter.php:383 cust/default/pdfprinter.php:391
-#: cust/default/pdfprinter.php:477 cust/dfv/pdfprinter.php:245
-#: cust/fpudd/pdfprinter.php:276 cust/gummis/pdfprinter.php:190
-#: cust/gummis/pdfprinter.php:198 cust/gummis/pdfprinter.php:284
+#: cust/default/pdfprinter.php:387 cust/default/pdfprinter.php:395
+#: cust/default/pdfprinter.php:481 cust/dfv/pdfprinter.php:245
+#: cust/fpudd/pdfprinter.php:276 cust/gummis/pdfprinter.php:387
+#: cust/gummis/pdfprinter.php:395 cust/gummis/pdfprinter.php:481
 #: cust/slkl/pdfprinter.php:138 cust/slkl/pdfprinter.php:148
 #: cust/slkl/pdfprinter.php:245 cust/wfdf/pdfprinter.php:127
 #: cust/wfdf/pdfprinter.php:137 cust/wfdf/pdfprinter.php:251
@@ -2507,8 +2507,8 @@ msgid "not visible"
 msgstr "nicht sichtbar"
 
 #: admin/seasonadmin.php:33 cust/bula/pdfprinter.php:930
-#: cust/default/pdfprinter.php:1211 cust/dfv/pdfprinter.php:824
-#: cust/gummis/pdfprinter.php:992 cust/slkl/pdfprinter.php:863
+#: cust/default/pdfprinter.php:1215 cust/dfv/pdfprinter.php:824
+#: cust/gummis/pdfprinter.php:1215 cust/slkl/pdfprinter.php:863
 #: cust/wfdf/pdfprinter.php:900 cust/windmill/pdfprinter.php:888
 #: gameplay.php:497 mobile/addscoresheet.php:205
 #: scorekeeper/addscoresheet.php:273 user/adddefensesheet.php:63
@@ -3025,10 +3025,10 @@ msgstr "Kontaktperson"
 #: admin/seasonteams.php:128 admin/seasonteams.php:198 clubcard.php:133
 #: clubcard.php:157 countrycard.php:26 countrycard.php:51
 #: cust/bula/pdfprinter.php:107 cust/bula/pdfprinter.php:229
-#: cust/default/pdfprinter.php:359 cust/default/pdfprinter.php:457
+#: cust/default/pdfprinter.php:363 cust/default/pdfprinter.php:461
 #: cust/dfv/pdfprinter.php:120 cust/dfv/pdfprinter.php:218
-#: cust/fpudd/pdfprinter.php:249 cust/gummis/pdfprinter.php:166
-#: cust/gummis/pdfprinter.php:264 cust/slkl/pdfprinter.php:110
+#: cust/fpudd/pdfprinter.php:249 cust/gummis/pdfprinter.php:363
+#: cust/gummis/pdfprinter.php:461 cust/slkl/pdfprinter.php:110
 #: cust/slkl/pdfprinter.php:218 cust/wfdf/pdfprinter.php:100
 #: cust/wfdf/pdfprinter.php:224 cust/windmill/pdfprinter.php:105
 #: cust/windmill/pdfprinter.php:227 playerlist.php:12 playerlist.php:17
@@ -3047,7 +3047,7 @@ msgstr "..."
 msgid "No matching divisions ('%s')"
 msgstr "Keine passenden Klassen ('%s')"
 
-#: admin/seasonteams.php:268 admin/seasonteams.php:306
+#: admin/seasonteams.php:268 admin/seasonteams.php:360
 msgid "Add teams from:"
 msgstr "Teams hinzufügen von:"
 
@@ -3056,69 +3056,85 @@ msgstr "Teams hinzufügen von:"
 msgid "List only divisions with matching type ('%s')"
 msgstr "Nur Klassen mit passendem Type ('%s') auflisten"
 
-#: admin/seasonteams.php:277 admin/seasonteams.php:340
+#: admin/seasonteams.php:277 admin/seasonteams.php:399
 msgid "Load..."
 msgstr "Laden..."
 
-#: admin/seasonteams.php:294
+#: admin/seasonteams.php:333
 msgid "Error: could not read DFV data!"
 msgstr "Fehler: konnte DFV-Daten nicht einlesen!"
 
-#: admin/seasonteams.php:300
+#: admin/seasonteams.php:338
 #, php-format
 msgid "Data retrieved from DFV (%s) at %s"
 msgstr "Daten von DFV (%s) abgerufen am %s"
 
-#: admin/seasonteams.php:374
+#: admin/seasonteams.php:352
+msgid "Year"
+msgstr "Jahr"
+
+#: admin/seasonteams.php:353
+msgid "Surface"
+msgstr "Untergrund"
+
+#: admin/seasonteams.php:355
+msgid "Age"
+msgstr "Alter"
+
+#: admin/seasonteams.php:357
+msgid "Show matching divisions..."
+msgstr "Passende Klassen anzeigen ..."
+
+#: admin/seasonteams.php:433
 msgid "Import teams from other division"
 msgstr "Teams aus anderer Division einlesen"
 
-#: admin/seasonteams.php:376
+#: admin/seasonteams.php:435
 msgid "Import teams from DFV"
 msgstr "Teams von DFV einlesen"
 
-#: admin/seasonteams.php:390
+#: admin/seasonteams.php:449
 #, php-format
 msgid "Teams from %s"
 msgstr "Teams von %s"
 
-#: admin/seasonteams.php:414
+#: admin/seasonteams.php:477
 msgid "Add new teams"
 msgstr "Neue Teams hinzufügen"
 
-#: admin/seasonteams.php:417
+#: admin/seasonteams.php:481
 #, php-format
 msgid "Rename %s teams with lowest seed #"
 msgstr ""
 "Erste %s Teams (nach aufsteigend sortierter Setzreihenfolge) umbenennen"
 
-#: admin/seasonteams.php:421
+#: admin/seasonteams.php:484
 msgid "Leave seed # blank for teams you do not want to import."
 msgstr ""
 "Lassen Sie Setzreihenfolge # leer, wenn Sie ein Team nicht importieren "
 "wollen."
 
-#: admin/seasonteams.php:424
+#: admin/seasonteams.php:487
 msgid "Import..."
 msgstr "Importieren..."
 
-#: admin/seasonteams.php:470
+#: admin/seasonteams.php:536
 msgid "Teams have not been saved!"
 msgstr "Teams wurden nicht gespeichert!"
 
-#: admin/seasonteams.php:472
+#: admin/seasonteams.php:538
 msgid "Replace teams?"
 msgstr "Teams ersetzen?"
 
-#: admin/seasonteams.php:474
+#: admin/seasonteams.php:540
 msgid "Add teams?"
 msgstr "Teams hinzufügen?"
 
-#: admin/seasonteams.php:491
+#: admin/seasonteams.php:557
 msgid "Add Team Admins"
 msgstr "Teamadministratoren hinzufügen"
 
-#: admin/seasonteams.php:492
+#: admin/seasonteams.php:558
 msgid "Print team rosters"
 msgstr "Spielerlisten drucken"
 
@@ -3731,16 +3747,17 @@ msgstr "BULA"
 msgid "Beach Ultimate Lovers Association"
 msgstr "Beach Ultimate Lovers Association"
 
-#: cust/bula/pdfprinter.php:38 cust/default/pdfprinter.php:273
-#: cust/dfv/pdfprinter.php:31 cust/gummis/pdfprinter.php:80
+#: cust/bula/pdfprinter.php:38 cust/default/pdfprinter.php:277
+#: cust/dfv/pdfprinter.php:31 cust/gummis/pdfprinter.php:277
 #: cust/wfdf/pdfprinter.php:32 cust/windmill/pdfprinter.php:37
 msgid "Game Record"
 msgstr "Spielbericht"
 
-#: cust/bula/pdfprinter.php:49 cust/default/pdfprinter.php:167
-#: cust/default/pdfprinter.php:282 cust/dfv/pdfprinter.php:42
-#: cust/gummis/pdfprinter.php:89 cust/slkl/pdfprinter.php:48
-#: cust/wfdf/pdfprinter.php:43 cust/windmill/pdfprinter.php:48
+#: cust/bula/pdfprinter.php:49 cust/default/pdfprinter.php:171
+#: cust/default/pdfprinter.php:286 cust/dfv/pdfprinter.php:42
+#: cust/gummis/pdfprinter.php:171 cust/gummis/pdfprinter.php:286
+#: cust/slkl/pdfprinter.php:48 cust/wfdf/pdfprinter.php:43
+#: cust/windmill/pdfprinter.php:48
 msgid "Game #"
 msgstr "Spiel #"
 
@@ -3751,16 +3768,16 @@ msgstr "Spiel #"
 msgid "Away team"
 msgstr "Gastteam"
 
-#: cust/bula/pdfprinter.php:54 cust/default/pdfprinter.php:289
-#: cust/dfv/pdfprinter.php:47 cust/gummis/pdfprinter.php:96
+#: cust/bula/pdfprinter.php:54 cust/default/pdfprinter.php:293
+#: cust/dfv/pdfprinter.php:47 cust/gummis/pdfprinter.php:293
 #: cust/slkl/pdfprinter.php:53 cust/wfdf/pdfprinter.php:48
 #: cust/windmill/pdfprinter.php:53 user/adddefensesheet.php:210
 #: user/addscoresheet.php:389
 msgid "Scheduled start date and time"
 msgstr "Spielbeginn"
 
-#: cust/bula/pdfprinter.php:55 cust/default/pdfprinter.php:285
-#: cust/dfv/pdfprinter.php:48 cust/gummis/pdfprinter.php:92
+#: cust/bula/pdfprinter.php:55 cust/default/pdfprinter.php:289
+#: cust/dfv/pdfprinter.php:48 cust/gummis/pdfprinter.php:289
 #: cust/slkl/pdfprinter.php:54 cust/wfdf/pdfprinter.php:49
 #: cust/windmill/pdfprinter.php:54 gameplay.php:263 mobile/addofficial.php:21
 #: mobile/addscoresheet.php:199 mobile/gameplay.php:81
@@ -3769,21 +3786,21 @@ msgstr "Spielbeginn"
 msgid "Game official"
 msgstr "Spiel-Offizieller"
 
-#: cust/bula/pdfprinter.php:65 cust/default/pdfprinter.php:294
-#: cust/dfv/pdfprinter.php:58 cust/gummis/pdfprinter.php:101
+#: cust/bula/pdfprinter.php:65 cust/default/pdfprinter.php:298
+#: cust/dfv/pdfprinter.php:58 cust/gummis/pdfprinter.php:298
 #: cust/wfdf/pdfprinter.php:59 cust/windmill/pdfprinter.php:64
 msgid "Half time ends"
 msgstr "Halbzeit endet"
 
-#: cust/bula/pdfprinter.php:108 cust/default/pdfprinter.php:360
-#: cust/dfv/pdfprinter.php:121 cust/gummis/pdfprinter.php:167
+#: cust/bula/pdfprinter.php:108 cust/default/pdfprinter.php:364
+#: cust/dfv/pdfprinter.php:121 cust/gummis/pdfprinter.php:364
 #: cust/wfdf/pdfprinter.php:101 cust/windmill/pdfprinter.php:106
 msgid "for game"
 msgstr "für Spiel"
 
 #: cust/bula/pdfprinter.php:133 cust/bula/pdfprinter.php:143
-#: cust/default/pdfprinter.php:382 cust/default/pdfprinter.php:390
-#: cust/gummis/pdfprinter.php:189 cust/gummis/pdfprinter.php:197
+#: cust/default/pdfprinter.php:386 cust/default/pdfprinter.php:394
+#: cust/gummis/pdfprinter.php:386 cust/gummis/pdfprinter.php:394
 #: cust/wfdf/pdfprinter.php:126 cust/wfdf/pdfprinter.php:136
 #: cust/windmill/pdfprinter.php:131 cust/windmill/pdfprinter.php:141
 #: user/addplayerlists.php:147 user/addplayerlists.php:189
@@ -3791,8 +3808,8 @@ msgid "Jersey#"
 msgstr "Trikot#"
 
 #: cust/bula/pdfprinter.php:196 cust/bula/pdfprinter.php:200
-#: cust/default/pdfprinter.php:436 cust/default/pdfprinter.php:440
-#: cust/gummis/pdfprinter.php:243 cust/gummis/pdfprinter.php:247
+#: cust/default/pdfprinter.php:440 cust/default/pdfprinter.php:444
+#: cust/gummis/pdfprinter.php:440 cust/gummis/pdfprinter.php:444
 #: cust/wfdf/pdfprinter.php:188 cust/wfdf/pdfprinter.php:192
 #: cust/windmill/pdfprinter.php:194 cust/windmill/pdfprinter.php:198
 #: user/addplayerlists.php:180 user/addplayerlists.php:222
@@ -3800,19 +3817,19 @@ msgid "Total number of players:"
 msgstr "Gesamtspielerzahl:"
 
 #: cust/bula/pdfprinter.php:207 cust/default/pdfprinter.php:41
-#: cust/gummis/pdfprinter.php:33 cust/wfdf/pdfprinter.php:199
+#: cust/gummis/pdfprinter.php:41 cust/wfdf/pdfprinter.php:199
 #: cust/windmill/pdfprinter.php:205
 msgid "Scoresheet filling instructions:"
 msgstr "Anleitung zum Ausfüllen der Spielberichte:"
 
 #: cust/bula/pdfprinter.php:208 cust/default/pdfprinter.php:42
-#: cust/gummis/pdfprinter.php:34 cust/wfdf/pdfprinter.php:200
+#: cust/gummis/pdfprinter.php:42 cust/wfdf/pdfprinter.php:200
 #: cust/windmill/pdfprinter.php:206
 msgid "Officials fill in their names."
 msgstr "Namen der Offiziellen"
 
 #: cust/bula/pdfprinter.php:209 cust/default/pdfprinter.php:44
-#: cust/gummis/pdfprinter.php:36 cust/wfdf/pdfprinter.php:202
+#: cust/gummis/pdfprinter.php:44 cust/wfdf/pdfprinter.php:202
 #: cust/windmill/pdfprinter.php:207
 msgid ""
 "Captains confirm roster by crossing out injured players, and adjusting "
@@ -3822,13 +3839,13 @@ msgstr ""
 "jersey numbers if necessary."
 
 #: cust/bula/pdfprinter.php:210 cust/default/pdfprinter.php:45
-#: cust/gummis/pdfprinter.php:37 cust/wfdf/pdfprinter.php:203
+#: cust/gummis/pdfprinter.php:45 cust/wfdf/pdfprinter.php:203
 #: cust/windmill/pdfprinter.php:208
 msgid "After the toss, officials check the team that will start on offence."
 msgstr "Nach dem Flip das Team ankreuzen, das mit dem Angriff startet."
 
 #: cust/bula/pdfprinter.php:211 cust/default/pdfprinter.php:46
-#: cust/gummis/pdfprinter.php:38 cust/wfdf/pdfprinter.php:204
+#: cust/gummis/pdfprinter.php:46 cust/wfdf/pdfprinter.php:204
 #: cust/windmill/pdfprinter.php:209
 msgid ""
 "When half time starts, fill in time it ends (the second half start time)."
@@ -3837,7 +3854,7 @@ msgstr ""
 "Halbzeit)."
 
 #: cust/bula/pdfprinter.php:212 cust/default/pdfprinter.php:49
-#: cust/gummis/pdfprinter.php:41 cust/wfdf/pdfprinter.php:207
+#: cust/gummis/pdfprinter.php:49 cust/wfdf/pdfprinter.php:207
 #: cust/windmill/pdfprinter.php:210
 msgid ""
 "During the game, fill in which team has scored, the jersey numbers of the "
@@ -3851,7 +3868,7 @@ msgstr ""
 "(Callahan), tragen Sie XX als Assist ein."
 
 #: cust/bula/pdfprinter.php:213 cust/default/pdfprinter.php:51
-#: cust/gummis/pdfprinter.php:43 cust/wfdf/pdfprinter.php:209
+#: cust/gummis/pdfprinter.php:51 cust/wfdf/pdfprinter.php:209
 #: cust/windmill/pdfprinter.php:211
 msgid ""
 "When a team takes a time-out, mark the time in the \"Time-outs\" section."
@@ -3860,7 +3877,7 @@ msgstr ""
 "Auszeiten."
 
 #: cust/bula/pdfprinter.php:214 cust/default/pdfprinter.php:52
-#: cust/gummis/pdfprinter.php:44 cust/wfdf/pdfprinter.php:210
+#: cust/gummis/pdfprinter.php:52 cust/wfdf/pdfprinter.php:210
 #: cust/windmill/pdfprinter.php:212
 msgid ""
 "After the game, each captain signs the scoresheet to confirm the final score."
@@ -3869,24 +3886,24 @@ msgstr ""
 "des Ergebnisses."
 
 #: cust/bula/pdfprinter.php:215 cust/default/pdfprinter.php:53
-#: cust/gummis/pdfprinter.php:45 cust/wfdf/pdfprinter.php:211
+#: cust/gummis/pdfprinter.php:53 cust/wfdf/pdfprinter.php:211
 #: cust/windmill/pdfprinter.php:213
 msgid "Officials return the completed scoresheet to the results headquarters."
 msgstr "Geben Sie den ausgefüllten Spielbericht bei der Turnierleitung ab."
 
-#: cust/bula/pdfprinter.php:254 cust/default/pdfprinter.php:475
+#: cust/bula/pdfprinter.php:254 cust/default/pdfprinter.php:479
 #: cust/dfv/pdfprinter.php:146 cust/dfv/pdfprinter.php:156
 #: cust/dfv/pdfprinter.php:243 cust/fpudd/pdfprinter.php:274
-#: cust/gummis/pdfprinter.php:282 cust/slkl/pdfprinter.php:136
+#: cust/gummis/pdfprinter.php:479 cust/slkl/pdfprinter.php:136
 #: cust/slkl/pdfprinter.php:146 cust/slkl/pdfprinter.php:243
 #: cust/wfdf/pdfprinter.php:249 cust/windmill/pdfprinter.php:252
 msgid "Play"
 msgstr "Plays"
 
-#: cust/bula/pdfprinter.php:255 cust/default/pdfprinter.php:476
+#: cust/bula/pdfprinter.php:255 cust/default/pdfprinter.php:480
 #: cust/dfv/pdfprinter.php:147 cust/dfv/pdfprinter.php:157
 #: cust/dfv/pdfprinter.php:244 cust/fpudd/pdfprinter.php:275
-#: cust/gummis/pdfprinter.php:283 cust/wfdf/pdfprinter.php:250
+#: cust/gummis/pdfprinter.php:480 cust/wfdf/pdfprinter.php:250
 #: cust/windmill/pdfprinter.php:253
 msgid "Game#"
 msgstr "Spiel#"
@@ -3929,13 +3946,13 @@ msgstr ""
 "(Zahlungsbeleg oder Schreiben der Organisatoren liegt vor)."
 
 #: cust/bula/pdfprinter.php:879 cust/bula/pdfprinter.php:970
-#: cust/bula/pdfprinter.php:995 cust/default/pdfprinter.php:1178
-#: cust/default/pdfprinter.php:1238 cust/default/pdfprinter.php:1258
-#: cust/default/pdfprinter.php:1289 cust/dfv/pdfprinter.php:777
+#: cust/bula/pdfprinter.php:995 cust/default/pdfprinter.php:1182
+#: cust/default/pdfprinter.php:1242 cust/default/pdfprinter.php:1262
+#: cust/default/pdfprinter.php:1293 cust/dfv/pdfprinter.php:777
 #: cust/dfv/pdfprinter.php:862 cust/dfv/pdfprinter.php:885
-#: cust/dfv/pdfprinter.php:919 cust/gummis/pdfprinter.php:959
-#: cust/gummis/pdfprinter.php:1019 cust/gummis/pdfprinter.php:1039
-#: cust/gummis/pdfprinter.php:1070 cust/slkl/pdfprinter.php:810
+#: cust/dfv/pdfprinter.php:919 cust/gummis/pdfprinter.php:1182
+#: cust/gummis/pdfprinter.php:1242 cust/gummis/pdfprinter.php:1262
+#: cust/gummis/pdfprinter.php:1293 cust/slkl/pdfprinter.php:810
 #: cust/slkl/pdfprinter.php:905 cust/slkl/pdfprinter.php:929
 #: cust/wfdf/pdfprinter.php:853 cust/wfdf/pdfprinter.php:937
 #: cust/wfdf/pdfprinter.php:961 cust/windmill/pdfprinter.php:837
@@ -3946,13 +3963,13 @@ msgid "Home"
 msgstr "Heim"
 
 #: cust/bula/pdfprinter.php:891 cust/bula/pdfprinter.php:978
-#: cust/bula/pdfprinter.php:996 cust/default/pdfprinter.php:1188
-#: cust/default/pdfprinter.php:1245 cust/default/pdfprinter.php:1259
-#: cust/default/pdfprinter.php:1290 cust/dfv/pdfprinter.php:788
+#: cust/bula/pdfprinter.php:996 cust/default/pdfprinter.php:1192
+#: cust/default/pdfprinter.php:1249 cust/default/pdfprinter.php:1263
+#: cust/default/pdfprinter.php:1294 cust/dfv/pdfprinter.php:788
 #: cust/dfv/pdfprinter.php:870 cust/dfv/pdfprinter.php:886
-#: cust/dfv/pdfprinter.php:920 cust/gummis/pdfprinter.php:969
-#: cust/gummis/pdfprinter.php:1026 cust/gummis/pdfprinter.php:1040
-#: cust/gummis/pdfprinter.php:1071 cust/slkl/pdfprinter.php:822
+#: cust/dfv/pdfprinter.php:920 cust/gummis/pdfprinter.php:1192
+#: cust/gummis/pdfprinter.php:1249 cust/gummis/pdfprinter.php:1263
+#: cust/gummis/pdfprinter.php:1294 cust/slkl/pdfprinter.php:822
 #: cust/slkl/pdfprinter.php:913 cust/slkl/pdfprinter.php:930
 #: cust/wfdf/pdfprinter.php:864 cust/wfdf/pdfprinter.php:945
 #: cust/wfdf/pdfprinter.php:962 cust/windmill/pdfprinter.php:849
@@ -3968,29 +3985,29 @@ msgstr "Gast"
 msgid "Starting offensive team"
 msgstr "Team mit erster Offence"
 
-#: cust/bula/pdfprinter.php:964 cust/default/pdfprinter.php:1233
-#: cust/dfv/pdfprinter.php:856 cust/gummis/pdfprinter.php:1014
+#: cust/bula/pdfprinter.php:964 cust/default/pdfprinter.php:1237
+#: cust/dfv/pdfprinter.php:856 cust/gummis/pdfprinter.php:1237
 #: cust/slkl/pdfprinter.php:897 cust/wfdf/pdfprinter.php:931
 #: cust/windmill/pdfprinter.php:922
 msgid "Captains' signatures"
 msgstr "Unterschriften der Teamcaptains"
 
-#: cust/bula/pdfprinter.php:990 cust/default/pdfprinter.php:1253
-#: cust/dfv/pdfprinter.php:880 cust/gummis/pdfprinter.php:1034
+#: cust/bula/pdfprinter.php:990 cust/default/pdfprinter.php:1257
+#: cust/dfv/pdfprinter.php:880 cust/gummis/pdfprinter.php:1257
 #: cust/slkl/pdfprinter.php:924 cust/wfdf/pdfprinter.php:956
 #: cust/windmill/pdfprinter.php:948
 msgid "Scoring team"
 msgstr "Punkt für"
 
-#: cust/bula/pdfprinter.php:991 cust/default/pdfprinter.php:1254
-#: cust/dfv/pdfprinter.php:881 cust/gummis/pdfprinter.php:1035
+#: cust/bula/pdfprinter.php:991 cust/default/pdfprinter.php:1258
+#: cust/dfv/pdfprinter.php:881 cust/gummis/pdfprinter.php:1258
 #: cust/slkl/pdfprinter.php:925 cust/wfdf/pdfprinter.php:957
 #: cust/windmill/pdfprinter.php:949
 msgid "Jersey numbers"
 msgstr "Trikotnummer"
 
-#: cust/bula/pdfprinter.php:997 cust/default/pdfprinter.php:1260
-#: cust/dfv/pdfprinter.php:887 cust/gummis/pdfprinter.php:1041
+#: cust/bula/pdfprinter.php:997 cust/default/pdfprinter.php:1264
+#: cust/dfv/pdfprinter.php:887 cust/gummis/pdfprinter.php:1264
 #: cust/slkl/pdfprinter.php:931 cust/wfdf/pdfprinter.php:963
 #: cust/windmill/pdfprinter.php:955 gameplay.php:178
 #: mobile/addscoresheet.php:185 scorekeeper/addscoresheet.php:192
@@ -3998,8 +4015,8 @@ msgstr "Trikotnummer"
 msgid "Assist"
 msgstr "Assist"
 
-#: cust/bula/pdfprinter.php:998 cust/default/pdfprinter.php:1261
-#: cust/dfv/pdfprinter.php:888 cust/gummis/pdfprinter.php:1042
+#: cust/bula/pdfprinter.php:998 cust/default/pdfprinter.php:1265
+#: cust/dfv/pdfprinter.php:888 cust/gummis/pdfprinter.php:1265
 #: cust/slkl/pdfprinter.php:932 cust/wfdf/pdfprinter.php:964
 #: cust/windmill/pdfprinter.php:956 gameplay.php:178
 #: mobile/addscoresheet.php:187 user/addscoresheet.php:544
@@ -4889,48 +4906,48 @@ msgstr "Massen-Akkreditierung"
 msgid "Accredit"
 msgstr "Akkreditieren"
 
-#: cust/default/pdfprinter.php:150
+#: cust/default/pdfprinter.php:154 cust/gummis/pdfprinter.php:154
 msgid "Time and Place"
 msgstr "Zeit und Ort"
 
-#: cust/default/pdfprinter.php:176
+#: cust/default/pdfprinter.php:180 cust/gummis/pdfprinter.php:180
 msgid "final_score_short"
 msgstr "Endstand"
 
-#: cust/default/pdfprinter.php:190
+#: cust/default/pdfprinter.php:194 cust/gummis/pdfprinter.php:194
 msgid "Team X"
 msgstr "Team X"
 
-#: cust/default/pdfprinter.php:190
+#: cust/default/pdfprinter.php:194 cust/gummis/pdfprinter.php:194
 msgid "Team Y"
 msgstr "Team Y"
 
-#: cust/default/pdfprinter.php:219
+#: cust/default/pdfprinter.php:223 cust/gummis/pdfprinter.php:223
 msgid "1st Offence"
 msgstr "Erste Offence"
 
-#: cust/default/pdfprinter.php:231
+#: cust/default/pdfprinter.php:235 cust/gummis/pdfprinter.php:235
 #, php-format
 msgid "Signature Captain %s"
 msgstr "Unterschrift Captain %s"
 
-#: cust/default/pdfprinter.php:240
+#: cust/default/pdfprinter.php:244 cust/gummis/pdfprinter.php:244
 msgid "Gender ratio A ="
 msgstr "Geschlechterverhältnis A ="
 
-#: cust/default/pdfprinter.php:242
+#: cust/default/pdfprinter.php:246 cust/gummis/pdfprinter.php:246
 msgid "short_gender_female"
 msgstr "W"
 
-#: cust/default/pdfprinter.php:244
+#: cust/default/pdfprinter.php:248 cust/gummis/pdfprinter.php:248
 msgid "short_gender_male"
 msgstr "M"
 
-#: cust/default/pdfprinter.php:247
+#: cust/default/pdfprinter.php:251 cust/gummis/pdfprinter.php:251
 msgid "Comments"
 msgstr "Kommentare"
 
-#: cust/default/pdfprinter.php:310 cust/gummis/pdfprinter.php:117
+#: cust/default/pdfprinter.php:314 cust/gummis/pdfprinter.php:314
 msgid ""
 "After the match has ended, update result:\n"
 "\n"
@@ -4938,23 +4955,23 @@ msgstr ""
 "Nach dem Ende des Spiels, geben Sie das Ergebnis ein:\n"
 "\n"
 
-#: cust/default/pdfprinter.php:339 cust/dfv/pdfprinter.php:29
-#: cust/dfv/pdfprinter.php:89 cust/gummis/pdfprinter.php:146
+#: cust/default/pdfprinter.php:343 cust/dfv/pdfprinter.php:29
+#: cust/dfv/pdfprinter.php:89 cust/gummis/pdfprinter.php:343
 msgid "Organization"
 msgstr "Organisation"
 
-#: cust/default/pdfprinter.php:341 cust/dfv/pdfprinter.php:91
-#: cust/gummis/pdfprinter.php:148
+#: cust/default/pdfprinter.php:345 cust/dfv/pdfprinter.php:91
+#: cust/gummis/pdfprinter.php:345
 msgid "Defenses record"
 msgstr "Defense-Statistik"
 
-#: cust/default/pdfprinter.php:1198 cust/dfv/pdfprinter.php:801
-#: cust/gummis/pdfprinter.php:979 cust/slkl/pdfprinter.php:837
+#: cust/default/pdfprinter.php:1202 cust/dfv/pdfprinter.php:801
+#: cust/gummis/pdfprinter.php:1202 cust/slkl/pdfprinter.php:837
 #: scorekeeper/addfirstoffence.php:32
 msgid "First Offence"
 msgstr "Erste Offence"
 
-#: cust/default/pdfprinter.php:1263 cust/gummis/pdfprinter.php:1044
+#: cust/default/pdfprinter.php:1267 cust/gummis/pdfprinter.php:1267
 #: mobile/addscoresheet.php:158 mobile/addscoresheet.php:170
 #: mobile/deletescore.php:29 mobile/deletescore.php:41
 #: scorekeeper/addscoresheet.php:144 scorekeeper/addscoresheet.php:161
@@ -4963,18 +4980,18 @@ msgstr "Erste Offence"
 msgid "Score"
 msgstr "Spielstand"
 
-#: cust/default/pdfprinter.php:1292 cust/dfv/pdfprinter.php:922
-#: cust/gummis/pdfprinter.php:1073 user/adddefensesheet.php:368
+#: cust/default/pdfprinter.php:1296 cust/dfv/pdfprinter.php:922
+#: cust/gummis/pdfprinter.php:1296 user/adddefensesheet.php:368
 msgid "Touched"
 msgstr "Berührt"
 
-#: cust/default/pdfprinter.php:1293 cust/dfv/pdfprinter.php:923
-#: cust/gummis/pdfprinter.php:1074 user/adddefensesheet.php:367
+#: cust/default/pdfprinter.php:1297 cust/dfv/pdfprinter.php:923
+#: cust/gummis/pdfprinter.php:1297 user/adddefensesheet.php:367
 msgid "Caught"
 msgstr "Gefangen"
 
-#: cust/default/pdfprinter.php:1294 cust/dfv/pdfprinter.php:924
-#: cust/fpudd/pdfprinter.php:973 cust/gummis/pdfprinter.php:1075
+#: cust/default/pdfprinter.php:1298 cust/dfv/pdfprinter.php:924
+#: cust/fpudd/pdfprinter.php:973 cust/gummis/pdfprinter.php:1298
 #: user/adddefensesheet.php:368
 msgid "Callahan"
 msgstr "Callahan"
@@ -5601,7 +5618,7 @@ msgstr "Tot."
 
 #: ext/rss.php:96
 msgid "Ultimate game"
-msgstr ""
+msgstr "Ultimate-Spiel"
 
 #: ext/rss.php:134 ext/rss.php:166 gameplay.php:221
 msgid "Time-out"
@@ -5887,17 +5904,17 @@ msgid "Invalid password (min. 5, max. 20 letters)."
 msgstr "Ungültiges Passwort (min. 5, max. 20 Buchstaben)."
 
 #: lib/club.functions.php:198 lib/player.functions.php:520
-#: lib/team.functions.php:1177
+#: lib/team.functions.php:1184
 msgid "File is too large"
 msgstr "Datei ist zu groß"
 
 #: lib/club.functions.php:206 lib/player.functions.php:528
-#: lib/team.functions.php:1185
+#: lib/team.functions.php:1192
 msgid "File is not supported image format"
 msgstr "Dateiformat wird nicht unterstützt"
 
 #: lib/club.functions.php:210 lib/player.functions.php:532
-#: lib/team.functions.php:1189
+#: lib/team.functions.php:1196
 msgid "Missing gd extension for image handling."
 msgstr "Missing gd extensinon for image handiling."
 
@@ -5977,6 +5994,10 @@ msgstr "Zielsaison %s entspricht nicht der der Datei (%s)."
 #, php-format
 msgid "Event to replace (%s) doesn't exist."
 msgstr "Zu ersetzendes Turnier (%s) existiert nicht."
+
+#: lib/dfv.functions.php:199
+msgid "Warning: Could not cache DFV data locally!"
+msgstr "Warnung: Konnte DFV-Daten nicht lokal speichern!"
 
 #: lib/facebook.functions.php:9
 msgid ""
@@ -8210,55 +8231,59 @@ msgstr "Kurze Spielberichte (mehrere Spiele pro Seite)"
 msgid "long sheets (one game per page)"
 msgstr "Lange Spielberichte (ein Spiel pro Blatt)"
 
-#: user/pdfscoresheet.php:217
+#: user/pdfscoresheet.php:209
+msgid "Fields on separate pages"
+msgstr ""
+
+#: user/pdfscoresheet.php:221
 msgid "Score sheets for a pool "
 msgstr "Spielberichte für einen Pool"
 
-#: user/pdfscoresheet.php:219
+#: user/pdfscoresheet.php:223
 msgid "Score sheets for a reservation"
 msgstr "Spielberichte für eine Reservierung"
 
-#: user/pdfscoresheet.php:221
+#: user/pdfscoresheet.php:225
 msgid "Score sheets for a game"
 msgstr "Spielberichte für ein Spiel"
 
-#: user/pdfscoresheet.php:223
+#: user/pdfscoresheet.php:227
 msgid "Blank score sheets"
 msgstr "Blanko-Spielberichte"
 
-#: user/pdfscoresheet.php:225
+#: user/pdfscoresheet.php:229
 msgid "Roster for a team"
 msgstr "Aufstellung für ein Team"
 
-#: user/pdfscoresheet.php:227
+#: user/pdfscoresheet.php:231
 msgid "Rosters for a division"
 msgstr "Aufstellungen für eine Klasse"
 
-#: user/pdfscoresheet.php:358
+#: user/pdfscoresheet.php:362 user/pdfscoresheet.php:385
 msgid "No games selected"
 msgstr "Keine Spiele ausgewählt"
 
-#: user/pdfscoresheet.php:387
+#: user/pdfscoresheet.php:398
 msgid "Empty Sheets"
 msgstr "Blanko-Spielberichte"
 
-#: user/pdfscoresheet.php:405
+#: user/pdfscoresheet.php:416
 msgid "Search Pools"
 msgstr "Pools suchen"
 
-#: user/pdfscoresheet.php:408
+#: user/pdfscoresheet.php:419
 msgid "Search Reservations"
 msgstr "Reservierungen suchen"
 
-#: user/pdfscoresheet.php:411
+#: user/pdfscoresheet.php:422
 msgid "Search Games"
 msgstr "Spiele suchen"
 
-#: user/pdfscoresheet.php:414
+#: user/pdfscoresheet.php:425
 msgid "Search Teams"
 msgstr "Teams suchen"
 
-#: user/pdfscoresheet.php:417
+#: user/pdfscoresheet.php:428
 msgid "Search Divisions"
 msgstr "Klassen / Ligen suchen"
 
@@ -8963,9 +8988,6 @@ msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
 
 #~ msgid "User Guide Ultiorganizer"
 #~ msgstr "Anleitung Ultiorganizer"
-
-#~ msgid "No matching divisions"
-#~ msgstr "Keine passenden Klassen"
 
 #~ msgid "List only divisions with matching type (open/mixed etc.)"
 #~ msgstr "Nur Klassen mit passendem Type (Open/Mixed) auflisten"
