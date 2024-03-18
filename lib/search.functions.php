@@ -279,7 +279,7 @@ function SearchReservation($resultTarget, $hiddenProperties, $submitbuttons) {
     $ret .= "<form method='post' id='reservations' action='?" . $resultTarget . "'>\n";
     $ret .= $results;
     $ret .= "<p>";
-    $ret .= getHiddenInput();
+    //$ret .= getHiddenInput();
     $ret .= getHiddenInput($hiddenProperties);
     if (!empty($_POST['searchreservation']) || !empty($_GET['season'])) {
       $ret .= getSubmitButtons($submitbuttons);
