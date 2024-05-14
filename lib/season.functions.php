@@ -87,6 +87,25 @@ function SeasonPools($seasonId, $onlyvisible = false, $onlyvalid = true) {
   return DBQueryToArray($query);
 }
 
+function SeasonPoolCount($seasonId, $onlyvisible = false, $onlyvalid = true) {
+  $query = sprintf(
+    "SELECT count(pool_id) as `count`
+    FROM uo_pool pool
+  LEFT JOIN uo_series ser ON (ser.series_id = pool.series)
+  WHERE ser.season = '%s'", mysql_adapt_real_escape_string($seasonId));
+
+  if ($onlyvisible) {
+    $query .= " AND pool.visible=1";
+  }
+
+  if ($onlyvalid) {
+    $query .= " AND ser.valid=1";
+  }
+
+  $query .= " GROUP BY season";
+  return DBQueryToValue($query);
+}
+
 /**
  * Returns array of event types like indoor, outdoor, beach.
  *

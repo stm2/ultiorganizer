@@ -3,6 +3,148 @@ include_once $include_prefix.'lib/season.functions.php';
 include_once $include_prefix.'lib/team.functions.php';
 include_once $include_prefix.'lib/swissdraw.functions.php';
 
+function PoolPalette($num = 3) {
+  $palettes = [
+    // original ultical palette; contains some somewhat dark colors
+    1 => ["F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
+            "7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF",/*"00008B",*/"008B8B","B8860B","A9A9A9","006400",
+            "BDB76B","8B008B","FF8C00","9932CC",/*"8B0000",*/"E9967A","8FBC8F","00CED1","9400D3","FF1493","00BFFF","1E90FF",
+            "B22222","228B22","FF00FF","DCDCDC","F8F8FF","FFD700","DAA520","008000","ADFF2F","F0FFF0","FF69B4","CD5C5C",
+            "FFFFF0","F0E68C","E6E6FA","FFF0F5","7CFC00","FFFACD","ADD8E6","F08080","E0FFFF","FAFAD2","D3D3D3","90EE90",
+            "FFB6C1","FFA07A","20B2AA","87CEFA","778899","B0C4DE","FFFFE0","00FF00","32CD32","FAF0E6","FF00FF",/*"800000",*/
+            "66CDAA","0000CD","BA55D3","9370D8","3CB371","7B68EE","00FA9A","48D1CC","C71585",/*"191970",*/"F5FFFA","FFE4E1",
+            "FFE4B5","FFDEAD","FDF5E6","808000","6B8E23","FFA500","FF4500","DA70D6","EEE8AA","98FB98","AFEEEE","D87093",
+            "FFEFD5","FFDAB9","CD853F","FFC0CB","DDA0DD","B0E0E6","800080","FF0000","BC8F8F","4169E1","FA8072","F4A460",
+            "2E8B57","FFF5EE","A0522D","C0C0C0","87CEEB","6A5ACD","708090","FFFAFA","00FF7F","4682B4","D2B48C","D8BFD8",
+            "FF6347","40E0D0","EE82EE","F5DEB3","F5F5F5","9ACD32"
+          ],
+    //
+    2 => ["8090bc","83e13e","9951ea","c8d62d","ce4ad6","4de378","d839a5","56b02e","616ae8","debe39",
+            "a966cf","8ce074","e43c75","56e1a6","e44821","49e6da","dc4644","4aab55","dd79c5","4d8525",
+            "9088e5","95aa32","4f66bd","c0d870","8d67af","d49531","5c94e5","d26f26","44a5d5","be6144",
+            "7cccee","cb5462","91da9b","bc5388","3a9661","d5a7e5","727b23","3270a4","b9aa54","626d94",
+            "eac483","498ca6","a2742d","54bcc9","e79576","4fb59a","976b94","84a65c","adbce9","497737",
+            "e3a5bc","4a7b58","bb7580","8ddedb","9d6e50","579f9d","c5a780","2d747a","c6d79b","3d8376",
+            "c2c296","7a703f","8ec39d","84956a"],
+    // palette with light colors and nice spread
+    3 => [ "faf3e4", "d8d1c3", "b7b0a2", "979083", "e0d0ac", "bfaf8c", "9e8f6e", "e7d095", "c5af76", "a38f58",
+ "edcf7e", "fff2cd", "caae5f", "f1cf65", "a88e41", "ceae45", "e3be38", "ab8e25", "ffdf5a", "fff1b6",
+ "ad8e00", "c09d00", "ffdf39", "e5bd00", "fff19e", "ffde00", "fff085", "fff06b", "fff04c", "ffef1e",
+ "00ffff", "85faff", "a8f8ff", "00eeff", "c0f7ff", "00ddff", "6fe9ff", "00cdff", "d4f6ff", "95e7ff",
+ "55d8ff", "00bdff", "36c7ff", "afe6ff", "82d6ff", "00adff", "e3f5ff", "009dff", "6ec6ff", "c2e5ff",
+ "9dd5ff", "59b5ff", "8cc4ff", "5794d7", "b1d4ff", "7ab4f9", "7093c1", "90b3e3", "c1d3ef", "a0b2cd",
+ "8192ac", "8d9198", "ced2d9", "f0f4fb", "adb1b8"]
+  ];
+  return $palettes[$num];
+}
+
+/**
+ * Returns an array of background colors.
+ *
+ * @param int | string $offset The starting color from the palette or a string, in which case a hash value is used as offset
+ * @param int $distance A step width; subsequent colors are picked with this distance from the palette
+ * @param int $palette The palette (currently 1 to 3) from which to choose colors
+ * @param array $order if given, the positions of the colors in the palette is stored here
+ */
+function PoolColors(int | string $offset = 0, $distance = 5, $palette = 3, &$order = null) {
+  $colors = PoolPalette($palette);
+  $max = count($colors) -1;
+
+  if (gettype($offset) == 'string') {
+    $offset = base_convert(substr(md5($offset), 0, 8), 16, 10);
+  } else {
+    if ($offset < 0 || $offset > $max) $offset = 1;
+  }
+  if ($distance < 1 || $distance > $max) $distance = 1;
+
+  $col = array();
+  $c = 0;
+
+  $offset = $offset % $max;
+  for ($i = $offset; $i < $offset + $distance && $c <=$max; ++$i) {
+    for($j = $i; $c <=$max;) {
+      if ($order !== null) $order[$c] = $j % ($max + 1);
+      $col[$c++] = $colors[$j % ($max + 1)];
+      if ($j >= $i) {
+        $j += $distance;
+        if ($j >= $max && $j % $max >= $offset) break;
+        $j = $j % $max;
+      } else {
+        $j += $distance;
+        if ($j >= $offset) break;
+      }
+    }
+  }
+  return $col;
+}
+
+/**
+ * Returns the color at $index (modulo the palette size) from
+ * PoolColors($offset, $distance, $palette).
+ * PoolColor($index) creates colors with different hues for increasing $index;#
+ * PoolColor($index, null, 1) will create colors with somewhat similar hue
+ * PoolColor(null) creates a random color from the palette
+ *
+ * @param int | null $index the number of the color in the palette
+ * @param int | string $offset The starting color from the palette or a string, in which case
+ *  a hash value is used as offset.
+ * @param int $distance A step width; subsequent colors are picked with this distance from the palette
+ * @param int $palette The palette (currently 1 to 3) from which to choose colors
+ */
+function PoolColor($index = null, $offset = null, $distance = 5, $palette = 3) {
+  $colors = PoolPalette($palette);
+  if ($index === null)
+    return $colors[rand(0,$max)];
+
+  return PoolColors($offset, $distance, $palette)[$index % count($colors)];
+}
+
+/**
+ * Returns $steps colors with hue similar to $base and decreasing saturation
+ *
+ * @param string $base rgb color, html style
+ * @param int $steps number of colors
+ */
+function ColorShades (string $base, int $steps) {
+  if ($steps <= 1)
+    return [$base];
+
+  $r = base_convert(substr($base,0,2), 16, 10);
+  $g = base_convert(substr($base,2,2), 16, 10);
+  $b = base_convert(substr($base,4,2), 16, 10);
+  $cols = ['r'=>$r, 'g'=>$g, 'b'=>$b];
+  $colsort=$cols;
+  sort($colsort);
+  $spread02 = $colsort[2] - $colsort[0];
+
+  $colors = array();
+  if ($spread02 < 10) {
+    // greyscale from 150 to 200
+    for ($g = 150, $i = 0; $i < $steps; ++$i, $g+= 50 / ($steps - 1)) {
+      $colors[$i] = [$g, $g, $g];
+    }
+  } else {
+    $spread01=($colsort[1]-$colsort[0])/($colsort[2]-$colsort[0]);
+    // decreasing saturation from 50% to 20%
+    $m0 = $colsort[2] / 2;
+    for($i=0; $i < $steps; ++$i) {
+      $colors[$i]= [$m0, $m0 + ($colsort[2] - $m0) * $spread01, $colsort[2]];
+      $m0 += $spread02 * .8 / ($steps -1);
+    }
+  }
+
+  $ret = array();
+  asort($cols);
+  foreach($colors as $col) {
+    $i = 0;
+    foreach($cols as $k => $v) {
+      $newcol[$k] = min(255, max(0, round($col[$i++])));
+    }
+    $ret[] = base_convert($newcol['r'], 10, 16) . base_convert($newcol['g'], 10, 16) .  base_convert($newcol['b'], 10, 16);
+  }
+  return $ret;
+};
+
 /**
  * Gets all pools matching with given conditions.
  * @param array $filter
@@ -1271,17 +1413,7 @@ function DeletePoolTemplate($poolId) {
  */
 function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
   if (hasEditSeriesRight($seriesId)) {
-    $colors = array("F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
-            "7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF",/*"00008B",*/"008B8B","B8860B","A9A9A9","006400",
-            "BDB76B","8B008B","FF8C00","9932CC",/*"8B0000",*/"E9967A","8FBC8F","00CED1","9400D3","FF1493","00BFFF","1E90FF",
-            "B22222","228B22","FF00FF","DCDCDC","F8F8FF","FFD700","DAA520","008000","ADFF2F","F0FFF0","FF69B4","CD5C5C",
-            "FFFFF0","F0E68C","E6E6FA","FFF0F5","7CFC00","FFFACD","ADD8E6","F08080","E0FFFF","FAFAD2","D3D3D3","90EE90",
-            "FFB6C1","FFA07A","20B2AA","87CEFA","778899","B0C4DE","FFFFE0","00FF00","32CD32","FAF0E6","FF00FF",/*"800000",*/
-            "66CDAA","0000CD","BA55D3","9370D8","3CB371","7B68EE","00FA9A","48D1CC","C71585",/*"191970",*/"F5FFFA","FFE4E1",
-            "FFE4B5","FFDEAD","FDF5E6","808000","6B8E23","FFA500","FF4500","DA70D6","EEE8AA","98FB98","AFEEEE","D87093",
-            "FFEFD5","FFDAB9","CD853F","FFC0CB","DDA0DD","B0E0E6","800080","FF0000","BC8F8F","4169E1","FA8072","F4A460",
-            "2E8B57","FFF5EE","A0522D","C0C0C0","87CEEB","6A5ACD","708090","FFFAFA","00FF7F","4682B4","D2B48C","D8BFD8",
-            "FF6347","40E0D0","EE82EE","F5DEB3","F5F5F5","9ACD32");
+    $colors = PoolPalette();
     $query = sprintf("INSERT INTO uo_pool
             (type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, visible, played,
@@ -1297,7 +1429,10 @@ function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
 
     $newId = DBQueryInsert($query);
 
-    $color = $colors[$newId % count($colors)];
+    $seasonId = SeriesSeasonId($seriesId);
+    $numPools = SeasonPoolCount($seasonId);
+    $color = PoolColor($numPools, $seasonId);
+
     $query = "UPDATE uo_pool SET color='".$color."' WHERE pool_id=".$newId;
 
     DBQuery($query);
@@ -1316,19 +1451,8 @@ function PoolFromPoolTemplate($seriesId, $name, $ordering, $poolTemplateId) {
  * @param int $poolId - pool to copy
  * @param boolean $follower - new pool is follower for copied pool (used with playoff pools)
  */
-function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=false) {
+function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=false, $color = null) {
   if (hasEditSeriesRight($seriesId)) {
-    $colors = array("F0F8FF","FAEBD7","00FFFF","7FFFD4","F0FFFF","F5F5DC","FFE4C4","0000FF","8A2BE2","DEB887","FFFF00","5F9EA0",
-            "7FFF00","D2691E","FF7F50","6495ED","FFF8DC","DC143C","00FFFF","00008B","008B8B","B8860B","A9A9A9","006400",
-            "BDB76B","8B008B","FF8C00","9932CC","8B0000","E9967A","8FBC8F","00CED1","9400D3","FF1493","00BFFF","1E90FF",
-            "B22222","228B22","FF00FF","DCDCDC","F8F8FF","FFD700","DAA520","008000","ADFF2F","F0FFF0","FF69B4","CD5C5C",
-            "FFFFF0","F0E68C","E6E6FA","FFF0F5","7CFC00","FFFACD","ADD8E6","F08080","E0FFFF","FAFAD2","D3D3D3","90EE90",
-            "FFB6C1","FFA07A","20B2AA","87CEFA","778899","B0C4DE","FFFFE0","00FF00","32CD32","FAF0E6","FF00FF","800000",
-            "66CDAA","0000CD","BA55D3","9370D8","3CB371","7B68EE","00FA9A","48D1CC","C71585","191970","F5FFFA","FFE4E1",
-            "FFE4B5","FFDEAD","FDF5E6","808000","6B8E23","FFA500","FF4500","DA70D6","EEE8AA","98FB98","AFEEEE","D87093",
-            "FFEFD5","FFDAB9","CD853F","FFC0CB","DDA0DD","B0E0E6","800080","FF0000","BC8F8F","4169E1","FA8072","F4A460",
-            "2E8B57","FFF5EE","A0522D","C0C0C0","87CEEB","6A5ACD","708090","FFFAFA","00FF7F","4682B4","D2B48C","D8BFD8",
-            "FF6347","40E0D0","EE82EE","F5DEB3","F5F5F5","9ACD32");
     $query = sprintf("INSERT INTO uo_pool
             (type, timeoutlen, halftime, winningscore, drawsallowed, timecap, scorecap, addscore, halftimescore, timeouts,
             timeoutsper, timeoutsovertime, timeoutstimecap,betweenpointslen, continuingpool, forfeitagainst, forfeitscore, visible, played,
@@ -1344,7 +1468,11 @@ function PoolFromAnotherPool($seriesId, $name, $ordering, $poolId, $follower=fal
 
     $newId = DBQueryInsert($query);
 
-    $color = $colors[$newId % count($colors)];
+    $seasonId = SeriesSeasonId($seriesId);
+    $numPools = SeasonPoolCount($seasonId);
+    if ($color === null)
+      $color = PoolColor($numPools, $seasonId);
+
     $query = "UPDATE uo_pool SET color='".$color."' WHERE pool_id=".$newId;
     DBQuery($query);
 
@@ -2024,29 +2152,29 @@ function GeneratePlayoffPools($poolId, $generate=true){
     $query = sprintf("SELECT team.team_id from uo_team_pool as tp left join uo_team team
                 on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`",
     (int)$poolId);
-    $result = DBQuery($query);
+    $prevTeams = DBQuery($query);
 
-    if(mysqli_num_rows($result)==0){
+    if(mysqli_num_rows($prevTeams)==0){
       $pseudoteams = true;
       $query = sprintf("SELECT pt.scheduling_id AS team_id from uo_scheduling_name pt
                     LEFT JOIN uo_moveteams mt ON(pt.scheduling_id = mt.scheduling_id)
                     WHERE mt.topool=%d ORDER BY mt.torank",
       (int)$poolId);
-      $result = DBQuery($query);
+      $prevTeams = DBQuery($query);
     }
-    $teams = mysqli_num_rows($result);
+    $numTeams = mysqli_num_rows($prevTeams);
 
 
     $rounds = 0;
-    $roundsToWin = ($teams+1)/2;//+1 to support odd team playoffs
-    if($teams==6){$roundsToWin = 4;} //hardcoded quick solution
+    $roundsToWin = ($numTeams+1)/2;//+1 to support odd team playoffs
+    if($numTeams==6){$roundsToWin = 4;} //hardcoded quick solution
     while($roundsToWin>=1){
       $roundsToWin = $roundsToWin/2;
       $rounds++;
     }
 
     //read layout templates
-    $html = PlayoffTemplate($teams, $rounds, $poolInfo['playoff_template']);
+    $html = PlayoffTemplate($numTeams, $rounds, $poolInfo['playoff_template']);
 
     // try to parse moves
     $specialmoves=false;
@@ -2065,14 +2193,24 @@ function GeneratePlayoffPools($poolId, $generate=true){
 
     //echo "<p>rounds to win $rounds</p>";
     $prevpoolId = $poolId;
-    $realteams = $teams; // real number of teams
-    if(is_odd($teams)) { // support for odd number of teams in playoff
-      $teams--; // pretend that there is an even number of teams
+    $realteams = $numTeams; // real number of teams
+    if(is_odd($numTeams)) { // support for odd number of teams in playoff
+      $numTeams--; // pretend that there is an even number of teams
     }
-    $offset = $teams;
+    $offset = $numTeams;
     $name = "Round 1";
     $prevname = "R1";
     $poolname = $poolInfo['name'];
+
+    $colors = ColorShades($poolInfo['color'], $rounds);
+    $poolInfo['color'] = $colors[0];
+    if ($generate) {
+      $pp = $poolInfo;
+      unset($pp['seriesname']);
+      unset($pp['season']);
+      unset($pp['specialmoves']);
+      SetPoolDetails($poolId, $pp);
+    }
 
     //first round is played in master pool
     for($i=1;$i<$rounds;$i++){
@@ -2094,7 +2232,7 @@ function GeneratePlayoffPools($poolId, $generate=true){
       if($generate){
         //create pool
         $name = $poolname." ". $name;
-        $id = PoolFromAnotherPool($poolInfo['series'],$name,$poolInfo['ordering'].$i,$prevpoolId,true);
+        $id = PoolFromAnotherPool($poolInfo['series'], $name, $poolInfo['ordering'].$i, $prevpoolId, true, $colors[$i]);
         $update = "continuingpool=1";
         if($rounds-$i==1 && $poolInfo['placementpool'] == 1){
           $update .= ", placementpool=1";
@@ -2107,7 +2245,7 @@ function GeneratePlayoffPools($poolId, $generate=true){
         if ($specialmoves){ // use specialmoves from HTML comment
           for ($j = 0; $j < $realteams; $j++) {
             $frompos = $moves[$i - 1][$j];
-            if ($frompos == $realteams && $realteams > $teams) { // in case of odd number of teams
+            if ($frompos == $realteams && $realteams > $numTeams) { // in case of odd number of teams
               $movename = $prevname . " Team " . $realteams;
             } elseif (is_odd($frompos)) {
               $movename = $prevname . " Winner " . (($frompos + 1) / 2);
@@ -2124,7 +2262,7 @@ function GeneratePlayoffPools($poolId, $generate=true){
           $totwinners=0;
           $totlosers=0;
           //loop pool in slice according round going
-          for($j=0;$j<$teams;$j=$j+$offset){
+          for($j=0;$j<$numTeams;$j=$j+$offset){
 
             $winners=0;
             $losers=0;
