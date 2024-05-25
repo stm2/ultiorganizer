@@ -7,7 +7,11 @@ $title = _("Team admins");
 $html = "";
 $seriesId = intval($_GET["series"]);
 $seriesinfo = SeriesInfo($seriesId);
+$pageurl = "?view=admin/addteamadmins&amp;series=$seriesId";
 $backurl = isset($_POST['backurl']) ? utf8entities($_POST['backurl']) : utf8entities($_SERVER['HTTP_REFERER']);
+if (empty($backurl))
+  $backurl = "?view=admin/seasonteams&amp;season=" . $seriesinfo['season'];
+
 $teams = SeriesTeams($seriesId);
 
 ensureSeasonAdmin($seriesinfo['season'], $title);
@@ -47,7 +51,7 @@ foreach($teams as $team){
 addHeaderScript('script/disable_enter.js.inc');
 
 $html .= "<h3>"._("Team admins").":</h3>";
-$html .= "<form method='post' action='?view=admin/addteamadmins&amp;series=".$seriesId."' name='teamadmin'>";
+$html .= "<form method='post' action='$pageurl' name='teamadmin'>";
 
 
 $admins = SeasonTeamAdmins($seriesinfo['season']);

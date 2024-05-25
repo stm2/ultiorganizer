@@ -350,8 +350,10 @@ if($typeRR || $typeSwiss){
 }
 
 echo "<p><input class='button' name='add' type='submit' value='"._("Add")."'/>";
-echo "<input type='hidden' name='backurl' value='$backurl'/>";
-echo "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
+if (!empty($backurl)) {
+  echo "<input type='hidden' name='backurl' value='$backurl'/>";
+  echo "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
+}
 echo "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
 echo "</form>\n";
 contentEnd();

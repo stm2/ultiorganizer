@@ -340,8 +340,11 @@ if ($continuation && $SwissOK==-1) {
 }
 if ($pstart == 0)
   echo "<p>";
-echo "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
-echo "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
+
+if (!empty($backurl)) {
+  echo "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";
+  echo "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
+}
 echo $reroute;
 echo "</form>\n";
 

@@ -5,8 +5,7 @@ include_once $include_prefix . 'lib/common.functions.php';
 
 $seasonId = "";
 $html = "";
-$backurl = utf8entities($_SERVER['HTTP_REFERER']??"");
-
+    
 //season parameters
 $sp = array(
   "season_id"=>"",
@@ -29,6 +28,13 @@ $sp = array(
 
 if (!empty($_GET["season"]))
   $seasonId = $_GET["season"];
+
+$backurl = utf8entities($_SERVER['HTTP_REFERER']??"");
+if (empty($backurl))
+  if (empty($seasonId))
+    $backurl = "?view=admin/seasons";
+  else 
+    $backurl = "?view=admin/seasonadmin&amp;season=" . $seasonId;
 
 // process itself on submit
 if (!empty($_POST['add'])) {

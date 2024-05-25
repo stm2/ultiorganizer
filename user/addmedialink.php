@@ -55,15 +55,14 @@ if(!empty($_GET["pool"])){
 if(isset($_SERVER['HTTP_REFERER']))
 	$backurl = utf8entities($_SERVER['HTTP_REFERER']);
 
-
-$pageurl = "?view=user/addmedialink&amp;$owner=$owner_id";
+$pageurl = "?view=user/addmedialink&$owner=$owner_id";
 
 if(isset($_POST['save'])){
-	$backurl = utf8entities($_POST['backurl']);
+	$backurl = utf8entities($_POST['backurl']??'');
 		
 	for($i=0;$i<$max_new_links;$i++){
 		
-		if(!empty($_POST["url$i"])){
+		if(!empty(trim($_POST["url$i"]))){
 			$url = array(
 				"owner"=>$owner,
 				"owner_id"=>$owner_id,
@@ -90,20 +89,16 @@ if(isset($_POST['save'])){
 			}
 		}
 		
-	$_SESSION['title'] = _("Added media links") .":";
-	$_SESSION['backurl'] = $backurl;
-	session_write_close();
-	header("location:?view=admin/success");
 	}
 }elseif(isset($_POST['removeurl_x'])){
-	$backurl = utf8entities($_POST['backurl']);
+	$backurl = utf8entities($_POST['backurl']??'');
 	$id = $_POST['hiddenDeleteId'];
 	RemoveMediaUrl($id);
 }
 
 	
 //common page
-$html .= "<form method='post' enctype='multipart/form-data' action='$pageurl'>\n";
+$html .= "<form method='post' enctype='multipart/form-data' action='". utf8entities($pageurl) . "'>\n";
 	
 $urls = GetMediaUrlList($owner, $owner_id);
 
@@ -195,9 +190,10 @@ $html .=  "<p>
 	  <input class='button' type='submit' name='save' value='"._("Save")."' />\n";
 if ($backurl) {
   $html .= "	  <input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>\n";
+  $html .="	  <input type='hidden' name='backurl' value='$backurl'/>\n";
 }
-$html .="	  <input type='hidden' name='backurl' value='$backurl'/>
-	  <input type='hidden' name='MAX_FILE_SIZE' value='$max_file_size'/>
+
+$html .= "<input type='hidden' name='MAX_FILE_SIZE' value='$max_file_size'/>
 	  </p>\n";
 $html .= "<div><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></div>";
 $html .= "</form>";

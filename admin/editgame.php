@@ -216,11 +216,11 @@ else
 		
 $html .= "</table>";
 
-$html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
 if (!empty($warning))
   $html .= $warning;
 $html .= "<p><input class='button' name='save' type='submit' value='"._("Save")."'/>";
 if (!empty($backurl)) {
+  $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
   $html .= "<input class='button' type='button' name='return'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/>";
 }
 $html .= "</p></form>\n";
