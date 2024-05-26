@@ -7,10 +7,18 @@ $html = "";
 $template = 0;
 $addmore = false;
 
-$poolId = intval($_GET["pool"]);
-$info = PoolInfo($poolId);
-$season = $info['season'];
-$seriesId = $info['series'];
+$poolId = intval($_GET["pool"] ?? -1);
+if ($poolId > 0) {
+  $info = PoolInfo($poolId);
+  $season = $info['season'];
+  $seriesId = $info['series'];
+} else {
+  $poolId = 0;
+  $season = $_GET['season'] ?? null;
+  $seriesId = intval($_GET['series'] ?? -1);
+  if ($season === null || $seriesId <= 0)
+    die("missing parameter");
+}
 
 // pool parameters
 $pp = array(
@@ -52,7 +60,7 @@ if (! empty($_POST['add'])) {
     }
     $template = $_POST['template'];
     $poolId = PoolFromPoolTemplate($seriesId, $_POST['name'], $ordering, $template);
-    $html .= "<p>" . _("Pool added") . ": " . utf8entities(U_($_POST['name'])) . "</p>";
+    $html .= "<p>" . _("Pool added") . ": <a href='?view=admin/addseasonpools&pool=$poolId'>" . utf8entities(U_($_POST['name'])) . "</a></p>";
     $html .= "<hr/>";
     $addmore = true;
   } else {
@@ -90,7 +98,7 @@ if (! empty($_POST['save'])) {
   $pp['forfeitscore'] = intval($_POST['forfeitscore']);
   $pp['forfeitagainst'] = intval($_POST['forfeitagainst']);
   
-  if (! empty($_POST['visible']))
+  if (! empty($_POST['visible']) && $_POST['type'] != 100)
     $pp['visible'] = 1;
   else
     $pp['visible'] = 0;
@@ -100,12 +108,12 @@ if (! empty($_POST['save'])) {
   else
     $pp['played'] = 0;
   
-  if (! empty($_POST['continuationserie']))
+  if (! empty($_POST['continuation']) || $_POST['type'] == 100)
     $pp['continuingpool'] = 1;
   else
     $pp['continuingpool'] = 0;
   
-  if (! empty($_POST['placementpool']))
+  if (! empty($_POST['placementpool']) || $_POST['type'] == 100)
     $pp['placementpool'] = 1;
   else
     $pp['placementpool'] = 0;
@@ -271,29 +279,24 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   echo "<tr><td class='infocell'>" . _("Order") . " (A,B,C,D ...):</td>
     <td><input class='input' id='ordering' name='ordering' value='" . utf8entities($pp['ordering']) . "'/></td></tr>";
   
-  echo "<tr><td class='infocell'>" . _("Type") . ":</td><td>";
+  echo "<tr><td class='infocell'>" . _("Type") . ":</td>\n<td>";
   
-  echo "<select class='dropdown' name='type'>";
-  if ($pp['type'] == "1")
-    echo "<option class='dropdown' selected='selected' value='1'>" . _("Round Robin") . "</option>";
-  else
-    echo "<option class='dropdown' value='1'>" . _("Round Robin") . "</option>";
+  echo "<select class='dropdown' name='type' id='type' onchange='updateBoxes();'>";
   
-  if ($pp['type'] == "2")
-    echo "<option class='dropdown' selected='selected' value='2'>" . _("Play-off") . "</option>";
-  else
-    echo "<option class='dropdown' value='2'>" . _("Play-off") . "</option>";
+  $hasGames = !CanGenerateGames($poolId);
   
-  if ($pp['type'] == "3")
-    echo "<option class='dropdown' selected='selected' value='3'>" . _("Swissdraw") . "</option>";
-  else
-    echo "<option class='dropdown' value='3'>" . _("Swissdraw") . "</option>";
-  
-  if ($pp['type'] == "4")
-    echo "<option class='dropdown' selected='selected' value='4'>" . _("Crossmatch") . "</option>";
-  else
-    echo "<option class='dropdown' value='4'>" . _("Crossmatch") . "</option>";
-  
+  foreach (PoolTypes() as $type => $typeId) {
+    $selected = ($typeId == $info['type'])?" selected='selected'":"";
+    $name = PoolTypeName($typeId);
+    if ($name === null) continue;
+    $name = utf8entities($name);
+    if ($hasGames && $typeId == 100) $selected .= " disabled='disabled'";
+    
+    echo "<option class='dropdown'${selected} value='$typeId'>$name</option>";
+  }
+    
+  echo "</select></td></tr>\n";
+    
   echo "<tr><td class='infocell'>" . _("Special playoff template") . ":</td>";
   
   echo "<td><input class='input' type='text' id='playoff_template' name='playoff_template' list='template_choices' value='" . utf8entities($pp['playoff_template']) . "' />\n";
@@ -333,7 +336,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     $followingPool = rtrim($frompoolinfo['ordering'], "0..9") == rtrim($pp['ordering'], "0..9");
   }
   // CS: Sometimes you want to change the visibility setting in Swissdraw
-  if ($followingPool) { // Playoff or Swissdraw
+  if ($followingPool || $pp['type'] == 100) { // Playoff or Swissdraw or placement
     echo "<td><input class='input' disabled='disabled' type='checkbox' id='visible' name='visible'/></td>";
   } else {
     if (intval($pp['visible']))
@@ -350,19 +353,21 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     echo "<td><input class='input' type='checkbox' id='played' name='played' /></td>";
   echo "<td></td></tr>";
   
-  echo "<tr><td class='infocell'>" . _("Continuing pool") . ":</td>";
-  if ($followingPool) { // Playoff or Swissdraw
-    echo "<td><input class='input' disabled='disabled' type='checkbox' id='continuationserie' name='continuationserie' checked='checked'/></td>";
+  echo "<tr><td class='infocell'>" . _("continuationuing pool") . ":</td>";
+  if ($followingPool || $pp['type'] == 100) { // Playoff or Swissdraw or placement
+    echo "<td><input class='input' disabled='disabled' type='checkbox' id='continuation' name='continuation' checked='checked'/></td>";
   } else {
     if (intval($pp['continuingpool']))
-      echo "<td><input class='input' type='checkbox' id='continuationserie' name='continuationserie' checked='checked'/></td>";
+      echo "<td><input class='input' type='checkbox' id='continuation' name='continuation' checked='checked'/></td>";
     else
-      echo "<td><input class='input' type='checkbox' id='continuationserie' name='continuationserie' /></td>";
+      echo "<td><input class='input' type='checkbox' id='continuation' name='continuation' /></td>";
   }
   echo "<td></td></tr>";
   
   echo "<tr><td class='infocell'>" . _("Placement pool") . ":</td>";
-  if (intval($pp['placementpool']))
+  if ($pp['type'] == 100)
+    echo "<td><input class='input' disabled='disabled' type='checkbox' id='placementpool' name='placementpool' checked='checked'/></td>";
+  else if (intval($pp['placementpool']))
     echo "<td><input class='input' type='checkbox' id='placementpool' name='placementpool' checked='checked'/></td>";
   else
     echo "<td><input class='input' type='checkbox' id='placementpool' name='placementpool' /></td>";
@@ -490,6 +495,29 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   echo "</form>\n";
 }
 echo TranslationScript("name");
+echo "<script type=\"text/javascript\">
+  function enable(id, value) {
+    if (value)
+      document.getElementById(id).removeAttribute(\"disabled\");
+    else
+      document.getElementById(id).setAttribute(\"disabled\", \"true\");
+  }
+  function updateBoxes() {
+    var typeSelect = document.getElementById(\"type\");
+    var value = typeSelect.value;
+    if (value == 100) {
+      enable(\"visible\", false);
+      enable(\"continuation\", false);
+      enable(\"placementpool\", false);
+    } else {
+      enable(\"visible\", true);
+      enable(\"continuation\", true);
+      enable(\"placementpool\", true);
+    }
+  }
+</script>
+";
+
 
 postContent();
 ?>

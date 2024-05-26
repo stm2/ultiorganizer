@@ -45,6 +45,12 @@ if (!empty($_POST['add'])) {
   $pp['visible'] = isset($_POST["visible0"]) ? 1 : 0;
   $pp['continuingpool'] = isset($_POST["continuation0"]) ? 1 : 0;
   $pp['placementpool'] = isset($_POST["placement0"]) ? 1 : 0;
+
+  if ($pp['type'] == 100) {
+    $pp['visible'] = 0;
+    $pp['continuingpool'] = 1;
+    $pp['placementpool'] = 1;
+  }
   
   $poolId = PoolFromPoolTemplate($series_id, $pp['name'], $pp['ordering'], $_POST['new_pool_template']);
   SetPoolDetails($poolId, $pp);
@@ -59,15 +65,20 @@ if (!empty($_POST['save'])) {
     $pp['type'] = intval($_POST["type$pool_id"]);
     $pp['ordering'] = !empty($_POST["ordering$pool_id"]) ? $_POST["ordering$pool_id"] : "A";
     $pp['visible'] = isset($_POST["visible$pool_id"]) ? 1 : 0;
+    $pp['continuingpool'] = isset($_POST["continuation$pool_id"]) ? 1 : 0;
+    $pp['placementpool'] = isset($_POST["placement$pool_id"]) ? 1 : 0;
+    
     if (isset($_POST["root$pool_id"])) {
       $root = $_POST["root$pool_id"];
       $pp['continuingpool'] = 1;
       $pp['visible'] = 0;
-    } else {
-      $root = $pool_id;
-      $pp['continuingpool'] = isset($_POST["continuation$root"]) ? 1 : 0;
+      $pp['placementpool'] = isset($_POST["placement$root"]) ? 1 : 0;
+    } else if ($pp['type'] == 100) {
+      $pp['visible'] = 0;
+      $pp['continuingpool'] = 1;
+      $pp['placementpool'] = 1;
     }
-    $pp['placementpool'] = isset($_POST["placement$root"]) ? 1 : 0;
+    
     SetPoolDetails($pool_id, $pp);
   }
 }
@@ -164,7 +175,7 @@ foreach($pools as $pool){
   $is_played = intval($info['played'])?"checked='checked'":"";
   
   $hidden = "";
-  if($info['type']==2){
+  if($info['type'] == 2){
     $rootid = PoolPlayoffRoot($id);
     if($rootid!=$id){
       $info['continuingpool'] = 1;
@@ -174,21 +185,28 @@ foreach($pools as $pool){
       $is_placement .= " disabled='disabled'";
       $hidden = "<input type='hidden' id='root$id' name='root$id' value='$rootid' />";
     }
+  } else if($info['type'] == 100){
+    $is_visible .= " disabled='disabled'";
+    $is_continuation .= " disabled='disabled' checked='checked'";
+    $is_placement .= " disabled='disabled' checked='checked'";
   }
   
-  $html .= "<td class='center'>$hidden<input class='input' type='checkbox' name='visible$id' $is_visible/></td>";
-  $html .= "<td class='center'><input class='input' type='checkbox' name='continuation$id' $is_continuation/></td>";
-  $html .= "<td><input class='input' type='checkbox' name='placement$id' $is_placement/> <span style='vertical-align:top;font-size:80%'>$placements</span></td>";
+  $html .= "<td class='center'>$hidden<input class='input' type='checkbox' name='visible$id' id='visible$id' $is_visible/></td>";
+  $html .= "<td class='center'><input class='input' type='checkbox' name='continuation$id' id='continuation$id' $is_continuation/></td>";
+  $html .= "<td><input class='input' type='checkbox' name='placement$id' id='placement$id' $is_placement/> <span style='vertical-align:top;font-size:80%'>$placements</span></td>";
    
-  $html .= "<td><select class='dropdown' name='type$id'>\n";
+  $html .= "<td><select class='dropdown' name='type$id' id='type$id' onchange='updateBoxes($id);'>\n";
 
-
-  foreach($types as $type=>$value) {
-    if($value==$info['type']){
-      $html .=   "<option class='dropdown' selected='selected' value='".utf8entities($value )."'>". U_($type) ."</option>";
-    }else{
-      $html .=   "<option class='dropdown' value='".utf8entities($value )."'>". U_($type) ."</option>";
-    }
+  $hasGames = !CanGenerateGames($info['pool_id']);
+    
+  foreach($types as $type => $typeId) {
+    $selected = ($typeId == $info['type'])?" selected='selected'":"";
+    $name = PoolTypeName($typeId);
+    if ($name === null) continue;
+    $name = utf8entities($name);
+    if ($hasGames && $typeId == 100) $selected .= " disabled";
+    
+    $html .= "<option class='dropdown'${selected} value='$typeId'>$name</option>";
   }
 
   $html .=  "</select></td>";
@@ -218,6 +236,8 @@ foreach($pools as $pool){
     }
   }
 
+  $hasGames = $info['type'] == 1 || $info['type'] == 2 || $info['type'] == 3 || $info['type'] == 4;
+  if ($hasGames) {
   //playoff pool
   if($info['type']==2){
     if (CanGenerateGames($info['pool_id'])) {
@@ -231,6 +251,9 @@ foreach($pools as $pool){
     }else{
       $html .= "<a href='?view=admin/poolgames&amp;season=$season&amp;pool=".$info['pool_id']."'>"._("Game management")."</a>";
     }
+  }
+  } else {
+    $html .= _("no games");
   }
   $html .= "</td>";
   $html .= "<td>";
@@ -255,13 +278,16 @@ if(!$last_ordering){
 $html .=  "<tr>";
 $html .=  "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' id='name0' name='name0'/></td>";
 $html .= "<td style='padding-top:15px'><input class='input' size='3' maxlength='20' name='ordering0' value='$last_ordering'/></td>";
-$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='visible0'/></td>";
-$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='continuation0'/></td>";
-$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='placement0'/></td>";
-$html .= "<td style='padding-top:15px'><select class='dropdown' name='type0'>\n";
+$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='visible0' id='visible0'/></td>";
+$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='continuation0' id='continuation0'/></td>";
+$html .= "<td class='center' style='padding-top:15px'><input class='input' type='checkbox' name='placement0' id='placement0'/></td>";
+$html .= "<td style='padding-top:15px'><select class='dropdown' name='type0' id='type0' onchange='updateBoxes(0);'>\n";
 
-foreach($types as $type=>$value) {
-  $html .=   "<option class='dropdown' value='".utf8entities($value )."'>". U_($type) ."</option>";
+foreach($types as $type => $typeId) {
+  $name = PoolTypeName($typeId);
+  if ($name === null) continue;
+  $name = utf8entities($name);
+  $html .= "<option class='dropdown' value='$typeId'>$name</option>";
 }
 
 $html .=  "</select></td>";
@@ -292,6 +318,30 @@ $html .= "| <a href='?view=admin/seriesgames&amp;series=".$series_id."'>"._("Gen
 //stores id to delete
 $html .= "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
 $html .= "</form>\n";
+
+$html .= "<script type=\"text/javascript\">
+  function enable(id, value) {
+    if (value)
+      document.getElementById(id).removeAttribute(\"disabled\");
+    else
+      document.getElementById(id).setAttribute(\"disabled\", \"true\");
+  }
+  function updateBoxes(id) {
+    var typeSelect = document.getElementById(\"type\" + id);
+    var value = typeSelect.value;
+    if (value == 100) {
+      enable(\"visible\" + id, false);
+      enable(\"continuation\" + id, false);
+      enable(\"placement\" + id, false);
+    } else {
+      enable(\"visible\" + id, true);
+      enable(\"continuation\" + id, true);
+      enable(\"placement\" + id, true);
+    }
+  }
+</script>
+";
+
 
 //common page
 setFocus('name0');

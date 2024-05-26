@@ -69,6 +69,7 @@ $html .= $comment;
 $prevseries = 0;
 $printVP = false;
 foreach ($pools as $pool) {
+  if ($pool['type'] == 100) continue;
 
   $poolinfo = PoolInfo($pool['pool_id']);
 
@@ -98,6 +99,10 @@ foreach ($pools as $pool) {
   }elseif($poolinfo['type']==4){
     // Cross matches
     $html .= printCrossmatchPool($seasoninfo, $poolinfo);
+  } elseif ($poolinfo['type'] == 100) {
+    $html .= printPlacementPool($seasoninfo, $poolinfo);
+  } else {
+    $html .= "<p>" . _("Unknown pool type") . "</p>\n";
   }
 
   if(!$seriesScoreboard && !$print){
@@ -870,6 +875,54 @@ function printCrossmatchPool($seasoninfo, $poolinfo){
   $ret .= "</tr></table>\n";
 
   $ret .= "<p><a href='?view=games&amp;pool=".$poolinfo['pool_id']."&amp;singleview=1'>"._("Schedule")."</a><br/></p>";
+
+  return $ret;
+}
+
+function printPlacementRow($poolinfo, $row, $seasoninfo, $i) {
+  $ret = '';
+  $realteam = PoolTeamFromStandings($poolinfo['pool_id'], $i);
+  $ret .= "<tr><td>$i</td>";
+  if ($realteam) {
+    $flag = "";
+    if (intval($seasoninfo['isinternational'])) {
+      $flag = "<img height='10' src='images/flags/tiny/" . $realteam['flagfile'] . "' alt=''/> ";
+    }
+    $ret .= "<td><div>&nbsp;$flag<a href='?view=teamcard&amp;team=" . $realteam['team_id'] . "'>" .
+      utf8entities($realteam['name']) . "</a></div></td>";
+  } else {
+    $ret .= "<td>" . utf8entities(U_($row['name'])) . "</td>";
+  }
+
+  $ret .= "</tr>\n";
+  return $ret;
+}
+
+function printPlacementPool($seasoninfo, $poolinfo) {
+  $ret = "";
+  $style = "";
+
+  $style = "style='font-weight: bold;'";
+
+  $ret .= "<table  class='admintable' $style >\n";
+  $ret .= "<tr><th>#</th><th style='width:200px'>" . _("Team") . "</th></tr>\n";
+
+  $standings = PoolTeams($poolinfo['pool_id'], "rank");
+  $teams = PoolSchedulingTeams($poolinfo['pool_id']);
+
+  if ((!$poolinfo['continuingpool'] || count($standings) >= count($teams))) {
+    $i = 1;
+    foreach ($standings as $row) {
+      $ret .= printPlacementRow($poolinfo, $row, $seasoninfo, $i++);
+    }
+  } else {
+    $i = 1;
+    foreach ($teams as $row) {
+      $ret .= printPlacementRow($poolinfo, $row, $seasoninfo, $i++);
+    }
+  }
+
+  $ret .= "</table>\n";
 
   return $ret;
 }

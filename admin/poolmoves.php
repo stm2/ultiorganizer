@@ -67,7 +67,9 @@ function teamName(poolselector, positionInput) {
   if (positionInput.value == '') return null;
   if (poolMap.get(frompool) == ROUNDROBIN || poolMap.get(frompool) == SWISSDRAW)
     return poolselector[poolselector.selectedIndex].innerHTML + " " + positionInput.value;
-  else if (poolMap.get(frompool) == PLAYOFF || poolMap.get(frompool) == CROSSMATCH) {
+  else if (poolMap.get(frompool) == PLAYOFF || poolMap.get(frompool) == 
+
+  ) {
     let pool = poolselector[poolselector.selectedIndex].innerHTML;
     let gameno = Math.floor((parseInt(positionInput.value) + 1) / 2);
     if (isNaN(gameno)) return null;
@@ -108,6 +110,8 @@ $typeRR = $poolinfo['type'] === PoolTypes('roundrobin');
 $typePlayoff = $poolinfo['type'] === PoolTypes('playoff');
 $typeSwiss = $poolinfo['type'] === PoolTypes('swissdraw');
 $typeCross = $poolinfo['type'] === PoolTypes('crossmatch');
+//$typePartial = $poolinfo['type'] === PoolTypes('partial');
+$typePlacement = $poolinfo['type'] === PoolTypes('placement');
 
 $err="";
 //process itself on submit
@@ -199,7 +203,7 @@ echo "<h1>".utf8entities(U_(PoolSeriesName($poolId)).", ". U_(PoolName($poolId))
 $poolinfo = PoolInfo($poolId);
 
 //round robin or swissdrawn pool
-if($typeRR || $typeSwiss){
+if($typeRR || $typeSwiss || $typePlacement){
 
   $moves = PoolMovingsToPool($poolId);
   if (!empty($moves)) {
@@ -347,9 +351,13 @@ if($typeRR || $typeSwiss){
     $i++;
   }
   echo "</table>";
+} else {
+  echo "<p>" . _("Unknown pool type!") . "</p>\n";
+  $unknownType = true;
 }
 
-echo "<p><input class='button' name='add' type='submit' value='"._("Add")."'/>";
+if (empty($unknownType))
+  echo "<p><input class='button' name='add' type='submit' value='"._("Add")."'/>";
 if (!empty($backurl)) {
   echo "<input type='hidden' name='backurl' value='$backurl'/>";
   echo "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='$backurl'\"/></p>";

@@ -64,6 +64,8 @@ function askBye($season, $poolId, $poolInfo, $rounds, $homeresp, $nomutual, $act
   }
 }
 
+$hasGames = $poolInfo['type'] == 1 || $poolInfo['type'] == 2 || $poolInfo['type'] == 3 || $poolInfo['type'] == 4;
+
 // process itself on submit
 if (!empty($_POST['remove_x'])) {
   $id = $_POST['hiddenDeleteId'];
@@ -172,6 +174,8 @@ if (!empty($_POST['remove_x'])) {
         $fakegames .= "<p>" . TeamName($game['home']) . " - " . TeamName($game['away']) . "</p>";
       }
     }
+  } else {
+    $fakegames = "<p>" . _("Not applicable for this pool type") . "</p>\n";
   }
 } elseif (!empty($_POST['generate'])) {
   if (!empty($_POST['rounds'])) {
@@ -179,7 +183,12 @@ if (!empty($_POST['remove_x'])) {
   }
   $homeresp = isset($_POST["homeresp"]);
   $nomutual = isset($_POST["nomutual"]);
-  $generatedgames = GenerateGames($poolId, $rounds, true, $nomutual, $homeresp);
+  
+  if ($hasGames) {
+    $generatedgames = GenerateGames($poolId, $rounds, true, $nomutual, $homeresp);
+  } else {
+    $html .= "<p>" . _("Not applicable for pool type") . "</p>\n";
+  }
 
   // in case of playoff pool create all pools and games for playoffs
   if ($poolInfo['type'] == 2) {
@@ -206,6 +215,7 @@ if (!empty($_POST['remove_x'])) {
     }
   }
 } elseif (!empty($_POST['addnew'])) {
+  if (!$hasGames) throw new Exception("pool type has no games"); 
   $home = $_POST['newhome'];
   $away = $_POST['newaway'];
   $homeresp = isset($_POST["homeresp"]);
@@ -215,7 +225,8 @@ if (!empty($_POST['remove_x'])) {
 $seaValue = urlencode($season);
 $html .= "<form method='post' action='?view=admin/poolgames&amp;season=$seaValue&amp;pool=$poolId'>";
 
-if (CanGenerateGames($poolId)) {
+if ($hasGames) {
+  if (CanGenerateGames($poolId)) {
   $html .= "<h2>" . _("Creation of pool games") . "</h2>\n";
 
   if ($poolInfo['type'] == "1") {
@@ -267,6 +278,8 @@ if (CanGenerateGames($poolId)) {
       $html .= "checked='checked'";
     }
     $html .= "/></p>";
+  } else {
+    $html .= "<p>" . _("Not applicable for pool type") . "</p>\n";
   }
 
   $html .= "<p><input type='submit' name='fakegenerate' value='" . _("Show games") . "'/>";
@@ -274,6 +287,9 @@ if (CanGenerateGames($poolId)) {
 } else {
   $html .= "<p><a href='?view=admin/reservations&amp;season=$seaValue'>" . _("Scheduling and Reservation management") .
     "</a></p>";
+}
+} else {
+  $html .= "<p>" . _("Not applicable for this pool type") . "</p>\n";
 }
 if (!empty($fakegames)) {
   $html .= "<h2>" . _("Games to generate") . "</h2>\n";
@@ -412,7 +428,7 @@ if ($totalgames > 0) {
     "' name='removeall' onclick='return confirm(\"" . _("This will remove all games from this pool.") . "\");'/></p>";
 }
 
-if (!$poolInfo['played']) {
+if (!$poolInfo['played'] && $hasGames) {
   $html .= "<h2>" . _("Creation of single game") . "</h2>\n";
   $html .= "<p>" . _("Home team has rights to edit game score sheet") .
     ":<input class='input' type='checkbox' name='homeresp'";
@@ -454,6 +470,8 @@ if (!$poolInfo['played']) {
 // stores id to delete
 $html .= "<p>" . getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId') . "</p>";
 $html .= "</form>\n";
+
+$html .= "<hr><p><a href='?view=admin/seasonpools&amp;season=$seaValue'&series=" . $poolInfo['series'] . ">" . _("Pools") . "</a></p>";
 
 echo $html;
 contentEnd();

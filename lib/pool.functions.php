@@ -318,10 +318,22 @@ function PoolListAll() {
  * @return array Hardcoded PHP array of pool types.
  */
 function PoolTypes($name = null) {
-  $types = array("roundrobin" => 1, "playoff" => 2, "swissdraw" => 3, "crossmatch" => 4);
+  $types = array("roundrobin" => 1, "playoff" => 2, "swissdraw" => 3, "crossmatch" => 4, "partial" => 5, "reserved" => 6, "placement" => 100);
   if ($name == null)
     return $types;
   return $types[$name] ?? null;
+}
+
+function PoolTypeName($typeId) {
+  switch ($typeId) {
+    case 1: return _("Round Robin");
+    case 2: return _("Play-off");
+    case 3: return _("Swiss draw");
+    case 4: return _("Cross-match");
+    // case 5: return _("Partial");
+    case 100: return _("Placement");
+    default: null;
+  }
 }
 
 /**
@@ -2581,7 +2593,7 @@ function SeriesRanking($series_id) {
         } else {
           foreach ($rankteams as $team) {
             $gamesleft = TeamPoolGamesLeft($team['team_id'], $ppool['pool_id']);
-            if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0)) {
+            if ($ppool['played'] || ($ppool['type'] == 2 && mysqli_num_rows($gamesleft) == 0) || $ppool['type'] == 100) {
               $team['placement'] = $ranked_before + $i;
               ++$ranked_current;
               $ranking[] = $team;

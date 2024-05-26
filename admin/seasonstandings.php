@@ -187,7 +187,7 @@ foreach ($pools as $spool) {
   
   $style = "class='admintable'";
   
-  if ($poolinfo['played']) {
+  if ($poolinfo['played'] || $poolinfo['type'] == 100) {
     $style = "class='admintable tablelowlight'";
   }
   
@@ -236,7 +236,7 @@ foreach ($pools as $spool) {
   $html .= "<input type='hidden' id='editStart" . $poolId . "' name='editStart[]' value='" . ($start) . "'/>\n";
   $html .= "<input type='hidden' id='editEnd" . $poolId . "' name='editEnd[]' value='" . ($teamNum - 1) . "'/>\n";
 
-  if ($poolinfo['played']) {
+  if ($poolinfo['played'] || $poolinfo['type'] == 100) {
     $html .= "<p>" . _("Pool is completed:");
   } else {
     $html .= "<p>" . _("Pool games not completed:");
