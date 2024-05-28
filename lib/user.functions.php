@@ -2066,4 +2066,46 @@ function GetSearchUsers() {
     return GetUsers('all', null);
   }
 }
-?>
+
+function GetUserYears($admin = false) {
+  $query = "SELECT count(*) as count, YEAR(last_login) as year FROM uo_users u";
+  if (!$admin) {
+    $query .= " WHERE NOT EXISTS(SELECT * FROM uo_userproperties up WHERE u.userid = up.userid AND up.name = 'userrole' AND up.value = 'superadmin')";
+  }
+  $query .= " GROUP BY YEAR(last_login) ORDER BY year ASC";
+  return DBQueryToArray($query);
+}
+
+function DeleteUsersBefore(int | null $year = 0, bool $confirmed) {
+  if (!isSuperAdmin())
+    die('insufficient rights to delete users');
+
+  $query = "SELECT count(*) FROM uo_userproperties WHERE userid = ''";
+  $count = DBQueryToValue($query);
+
+  if ($confirmed == true) {
+    $query = "DELETE FROM uo_userproperties WHERE userid = ''";
+    DBQuery($query);
+    Log1("database", "delete", "", "", "delete $count orphaned user properties", "user");
+  }
+
+  $notexists = "u.userid != 'anonymous' AND NOT EXISTS (SELECT prop_id FROM (SELECT prop_id FROM uo_userproperties up2 
+    WHERE u.userid = up2.userid AND up2.name = 'userrole' AND up2.value = 'superadmin') AS b)";
+
+  if ($year === NULL) {
+    $selector = "u.last_login IS NULL";
+  } else {
+    $year = intval($year);
+    $selector = "year(u.last_login) <= $year";
+  }
+
+  if ($confirmed == true) {
+    $query = "DELETE u, up FROM uo_users as u
+      LEFT JOIN uo_userproperties as up ON (u.userid = up.userid) WHERE $selector AND $notexists";
+    return DBQuery($query);
+  } else {
+    $query = "SELECT userid, name, email, last_login FROM uo_users as u WHERE $selector AND $notexists";
+    return DBQueryToArray($query);
+    // return $count + DBQueryToValue("SELECT count(*) FROM uo_users as u WHERE $selector AND $notexists");
+  }
+}

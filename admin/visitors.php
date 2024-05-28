@@ -18,7 +18,7 @@ if(isSuperAdmin()){
 	}
 	
 	$html .= "<h3>"._("Summary")."</h3>";
-	$html .= "<table cellpadding='3'>";
+	$html .= "<table class='admintable'>";
 	$html .= "<tr>";
 	$html .= "<td>"._("Visitors")."</td><td>".$visitors['visitors']."</td>";
 	$html .= "</tr>";
@@ -31,7 +31,7 @@ if(isSuperAdmin()){
 	$html .= "</table>";
 	
 	$html .= "<h3>"._("Pageload per page")."</h3>";
-	$html .= "<table cellpadding='3'>";
+	$html .= "<table class='admintable'>";
     foreach($pageloads as $page){
 	  $html .= "<tr>";
 	  $html .= "<td>".utf8entities($page['page'])."</td><td>".$page['loads']."</td>";
