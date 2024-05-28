@@ -11,7 +11,6 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
 } else {
   if (isSuperAdmin()) {
     ini_set("post_max_size", "30M");
-    ini_set("upload_max_filesize", "30M");
     ini_set("memory_limit", -1);
 
     $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/dbrestoring'>\n";
@@ -20,6 +19,11 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
 
     $html .= "<p><input class='input' type='file' size='80' name='restorefile'/>";
     $html .= "<input type='hidden' name='MAX_FILE_SIZE' value='100000000'/></p>";
+    
+    $html .= "<p>" . sprintf(_(
+      "Note: Maximum size for uploaded files on this server is (%s, %s). You may have problems restoring files larger than that. A system administrator may change this by setting upload_max_filesize and post_max_size in php.ini."),
+      ini_get("upload_max_filesize"), ini_get("post_max_size")) . "</p>\n";
+    
     $html .= "<p><input class='button' type='submit' name='check' value='" . _("Restore") . "'/>";
     $html .= "<input class='button' type='button' name='return'  value='" . _("Return") .
       "' onclick=\"window.location.href='?view=admin/dbadmin'\"/></p>";
@@ -32,4 +36,3 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
 $title = _("Database restore");
 
 showPage($title, $html);
-?>

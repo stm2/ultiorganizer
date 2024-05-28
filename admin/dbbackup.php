@@ -110,6 +110,9 @@ if(isSuperAdmin()){
 	}
 	$html .= "</table>";
 	$html .= "<p><span class='profileheader'>"._("Database size").": </span>".$total_size." "._("bytes")."</p>\n";
+	$html .= "<p>" . sprintf(_(
+	  "Note: Maximum size for uploaded files on this server is (%s, %s). You may have problems restoring files larger than that. A system administrator may change this by setting upload_max_filesize and post_max_size in php.ini."),
+	  ini_get("upload_max_filesize"), ini_get("post_max_size")) . "</p>\n";
 	$html .= "<p><input class='button' type='submit' name='backup' value='"._("Backup")."'/>";	
 	$html .= "<input class='button' type='button' name='takaisin'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/dbadmin'\"/></p>";
 	$html .= "</form>";

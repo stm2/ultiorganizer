@@ -4,6 +4,16 @@ include_once 'menufunctions.php';
 $title = _("Database restore");
 setBackurl("?view=admin/dbrestore");
 
+function get_error($error) {
+  $phpFileUploadErrors = array(
+    0 => 'There is no error, the file uploaded with success',
+    1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+    2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+    3 => 'The uploaded file was only partially uploaded', 4 => 'No file was uploaded', 6 => 'Missing a temporary folder',
+    7 => 'Failed to write file to disk.', 8 => 'A PHP extension stopped the file upload.');
+  return $phpFileUploadErrors[$error] ?? '';
+}
+
 class RestoreHandler {
 
   public string $error = '';
@@ -18,11 +28,37 @@ class RestoreChecker extends RestoreHandler {
   protected $tothers;
 
   protected $tdropped;
+  
+  protected $total;
 
   protected $tables;
 
   protected int $start;
+  
+  protected $checked;
+  
+  protected bool $checkAll;
+  
+  protected int $limit;
 
+  function __construct($post) {
+    $this->checked = array();
+    if (isset($post['tables'])) {
+      foreach ($post['tables'] as $tname) {
+        $this->checked[$tname] = true;
+      }
+      $this->checkAll = false;
+    } else {
+      $this->checkAll = true;
+    }
+    $this->limit = min(12 * 60 * 60, max(1, intval($post['tlimit'] ?? 10)));
+    set_time_limit($this->limit);
+  }
+  
+  function accept($tname) {
+    return $this->checkAll || isset($this->checked[$tname]);
+  }
+  
   function handle_start($filename) {
     $this->tname = null;
     $this->tinserts = 0;
@@ -55,6 +91,9 @@ class RestoreChecker extends RestoreHandler {
     if ($this->tname != null) {
       ++$this->tables;
       $tname = $this->tname;
+      if ($this->accept($tname))
+        ++$this->total;
+        
       $tinserts = $this->tinserts;
       $tothers = $this->tothers;
       if ($this->tdropped) {
@@ -62,8 +101,11 @@ class RestoreChecker extends RestoreHandler {
       } else {
         $tdropped = "";
       }
+      
+      $checked = $this->accept($tname) ? "checked='true'" : "";   
+      
       echo "<tr>";
-      echo "<td class='center'><input type='checkbox' checked='true' name='tables[]' value='" . utf8entities($tname) .
+      echo "<td class='center'><input type='checkbox' $checked name='tables[]' value='" . utf8entities($tname) .
         "' /></td>";
       echo "<td>" . utf8entities($tname) . "</td>";
       echo "<td>$tinserts</td><td>$tothers</td><td>$tdropped</td></tr>\n";
@@ -85,14 +127,19 @@ class RestoreChecker extends RestoreHandler {
 
   function handle_drop($tname, $line) {
     $this->tdropped = true;
+    if ($this->accept($tname))
+      ++$this->total;
   }
 
   function handle_insert($tname, $line) {
     ++$this->tinserts;
+    if ($this->accept($tname))
+      ++$this->total;
   }
 
   function handle_other($line) {
     ++$this->tothers;
+    ++$this->total;
   }
 
   function handle_end() {
@@ -101,14 +148,15 @@ class RestoreChecker extends RestoreHandler {
     }
     echo "</table>\n";
 
-    $total = $this->tothers + $this->tinserts + $this->tdropped + $this->tables;
+    $total = $this->total;
     echo "<p>" . sprintf(_("Found %d tables and %d statements"), $this->tables, $total) . "</p>\n";
 
-    echo "<p>" . _("Testing performance ...");
+    $limit = $this->limit;
+    echo "<p>" . sprintf(_("Testing performance. Time limit is %ds. If this takes too long or does not finish, you may have to reduce the file size..."),
+      $limit);
 
     $start = time();
-    $limit = 300;
-    set_time_limit($limit);
+    set_time_limit(intval($limit * 11 / 10));
 
     if ($total < 1000)
       $total = 1000;
@@ -121,38 +169,74 @@ class RestoreChecker extends RestoreHandler {
         "CREATE TABLE `uo_dbrestore_test` ( 
            `id` int(10) NOT NULL AUTO_INCREMENT,
            `name` varchar(50) DEFAULT NULL,
+           `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
            PRIMARY KEY (`id`)
          ) AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;");
     }
+    DBTransaction();
+    
     if ($result) {
       $split = time();
       for ($i = 0; $i < $total; ++$i) {
         if ($result) {
           $result = mysql_adapt_query("INSERT INTO `uo_dbrestore_test` (`name`) VALUES('test$i');");
         }
-        if (time() - $split > 1) {
-          echo "<br />" . sprintf(_("Created %d rows ..."), $i + 1);
+        $elapsed = time() - $start;
+        if (time() - $split >= 2) {
+          echo "<br />" . sprintf(_("Created %d rows in %ds / %ds..."), $i + 1, $elapsed, $limit);
           $this->flush();
           $split = time();
         }
+        if ($elapsed > $limit) {
+          $result = null;
+          break;
+        }
+        if ($elapsed >= 10 && $elapsed / $limit > 2 * $i / $total || $elapsed > .8 * $limit) {
+          echo sprintf(_("<br />Estimated total time of %ds. Too slow ..."), intval($elapsed * $total / $i));
+          $result = null;
+          break;
+        }
       }
     }
+    
+    if ($result) {
+      echo "<br />" . _("Committing...");
+      DBCommit();
+      $elapsed = time() - $start;
+      if ($elapsed > $limit) {
+        $result = null;
+      } 
+    } else {
+      DBRollback();
+    }
+    
     if ($result) {
       echo "<br />" .
-        sprintf(_("Successfully created table with %d INSERTs in %ss. Time limit is %ss."), $total, (time() - $start),
+        sprintf(_("Successfully created table with %d INSERTs in %ds. Time limit is %ds."), $total, (time() - $start),
           $limit) . "</p>\n";
     } else {
       echo '<p>' . _('Test was <em>not</em> successful!') . ":<br />\n" . mysql_adapt_error() . "</p>";
     }
     $result = mysql_adapt_query("DROP TABLE if exists uo_dbrestore_test");
+    
+    echo "Time limit: <input class='input' size='10' maxlength='10' name='tlimit' value='$limit'/>s\n";
 
     echo "<br /><p>" .
       _(
         "This is a risky operation! Should it fail, for example due to a timeout, it may result in a corrupted database!") .
       "</p>";
-    echo "<p><input class='button' type='submit' name='restore' value='" . _("Restore") . "'/>";
+      echo "<p><input class='button' type='submit' name='check' value='" . _("Test again...") . "'/>";
+      echo "<p><input class='button' type='submit' name='restore' value='" . _("Restore") . "'/>";
     echo "</form>";
     $this->flush();
+  }
+  
+  function handle_abort() {
+    // NOP
+  }
+
+  function abort() {
+    return false;
   }
 }
 
@@ -173,6 +257,14 @@ class RestoreFilter extends RestoreHandler {
   protected $checked;
 
   protected $paragraph;
+  
+  protected int $limit;
+  
+  protected bool $abort = false;
+  
+  protected int $split;
+  
+  protected int $split2;
 
   function __construct($post) {
     $this->checked = array();
@@ -180,6 +272,8 @@ class RestoreFilter extends RestoreHandler {
     foreach ($post['tables'] as $tname) {
       $this->checked[$tname] = true;
     }
+    $this->limit = min(12*60*60, max(1, intval($post['tlimit'])) ?? 120);
+    set_time_limit(intval($this->limit *11 / 10));
   }
 
   function accept($tname) {
@@ -203,14 +297,22 @@ class RestoreFilter extends RestoreHandler {
         debug_to_apache("reject '$context': $line");
       }
     }
-    if ((time() - $this->start) > 1) {
+    $split = time() - $this->split;
+    if ($split >= 2) {
       if ($this->paragraph) {
-        echo "<br />running ...";
+        echo "<br />" . sprintf(_("running (time limit %ds / %ds)..."), time() - $this->start, $this->limit);
         $this->paragraph = false;
+        $this->split2 = time();
+      } else if (time() - $this->start > $this->limit) {
+        echo "<br />" . _("Time limit exceeded. Aborting ...");
+        $this->abort = true;
+      } else if (time() - $this->split2 >= 20) {
+        echo "<br />" . sprintf(_("time elapsed: %ds"), time() - $this->start);
+        $this->split2 = time();
       } else
         echo ".";
+      $this->split = time();
       $this->flush();
-      $this->start = time();
     }
   }
 
@@ -224,6 +326,11 @@ class RestoreFilter extends RestoreHandler {
 
     $this->flush();
     $this->start = time();
+    $this->split = time();
+    $this->split2 = time();
+    
+    debug_to_apache("Starting transaction...");
+    DBTransaction();
     echo "<p>";
   }
 
@@ -252,7 +359,6 @@ class RestoreFilter extends RestoreHandler {
       echo "\n";
       $this->paragraph = true;
       $this->flush();
-      $this->start = time();
     }
   }
 
@@ -292,11 +398,13 @@ class RestoreFilter extends RestoreHandler {
     if ($this->tname != null) {
       $this->log_table();
     }
-
+    
     echo "</p>\n";
     echo "<p>" . sprintf(_("Imported %d / %d tables."), $this->imported, $this->tables) . "</p>\n";
 
     if (empty($this->error)) {
+      debug_to_apache("Committing...");
+      DBCommit();
       // disable facebook and twitter updates after restore to avoid false postings
       // (f.ex. if restored database is used for testing purpose)
       $setting = array();
@@ -313,10 +421,22 @@ class RestoreFilter extends RestoreHandler {
 
       echo "<p>" . _("Done!") . "</p>";
     } else {
-      echo "<p>" . _("Error!") . "</p>";
+      debug_to_apache("Rolling back...");
+      DBRollback();
+      echo "<p>" . _("Error, rolling back!") . "</p>";
     }
 
     $this->flush();
+  }
+  
+  function handle_abort() {
+    debug_to_apache("Rolling back...");
+    DBRollback();
+    echo "<p>" . _("Error, rolling back!") . "</p>";
+  }
+  
+  function abort() {
+    return $this->abort;
   }
 }
 
@@ -370,6 +490,14 @@ class RestoreReader {
   function handle_end() {
     $this->handler->handle_end();
   }
+  
+  function handle_abort() {
+    $this->handler->handle_abort();
+  }
+  
+  function abort()  {
+    return $this->handler->abort();
+  }
 
   function read() {
     $error = null;
@@ -386,7 +514,7 @@ class RestoreReader {
       $error = "<p>" . sprintf(_("Unknown extension '%s' of '%s'"), $ext, utf8entities($restorefilename)) . "</p>";
     }
 
-    if (isset($lines)) {
+    if (isset($lines) && $lines !== false) {
       $templine = '';
 
       $line_count = 0;
@@ -394,6 +522,8 @@ class RestoreReader {
       $this->handle_start($restorefilename);
 
       foreach ($lines as $line) {
+        if ($this->abort())
+          break;
         // Skip it if it's a comment
         if (substr($line, 0, 2) == '--' || $line == '')
           continue;
@@ -426,7 +556,15 @@ class RestoreReader {
           // sleep(1);
         }
       }
-      $this->handle_end();
+      if ($this->abort()) {
+        $this->handle_abort();
+        if (empty($error))
+          $error = "";
+        
+        $error .= "<p>" . _("Handler aborted") . "</p>\n";
+      } else {
+        $this->handle_end();
+      }
     }
 
     return $error;
@@ -455,31 +593,39 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
     if (!isSuperAdmin()) {
       $error = _("Insufficient rights");
     } else {
-      $restorefilename = $_FILES['restorefile']['name'];
-      $restorefiletempname = $_FILES['restorefile']['tmp_name'];
-      $error = '';
-
-      if (!is_uploaded_file($restorefiletempname)) {
-        $error = _("Uploaded file not found.");
+      ini_set("memory_limit", -1);
+      
+      if (isset($_POST['restorefilename'])) {
+        $filename = $_POST['restorefilename'];
       } else {
-        // FIXME sanitize user input
-        $filename = "" . UPLOAD_DIR . "tmp/$restorefilename";
-        if (!move_uploaded_file($restorefiletempname, $filename)) {
-          $error = _("Could not copy restore file.");
-        } else {
-          unlink($restorefiletempname);
+        $restorefilename = $_FILES['restorefile']['name'];
+        $restorefiletempname = $_FILES['restorefile']['tmp_name'];
+        $error = '';
 
-          $reader = new RestoreReader($filename, new RestoreChecker());
-          $error = $reader->read();
+        if (!is_uploaded_file($restorefiletempname)) {
+          $error = sprintf(_("Uploaded file not found (error code %d: %s)."), $_FILES['restorefile']['error'], get_error($_FILES['restorefile']['error']));
+        } else {
+          // FIXME sanitize user input
+          $filename = "" . UPLOAD_DIR . "tmp/$restorefilename";
+          if (!move_uploaded_file($restorefiletempname, $filename)) {
+            $error = _("Could not copy restore file.");
+          } else {
+            unlink($restorefiletempname);
+          }
         }
       }
+      if (empty($error)) {
+          $reader = new RestoreReader($filename, new RestoreChecker($_POST));
+          $error = $reader->read();
+        }
     }
   } else if (isset($_POST['restore'])) {
     $error = '';
     if (!isSuperAdmin()) {
       $error = _("Insufficient rights");
     } else {
-
+      ini_set("memory_limit", -1);
+      
       $filename = $_POST['restorefilename'];
 
       if (!($fp = fopen($filename, "r"))) {
@@ -502,5 +648,3 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
   contentEnd();
   pageEnd();
 }
-
-?>
