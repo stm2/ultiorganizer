@@ -353,7 +353,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     echo "<td><input class='input' type='checkbox' id='played' name='played' /></td>";
   echo "<td></td></tr>";
   
-  echo "<tr><td class='infocell'>" . _("continuationuing pool") . ":</td>";
+  echo "<tr><td class='infocell'>" . _("continuation pool") . ":</td>";
   if ($followingPool || $pp['type'] == 100) { // Playoff or Swissdraw or placement
     echo "<td><input class='input' disabled='disabled' type='checkbox' id='continuation' name='continuation' checked='checked'/></td>";
   } else {

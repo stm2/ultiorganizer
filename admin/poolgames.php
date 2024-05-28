@@ -187,7 +187,7 @@ if (!empty($_POST['remove_x'])) {
   if ($hasGames) {
     $generatedgames = GenerateGames($poolId, $rounds, true, $nomutual, $homeresp);
   } else {
-    $html .= "<p>" . _("Not applicable for pool type") . "</p>\n";
+    $html .= "<p>" . _("Not applicable for this pool type") . "</p>\n";
   }
 
   // in case of playoff pool create all pools and games for playoffs
@@ -279,7 +279,7 @@ if ($hasGames) {
     }
     $html .= "/></p>";
   } else {
-    $html .= "<p>" . _("Not applicable for pool type") . "</p>\n";
+    $html .= "<p>" . _("Not applicable for this pool type") . "</p>\n";
   }
 
   $html .= "<p><input type='submit' name='fakegenerate' value='" . _("Show games") . "'/>";
