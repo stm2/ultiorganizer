@@ -80,6 +80,8 @@ if (isSuperAdmin()) {
   $html .= "&nbsp;" . _("Execute") . ": <a href='?view=admin/executesql&amp;sql=$sql'>" . "SHOW GLOBAL STATUS" . "</a>";
   $html .= "</p>\n";
 
+  $html .= "<p><span class='profileheader'>" . _("Ultiorganizer DB version") . ": </span>" .
+    getDBVersion() . "<br/>\n";
   $html .= "<p><span class='profileheader'>" . _("Client library version") . ": </span>" .
     mysqli_get_client_info(DBLink()) . "<br/>\n";
   $html .= "<span class='profileheader'>" . _("Type of connection in use") . ": </span>" . mysqli_get_host_info(

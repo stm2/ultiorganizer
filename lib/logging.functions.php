@@ -35,7 +35,10 @@ function LogEvent($event){
 		
 		$event['ip'] = "";		
 		if(!empty($_SERVER['REMOTE_ADDR']))
-			$event['ip'] = $_SERVER['REMOTE_ADDR'];
+			$event['ip'] = anonymize_ip($_SERVER['REMOTE_ADDR']);
+		if (getDBVersion() < 85)
+			$event['ip'] = substr($event['ip'], 0, 15);
+	     $event['ip'] = anonymize_ip($event['ip']);
 		
 		$query = sprintf("INSERT INTO uo_event_log (user_id, ip, category, type, source,
 			id1, id2, description)
