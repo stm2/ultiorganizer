@@ -9,22 +9,29 @@ $html = "";
 
 $gameId = intval($_GET["game"]);
 
+ensureLogin();
+
 $title = _("Spirit");
 
 $season = SeasonInfo(GameSeason($gameId));
-if ($season['spiritmode']>0) {
+if ($season['spiritmode'] > 0) {
   $game_result = GameResult($gameId);
   $mode = SpiritMode($season['spiritmode']);
   $categories = SpiritCategories($mode['mode']);
   
 //process itself if save button was pressed
 if(!empty($_POST['save'])) {
+  debug_to_apache($_POST);
   $points = array();
   foreach ($_POST['homevalueId'] as $cat) {
+    if($categories[$cat]['type'] >= 1) {
     if (isset($_POST['homecat'.$cat]))
       $points[$cat] = $_POST['homecat'.$cat];
     else
       $missing = sprintf(_("Missing score for %s."), $game_result['hometeamname']);
+    }// else if($categories[$cat]['type'] == 1) {
+     // $points[$cat] = 
+    
   }
 
   GameSetSpiritPoints($gameId, $game_result['hometeam'], 1, $points, $categories);

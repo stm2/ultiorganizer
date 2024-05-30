@@ -900,7 +900,7 @@ function LRRanking($t, $games) {
       return $ranking;
 }
 
-function PowerRanking($teams, $games) {
+function PowerRanking($teams, $games, $win_reward = 0) {
   // TODO special for bye team??
   $teami = 0;
   $teamindex = array();
@@ -916,8 +916,14 @@ function PowerRanking($teams, $games) {
     if (!isset($teamindex[$game['visitorteam']])) {
       $teamindex[$game['visitorteam']] = $teami++;
     }
+    $home_adv = $visitor_adv = 0;
+    if ($game['homescore'] > $game['visitorscore']) {
+      $home_adv = $win_reward;
+    } else {
+      $visitor_adv = $win_reward;
+    }
     $results[] = array('home' => $teamindex[$game['hometeam']], 'visitor' => $teamindex[$game['visitorteam']],
-      'hscore' => $game['homescore'], 'vscore' => $game['visitorscore']);
+      'hscore' => ($game['homescore'] + $home_adv) / ($win_reward + 1), 'vscore' => ($game['visitorscore'] + $visitor_adv)  / ($win_reward + 1));
   }
   
   $ranking = LRRanking($teami, $results);
@@ -951,7 +957,7 @@ function SeriesPowerRanking($teams, $seriesId) {
   return PowerRanking($teams, $games);
 }
 
-function PoolPowerRanking($poolId) {
+function PoolPowerRanking($poolId, $win_reward = 0) {
   $query = sprintf(
     "SELECT p.hometeam, p.visitorteam,
             p.homescore, p.visitorscore
@@ -969,7 +975,7 @@ function PoolPowerRanking($poolId) {
   
   $teams = DBQueryToArray($query);
   
-  return PowerRanking($teams, $games);
+  return PowerRanking($teams, $games, $win_reward);
 }
 
 function Elos($teams, $games, $max_it = 1000) {

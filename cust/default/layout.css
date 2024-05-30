@@ -173,6 +173,7 @@ div.hamburger_inner {
 
 .header_logo {
   height: 2em;
+  max-width: 90vw;
 }
 
 .logo {
@@ -740,4 +741,34 @@ div.tabcell {
 
 #user_actions {
   padding-top: 1em;
+}
+
+.spirit_table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.spirit_table td fieldset{
+  white-space: nowrap;
+}
+
+table.spirit_table td {
+  border: thin solid grey;
+  padding: 2pt;
+  vertical-align: middle;
+}
+
+.spirit_table input[type='radio']:not(:last-child) {
+  margin-right: 1rem; 
+}
+
+.textarea {
+  white-space: pre-wrap;
+}
+
+.borderbox {
+  width:100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }

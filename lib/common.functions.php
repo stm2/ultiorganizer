@@ -1631,4 +1631,9 @@ function JavaScriptWarning() {
   return "<noscript><p class='warningbox'>" .
     _("This page requires JavaScript to function, but JavaScript appears to be disabled.") . "</p></noscript>\n";
 }
-?>
+
+function numf($num, $acc) {
+  if ($num == intval($num))
+    return sprintf("%d", $num);
+    return sprintf("%.{$acc}f", $num);
+}

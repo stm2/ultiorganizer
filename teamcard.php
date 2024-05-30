@@ -9,6 +9,7 @@ include_once 'lib/timetable.functions.php';
 $html = "";
 
 $teamId = intval(iget("team"));
+$seriesId = intval($_GET["series"] ?? -1);
 $teaminfo = TeamInfo($teamId);
 $profile = TeamProfile($teamId);
 
@@ -194,17 +195,22 @@ else
 
 }
 $allgames = TimetableGames($teamId, "team", "all", "time");
+$gameshtml = "";
 if(mysqli_num_rows($allgames)){
-  $html .= "<h2>".U_(SeasonName($teaminfo['season'])).":</h2>\n";
-  $html .=  "<p>"._("Division").": <a href='?view=poolstatus&amp;series=". $teaminfo['series'] ."'>".utf8entities(U_($teaminfo['seriesname']))."</a></p>";
-  $html .= "<table style='width:80%'>\n";
+  $gameshtml .= "<h2>".U_(SeasonName($teaminfo['season'])).":</h2>\n";
+  $gameshtml .=  "<p>"._("Division").": <a href='?view=poolstatus&amp;series=". $teaminfo['series'] ."'>".utf8entities(U_($teaminfo['seriesname']))."</a></p>";
+  $gameshtml .= "<table style='width:80%'>\n";
   while($game = mysqli_fetch_assoc($allgames)){
+    //if ($seriesId == null || $game['series_id'] == $seriesId) {
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-    $html .= GameRow($game, false, false, false, false, false, true);
+      $gameshtml .= GameRow($game, false, false, false, false, false, true);
+    //}
   }
 
-  $html .= "</table>\n";
+  $gameshtml .= "</table>\n";
 }
+if (!empty($gameshtml))
+  $html .= $gameshtml;
 
 $seasons = TeamStatisticsByName($teaminfo['name'], $teaminfo['type']);
 if(ShowDefenseStats())
@@ -525,6 +531,131 @@ else
   }
 }
 
+$seasoninfo = SeasonInfo($teaminfo['season']);
+
+$allgames = TimetableGames($teamId, "team", "all", "time");
+$gameshtml = ["", ""];
+if (mysqli_num_rows($allgames)) {
+  $categories = SpiritCategories($seasoninfo['spiritmode']);
+  $sumcat = [[], []];
+  while ($game = mysqli_fetch_assoc($allgames)) {
+    for ($t = 0; $t <= 1; ++$t) {
+      $points = GameGetSpiritPoints($game['game_id'], $teamId, $t == 0);
+      $serpar = $seriesId > 0 ? "&series=$seriesId" : "";
+      if ($game['hometeam'] == $teamId) {
+        $gameshtml[$t] .= "<tr><td><a href='?view=teamcard&team={$game['visitorteam']}$serpar'>{$game['visitorteamname']}</a></td>";
+      } else {
+        $gameshtml[$t] .= "<tr><td><a href='?view=teamcard&team={$game['hometeam']}$serpar'>{$game['hometeamname']}</a></td>";
+      }
+      $sum = 0; $n = 0;
+      foreach ($categories as $id => $cat) {
+        $sp = $points[$id] ?? "";
+        if ($cat['type'] == 1) {
+          if ($cat['factor'] != 0)
+            $gameshtml[$t] .= "<td class='center2'><b>$sp</b></td>";
+          else
+            $gameshtml[$t] .= "<td class='center2'>$sp</td>";
+          if ($sp !== "") {
+            $sum += intval($sp) * $cat['factor'];
+            ++$n;
+            if (!isset($sumcat[$t][$id])) {
+              $sumcat[$t][$id] = [0, 0];
+            }
+            $sumcat[$t][$id][0] += $sp;
+            ++$sumcat[$t][$id][1];
+          }
+        }
+        if ($cat['type'] == 2) {
+          if (empty($sp))
+            $gameshtml[$t] .= "<td></td>";
+          else
+            $gameshtml[$t] .= "<td><div class='textarea'>" . utf8entities($sp) . "</div></td>";
+        }
+      }
+      if ($n > 0) {
+        $gameshtml[$t] .= "<td class='center2'>$sum</td>";
+        $id = -1;
+        if (!isset($sumcat[$t][$id])) {
+          $sumcat[$t][$id] = [0, 0];
+        }
+        $sumcat[$t][$id][0] += $sum;
+        ++$sumcat[$t][$id][1];
+      } else {
+        $gameshtml[$t] .= "<td></td>";
+      }
+      
+
+      $gameshtml[$t] .= "</tr>\n";
+    }
+  }
+}
+
+debug_to_apache($sumcat);
+for ($t = 0; $t <= 1; ++$t) {
+  $gameshtml[$t] .= "<tr><td>" . _("Average") . "</td>";
+  foreach ($categories as $id => $cat) {
+    if ($cat['type'] > 0) {
+      if (isset($sumcat[$t][$id]))
+      $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) ."</td>";
+      else
+        $gameshtml[$t] .= "<td></td>";
+    }
+  }
+  $id = -1;
+  $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) ."</td>";
+  $gameshtml[$t] .= "</tr>\n";
+}
+
+for ($t = 0; $t <= 1; ++$t) {
+  if (!empty($gameshtml[$t])) {
+    $mnem = [];
+    foreach ($categories as &$cat) {
+      $words = preg_split("/[\W]+/", $cat['text'], 5);
+      if (count($words) > 1)
+        $m1 = substr($words[0], 0, 1) . substr($words[1], 0, 1);
+      else
+        $m1 = substr($words[0], 0, 2);
+      $m2 = substr($cat['text'], 0, 1) . substr(strtok($cat['text'], " -.()"), -1);
+
+      $i = "";
+      while (isset($mnem["$m1$i"]) && isset($mnem["$m2$i"])) {
+        $i = empty($i) ? 1 : $i + 1;
+      }
+      $m = "$m1$i";
+      if (isset($mnem["$m1$i"]))
+        $m = "$m2$i";
+      $mnem[$m] = $cat['text'];
+      $cat['mnem'] = $m;
+    }
+    unset($cat);
+
+    if ($t == 0)
+      $html .= "<h2>" . utf8entities(_("Spirit Points received")) . ":</h2>\n";
+    else
+      $html .= "<h2>" . utf8entities(_("Spirit Points given")) . ":</h2>\n";
+    $html .= "<table class='spirit_table'>\n";
+    $html .= "<tr><th style='min-width:10rem;'>" . _("Opponent") . "</th>";
+    foreach ($categories as $cat) {
+      if ($cat['type'] == 1) {
+        $html .= "<th class='center' style='min-width: 2rem'>" . $cat['mnem'] . "</th>";
+      }
+      if ($cat['type'] == 2) {
+        $html .= "<th class='center' style='min-width: 20rem;'>" . utf8entities($cat['text']) . "</th>";
+      }
+    }
+    $html .= "<th class='center' style='min-width: 3rem;'>" . utf8entities(_("Tot")) . "</th>";
+    $html .= "</tr>\n";
+    $html .= $gameshtml[$t];
+    $html .= "</table>";
+  }
+}
+$html .= "<p>";
+foreach ($categories as $cat) {
+  if ($cat['type'] == 1) {
+    $html .= "<em>" . $cat['mnem'] . ":</em> " . U_($cat['text']) . "<br />\n";
+  }
+}
+$html .= "</p>\n";
 
 $sort = iget("sort");
 

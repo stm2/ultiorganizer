@@ -934,14 +934,21 @@ function GameAddTimeout($gameId, $number, $time, $home) {
 	} else { die('Insufficient rights to edit game'); }
 }
 
-function GameGetSpiritPoints($gameId, $teamId) {
-  $query = sprintf("SELECT * FROM uo_spirit_score WHERE game_id=%d AND team_id=%d",
-  		(int)$gameId,
-  		(int)$teamId);
+function GameGetSpiritPoints($gameId, $teamId, $received = true) {
+  if ($received)
+    $teamclause = sprintf(" AND team_id = %d", (int) $teamId);
+  else
+    $teamclause = sprintf(" AND team_id != %d", (int) $teamId);
+  $query = sprintf(
+    "SELECT score.category_id, score.value, score.text, cat.type, team_id FROM uo_spirit_score score, uo_spirit_category cat WHERE  score.category_id = cat.category_id AND game_id=%d $teamclause ORDER BY cat.index",
+    (int) $gameId);
   $scores = DBQueryToArray($query);
   $points = array();
   foreach ($scores as $score) {
-    $points[$score['category_id']] = $score['value'];
+    if ($score['type'] == 1)
+      $points[$score['category_id']] = $score['value'];
+    else
+      $points[$score['category_id']] = $score['text'];
   }
   return $points;
 }
@@ -949,19 +956,24 @@ function GameGetSpiritPoints($gameId, $teamId) {
 function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories) {
   if (hasEditGameEventsRight($gameId)) {
     $query = sprintf("DELETE FROM uo_spirit_score 
-        WHERE game_id=%d AND team_id=%d", 
-        (int) $gameId, (int) $teamId);
+        WHERE game_id=%d AND team_id=%d", (int) $gameId, (int) $teamId);
     DBQuery($query);
     
     foreach ($points as $cat => $value) {
-      if (!is_null($value)) {
-        $query = sprintf("INSERT INTO uo_spirit_score (`game_id`, `team_id`, `category_id`, `value`)
-            VALUES (%d, %d, %d, %d)",
-            (int) $gameId, (int) $teamId, (int) $cat, (int) $value);
+      if ($categories[$cat]['type'] == 1) {
+        if (!is_null($value)) {
+          $query = sprintf(
+            "INSERT INTO uo_spirit_score (`game_id`, `team_id`, `category_id`, `value`)
+            VALUES (%d, %d, %d, %d)", (int) $gameId, (int) $teamId, (int) $cat, (int) $value);
+          DBQuery($query);
+        }
+      } else if ($categories[$cat]['type'] == 2) {
+        $query = sprintf(
+          "INSERT INTO uo_spirit_score (`game_id`, `team_id`, `category_id`, `text`)
+            VALUES (%d, %d, %d, '%s')", (int) $gameId, (int) $teamId, (int) $cat, mysql_adapt_real_escape_string($value));
         DBQuery($query);
       }
     }
-    
   } else {
     die('Insufficient rights to edit game');
   }
@@ -1529,78 +1541,88 @@ function ResultsToCsv($season,$separator){
 	return ResultsetToCsv($result, $separator);
 }
 
-function SpiritTable($gameinfo, $points, $categories, $home, $wide=true) {
-  $home = $home?"home":"vis";
+function SpiritTable($gameinfo, $points, $categories, $home, $wide = true) {
+  $home = $home ? "home" : "vis";
   $html = "<table class='spirit_table'>\n";
-  $html .= "<tr>";
-  if ($wide)
-    $html .= "<th style='width:70%;text-align: right;'></th>";
+  $colspan = 1;
+  // $wide = false;
+  if ($wide) {
+    $html .= "<tr><th style='min-width:10rem'>" . _("Category") . "</th><th></th></tr>\n";
+    $colspan = 2;
+  }
   $vmin = 99999;
   $vmax = -99999;
   foreach ($categories as $cat) {
     if ($vmin > $cat['min'])
       $vmin = $cat['min'];
-      if ($vmax < $cat['max'])
-        $vmax = $cat['max'];
+    if ($vmax < $cat['max'])
+      $vmax = $cat['max'];
   }
 
   if ($vmax - $vmin < 12) {
-    $colspan=($wide?3:2);
-    $html .= "<th></th></tr>\n";
-
     foreach ($categories as $cat) {
-      if ($cat['index']== 0)
+      $html .= "<tr>";
+      if ($cat['index'] == 0)
         continue;
-        $id = $cat['category_id'];
-        $html .= "<tr>";
+      $id = $cat['category_id'];
+      if ($cat['type'] == 1) {
+        $html .= "<td>" . _($cat['text']);
+        $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/>";
         if ($wide)
-          $html .= "<td style='width:70%'>";
-        else
-          $html .= "<td colspan='$colspan'>";
-        $html .= _($cat['text']);
-        $html .= "<input type='hidden' id='".$home."valueId$id' name='".$home."valueId[]' value='$id'/>";
-        if($wide)
           $html .= "</td>";
         else
           $html .= "</td></tr>\n<tr>";
 
-        $html .= "<td><fieldset id='".$home."cat".$id."_x' data-role='controlgroup' data-type='horizontal' >";
-        for($i=$vmin; $i<= $vmax; ++$i){
+        $html .= "<td><fieldset id='" . $home . "cat" . $id . "_x' data-role='controlgroup' data-type='horizontal' >";
+        for ($i = $vmin; $i <= $vmax; ++$i) {
           if ($i < $cat['min']) {
             // $html .= "<td></td>";
           } else {
-            $id=$cat['category_id'];
-            $checked = (isset($points[$id]) && !is_null($points[$id]) && $points[$id]==$i) ? "checked='checked'" : "";
-            $html .= "<label for='".$home."cat".$id."_".$i."'>$i</label>";
-            $html .= "<input type='radio' id='".$home."cat".$id."_".$i."' name='".$home."cat". $id . "' value='$i' $checked/>";
-            
+            $id = $cat['category_id'];
+            $checked = (isset($points[$id]) && !is_null($points[$id]) && $points[$id] == $i) ? "checked='checked'" : "";
+            $html .= "<label for='" . $home . "cat" . $id . "_" . $i . "'>$i</label>";
+            $html .= "<input type='radio' id='" . $home . "cat" . $id . "_" . $i . "' name='" . $home . "cat" . $id .
+              "' value='$i' $checked/>";
+
             // $html .= "<td class='center'>
-          // <input type='radio' id='".$home."cat".$id."_".$i."' name='".$home."cat". $id . "' value='$i'  $checked/></td>";
+            // <input type='radio' id='".$home."cat".$id."_".$i."' name='".$home."cat". $id . "' value='$i' $checked/></td>";
           }
         }
         $html .= "</fieldset></td>";
-        $html .= "</tr>\n";
+      } else if ($cat['type'] == 2) {
+        $html .= "<td colspan='$colspan'><div>";
+        $html .= _($cat['text']) . "<input name='layout' type='radio' style='opacity: 0.01;' disabled /><br />";
+        $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/>";
+        $html .= "<textarea  class='input borderbox' rows='6' id='{$home}cat{$id}' name='{$home}cat{$id}'>{$points[$id]}</textarea></div></td>\n";
+      }
+      $html .= "</tr>\n";
     }
   } else {
-    $colspan=2;
+    $colspan = 2;
     $html .= "<th colspan='2'></th></tr>\n";
 
     foreach ($categories as $cat) {
-      if ($cat['index']== 0)
-        continue;
-        $id = $cat['category_id'];
-        $html .= "<tr>";
-        $html .= "<td style='width:70%'>"._($cat['text']);
-        $html .= "<input type='hidden' id='".$home."valueId$id' name='".$home."valueId[]' value='$id'/></td>";
+      $html .= "<tr>";
+      $id = $cat['category_id'];
+      if ($cat['type'] == 1) {
+        $html .= "<td>" . _($cat['text']);
+        $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/></td>";
         $html .= "<td class='center'>
-      <input type='text' id='".$home."cat".$id."_0' name='".$home."cat$id' value='".$points[$id]."'/></td>";
-        $html .= "</tr>\n";
+      <input type='text' size=3 id='" . $home . "cat" . $id . "_0' name='" . $home . "cat$id' value='" . $points[$id] .
+          "'/></td>";
+      } else if ($cat['type'] == 2) {
+        $cols = $vmax - $vmin + 1 + 1;
+        $html .= "<td colspan='$cols'><div>";
+        $html .= _($cat['text']) . "<input name='layout' type='radio' style='opacity: 0.01;' disabled /><br />";
+        $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/>";
+        $html .= "<textarea  class='input borderbox' rows='6' id='{$home}cat{$id}' name='{$home}cat{$id}'>{$points[$id]}</textarea></div></td>\n";
+      }
+      $html .= "</tr>\n";
     }
   }
 
-
   $html .= "<tr>";
-  $html .= "<td class='highlight' colspan='$colspan'>"._("Total points");
+  $html .= "<td class='highlight' colspan='$colspan'>" . _("Total points");
   $total = SpiritTotal($points, $categories);
   if (!isset($total))
     $total = ": -";
@@ -1612,5 +1634,3 @@ function SpiritTable($gameinfo, $points, $categories, $home, $wide=true) {
 
   return $html;
 }
-
-?>

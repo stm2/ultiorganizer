@@ -18,7 +18,7 @@ $sp = array(
   "category"=>"",
   "isnationalteams"=>0,
   "endtime"=>"",
-  "spiritmode"=>0,
+//   "spiritmode"=>0,
   "showspiritpoints"=>0,
   "iscurrent"=>0,
   "enrollopen"=>0,
@@ -53,7 +53,7 @@ if (!empty($_POST['add'])) {
   $sp['enrollopen'] = !empty($_POST['enrollopen']);
   $sp['enroll_deadline'] = isset($_POST['enrollendtime']) ? ToInternalTimeFormat($_POST['enrollendtime']) : ToInternalTimeFormat($_POST['seasonstarttime']);
   $sp['iscurrent'] = !empty($_POST['iscurrent']);
-  $sp['spiritmode'] = $_POST['spiritmode'];
+//   $sp['spiritmode'] = $_POST['spiritmode'];
   $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
   $comment=$_POST['comment'];
 
@@ -100,7 +100,7 @@ if (!empty($_POST['add'])) {
     $sp['enrollopen'] = !empty($_POST['enrollopen']);
     $sp['enroll_deadline'] = ToInternalTimeFormat($_POST['enrollendtime']);
     $sp['iscurrent'] = !empty($_POST['iscurrent']);
-    $sp['spiritmode'] = $_POST['spiritmode'];
+//     $sp['spiritmode'] = $_POST['spiritmode'];
     $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
     $sp['timezone'] = $_POST['timezone'];
     $comment=$_POST['comment'];
@@ -199,16 +199,16 @@ if ($sp['isnationalteams']) {
 }
 $html .= "/></td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("Spirit mode").": </td><td>";
-$spiritmodes = SpiritModes();
-$html .= "<select class='dropdown' id='spiritmode' name='spiritmode'>\n";
-$html .= "<option value='0'></option>\n";
-foreach($spiritmodes as $mode) {
-  $selected =  ($sp['spiritmode']==$mode['mode'])?" selected='selected'":"";
-  $html .= "<option $selected value='". utf8entities($mode['mode']) . "'>".utf8entities(_($mode['name'])) . "</option>\n";
-}
-$html .= "</select>\n";
-$html .= "</td></tr>\n";
+// $html .= "<tr><td class='infocell'>"._("Spirit mode").": </td><td>";
+// $spiritmodes = SpiritModes();
+// $html .= "<select class='dropdown' id='spiritmode' name='spiritmode'>\n";
+// $html .= "<option value='0'></option>\n";
+// foreach($spiritmodes as $mode) {
+//   $selected =  ($sp['spiritmode']==$mode['mode'])?" selected='selected'":"";
+//   $html .= "<option $selected value='". utf8entities($mode['mode']) . "'>".utf8entities(_($mode['name'])) . "</option>\n";
+// }
+// $html .= "</select>\n";
+// $html .= "</td></tr>\n";
 
 $html .= "<tr><td class='infocell'>"._("Spirit points visible").": </td><td><input class='input' type='checkbox' name='showspiritpoints' ";
 if ($sp['showspiritpoints']) {

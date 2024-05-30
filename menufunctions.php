@@ -1052,6 +1052,8 @@ function getEditSeasonLinks() {
       if (isSeasonAdmin($season)) {
         $seaLink = urlencode($season);
         add_menu($menu, $season, "?view=admin/seasonadmin&amp;season=$seaLink", _("Event"));
+        if (SeasonInfo($season)['showspiritpoints'] == 1)
+          add_menu($menu, $season, "?view=admin/seasonspirit&amp;season=$seaLink", _("Spirit"));
         add_menu($menu, $season, "?view=admin/seasonseries&amp;season=$seaLink", _("Divisions"));
         add_menu($menu, $season, "?view=admin/seasonteams&amp;season=$seaLink", _("Teams"));
         add_menu($menu, $season, "?view=admin/seasonpools&amp;season=$seaLink", _("Pools"));

@@ -388,12 +388,13 @@ function SeriesDefenseBoard($seriesId, $sorting, $limit) {
  */
 function SeriesSpiritBoard($seriesId) {
   $query = sprintf(
-    "SELECT st.team_id, te.name, st.category_id, st.value, pool.series
+    "SELECT st.team_id, te.name, st.category_id, st.value, pool.series, cat.type
       FROM uo_team AS te
       LEFT JOIN uo_spirit_score AS st ON (te.team_id=st.team_id)
       LEFT JOIN uo_game_pool AS gp ON (st.game_id=gp.game)
       LEFT JOIN uo_pool pool ON(gp.pool=pool.pool_id)
       LEFT JOIN uo_game AS g1 ON (gp.game=g1.game_id)
+      LEFT JOIN uo_spirit_category cat ON (st.category_id = cat.category_id)
       WHERE pool.series=%d AND gp.timetable=1 AND g1.isongoing=0 AND g1.hasstarted>0
       ORDER BY st.team_id, st.category_id", $seriesId);
 
@@ -402,34 +403,38 @@ function SeriesSpiritBoard($seriesId) {
   $last_category = null;
   $averages = array();
   $total = 0;
+  $games = $sum = 0;
+  $factor = [];
   while ($row = mysqli_fetch_assoc($scores)) {
-    if ($last_team != $row['team_id'] || $last_category != $row['category_id']) {
-      if (!is_null($last_category)) {
-        if (!isset($factor[$last_category])) {
-          $factor[$last_category] = DBQueryToArray(
-            sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
+    if ($row['type'] == 1) {
+      if ($last_team != $row['team_id'] || $last_category != $row['category_id']) {
+        if (!is_null($last_category)) {
+          if (!isset($factor[$last_category])) {
+            $factor[$last_category] = DBQueryToArray(
+              sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
+          }
+          $teamline[$last_category] = SafeDivide($sum, $games);
+          $total += SafeDivide($factor[$last_category] * $sum, $games);
         }
-        $teamline[$last_category] = SafeDivide($sum, $games);
-        $total += SafeDivide($factor[$last_category] * $sum, $games);
-      }
-      if ($last_team != $row['team_id']) {
-        if (!is_null($last_team)) {
-          $teamline['total'] = $total;
-          $teamline['games'] = $games;
-          $averages[$last_team] = $teamline;
-          $total = 0;
+        if ($last_team != $row['team_id']) {
+          if (!is_null($last_team)) {
+            $teamline['total'] = $total;
+            $teamline['games'] = $games;
+            $averages[$last_team] = $teamline;
+            $total = 0;
+          }
+          $teamline = array('teamname' => $row['name'], 'team_id' => $row['team_id']);
         }
-        $teamline = array('teamname' => $row['name']);
+        $sum = 0;
+        $games = 0;
+        $last_team = $row['team_id'];
+        $last_category = $row['category_id'];
       }
-      $sum = 0;
-      $games = 0;
-      $last_team = $row['team_id'];
-      $last_category = $row['category_id'];
+      $sum += $row['value'];
+      ++$games;
     }
-    $sum += $row['value'];
-    ++$games;
   }
-  if (!is_null($last_team)) {
+  if (!is_null($last_team) && $teamline['type'] == 1) {
     $factor[$last_category] = DBQueryToArray(
       sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
     $teamline[$last_category] = SafeDivide($sum, $games);

@@ -26,6 +26,7 @@ $html .=  "<tr><td  style='width:40%;'><b>"._("Type")."</b></td><td>".utf8entiti
 $html .=  "<tr><td><b>"._("Organizer")."</b></td><td>".utf8entities(U_($info['organizer']))."/".utf8entities(U_($info['category']))."</td></tr>\n";
 
 $spirit = _("not given");
+
 if($info['spiritmode'] > 0) {
   $spiritmode = SpiritMode($info['spiritmode']);
   $spirit = utf8entities(_($spiritmode['name'])) . " / <em>" . utf8entities(intval($info['showspiritpoints'])?_("visible"):_("not visible")) . "</em>";

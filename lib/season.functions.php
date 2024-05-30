@@ -765,7 +765,7 @@ function CanDeleteSeason($seasonId) {
 
 function SpiritMode($mode_id) {
   $query = sprintf("SELECT mode, text AS name FROM `uo_spirit_category`
-          WHERE `mode` = \"%d\" AND `index` = \"0\"", (int) $mode_id);
+          WHERE `mode` = %d AND `index` = 0", (int) $mode_id);
   return DBQueryToRow($query);
 }
 
@@ -778,7 +778,7 @@ function SpiritModes() {
 function SpiritCategories($mode_id) {
   $query = sprintf("SELECT * FROM `uo_spirit_category` 
       WHERE `mode`=%d
-      ORDER BY `group` ASC, `index` ASC", (int) $mode_id);
+      ORDER BY `index` ASC", (int) $mode_id);
   $cats = DBQueryToArray($query);
   $categories = array();
   foreach ($cats as $cat) {
@@ -791,7 +791,7 @@ function SpiritTotal($points, $categories) {
   $allset = true;
   $total = 0;
   foreach ($categories as $cat) {
-    if ($cat['index'] > 0)
+    if ($cat['type'] == 1)
       if (isset($points[$cat['category_id']])) {
         $total += $points[$cat['category_id']] * $cat['factor'];
       } else {

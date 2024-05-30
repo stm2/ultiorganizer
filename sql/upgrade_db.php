@@ -814,6 +814,22 @@ function upgrade85() {
   anonymize_ips('uo_event_log', 'event_id', 'ip');
 }
 
+function upgrade86() {
+  addColumn('uo_spirit_score', 'text', 'text');
+  addColumn('uo_spirit_category', 'type', 'smallint(5) NOT NULL DEFAULT 0');
+  runQuery("UPDATE `uo_spirit_category` SET `type` = 0 WHERE `index` = 0");
+  runQuery("UPDATE `uo_spirit_category` SET `type` = 1 WHERE `index` > 0 AND `type` = 0" );
+  runQuery("UPDATE `uo_spirit_category` SET `group` = 1 WHERE `mode` = 1004 AND `index` = 0" );
+  runQuery("UPDATE `uo_spirit_category` SET `group` = 2 WHERE `mode` = 1001 AND `index` = 0" );
+  runQuery("UPDATE `uo_spirit_category` SET `group` = 3 WHERE `mode` = 1002 AND `index` = 0" );
+  runQuery("UPDATE `uo_spirit_category` SET `group` = 4 WHERE `mode` = 1003 AND `index` = 0" );
+  runQuery("UPDATE `uo_spirit_category` SET `index` = 1000 + `index` WHERE `index` MOD 2 = 1 AND `index` > 0 AND mode = 1004 " );
+  runQuery("UPDATE `uo_spirit_category` SET `index` = 5 + FLOOR(`index` / 2) WHERE `index` MOD 2 = 0 AND `index` > 0 AND mode = 1004" );
+  runQuery("UPDATE `uo_spirit_category` SET `index` = (`index` - 1000) / 2 WHERE `index` > 1000 AND mode = 1004" );
+  runQuery(
+      'INSERT INTO `uo_spirit_category` (`mode`, `group`, `type`, `index`, `factor`, `text`) VALUES ("1004", 3, 2, 11, 0, "Comment")');
+}
+
 function runQuery($query) {
   $result = mysql_adapt_query($query);
   if (!$result) {
@@ -904,7 +920,7 @@ function changeToAutoIncrementField($table, $field) {
 
 function dropField($table, $field) {
   if (hasColumn($table, $field)) {
-    $query = "ALTER TABLE $table DROP $field";
+    $query = "ALTER TABLE $table DROP `$field`";
     $result = mysql_adapt_query($query);
     if ($result)
       return true;
