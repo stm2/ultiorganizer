@@ -410,14 +410,14 @@ if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
   foreach ($categories as $cat) {
     if ($cat['index'] > 0 && $cat['type'] == 1) {
       if (isset($aggr[$cat['index']])) {
-      $val = $aggr[$cat['index']]['sum'] / max(1, $aggr[$cat['index']]['n']);
+      $val = numf($aggr[$cat['index']]['sum'] / max(1, $aggr[$cat['index']]['n']), 2);
       $html .= "<td>$val</td>";
     } else {
       $html .= "<td></td>";
     }
     }
   }
-  $val = $aggr['total']['sum'] / max(1, $aggr['total']['n']);
+  $val = numf($aggr['total']['sum'] / max(1, $aggr['total']['n']), 2);
   $html .= "<td>$val</td>";
   $html .= "</tr>\n";
   $html .= "</table>";

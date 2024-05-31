@@ -1515,22 +1515,26 @@ function TeamsToCsv($season,$separator){ // SELECT ssc.*, SUM(value*factor) FROM
   return ResultsetToCsv($result, $separator);
 }
 
-function SpiritSubmitted(int $teamId) {
+function SpiritSubmitted(int $teamId, int $spiritmode) {
   $query = sprintf(
-    "SELECT gg.game_id, gg.hometeam, gg.visitorteam, sc.team_id FROM uo_game gg 
-JOIN uo_spirit_score sc on (gg.game_id = sc.game_id)
-WHERE hometeam = %d OR visitorteam = %d
-GROUP BY sc.team_id, gg.game_id  
-ORDER BY `sc`.`team_id` ASC;", intval($teamId), intval($teamId));
+    "SELECT sub.own, count(*) as num FROM(
+       SELECT gg.game_id, team_id, team_id != %d as own, count(*) scores 
+         FROM uo_game gg 
+         JOIN uo_spirit_score sc on (gg.game_id = sc.game_id)
+         JOIN uo_spirit_category cat on (sc.category_id = cat.category_id)
+         WHERE (hometeam = %d OR visitorteam = %d) AND cat.factor > 0 AND cat.mode = 1004
+         GROUP BY game_id, team_id
+         HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)) sub 
+       GROUP BY sub.own ORDER BY own DESC", 
+    intval($teamId), intval($teamId), intval($teamId), intval($spiritmode));
+  
   $results = DBQueryToArray($query);
-
-  $sub = $rec = 0;
-  foreach ($results as $row) {
-    if ($row['team_id'] != $teamId)
-      ++$sub;
-    else
-      ++$rec;
-  }
-  return ['submitted' => $sub, 'received' => $sub];
+  debug_to_apache([$teamId, $spiritmode, $results]);
+  
+  
+  if (empty($results))
+    return ['submitted' => 0, 'received' => 0];
+  
+  return ['submitted' => $results[0]['num'], 'received' => $results[1]['num']];
 }
 ?>

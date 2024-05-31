@@ -5,7 +5,7 @@ $html = "";
 
 $gameId = intval(iget("game"));
 $seriesId = intval(iget("series"));
-$teamId = intval(iget("team"));
+$submitterId = intval(iget("submitter"));
 $token = intval(iget("token"));
 
 if (!empty($_POST['games'])) {
@@ -13,9 +13,9 @@ if (!empty($_POST['games'])) {
 }
 $token = $_POST['token'] ?? $token;
 if (!empty($_POST['teams'])) {
-  $teamId = $_POST['teams'][0];
+  $submitterId = $_POST['teams'][0];
 }
-$teamId = $_POST['teamid'] ?? $teamId;
+$submitterId = $_POST['submitterid'] ?? $submitterId;
 if (!empty($_POST['series'])) {
   $seriesId = $_POST['series'][0];
 }
@@ -32,7 +32,7 @@ $title = _("Spirit");
 
 if ($gameId <= 0) {
   $target = "view=user/addspirit";
-  if ($teamId <= 0 && $seriesId > 0) {
+  if ($submitterId <= 0 && $seriesId > 0) {
     $html .= "<h3>" . _("Search Team") . "</h3>";
     $html .= SearchTeam($target, array('token' => $token, 'seriesid' => $seriesId),
       array('selectteam' => _("Select"), 'cancel' => _("Cancel")),
@@ -44,9 +44,9 @@ if ($gameId <= 0) {
       [ 'searchser' => true], false);
   } else {
     $html .= "<h3>" . _("Search Game") . "</h3>\n";
-    $html .= SearchGame($target, array('token' => $token, 'teamid' => $teamId, 'seriesid' => $seriesId),
+    $html .= SearchGame($target, array('token' => $token, 'submitterid' => $submitterId, 'seriesid' => $seriesId),
       array('selectteam' => _("Select"), 'cancel' => _("Cancel")),
-      ['teamid' => $teamId, 'seriesid' => $seriesId, 'searchstart' => "", 'searchend' => date('d.m.Y'),
+      ['teamid' => $submitterId, 'seriesid' => $seriesId, 'searchstart' => "", 'searchend' => date('d.m.Y'),
         'searchgame' => true], false);
   }
 } else {
@@ -58,7 +58,7 @@ if ($gameId <= 0) {
 
     // process itself if save button was pressed
     if (!empty($_POST['save'])) {
-      if ($teamId <= 0 || $game_result['hometeam'] == $teamId) {
+      if ($submitterId <= 0 || $game_result['hometeam'] != $submitterId) {
         $points = array();
         foreach ($_POST['homevalueId'] as $cat) {
           if ($categories[$cat]['type'] >= 1) {
@@ -72,7 +72,7 @@ if ($gameId <= 0) {
 
         GameSetSpiritPoints($gameId, $game_result['hometeam'], 1, $points, $categories);
       }
-      if ($teamId <= 0 || $game_result['visitorteam'] == $teamId) {
+      if ($submitterId <= 0 || $game_result['visitorteam'] != $submitterId) {
         $points = array();
         foreach ($_POST['visvalueId'] as $cat) {
           if (isset($_POST['viscat' . $cat]))
@@ -102,15 +102,15 @@ if ($gameId <= 0) {
     $html .= "<form  method='post' action='?view=user/addspirit&amp;game=" . $gameId . "'>";
     $html .= getHiddenInput($token, 'token');
     $html .= getHiddenInput($seriesId, 'seriesid');
-    $html .= getHiddenInput($teamId, 'teamid');
+    $html .= getHiddenInput($submitterId, 'submitterid');
 
-    if ($teamId <= 0 || $game_result['hometeam'] == $teamId) {
+    if ($submitterId <= 0 || $game_result['hometeam'] != $submitterId) {
       $html .= "<h3>" . _("Spirit points given for") . ": " . utf8entities($game_result['hometeamname']) . "</h3>\n";
 
       $points = GameGetSpiritPoints($gameId, $game_result['hometeam']);
       $html .= SpiritTable($game_result, $points, $categories, true);
     }
-    if ($teamId <= 0 || $game_result['visitorteam'] == $teamId) {
+    if ($submitterId <= 0 || $game_result['visitorteam'] != $submitterId) {
       $html .= "<h3>" . _("Spirit points given for") . ": " . utf8entities($game_result['visitorteamname']) . "</h3>\n";
 
       $points = GameGetSpiritPoints($gameId, $game_result['visitorteam']);

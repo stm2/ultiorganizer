@@ -818,6 +818,7 @@ function upgrade86() {
   addColumn('uo_spirit_score', 'text', 'text');
   addColumn('uo_spirit_category', 'type', 'smallint(5) NOT NULL DEFAULT 0');
   runQuery("UPDATE `uo_spirit_category` SET `type` = 0 WHERE `index` = 0");
+  runQuery("UPDATE `uo_spirit_category` SET `factor` = 0 WHERE `index` = 0");
   runQuery("UPDATE `uo_spirit_category` SET `type` = 1 WHERE `index` > 0 AND `type` = 0" );
   runQuery("UPDATE `uo_spirit_category` SET `group` = 1 WHERE `mode` = 1004 AND `index` = 0" );
   runQuery("UPDATE `uo_spirit_category` SET `group` = 2 WHERE `mode` = 1001 AND `index` = 0" );
