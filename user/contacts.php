@@ -17,28 +17,48 @@ if (!isset($links[$season]['?view=user/contacts&amp;season=' . urlencode($season
 }
 
 $seasonName = SeasonName($season);
+$emaillink = _("e-mail");
+$emaillinku = utf8entities(_("e-mail"));
+
+function mailtoall(array $all, string $subject) {
+  global $emaillinku;
+  $mailtoall = "";
+  foreach ($all as $row) {
+    $mailtoall .= mailto_address($row['email'], $row['name']) . ";";
+  }
+  $subject = utf8entities(rawurlencode($subject));
+  return "<a href='mailto:$mailtoall?subject=$subject'>$emaillinku</a>";
+}
 
 $html .= "<h2>" . utf8entities(_("Contacts")) . "</h2>\n";
+
+if(isSeasonAdmin($season)) {
 
 $resp = SeasonTeamAdmins($season, true);
 
 if (!empty($resp)) {
-  $html .= "<div><a href='" . mailto_encode($resp, 'email', 'name', $seasonName) . "'>" .
-    _("Mail to everyone registered for the event") . "</a></div>";
+  $html .= "<p>" . sprintf(_("All %d users registered for the event"), count($resp)) . " (";
+  $html .= "<a href='" . mailto_encode($resp, 'email', 'name', $seasonName) . "'>$emaillinku</a>, ";
+  $html .= dm_link($resp, $seasonName) . ")</p>\n";
+}
 }
 
 $html .= "<h3>" . utf8entities(_("Mail to Event Organizers")) . "</h3>\n";
+
 $admins = SeasonAdmins($season);
 $html .= "<ul>";
-$all = "";
+$all = [];
 foreach ($admins as $user) {
   if (!empty($user['email'])) {
-    $html .= "<li>" . mailto_link($user['email'], $user['name'], null, $seasonName) . "</li>\n";
-    $all .= mailto_address($user['email'], $user['name']) . ";";
+    $html .= "<li>" . utf8entities($user['name']) . " (" .
+      mailto_link($user['email'], $user['name'], $emaillink, $seasonName) . ", " .
+      dm_link([['email' => $user['email'], 'name' => $user['name']]], $seasonName) . ")</li>\n";
+    $all[] = ['email' => $user['email'], 'name' => $user['name']];
   }
 }
-$subject = utf8entities(rawurlencode($seasonName));
-$html .= "<li><a href='mailto:$all?subject=$subject'>" . _("All organizers") . "</a></li>\n";
+$subject = $seasonName;
+$mailtoall = mailtoall($all, $subject);
+$html .= "<li>" . _("All organizers") . "($mailtoall, " . dm_link($all, $subject) . ")</li>\n";
 $html .= "</ul>\n";
 
 $html .= "<h3>" . utf8entities(_("Mail to Division Organizers")) . "</h3>\n";
@@ -51,15 +71,16 @@ foreach ($series as $row) {
     $seriesName = U_($row['name']);
     $html .= "<li><b>" . utf8entities($seriesName) . "</b>\n";
     $admins = SeriesAdmins($row['series_id']);
-    $all = "";
+    $all = [];
     $found = 0;
     foreach ($admins as $user) {
       if (!empty($user['email'])) {
         if ($found++ == 0)
           $html .= "  <ul>";
-        $html .= "  <li>" . mailto_link($user['email'], $user['name'], null, $seriesName) . " (" .
-          utf8entities($user['name']) . ")</li>\n";
-        $all .= mailto_address($user['email'], $user['name']) . ";";
+        $html .= "  <li>" . utf8entities($user['name']) . " (" .
+          mailto_link($user['email'], $user['name'], $emaillink, $seriesName) . ", " .
+          dm_link([$user['email'], $user['name']], $seriesName) . ")</li>\n";
+        $all[] = ['email' => $user['email'], 'name' => $user['name']];
         $seasonAdmins[$user['email']] = $user;
       }
     }
@@ -70,30 +91,34 @@ foreach ($series as $row) {
       $html .= "<li>" . utf8entities(_("No admins known")) . "</li>\n";
     } else {
       $numSeries++;
-      $subject = utf8entities(rawurlencode($seriesName));
-      $html .= "<li><a href='mailto:$all?subject=$subject'>" . utf8entities(_("All admins")) . "</a></li>\n";
+      $subject = $seriesName;
+      $mailtoall = mailtoall($all, $subject);
+
+      $html .= "<li>" . utf8entities(_("All admins")) . " ($mailtoall, " . dm_link($all, $subject) . ")</li>\n";
     }
   }
 }
 
 if ($numSeries > 0) {
-  $first = false;
-  $all = "";
+  $all = [];
   foreach ($seasonAdmins as $user) {
-    $all .= mailto_address($user['email'], $user['name']) . ";";
+    $all[] = ['email' => $user['email'], 'name' => $user['name']];
   }
-  $subject = $subject = utf8entities(rawurlencode($seasonName));
-  $html .= "<li><a href='mailto:$all?subject='>" . utf8entities(_("All season admins")) . "</a></li>";
+  $subject = $seasonName;
+
+  $mailtoall = mailtoall($all, $subject);
+  $html .= "<li>" . utf8entities(_("All season admins")) . "($mailtoall, " . dm_link($all, $subject) . ")</li>";
 }
 
 $html .= "</ul>\n";
 
 $html .= "<h3>" . utf8entities(_("Mail to Teams")) . "</h3>\n";
 
+$html .= "<ul>";
 $series = SeasonSeries($season);
 foreach ($series as $row) {
   if (hasEditSeriesRight($row['series_id'])) {
-    $html .= "<p><b>" . utf8entities(U_($row['name'])) . "</b></p>\n";
+    $html .= "<li><b>" . utf8entities(U_($row['name'])) . "</b>\n";
 
     $teams = SeriesTeams($row['series_id']);
     $found = 0;
@@ -107,7 +132,9 @@ foreach ($series as $row) {
       } else {
         foreach ($admins as $user) {
           if (!empty($user['email'])) {
-            $html .= mailto_link($user['email'], $user['name'], null, $row['name'] . ", " . $team['name']);
+            $subject = $row['name'] . ", " . $team['name'];
+            $html .= utf8entities($team['name']) . "(" . mailto_link($user['email'], $user['name'], _("email"), $subject) .
+              ", " . dm_link([$user['email'], $user['name']], $subject) . "); ";
             // $html .= " (".utf8entities($user['name']).")";
           }
         }
@@ -115,18 +142,19 @@ foreach ($series as $row) {
 
       $html .= "</li>\n";
     }
+    if ($found > 0)
+      $html .= "</ul>\n";
+    $html .= "</li>\n";
 
     $resp = SeriesTeamResponsibles($row['series_id']);
     if (!empty($resp)) {
-      if ($found++ == 0)
-        $html .= "<ul>";
-      $html .= "<li><a href='" . mailto_encode($resp, 'email', 'name', U_($row['name'])) . "'>" .
-        utf8entities(_("Mail to teams in")) . " " . U_($row['name']) . "</a></li>";
+      $subject = U_($row['name']);
+      $html .= "<li>" . utf8entities(sprintf(_("All %d team admins in %s"), count($resp), $subject)) . "(<a href='" .
+        mailto_encode($resp, 'email', 'name', $subject) . "'>$emaillinku</a>, " . dm_link($resp, $subject) . ")</li>";
     }
-    if ($found > 0)
-      $html .= "</ul>\n";
   }
 }
+$html .= "</ul>\n";
 
 showPage($title, $html);
 ?>
