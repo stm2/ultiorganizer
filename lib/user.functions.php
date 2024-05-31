@@ -420,7 +420,7 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
 function UserChangePassword($user_id, $passwd, $token = null) {
   Log1("user", "change", $user_id, "", "set password");
 
-  if ($user_id == $_SESSION['uid'] || hasEditUsersRight() || UserCheckRecoverToken($user_id, $token)) {
+  if ($user_id == $_SESSION['uid'] || hasEditUsersRight($user_id) || UserCheckRecoverToken($user_id, $token)) {
     $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'", mysql_adapt_real_escape_string($passwd),
       mysql_adapt_real_escape_string($user_id));
 
@@ -679,7 +679,7 @@ function ClearUserSessionData() {
 }
 
 function setSuperAdmin($userid, $value) {
-  if (hasEditUsersRight()) {
+  if (isSuperAdmin()) {
     if ($value && !isSuperAdminByUserid($userid)) {
       $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', 'superadmin')",
         mysql_adapt_real_escape_string($userid));
@@ -802,8 +802,9 @@ function hasViewUsersRight() {
   return isset($_SESSION['userproperties']['userrole']['superadmin']);
 }
 
-function hasEditUsersRight() {
-  return isset($_SESSION['userproperties']['userrole']['superadmin']);
+function hasEditUsersRight($userid = null) {
+  return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
+    (($userid == null || !isSuperAdminByUserid($userid)) && isset($_SESSION['userproperties']['userrole']['useradmin']));
 }
 
 function hasChangeCurrentSeasonRight() {
@@ -1181,7 +1182,7 @@ function RemoveUserRole($userid, $propid) {
  * @return boolean
  */
 function AddUserRole($userid, $role) {
-  if (hasEditUsersRight()) {
+  if (isSuperAdmin() || ($role != 'superadmin' && hasEditUsersRight())) {
     $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
     $result = mysql_adapt_query($query);
@@ -1261,7 +1262,7 @@ function GetTeamAdmins($teamId) {
 
 function DeleteUser($userid) {
   if ($userid != "anonymous") {
-    if (hasEditUsersRight() || $userid = $_SESSION['uid']) {
+    if (hasEditUsersRight($userid) || $userid = $_SESSION['uid']) {
       $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
       $result = mysql_adapt_query($query);
       if (!$result) {

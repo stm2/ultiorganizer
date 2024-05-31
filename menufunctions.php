@@ -1083,6 +1083,7 @@ function getEditSeasonLinks() {
             $seriesname . " " . _("Pool rankings"));
           $adminSeasons[$seriesseason] = true;
           set_menu($menu, $seriesseason, 'respgames');
+          set_menu($menu, $season, 'contacts');
           set_menu($menu, $seriesseason, 'delete');
         }
       }

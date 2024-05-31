@@ -7,7 +7,7 @@ $message = "";
 ensureLogin();
 
 if (!empty($_GET['user'])) {
-  if (($_GET['user']) != $_SESSION['uid'] && !hasEditUsersRight()) {
+  if (($_GET['user']) != $_SESSION['uid'] && !hasEditUsersRight($_GET['user'])) {
     die('Insufficient rights to change user info');
   } else {
     $userid = $_GET['user'];
