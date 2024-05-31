@@ -554,6 +554,7 @@ ul.draglist li, ol.draglist li, ul.time_list li {
   vertical-align: middle;
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
   margin: -1px;
+  padding: 0;
 }
 
 ul.draglist li, ol.draglist li {

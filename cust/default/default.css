@@ -25,6 +25,7 @@ body {
 li {
 /*  margin-left: 1ex;*/
   list-style-position: inside;
+  padding-left: 1ex;
 }
 
 blockquote, q {
