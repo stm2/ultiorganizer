@@ -264,9 +264,14 @@ if(empty($errors)){
   }
 
   $html .= "<h3>"._("Game has ended")."</h3>";
-  if($lastscore){
+  if(isset($lastscore)){
     $home = $lastscore['homescore'];
     $away = $lastscore['visitorscore'];
+    $homerec = $game_result['homescore'];
+    $awayrec = $game_result['visitorscore'];
+    if ($homerec != $home || $awayrec != $away) {
+      $html .= "<p>" . sprintf(_("Your result is different from recorded result (%d - %d). Are you sure?"), $homerec, $awayrec) ."</p>\n";
+    }
     $html .= "<input type='submit' name='save' data-ajax='false' value='"._("Save as result")." $home - $away'/>";
     $html .= "<a href='?view=addplayerlists&amp;game=".$gameId."&amp;team=".$game_result['hometeam']."' data-role='button' data-ajax='false'>"._("Players")."</a>";
     if(intval($seasoninfo['spiritmode']>0)&& isSeasonAdmin($seasoninfo['season_id'])){
