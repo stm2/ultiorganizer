@@ -30,7 +30,6 @@ if (!isset($_POST['cancel'])) {
 
       if (gettype($entries) == 'array') {
         if (count($entries) > 0) {
-          debug_to_apache($entries);
           $html .= "<table class='admintable'>\n";
           $i = 0;
           foreach ($entries as $row) {
