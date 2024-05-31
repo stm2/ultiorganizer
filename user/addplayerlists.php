@@ -227,7 +227,12 @@ $html .= "</table></div></td></tr></table>\n";
 $html .= $html2;
 
 $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
-$html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."'/></p></form>";
+if (hasEditGameEventsRight($gameId)) {
+  $html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."'/></p></form>";
+} else {
+  $html .= "<p>" . _("You are not authorized to edit this game.") . "</p>";
+}
+
 
 showPage($title, $html);
 ?>

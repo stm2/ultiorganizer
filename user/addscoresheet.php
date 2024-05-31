@@ -520,8 +520,12 @@ if ($game_result['isongoing']) {
 }
 echo "/> "._("Game ongoing")."</td><td></td></tr>";
 echo "<tr>";
-echo "<td><input class='button' type='submit' value='"._("Save scores")."' name='save'/></td>";
-echo "<td><input class='button' type='reset' value='"._("Cancel")."' name='reset'/></td>";
+if (hasEditGameEventsRight($gameId)) {
+  echo "<td><input class='button' type='submit' value='" . _("Save scores") . "' name='save'/></td>";
+  echo "<td><input class='button' type='reset' value='" . _("Cancel") . "' name='reset'/></td>";
+} else {
+  echo "<td class='warning'>" . _("You are not authorized to edit this game.") . "</td>";
+}
 echo "</tr>";
 echo "<tr><td colspan='2'>
 		<a href='javascript://' onclick=\"eraseLast()\">"._("Delete the last goal")."</a></td></tr>";
