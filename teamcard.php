@@ -590,7 +590,6 @@ if (mysqli_num_rows($allgames)) {
   }
 }
 
-debug_to_apache($sumcat);
 for ($t = 0; $t <= 1; ++$t) {
   $gameshtml[$t] .= "<tr><td>" . _("Average") . "</td>";
   foreach ($categories as $id => $cat) {
@@ -608,24 +607,10 @@ for ($t = 0; $t <= 1; ++$t) {
 
 for ($t = 0; $t <= 1; ++$t) {
   if (!empty($gameshtml[$t])) {
+    
     $mnem = [];
     foreach ($categories as &$cat) {
-      $words = preg_split("/[\W]+/", $cat['text'], 5);
-      if (count($words) > 1)
-        $m1 = substr($words[0], 0, 1) . substr($words[1], 0, 1);
-      else
-        $m1 = substr($words[0], 0, 2);
-      $m2 = substr($cat['text'], 0, 1) . substr(strtok($cat['text'], " -.()"), -1);
-
-      $i = "";
-      while (isset($mnem["$m1$i"]) && isset($mnem["$m2$i"])) {
-        $i = empty($i) ? 1 : $i + 1;
-      }
-      $m = "$m1$i";
-      if (isset($mnem["$m1$i"]))
-        $m = "$m2$i";
-      $mnem[$m] = $cat['text'];
-      $cat['mnem'] = $m;
+      addMnemonic($cat, $cat['text'], $mnem, 2);
     }
     unset($cat);
 

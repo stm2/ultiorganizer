@@ -1514,4 +1514,23 @@ function TeamsToCsv($season,$separator){ // SELECT ssc.*, SUM(value*factor) FROM
   $result = DBQuery($query);
   return ResultsetToCsv($result, $separator);
 }
+
+function SpiritSubmitted(int $teamId) {
+  $query = sprintf(
+    "SELECT gg.game_id, gg.hometeam, gg.visitorteam, sc.team_id FROM uo_game gg 
+JOIN uo_spirit_score sc on (gg.game_id = sc.game_id)
+WHERE hometeam = %d OR visitorteam = %d
+GROUP BY sc.team_id, gg.game_id  
+ORDER BY `sc`.`team_id` ASC;", intval($teamId), intval($teamId));
+  $results = DBQueryToArray($query);
+
+  $sub = $rec = 0;
+  foreach ($results as $row) {
+    if ($row['team_id'] != $teamId)
+      ++$sub;
+    else
+      ++$rec;
+  }
+  return ['submitted' => $sub, 'received' => $sub];
+}
 ?>

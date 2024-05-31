@@ -618,18 +618,14 @@ function SeriesAdmins($seriesId) {
  * @return array php array of users
  */
 function SeasonAdmins($seasonId) {
-  if (isSeasonAdmin($seasonId)) {
-    $query = sprintf(
-      "SELECT u.userid, u.name, u.email
+  $query = sprintf(
+    "SELECT u.userid, u.name, u.email
 			FROM uo_users u
 			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
 			WHERE SUBSTRING_INDEX(up.value,':',1)='seasonadmin' AND SUBSTRING_INDEX(up.value, ':', -1)='%s'
 			GROUP BY u.userid, u.name, u.email", mysql_adapt_real_escape_string($seasonId));
 
-    return DBQueryToArray($query);
-  } else {
-    die('Insufficient rights');
-  }
+  return DBQueryToArray($query);
 }
 
 /**
@@ -771,7 +767,7 @@ function SpiritMode($mode_id) {
 
 function SpiritModes() {
   $query = sprintf("SELECT mode, text AS name FROM `uo_spirit_category`
-          WHERE `index` = 0");
+          WHERE `index` = 0 ORDER BY `group`");
   return DBQueryToArray($query);
 }
 

@@ -195,8 +195,11 @@ function SeriesAllPlayers($seriesId) {
  */
 function SeriesName($serieId) {
   $query = sprintf("SELECT name FROM uo_series WHERE series_id=%d", (int) $serieId);
-
-  return U_(DBQueryToValue($query));
+  $val = DBQueryToValue($query);
+  if ($val !== -1)
+    return U_($val);
+  else
+    return null;
 }
 
 /**
@@ -434,7 +437,7 @@ function SeriesSpiritBoard($seriesId) {
       ++$games;
     }
   }
-  if (!is_null($last_team) && $teamline['type'] == 1) {
+  if (!is_null($last_team)) {
     $factor[$last_category] = DBQueryToArray(
       sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
     $teamline[$last_category] = SafeDivide($sum, $games);
@@ -817,7 +820,7 @@ function CanDeleteSeries($seriesId) {
  */
 function SeriesTeamResponsibles($seriesId) {
   $season = SeriesSeasonId($seriesId);
-  if (isSeasonAdmin($season)) {
+  if (isSeasonAdmin($season) || hasEditSeriesRight($seriesId)) {
     $query = sprintf(
       "SELECT u.userid, u.name, u.email
 			FROM uo_users u

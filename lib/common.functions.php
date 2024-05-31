@@ -1584,6 +1584,33 @@ function mailto_link($email, $name = null, $text = null, $subject = null) {
   return "<a href='$encode'>$text</a>";
 }
 
+function dm_link(array $rows, $subject = null, $message = null, $text =null) {
+  if (gettype($rows[0]) == "array") {
+    $who = [];
+    foreach ($rows as $row) {
+      if (is_string($row))
+        $who[] = ['email' => $row, 'name' => ''];
+      else if (isset($row['email']))
+        $who[] = ['email' => $row['email'], 'name' => $row['name']];
+      else
+        $who[] = ['email' => $row['email'], 'name' => $row['name']];
+    }
+  } else {
+    debug_to_apache($rows);
+    $who = [['email' => $rows[0], 'name' => $rows[1]]];
+  }
+
+  $argwho = json_encode($who);
+  $encode = "?view=admin/sendmessage&recipients=" . urlencode($argwho);
+  if ($subject !== null)
+    $encode .= "&subject=" . urlencode($subject);
+  if ($message !== null)
+    $encode .= "&message=" . urlencode($message);
+  $text = !empty($text) ? $text : _("send message");
+  $encode = utf8entities($encode);
+  return "<a href='$encode'>$text</a>";
+}
+
 function almostSecureRandom($min, $max) {
   if ($max - $min < 0 || $max - $min > mt_getrandmax())
     die("invalid random number requested");
@@ -1636,4 +1663,39 @@ function numf($num, $acc) {
   if ($num == intval($num))
     return sprintf("%d", $num);
     return sprintf("%.{$acc}f", $num);
+}
+
+function addMnemonic(&$cat, $name, &$mnemonics, $maxlen = 3) {
+  $candidates = [];
+  if (mb_strlen($name) <= $maxlen)
+    $candidates[] = $name;
+
+  $words = preg_split("/[\W]+/",$name ,$maxlen + 1);
+  debug_to_apache($words);
+  if (count($words) > 1) {
+    $cand = "";
+    for ($i = 0; $i < $maxlen && $i < count($words); ++$i)
+      $cand .= mb_substr($words[$i], 0, 1);
+    $candidates[] = $cand;
+  }
+
+  if (count($words) == 1)
+    $candidates[] = mb_substr($words[0], 0, $maxlen);
+
+  $candidates[] = mb_substr($name, 0, 1) . mb_substr(strtok($name, " -.()"), -1);
+
+  for ($i = "";; $i = intval($i) + 1) {
+    $found = "";
+    foreach ($candidates as $cand) {
+      if (!isset($mnemonics[$cand . $i])) {
+        $found = $cand . $i;
+        break;
+      }
+    }
+    if (!empty($found)) {
+      $mnemonics[$found] = $name;
+      $cat['mnem'] = $found;
+      break;
+    }
+  }
 }

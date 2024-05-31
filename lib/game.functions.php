@@ -955,6 +955,7 @@ function GameGetSpiritPoints($gameId, $teamId, $received = true) {
 
 function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories) {
   if (hasEditGameEventsRight($gameId)) {
+    Log1("spirit", "update", $gameId, $teamId);    
     $query = sprintf("DELETE FROM uo_spirit_score 
         WHERE game_id=%d AND team_id=%d", (int) $gameId, (int) $teamId);
     DBQuery($query);

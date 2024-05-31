@@ -46,7 +46,8 @@ $columns = array();
 function add_column(&$columns, $abbr, $name, $mnem = null, $prec = null, $acc = null, $classes = 'center') {
   if (intval($prec) !== $prec && $prec !== null)
     die("invalid prec $abbr $prec");
-  $columns[$abbr] = array('name' => $name, 'mnem' => $mnem == null?$name:$mnem, 'classes' => $classes, 'prec' => $prec, 'acc' => $acc);
+  $columns[$abbr] = array('name' => $name, 'mnem' => $mnem == null ? $name : $mnem, 'classes' => $classes,
+    'prec' => $prec, 'acc' => $acc);
 }
 
 $allteams = array();
@@ -93,7 +94,7 @@ if ($stdElo)
   add_column($columns, 'wpwr', _("Win/Loss Power Ranking"), _("wPwR"), 2, 'avg');
 if ($stdElo && $stdAcc)
   add_column($columns, 'wpwr_acc', _("Win/Loss PwR accuracy"), _("wPwR*"), 2, 'avg');
-  
+
 if ($stdElo) {
   $active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
   foreach ($elos as $name => $ratings) {
@@ -167,7 +168,7 @@ foreach ($teams as $team) {
   $teamstats['wpwr'] = $winPowerRanking[$teamId];
   $teamstats['pwr_acc'] = $accuracies['pwr'][$teamId];
   $teamstats['wpwr_acc'] = $accuracies['wpwr'][$teamId];
-  
+
   foreach ($elos as $name => $r) {
     $teamstats[$name] = intval($r[$teamId]);
     $teamstats[$name . "_acc"] = $accuracies[$name][$teamId]; // predictionAccuracies($r, $teamId, $games);
@@ -245,8 +246,7 @@ foreach ($columns as $key => $col) {
   if ($sort == $key) {
     $html .= "<th$sty>" . utf8entities($col['mnem']) . "</th>";
   } else {
-    $html .= "<th$sty><a class='thlink' href='" . $viewUrl . "&amp;Sort=$key'>" . $col['mnem'] .
-      "</a></th>";
+    $html .= "<th$sty><a class='thlink' href='" . $viewUrl . "&amp;Sort=$key'>" . $col['mnem'] . "</a></th>";
   }
 }
 
@@ -305,7 +305,7 @@ foreach ($columns as $key => $col) {
   if ($col['name'] != $col['mnem']) {
     if (!empty($legend))
       $legend .= "<br />";
-    $legend .= "<em>". $col['mnem'] . ":</em> " . $col['name'];
+    $legend .= "<em>" . $col['mnem'] . ":</em> " . $col['name'];
   }
 }
 if (!empty($legend))
@@ -366,40 +366,69 @@ if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
   $categories = SpiritCategories($seasoninfo['spiritmode']);
   $html .= "<h2>" . _("Spirit points average per category") . "</h2>\n";
 
+  $mnem = [];
+  foreach ($categories as &$cat) {
+    addMnemonic($cat, $cat['text'], $mnem, 2);
+  }
+  unset($cat);
+
   $html .= "<table class='infotable' cellspacing='0' border='0' >\n";
   $html .= "<tr><th style='width:150px'>" . _("Team") . "</th>";
   $html .= "<th>" . _("Games") . "</th>";
   foreach ($categories as $cat) {
     if ($cat['index'] > 0 && $cat['type'] == 1)
-      $html .= "<th class='center'>" . _($cat['index']) . "</th>";
+      $html .= "<th class='center'>" . _($cat['mnem']) . "</th>";
   }
   $html .= "<th class='center'>" . _("Tot.") . "</th>";
   $html .= "</tr>\n";
 
+  $aggr = ['total' => ['sum' => 0, 'n' => 0]];
   foreach ($spiritAvg as $teamAvg) {
-    $html .= "<td><a href='?view=teamcard&amp;team={$teamAvg['team_id']}&series=$seriesId'>" . utf8entities($teamAvg['teamname']) . "</a></td>";
+    $html .= "<td><a href='?view=teamcard&amp;team={$teamAvg['team_id']}&series=$seriesId'>" .
+      utf8entities($teamAvg['teamname']) . "</a></td>";
     $html .= "<td>" . $teamAvg['games'] . "</td>";
     foreach ($categories as $cat) {
       if ($cat['index'] > 0 && $cat['type'] == 1) {
+        $val = $teamAvg[$cat['category_id']];
         if ($cat['factor'] != 0)
-          $html .= "<td class='center'><b>" . numf($teamAvg[$cat['category_id']], 2) . "</b></td>";
+          $html .= "<td class='center'><b>" . numf($val, 2) . "</b></td>";
         else
-          $html .= "<td class='center'>" . numf($teamAvg[$cat['category_id']], 2) . "</td>";
+          $html .= "<td class='center'>" . numf($val, 2) . "</td>";
+        if (!isset($aggr[$cat['index']])) {
+          $aggr[$cat['index']] = ['sum' => 0, 'n' => 0];
+        }
+        $aggr[$cat['index']]['sum'] += $val;
+        ++$aggr[$cat['index']]['n'];
       }
     }
     $html .= "<td class='center'><b>" . numf($teamAvg['total'], 2) . "</b></td>";
     $html .= "</tr>\n";
+    $aggr['total']['sum'] += $teamAvg['total'];
+    ++$aggr['total']['n'];
   }
+  $html .= "<tr><td>". _ ("Average") . "</td><td></td>";
+  foreach ($categories as $cat) {
+    if ($cat['index'] > 0 && $cat['type'] == 1) {
+      if (isset($aggr[$cat['index']])) {
+      $val = $aggr[$cat['index']]['sum'] / max(1, $aggr[$cat['index']]['n']);
+      $html .= "<td>$val</td>";
+    } else {
+      $html .= "<td></td>";
+    }
+    }
+  }
+  $val = $aggr['total']['sum'] / max(1, $aggr['total']['n']);
+  $html .= "<td>$val</td>";
+  $html .= "</tr>\n";
   $html .= "</table>";
 
-  $html .= "<ul>";
+  $html .= "<p>";
   foreach ($categories as $cat) {
-    if ($cat['index'] > 0 && $cat['type'] == 1)
-      $html .= "<li>" . $cat['index'] . " " . $cat['text'] . "</li>";
+    if ($cat['type'] == 1) {
+      $html .= "<em>" . $cat['mnem'] . ":</em> " . U_($cat['text']) . "<br />\n";
+    }
   }
-  $html .= "</ul>\n";
-  
-  // $html 
+  $html .= "</p>\n";
 }
 
 $games = TimetableGames($seriesId, 'series', 'all', 'series');
