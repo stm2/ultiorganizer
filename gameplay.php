@@ -37,7 +37,7 @@ if(GameHasStarted($game_result)){
   $html .= "</h1>\n";
 
   if(mysqli_num_rows($goals) <= 0){
-    $html .= "<h2>"._("Not fed in")."</h2>
+    $html .= "<h2>"._("Play-by-play results not available")."</h2>
 			  <p>"._("Please check the status again later")."</p>";
   }else{
 

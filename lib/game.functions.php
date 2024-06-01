@@ -127,6 +127,18 @@ function GameTeamResults($teamId, $poolId) {
   return DBQueryToArray($query);
 }
 
+function GetGameResults($gameId) {
+  $query = sprintf("
+		SELECT g.game_id, g.homescore, g.visitorscore, g.hasstarted, g.hometeam, g.visitorteam, COALESCE(pm.goals,0) AS scoresheet,
+			sn.name AS gamename, g.isongoing, g.hasstarted
+			FROM uo_game g
+			LEFT JOIN (SELECT COUNT(*) AS goals, game FROM uo_goal GROUP BY game) AS pm ON (g.game_id=pm.game)
+			LEFT JOIN uo_scheduling_name sn ON(g.name=sn.scheduling_id)
+			WHERE g.game_id=%d",
+    (int) $gameId);
+  return DBQueryToRow($query);
+}
+
 function GameNameFromId($gameId)
 	{
 	$query = sprintf("
@@ -568,9 +580,16 @@ function GameName($gameInfo, $time = true, $short = false) {
   return $gametitle;
 }
 
-
 function GameHasStarted($gameInfo) {
-   return $gameInfo['hasstarted']>0;
+  return $gameInfo['hasstarted'] > 0;
+}
+
+function GameIsOngoing($gameInfo) {
+  return $gameInfo['isongoing'] > 0;
+}
+
+function GameIsFinished($gameInfo) {
+  return !$gameInfo['isongoing'] > 0 && $gameInfo['hasstarted'] > 0;
 }
 
 function CheckGameResult($game, $home, $away) {

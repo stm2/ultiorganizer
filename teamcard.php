@@ -203,7 +203,7 @@ if(mysqli_num_rows($allgames)){
   while($game = mysqli_fetch_assoc($allgames)){
     //if ($seriesId == null || $game['series_id'] == $seriesId) {
     //function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true)
-      $gameshtml .= GameRow($game, false, false, false, false, false, true);
+      $gameshtml .= GameRow($game, true, false, false, false, false, true);
     //}
   }
 
@@ -660,19 +660,34 @@ if(mysqli_num_rows($played)){
 
   $viewUrl="?view=teamcard&amp;team=$teamId&amp;";
 
-  $html .= "<table border='1' cellspacing='2' width='100%'><tr>";
+  $html .= "<table border='1' cellspacing='2' width='100%'>";
 
-  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=team\">"._("Team")."</a></th>";
-  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=result\">"._("Result")."</a></th>";
-  $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=serie\">"._("Division")."</a></th></tr>";
+//   $html .= "<tr><th><a class='thlink' href=\"".$viewUrl."sort=team\">"._("Team")."</a></th>";
+//   $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=result\">"._("Result")."</a></th>";
+//   $html .= "<th><a class='thlink' href=\"".$viewUrl."sort=serie\">"._("Division")."</a></th></tr>";
   $curSeason = Currentseason();
 
+  // function GameRow($game, $date=false, $time=true, $field=true, $series=false,$pool=false,$info=true,$rss=false,$media=true, $history=true, $extra = null){
+  $html .= GameRow(null, true, false, false, false, true, true, false, false, false, _("Season"), false);
+  
+  $i = 0;
   while($row = mysqli_fetch_assoc($played))
   {
     if($row['season_id'] == $curSeason){ continue;}
     if (GameHasStarted($row))
     {
-      $seasonName = SeasonName($row['season_id']);
+      
+      $row = GameInfo($row['game_id']);
+      $seasonName = SeasonName($row['season']) . ", " . $row['seriesname'];
+      
+        $r = GameGoals($row['game_id']);
+        if (mysqli_num_rows($r) > 0)
+          $seasonName = "<a href='?view=gameplay&amp;game=" .$row['game_id']."'>$seasonName</a>";
+//         $row = array_replace($row, GetGameResults($row['game_id']));
+        $r = GameRow($row, true, false, false, false, true, true, false, false, false, $seasonName, false, true);
+        $html .= $r;
+      
+      if (false) {
 
       if($row['homescore'] > $row['visitorscore'])
       $html .= "<tr><td><b>".utf8entities($row['hometeamname'])."</b>";
@@ -689,6 +704,7 @@ if(mysqli_num_rows($played)){
       $html .= "<td><a href=\"?view=gameplay&amp;game=" .$row['game_id']."\">".$row['homescore']." - " .$row['visitorscore']. "</a></td>";
 
       $html .= "<td>".utf8entities(U_($seasonName)).": <a href=\"?view=poolstatus&amp;pool=" .$row['pool_id']. "\">".utf8entities(U_($row['name']))."</a></td></tr>";
+      }
     }
   }
 
