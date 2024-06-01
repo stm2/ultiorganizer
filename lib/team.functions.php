@@ -1525,19 +1525,16 @@ function SpiritSubmitted(int $teamId, int $spiritmode) {
          FROM uo_game gg 
          JOIN uo_spirit_score sc on (gg.game_id = sc.game_id)
          JOIN uo_spirit_category cat on (sc.category_id = cat.category_id)
-         WHERE (hometeam = %d OR visitorteam = %d) AND cat.factor > 0 AND cat.mode = 1004
+         WHERE (hometeam = %d OR visitorteam = %d) AND cat.factor > 0 AND cat.mode = %d
          GROUP BY game_id, team_id
          HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)) sub 
-       GROUP BY sub.own ORDER BY own DESC", 
-    intval($teamId), intval($teamId), intval($teamId), intval($spiritmode));
-  
+       GROUP BY sub.own ORDER BY own DESC", //
+    intval($teamId), intval($teamId), intval($teamId), intval($spiritmode), intval($spiritmode));
+
   $results = DBQueryToArray($query);
-  debug_to_apache([$teamId, $spiritmode, $results]);
-  
-  
+
   if (empty($results))
     return ['submitted' => 0, 'received' => 0];
-  
-  return ['submitted' => $results[0]['num'], 'received' => $results[1]['num']];
+
+  return ['submitted' => $results[0]['num'] ?? 0, 'received' => $results[1]['num'] ?? 0];
 }
-?>

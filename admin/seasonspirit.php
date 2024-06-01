@@ -25,7 +25,7 @@ $globaltoken = "SPSPSP424242SPSP";
 $resultstoken = "SPSPSP424242SPSP";
 
 $sp = ['globalspiritmode' => $seasonInfo['spiritmode'], 'lockdate' => '', 'globaltoken' => $globaltoken,
-  'teamtoken' => true, 'locked' => false, 'public' => false, 'displaytoken' => false, 'spiritmode' => 0];
+  'teamtoken' => true, 'locked' => false, 'public' => false, 'displaytoken' => false, 'spiritmode' => GetSeriesSpiritMode($seriesId)];
 
 if (!empty($_POST['save'])) {
   // TODO
@@ -88,7 +88,7 @@ $html .= "<td><input type='submit' name='change_public_link' value='" . utf8enti
 $html .= "</table>";
 $html .= "</form>\n";
 
-$html .= "<br /><br />";
+$html .= "<h2>" . _("Division settings") . "</h2>\n";
 
 $html .= SeriesPageMenu($seasonId, $seriesId, $single, $get_link, "?view=admin/seasonseries&season=$seasonId");
 
@@ -121,14 +121,17 @@ $admins = [];
 foreach ($teams as $team) {
   $admins = array_merge($admins, GetTeamAdmins($team['team_id']));
 }
-$link = dm_link($admins, _("Global Spirit Link"), "Use this link for submitting spirit results: TODO",
-  _("send link to teams"));
+if (empty($admins)) {
+  $link = "<em>" . _("no team admins") . "</em>";
+} else
+  $link = dm_link($admins, _("Global Spirit Link"), "Use this link for submitting spirit results: TODO",
+    _("send link to teams"));
 
 $html .= "<td><a href='?view=user/addspirit&series=$seriesId&token=$globaltoken'>" . _("global edit link") . "</a>";
 $html .= " | $link</td>";
 $html .= "</tr>\n";
 
-$html .= "<tr><td><label for='teamtoken'>" . _("Allow teams to edit their results with link") . "</label></td>";
+$html .= "<tr><td><label for='teamtoken'>" . _("Allow teams to edit their results with link (team administrators are always authorized)") . "</label></td>";
 $html .= "<td><input class='input' type='checkbox' name='teamtoken' id='teamtoken' ";
 if ($sp['teamtoken']) {
   $html .= "checked='checked'";
@@ -136,7 +139,10 @@ if ($sp['teamtoken']) {
 $html .= "/></td>";
 
 if ($sp['teamtoken']) {
-  $link = dm_link($admins, _("Spirit link"), "TODO", _("send link to teams"));
+  if (empty($admins)) {
+    $link = "<em>" . _("no team admins") . "</em>";
+  } else
+    $link = dm_link($admins, _("Spirit link"), "TODO", _("send link to teams"));
   $html .= "<td>$link</td>";
 }
 $html .= "</tr>\n";
@@ -144,6 +150,14 @@ $html .= "</tr>\n";
 $html .= "<tr><td><label for='lockdate'>" . _("Lock submission for non-admins after") . "</label></td>";
 $html .= "<td>" . getCalendarInput('lockdate', ShortDate($sp['lockdate'])) . "</td></tr>";
 
+$html .= "<tr><td><label for='editresults'>" . _("Allow teams to enter game results with spirit") . "</label></td>";
+$html .= "<td><input class='input' type='checkbox' name='editresults' id='editresults' ";
+if ($sp['teamtoken']) {
+  $html .= "checked='checked'";
+}
+$html .= "/></td>";
+
+  
 $html .= "</table>\n";
 
 $html .= "<table class='admintable'>\n";
@@ -179,7 +193,7 @@ foreach ($teams as $team) {
     "</a>";
   $admins = GetTeamAdmins($teamId);
   if (empty($admins)) {
-    $html .= " | <a href='?view=admin/addteamadmins&series=1643'>" . _("add team admin") . "</a>";
+    $html .= " | " . utf8entities(_("no team admin")) ." <a href='?view=admin/addteamadmins&series=$seriesId'>(" . _("add") . ")</a>";
   } else {
     if (!$complete) {
       $link = dm_link($admins, _("missing spirit results"), null, _("send reminder"));
@@ -191,6 +205,8 @@ foreach ($teams as $team) {
 }
 
 $html .= "</table>\n";
+
+$html .= "<p><a href=?view=user/addspirit&series=$seriesId&allgames=1>" . _("Enter results for this series") . "</a></p>\n";
 
 $html .= "<input class='button' type='submit' name='save' value='" . _("Save") . "'/>";
 

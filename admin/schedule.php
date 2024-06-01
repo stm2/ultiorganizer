@@ -152,9 +152,9 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $color = $gameInfo['color'];
   $textColor = textColor($color);
   $gameId = $gameInfo['game_id'];
-  $gamename = utf8entities(getGameName($gameInfo, true));
+  $gamename = utf8entities(GameName($gameInfo, false, true));
   $sTime = empty($gameInfo['time']) ? "00:00" : DefHourFormat($gameInfo['time']);
-  $tooltip = utf8entities(getGameName($gameInfo));
+  $tooltip = utf8entities(GameName($gameInfo, false));
   if ($tooltip == $gamename)
     $tooltip = "";
   else
@@ -184,19 +184,6 @@ function getHName($gameInfo) {
 
 function getVName($gameInfo) {
   return empty($gameInfo['visitorteamshortname']) ? $gameInfo['visitorteamname'] : $gameInfo['visitorteamshortname'];
-}
-
-function getGameName($gameInfo, $short = false) {
-  if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
-    if ($short) {
-      $gametitle = mb_substr(getHName($gameInfo), 0, 10) . " - " . mb_substr(getVName($gameInfo), 0, 10);
-    } else {
-      $gametitle = $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
-    }
-  } else {
-    $gametitle = $gameInfo['phometeamname'] . " - " . $gameInfo['pvisitorteamname'];
-  }
-  return $gametitle;
 }
 
 function gamePoolName($gameInfo) {

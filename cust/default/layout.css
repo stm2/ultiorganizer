@@ -763,7 +763,11 @@ table.spirit_table td {
 }
 
 .textarea {
-  white-space: pre-wrap;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  border: 0;
+  white-space: preserve;
 }
 
 .borderbox {

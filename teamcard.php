@@ -569,7 +569,8 @@ if (mysqli_num_rows($allgames)) {
           if (empty($sp))
             $gameshtml[$t] .= "<td></td>";
           else
-            $gameshtml[$t] .= "<td><div class='textarea'>" . utf8entities($sp) . "</div></td>";
+//             $gameshtml[$t] .= "<td><div class='textarea' wrap='hard'>" . utf8entities($sp) . "</div></td>";
+            $gameshtml[$t] .= "<td><textarea class='textarea' rows=4 readonly>" . utf8entities($sp) . "</textarea></td>";
         }
       }
       if ($n > 0) {
@@ -595,13 +596,18 @@ for ($t = 0; $t <= 1; ++$t) {
   foreach ($categories as $id => $cat) {
     if ($cat['type'] > 0) {
       if (isset($sumcat[$t][$id]))
-      $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) ."</td>";
+        $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) ."</td>";
       else
         $gameshtml[$t] .= "<td></td>";
     }
   }
   $id = -1;
-  $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) ."</td>";
+  
+  if (isset($sumcat[$t][$id]))
+    $gameshtml[$t] .= "<td class='center2'>" . numf($sumcat[$t][$id][0] / $sumcat[$t][$id][1], 1) . "</td>";
+  else
+    $gameshtml[$t] .= "<td></td>";
+  
   $gameshtml[$t] .= "</tr>\n";
 }
 

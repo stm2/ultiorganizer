@@ -167,8 +167,7 @@ function GameRespTeam($gameId) {
 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
 	
 	$row = mysqli_fetch_row($result);
-	
-	return $row[0];
+	return $row[0] ?? null;
 }
 
 /**
@@ -228,7 +227,7 @@ function GameReservation($gameId) {
 	
 	$row = mysqli_fetch_row($result);
 	
-	return $row[0];
+	return $row[0] ?? null;
 }
 
 function GameSeason($gameId) {
@@ -552,14 +551,23 @@ function GameInfo($gameId) {
 	return mysqli_fetch_assoc($result);
 }
 
-
-function GameName($gameInfo) {
-	if($gameInfo['hometeam'] && $gameInfo['visitorteam']){
-		return ShortDate($gameInfo['time'])." ".DefHourFormat($gameInfo['time'])." ".$gameInfo['hometeamname']."-".$gameInfo['visitorteamname'];
-	}else{
-		return ShortDate($gameInfo['time'])." ".DefHourFormat($gameInfo['time'])." ".$gameInfo['phometeamname']."-".$gameInfo['pvisitorteamname'];
-	}
+function GameName($gameInfo, $time = true, $short = false) {
+  $gametitle = "";
+  if ($time) {
+    $gametitle = ShortDate($gameInfo['time']) . " " . DefHourFormat($gameInfo['time']) . " ";
+  }
+  if ($gameInfo['hometeam'] && $gameInfo['visitorteam']) {
+    if ($short) {
+      $gametitle .= mb_substr(getHName($gameInfo), 0, 10) . " - " . mb_substr(getVName($gameInfo), 0, 10);
+    } else {
+      $gametitle .= $gameInfo['hometeamname'] . " - " . $gameInfo['visitorteamname'];
+    }
+  } else {
+    $gametitle .= $gameInfo['phometeamname'] . " - " . $gameInfo['pvisitorteamname'];
+  }
+  return $gametitle;
 }
+
 
 function GameHasStarted($gameInfo) {
    return $gameInfo['hasstarted']>0;
@@ -953,8 +961,29 @@ function GameGetSpiritPoints($gameId, $teamId, $received = true) {
   return $points;
 }
 
-function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories) {
-  if (hasEditGameEventsRight($gameId)) {
+
+function GameSpiritComplete(int $gameId, int $submitterId, int $spiritmode) {
+  $query = sprintf(
+    "SELECT game_id, team_id, count(*) scores
+         FROM uo_spirit_score sc
+         JOIN uo_spirit_category cat on (sc.category_id = cat.category_id)
+         WHERE sc.game_id = %d AND team_id != %d AND cat.factor > 0 AND cat.mode = %d
+         GROUP BY game_id, team_id
+         HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)", //
+    intval($gameId), intval($submitterId), intval($spiritmode), intval($spiritmode));
+
+  $ret = DBQueryRowCount($query) > 0;
+  
+  return $ret;
+}
+
+function GetSeriesSpiritMode(int $seriesId) {
+  return SeasonInfo(SeriesSeasonId($seriesId))['spiritmode'];
+}
+
+
+function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories, $checkRights = true) {
+  if (!$checkRights || hasEditGameEventsRight($gameId)) {
     Log1("spirit", "update", $gameId, $teamId);    
     $query = sprintf("DELETE FROM uo_spirit_score 
         WHERE game_id=%d AND team_id=%d", (int) $gameId, (int) $teamId);
