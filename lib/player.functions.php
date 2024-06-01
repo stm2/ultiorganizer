@@ -409,12 +409,15 @@ function PlayerGameEvents($playerId, $gameId){
  * 
  * @param int $teamId
  * @param int $playerId
- * @param int $profile
+ * @param array $profile
  */
 function SetPlayerProfile($teamId, $playerId, $profile) {
   $playerInfo = PlayerInfo($playerId);
   if (hasEditPlayerProfileRight($playerId) && $playerInfo['team']==$teamId) {
-
+    $profile['info'] = mb_substr($profile['info'], 0, 5000);
+    $profile['story'] = mb_substr($profile['story'], 0, 5000);
+    $profile['achievements'] = mb_substr($profile['achievements'], 0, 5000);
+    
     $query = sprintf("SELECT pp.profile_id
 				FROM uo_player_profile pp 
 				WHERE pp.profile_id=%d",
@@ -540,13 +543,13 @@ function UploadPlayerImage($playerId){
       recur_mkdirs($basedir."thumbs/",0775);
     }
 
-    ConvertToJpeg($file_tmp_name, $basedir.$imgname);
-    CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 120, 160);
+    if (ConvertToJpeg($file_tmp_name, $basedir.$imgname) &&
+      CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 120, 160)) {
 
-    //currently removes old image, in future there might be a gallery of images
-    RemovePlayerProfileImage($playerId);
-    SetPlayerProfileImage($playerId, $imgname);
-
+      //currently removes old image, in future there might be a gallery of images
+      RemovePlayerProfileImage($playerId);
+      SetPlayerProfileImage($playerId, $imgname);
+    }
     return "";
     	
   } else { die('Insufficient rights to upload image'); }

@@ -58,7 +58,7 @@ $html .= "<h3>" . _("Subject") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='100' name='subject' value='$subject'/><br />";
 
 $html .= "<h3>" . _("Message") . "</h3>\n";
-$html .= "<div><textarea  class='input borderbox' rows='20' id='message' name='message'>$message</textarea></div>\n";
+$html .= "<div><textarea  class='input borderbox' rows='20' maxlength='50000' id='message' name='message'>$message</textarea></div>\n";
 $html .= "<input class='button' name='send' type='submit' value='" . utf8entities(_("Send")) . "'/>";
 
 $html .= "</form>";

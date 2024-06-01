@@ -132,7 +132,7 @@ $op = array(
 	}
 	$html .= "<h1>". utf8entities($club['name'])."</h1>";
 
-	$html .= "<table>";
+	$html .= "<table style='width: 100%'>";
 
 	$html .= "<tr><td class='infocell'>"._("Name").":</td>";
 	if(isSuperAdmin() || hasEditTeamsRight($teaminfo['series'])){
@@ -152,13 +152,13 @@ $op = array(
 
 
 	$html .= "<tr><td class='infocell'>"._("Contacts").":</td>";
-	$html .= "<td><textarea class='input' rows='10' cols='50' name='contacts'>".utf8entities($op['contacts'])."</textarea> </td></tr>\n";
+	$html .= "<td><textarea class='input borderbox' rows='10' maxlength='5000' name='contacts'>".utf8entities($op['contacts'])."</textarea> </td></tr>\n";
 
 	$html .= "<tr><td class='infocell'>"._("Description").":</td>";
-	$html .= "<td><textarea class='input' rows='10' cols='80' name='story'>".utf8entities($op['story'])."</textarea> </td></tr>\n";
+	$html .= "<td><textarea class='input borderbox' rows='10' maxlength='5000' name='story'>".utf8entities($op['story'])."</textarea> </td></tr>\n";
 
 	$html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
-	$html .= "<td><textarea class='input' rows='10' cols='80' name='achievements'>".utf8entities($op['achievements'])."</textarea> </td></tr>\n";
+	$html .= "<td><textarea class='input borderbox' rows='10' maxlength='5000' name='achievements'>".utf8entities($op['achievements'])."</textarea> </td></tr>\n";
 
 	$html .= "<tr><td class='infocell' colspan='2'>"._("Web pages (homepage, blogs, images, videos)").":</td></tr>";
 	$html .= "<tr><td colspan='2'>";
@@ -167,7 +167,7 @@ $op = array(
 	$urls = GetUrlList("club", $clubId);
 
 	foreach($urls as $url){
-	  $html .= "<tr style='border-bottom-style:solid;border-bottom-width:1px;'>";
+	  $html .= "<tr style='border-bottom-style:solid; border-bottom-width:1px;'>";
 	  $html .= "<td colspan='3'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
 	  if(!empty($url['name'])){
 	    $html .="<a href='". $url['url']."'>". $url['name']."</a> (".$url['url'].")";
@@ -200,8 +200,8 @@ $op = array(
 	    $html .= "<option value='".utf8entities($type['type'])."'>". utf8entities($type['name']) ."</option>\n";
 	  }
 	  $html .= "</select></td>";
-	  $html .= "<td><input class='input' maxlength='500' size='40' name='url$i' value=''/></td>";
-	  $html .= "<td><input class='input' maxlength='500' size='40' name='urlname$i' value=''/></td>";
+	  $html .= "<td class='tbox'><input class='input' maxlength='500' name='url$i' value=''/></td>";
+	  $html .= "<td class='tbox'><input class='input' maxlength='500' name='urlname$i' value=''/></td>";
 	  $html .= "</tr>";
 	}
 

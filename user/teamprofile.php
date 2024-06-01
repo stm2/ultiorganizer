@@ -109,10 +109,10 @@ $html .= "<tr><td class='infocell'>"._("Captain").":</td>";
 $html .= "<td><input class='input' maxlength='100' size='50' name='captain' value='".utf8entities($tp['captain'])."'/></td></tr>\n";
 	
 $html .= "<tr><td class='infocell'>"._("Description").":</td>";
-$html .= "<td><textarea class='input' rows='10' cols='80' name='story'>".utf8entities($tp['story'])."</textarea> </td></tr>\n";
+$html .= "<td><textarea class='input' rows='10' cols='80' maxlength='5000' name='story'>".utf8entities($tp['story'])."</textarea> </td></tr>\n";
 
 $html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
-$html .= "<td><textarea class='input' rows='10' cols='80' name='achievements'>".utf8entities($tp['achievements'])."</textarea> </td></tr>\n";
+$html .= "<td><textarea class='input' rows='10' cols='80' maxlength='5000' name='achievements'>".utf8entities($tp['achievements'])."</textarea> </td></tr>\n";
 
 $html .= "<tr><td class='infocell' colspan='2'>"._("Web pages (homepage, blogs, images, videos)").":</td></tr>";
 $html .= "<tr><td colspan='2'>";

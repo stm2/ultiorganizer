@@ -172,7 +172,7 @@ if ($mode == 'search') {
   foreach ($locales as $locale => $name) {
     $locale = str_replace(".", "_", $locale);
     $html .= "<tr><th>" . _("Info") . " (" . $name . ")";
-    $html .= ":</th><td><textarea rows='3' style='width:$tWidth' name='info_" . $locale . "' id='info_" . $locale . "'>" .
+    $html .= ":</th><td><textarea rows='3' maxlength='1000' style='width:$tWidth' name='info_" . $locale . "' id='info_" . $locale . "'>" .
       $location['info'][$locale] . "</textarea></td></tr>";
   }
 

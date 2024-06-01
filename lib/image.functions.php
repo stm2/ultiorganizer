@@ -49,31 +49,36 @@ function RemoveImage($imageId){
 	} else { die('Insufficient rights to remove image'); }	
 }
 
-function ConvertToJpeg($file_src, $file_dst){
-
-	if(is_file($file_dst)){
-		unlink($file_dst);//  remove old images if present
-	}
-
-   list($w_src, $h_src, $type) = getimagesize($file_src);
-   
-  switch ($type){
-		case 1:   //   gif -> jpg
-		$img_src = imagecreatefromgif($file_src);
-		break;
-		
-		case 2:   //   jpeg -> jpg
-		$img_src = imagecreatefromjpeg($file_src);
-		break;
-		
-		case 3:  //   png -> jpg
-		$img_src = imagecreatefrompng($file_src);
-		break;
-	}
-	
-   imagejpeg($img_src, $file_dst);    //  save new image
-   imagedestroy($img_src);       
+function ConvertToJpeg($file_src, $file_dst) {
+  if (is_file($file_dst)) {
+    unlink($file_dst); // remove old images if present
   }
+
+  $size = getimagesize($file_src);
+  if ($size === false) {
+    debug_to_apache("invalid image $file_src");
+    return false;
+  }
+
+  list ($w_src, $h_src, $type) = $size;
+  switch ($type) {
+  case 1: // gif -> jpg
+    $img_src = imagecreatefromgif($file_src);
+    break;
+
+  case 2: // jpeg -> jpg
+    $img_src = imagecreatefromjpeg($file_src);
+    break;
+
+  case 3: // png -> jpg
+    $img_src = imagecreatefrompng($file_src);
+    break;
+  }
+
+  imagejpeg($img_src, $file_dst); // save new image
+  imagedestroy($img_src);
+  return true;
+}
 
 function CreateThumb($file_src, $file_dst, $w_dst, $h_dst) {
 	
@@ -81,7 +86,13 @@ function CreateThumb($file_src, $file_dst, $w_dst, $h_dst) {
 		unlink($file_dst);//  remove old images if present
 	}
 	
-	list($w_src, $h_src, $type) = getimagesize($file_src);
+	$size = getimagesize($file_src);
+	if ($size === false) {
+	  debug_to_apache("invalid image $file_src");
+	  return false;
+	}
+	
+	list ($w_src, $h_src, $type) = $size;
 	
 	// create new dimensions, keeping aspect ratio
 	$ratio = $w_src/$h_src;
@@ -111,5 +122,6 @@ function CreateThumb($file_src, $file_dst, $w_dst, $h_dst) {
 
 	imagedestroy($img_src);       
 	imagedestroy($img_dst);
+	return true;
 }
 ?>

@@ -1340,6 +1340,7 @@ function SetComment($type, $id, $comment) {
         (int) $type, 
         mysql_adapt_real_escape_string($id));
   else {
+    $comment = mb_substr($comment, 10000);
     $query = sprintf(
         "INSERT INTO uo_comment
   				(type, id, comment) 
@@ -1585,6 +1586,8 @@ function mailto_link($email, $name = null, $text = null, $subject = null) {
 }
 
 function dm_link(array $rows, $subject = null, $message = null, $text =null) {
+  if (empty($rows))
+    return "<a href='#'>???</a>";
   if (gettype($rows[0]) == "array") {
     $who = [];
     foreach ($rows as $row) {
@@ -1596,7 +1599,6 @@ function dm_link(array $rows, $subject = null, $message = null, $text =null) {
         $who[] = ['email' => $row['email'], 'name' => $row['name']];
     }
   } else {
-    debug_to_apache($rows);
     $who = [['email' => $rows[0], 'name' => $rows[1]]];
   }
 
@@ -1671,7 +1673,6 @@ function addMnemonic(&$cat, $name, &$mnemonics, $maxlen = 3) {
     $candidates[] = $name;
 
   $words = preg_split("/[\W]+/",$name ,$maxlen + 1);
-  debug_to_apache($words);
   if (count($words) > 1) {
     $cand = "";
     for ($i = 0; $i < $maxlen && $i < count($words); ++$i)

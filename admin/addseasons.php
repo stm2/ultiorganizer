@@ -220,7 +220,7 @@ $html .= "<tr><td class='infocell'>"._("Organizer").": </td><td><input class='in
 $html .= "<tr><td class='infocell'>"._("Category").": </td><td><input class='input' size='50' maxlength='50' name='category' value='".utf8entities($sp['category'])."'/></td></tr>";
 
 $html .= "<tr><td class='infocell'>".utf8entities(_("Comment (you can use <b>, <em>, and <br /> tags)")).":</td>
-    <td><textarea class='input' rows='10' cols='70' name='comment'>".utf8entities($comment)."</textarea></td></tr>";
+    <td><textarea class='input' rows='10' cols='70' maxlength='10000' name='comment'>".utf8entities($comment)."</textarea></td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Timezone").": </td><td>";
 $dateTimeZone = GetTimeZoneArray();

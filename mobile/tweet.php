@@ -42,7 +42,7 @@ $html .= "<input class='button' type='submit' name='tweetresult' value='"._("Twe
 $html .= "</td></tr><tr><td>\n";
 $html .= " <input class='input' disabled='disabled' name='counter' value='0' size='3'/> / 140";
 $html .= "</td></tr><tr><td>\n";
-$html .= "<textarea class='input' rows='4' cols='40' name='textbox' onkeyup=\"update();\"></textarea>";
+$html .= "<textarea class='input' rows='4' cols='40' maxlength='1000' name='textbox' onkeyup=\"update();\"></textarea>";
 $html .= "</td></tr><tr><td>\n";
 
 $html .= "<input class='button' type='submit' name='tweettext' value='"._("Tweet text")."'/>";

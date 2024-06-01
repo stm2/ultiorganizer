@@ -1130,7 +1130,9 @@ function CanDeletePlayer($playerId) {
 function SetTeamProfile($profile) {
 
   if (hasEditPlayersRight($profile['team_id'])) {
-
+    $profile['story'] = mb_substr($profile['story'], 0, 5000);
+    $profile['achievements'] = mb_substr($profile['achievements'], 0, 5000);
+    
     if(!empty($profile['abbreviation'])){
       $query = sprintf("UPDATE uo_team SET abbreviation='%s' WHERE team_id=%d",
       mysql_adapt_real_escape_string($profile['abbreviation']),
@@ -1204,12 +1206,13 @@ function UploadTeamImage($teamId){
       recur_mkdirs($basedir."thumbs/",0775);
     }
 
-    ConvertToJpeg($file_tmp_name, $basedir.$imgname);
-    CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 320, 240);
+    if (ConvertToJpeg($file_tmp_name, $basedir.$imgname) &&
+      CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 320, 240)) {
 
-    //currently removes old image, in future there might be a gallery of images
-    RemoveTeamProfileImage($teamId);
-    SetTeamProfileImage($teamId, $imgname);
+      // currently removes old image, in future there might be a gallery of images
+      RemoveTeamProfileImage($teamId);
+      SetTeamProfileImage($teamId, $imgname);
+    }
 
     return "";
     	

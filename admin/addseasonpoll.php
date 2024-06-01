@@ -80,7 +80,7 @@ $html .= "<tr><td class='infocell'><label for='poll_password'>" . _("Password") 
 $voters = PollVoters($pollId);
 $options = PollOptions($pollId);
 $html .= "<tr><td class='infocell'><label for='description'>" . _("Description") . "</label></td><td>" .
-  "<textarea class='input' rows='5' cols='70' id='description' name='description'>" . htmlentities($poll['description']) .
+  "<textarea class='input' rows='5' cols='70' maxlength='5000' id='description' name='description'>" . htmlentities($poll['description']) .
   "</textarea></td></tr>\n";
 if ($pollId > 0) {
   $html .= "<tr><td class='infocell'>" . _("Options") . "</td><td>" . count($options) . "</td></tr>\n";

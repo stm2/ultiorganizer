@@ -1595,7 +1595,7 @@ function SpiritTable($gameinfo, $points, $categories, $home, $wide = true) {
         $html .= _($cat['text']) . "<input name='layout' type='radio' style='opacity: 0.01;' disabled /><br />";
         $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/>";
         $val = $points[$id] ?? "";
-        $html .= "<textarea  class='input borderbox' rows='6' id='{$home}cat{$id}' name='{$home}cat{$id}'>$val</textarea></div></td>\n";
+        $html .= "<textarea  class='input borderbox' rows='6' maxlength='1000' id='{$home}cat{$id}' name='{$home}cat{$id}'>$val</textarea></div></td>\n";
       }
       $html .= "</tr>\n";
     }
@@ -1617,7 +1617,7 @@ function SpiritTable($gameinfo, $points, $categories, $home, $wide = true) {
         $html .= "<td colspan='$cols'><div>";
         $html .= _($cat['text']) . "<input name='layout' type='radio' style='opacity: 0.01;' disabled /><br />";
         $html .= "<input type='hidden' id='" . $home . "valueId$id' name='" . $home . "valueId[]' value='$id'/>";
-        $html .= "<textarea  class='input borderbox' rows='6' id='{$home}cat{$id}' name='{$home}cat{$id}'>{$points[$id]}</textarea></div></td>\n";
+        $html .= "<textarea  class='input borderbox' rows='6' maxlength='1000' id='{$home}cat{$id}' name='{$home}cat{$id}'>{$points[$id]}</textarea></div></td>\n";
       }
       $html .= "</tr>\n";
     }

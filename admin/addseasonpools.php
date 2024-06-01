@@ -385,7 +385,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   
   $comment = CommentRaw(3, $poolId);
   echo "<tr><td class='infocell'>" . htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) . ":</td>
-    <td><textarea class='input' rows='10' cols='70' id='comment' name='comment'>" . htmlentities($comment) . "</textarea></td></tr>";
+    <td><textarea class='input' rows='10' cols='70' maxlength='5000' id='comment' name='comment'>" . htmlentities($comment) . "</textarea></td></tr>";
   
   echo "</table>";
   echo "<div class='yui-skin-sam colorcontainer' id='colorcontainer' style='display:none'></div>";

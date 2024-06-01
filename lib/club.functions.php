@@ -169,7 +169,9 @@ function CanDeleteClub($clubId) {
 function SetClubProfile($teamId,$profile) {
 	$teaminfo = TeamInfo($teamId);
 	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$profile['club_id'])) {
-	
+    		$profile['contacts'] = mb_substr($profile['contacts'], 0, 5000);
+    		$profile['story'] = mb_substr($profile['story'], 0, 5000);
+		$profile['achievements'] = mb_substr($profile['achievements'], 0, 5000);
 		$query = sprintf("UPDATE uo_club SET name='%s', contacts='%s', 
 				country='%s', city='%s', founded='%s', story='%s',
 				achievements='%s', valid=%d WHERE club_id='%s'",
@@ -218,13 +220,14 @@ function UploadClubImage($teamId, $clubId){
 			recur_mkdirs($basedir."thumbs/",0775);
 		}
 		
-		ConvertToJpeg($file_tmp_name, $basedir.$imgname);
-		CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 160, 120);
-		
-		//currently removes old image, in future there might be a gallery of images
-		RemoveClubProfileImage($teamId, $clubId);
-		SetClubProfileImage($teamId, $clubId, $imgname);
-
+		if (ConvertToJpeg($file_tmp_name, $basedir.$imgname) &&
+		  CreateThumb($basedir.$imgname, $basedir."thumbs/".$imgname, 160, 120)) {
+		  //currently removes old image, in future there might be a gallery of images
+		  RemoveClubProfileImage($teamId, $clubId);
+		  SetClubProfileImage($teamId, $clubId, $imgname);
+		} else {
+		  return "<p class='warning'>"._("Error converting image.")."</p>";
+		}
 		return "";
 			
 	} else { die('Insufficient rights to upload image'); }	

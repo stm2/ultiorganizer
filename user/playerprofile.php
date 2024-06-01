@@ -222,7 +222,7 @@ $pp = array(
 	$html .= "<td class='center'><input type='checkbox' name='public[]' disabled='disabled' value='email'/></td></tr>\n";
 
 	$html .= "<tr><td class='infocell'>"._("Additional information").":</td>";
-	$html .= "<td><textarea class='input' rows='2' cols='70' name='info'>".utf8entities($pp['info'])."</textarea></td>";
+	$html .= "<td><textarea class='input' rows='2' cols='70' maxlength='5000' name='info'>".utf8entities($pp['info'])."</textarea></td>";
 	$html .= "<td class='center'><input type='checkbox' name='public[]' disabled='disabled' value='info'/></td></tr>\n";
 
 	$html .= "<tr><td class='infocell'>"._("National membership number").":</td>";
@@ -295,11 +295,11 @@ $pp = array(
 	$html .= privacyselection("position",$publicfields);
 
 	$html .= "<tr><td class='infocell'>"._("Description").":</td>";
-	$html .= "<td><textarea class='input' rows='10' cols='70' name='story'>".utf8entities($pp['story'])."</textarea> </td>";
+	$html .= "<td><textarea class='input' rows='10' cols='70' maxlength='5000' name='story'>".utf8entities($pp['story'])."</textarea> </td>";
 	$html .= privacyselection("story",$publicfields);
 
 	$html .= "<tr><td class='infocell'>"._("Achievements").":</td>";
-	$html .= "<td><textarea class='input' rows='10' cols='70' name='achievements'>".utf8entities($pp['achievements'])."</textarea> </td>";
+	$html .= "<td><textarea class='input' rows='10' cols='70' maxlength='5000' name='achievements'>".utf8entities($pp['achievements'])."</textarea> </td>";
 	$html .= privacyselection("achievements",$publicfields);
 
 	$html .= "<tr><td class='infocell' colspan='2'>"._("Web pages (homepage, blogs, images, videos)").":</td>";
