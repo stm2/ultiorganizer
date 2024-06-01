@@ -898,8 +898,8 @@ function hasEditGamePlayersRight($game) {
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
     isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]) ||
-    isset($_SESSION['userproperties']['userrole']['teamadmin'][$team]) ||
-    isset($_SESSION['userproperties']['userrole']['resgameadmin'][$reservation]) ||
+    (!empty($team) && isset($_SESSION['userproperties']['userrole']['teamadmin'][$team])) ||
+    (!empty($reservation) && isset($_SESSION['userproperties']['userrole']['resgameadmin'][$reservation])) ||
     isset($_SESSION['userproperties']['userrole']['gameadmin'][$game]);
 }
 
@@ -911,8 +911,8 @@ function hasEditGameEventsRight($game) {
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
     isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]) ||
-    isset($_SESSION['userproperties']['userrole']['teamadmin'][$team]) ||
-    isset($_SESSION['userproperties']['userrole']['resgameadmin'][$reservation]) ||
+    (!empty($team) && isset($_SESSION['userproperties']['userrole']['teamadmin'][$team])) ||
+    (!empty($reservation) && isset($_SESSION['userproperties']['userrole']['resgameadmin'][$reservation])) ||
     isset($_SESSION['userproperties']['userrole']['gameadmin'][$game]);
 }
 
