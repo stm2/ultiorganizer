@@ -5,6 +5,8 @@ $title = _("Run SQL");
 $query = "";
 $html = "";
 
+ensureSuperAdmin($title);
+
 // process itself on submit
 // Fetch querydata to be presented later
 if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
@@ -33,31 +35,35 @@ if (!defined('ENABLE_ADMIN_DB_ACCESS') || ENABLE_ADMIN_DB_ACCESS != "enabled") {
     $isDelete = (strpos(strtolower($query), "delete") === 0);
     $arraycolumnsname = array();
     if (isSuperAdmin()) {
-      $result = mysql_adapt_query($query);
-      if (!$result) {
-        $html .= "<p>" . _("Invalid query:") . "<br />" . mysql_adapt_error() . "</p><br />";
-      } else {
-        if ($isSelect || $isShow) {
-          $i = 0;
-          while ($meta = mysqli_fetch_field($result)) {
-            $arraycolumnsname[$i] = $meta->name;
-            $arraycolumnstype[$i] = $meta->type;
+      try {
+        $result = mysql_adapt_query($query);
+        if (!$result) {
+          $html .= "<p class='warning'>" . _("Invalid query:") . "<br />" . mysql_adapt_error() . "</p><br />";
+        } else {
+          if ($isSelect || $isShow) {
+            $i = 0;
+            while ($meta = mysqli_fetch_field($result)) {
+              $arraycolumnsname[$i] = $meta->name;
+              $arraycolumnstype[$i] = $meta->type;
 
-            $arraycolumnstable[$i] = $meta->table;
-            $arraycolumnsdefault[$i] = $meta->def;
-            $arraycolumnsmaxlength[$i] = $meta->max_length;
-            // $arraycolumnsnotnull[$i] = $meta->not_null;
-            // $arraycolumnsprimarykey[$i] = $meta->primary_key;
-            // $arraycolumnsmultiplekey[$i] = $meta->multiple_key;
-            // $arraycolumnsuniquekey[$i] = $meta->unique_key;
-            // $arraycolumnsnumeric[$i] = $meta->numeric;
-            // $arraycolumnsblob[$i] = $meta->blob;
-            // $arraycolumnsunsigned[$i] = $meta->unsigned;
-            // $arraycolumnszerofill[$i] = $meta->zerofill;
+              $arraycolumnstable[$i] = $meta->table;
+              $arraycolumnsdefault[$i] = $meta->def;
+              $arraycolumnsmaxlength[$i] = $meta->max_length;
+              // $arraycolumnsnotnull[$i] = $meta->not_null;
+              // $arraycolumnsprimarykey[$i] = $meta->primary_key;
+              // $arraycolumnsmultiplekey[$i] = $meta->multiple_key;
+              // $arraycolumnsuniquekey[$i] = $meta->unique_key;
+              // $arraycolumnsnumeric[$i] = $meta->numeric;
+              // $arraycolumnsblob[$i] = $meta->blob;
+              // $arraycolumnsunsigned[$i] = $meta->unsigned;
+              // $arraycolumnszerofill[$i] = $meta->zerofill;
 
-            $i++;
+              $i++;
+            }
           }
         }
+      } catch (Exception $e) {
+        $html .= "<p class='warning'>" . _("Exception:") . " " . $e->getMessage() . "</p><br />";
       }
     }
   }
