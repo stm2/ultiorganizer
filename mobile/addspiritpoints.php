@@ -3,6 +3,7 @@ include_once 'lib/common.functions.php';
 include_once 'lib/game.functions.php';
 include_once 'lib/team.functions.php';
 include_once 'lib/player.functions.php';
+include_once 'lib/spirit.functions.php';
 $html = "";
 
 $gameId = intval(iget("game"));

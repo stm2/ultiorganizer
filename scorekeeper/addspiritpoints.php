@@ -1,4 +1,6 @@
 <?php
+include_once 'lib/spirit.functions.php';
+
 $html = "";
 
 $gameId = isset($_GET['game']) ? $_GET['game'] : $_SESSION['game'];
@@ -9,10 +11,11 @@ $_SESSION['team'] = $teamId;
 
 
 $season = SeasonInfo(GameSeason($gameId));
-if ($season['spiritmode'] > 0) {
+$mode = GetSeriesSpiritMode(GameSeries($gameId));
+if (mode > 0) {
   $game_result = GameResult($gameId);
   $ishome = $teamId == $game_result['hometeam'] ? 1 : 0;
-  $mode = SpiritMode($season['spiritmode']);
+  $mode = SpiritMode($mode);
   $categories = SpiritCategories($mode['mode']);
   
   // process itself if save button was pressed

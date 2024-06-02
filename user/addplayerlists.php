@@ -3,6 +3,7 @@ include_once $include_prefix.'lib/common.functions.php';
 include_once $include_prefix.'lib/game.functions.php';
 include_once $include_prefix.'lib/team.functions.php';
 include_once $include_prefix.'lib/player.functions.php';
+include_once $include_prefix . 'lib/spirit.functions.php';
 
 $title = _("Rosters");
 $gameId = intval($_GET["game"]);
@@ -126,7 +127,7 @@ function checkAll(field){
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";
 $menutabs[_("Score sheet")]= "?view=user/addscoresheet&game=$gameId";
-if($seasoninfo['spiritmode']>0 && isSeasonAdmin($seasoninfo['season_id'])){
+if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
   $menutabs[_("Spirit points")]= "?view=user/addspirit&game=$gameId";
 }
 if(ShowDefenseStats())

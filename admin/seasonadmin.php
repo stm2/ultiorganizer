@@ -4,6 +4,7 @@ include_once 'lib/statistical.functions.php';
 include_once 'lib/series.functions.php';
 include_once 'lib/common.functions.php';
 include_once 'lib/configuration.functions.php';
+include_once 'lib/spirit.functions.php';
 
 $seasonId = $_GET["season"] ?? "";
 $info = SeasonInfo($seasonId);

@@ -1518,23 +1518,3 @@ function TeamsToCsv($season,$separator){ // SELECT ssc.*, SUM(value*factor) FROM
   return ResultsetToCsv($result, $separator);
 }
 
-function SpiritSubmitted(int $teamId, int $spiritmode) {
-  $query = sprintf(
-    "SELECT sub.own, count(*) as num FROM(
-       SELECT gg.game_id, team_id, team_id != %d as own, count(*) scores 
-         FROM uo_game gg 
-         JOIN uo_spirit_score sc on (gg.game_id = sc.game_id)
-         JOIN uo_spirit_category cat on (sc.category_id = cat.category_id)
-         WHERE (hometeam = %d OR visitorteam = %d) AND cat.factor > 0 AND cat.mode = %d
-         GROUP BY game_id, team_id
-         HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)) sub 
-       GROUP BY sub.own ORDER BY own DESC", //
-    intval($teamId), intval($teamId), intval($teamId), intval($spiritmode), intval($spiritmode));
-
-  $results = DBQueryToArray($query);
-
-  if (empty($results))
-    return ['submitted' => 0, 'received' => 0];
-
-  return ['submitted' => $results[0]['num'] ?? 0, 'received' => $results[1]['num'] ?? 0];
-}

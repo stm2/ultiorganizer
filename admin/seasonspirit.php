@@ -1,6 +1,8 @@
 <?php
 include_once 'lib/season.functions.php';
 include_once 'lib/series.functions.php';
+include_once 'lib/spirit.functions.php';
+
 include_once $include_prefix . 'lib/yui.functions.php';
 addHeaderCallback(
   function () {
@@ -25,7 +27,8 @@ $globaltoken = "SPSPSP424242SPSP";
 $resultstoken = "SPSPSP424242SPSP";
 
 $sp = ['globalspiritmode' => $seasonInfo['spiritmode'], 'lockdate' => '', 'globaltoken' => $globaltoken,
-  'teamtoken' => true, 'locked' => false, 'public' => false, 'displaytoken' => false, 'spiritmode' => GetSeriesSpiritMode($seriesId)];
+  'teamtoken' => true, 'locked' => false, 'public' => false, 'displaytoken' => false,
+  'spiritmode' => GetSeriesSpiritMode($seriesId)];
 
 if (!empty($_POST['save'])) {
   // TODO
@@ -42,51 +45,71 @@ $get_link = function ($seasonId, $seriesId, $single = 0, $htmlEntities = false) 
 
 $url_here = $get_link($seasonId, $seriesId, $single, true);
 
-$html .= "<h2>" . _("Global settings") . "</h2>\n";
-
 $spiritmodes = SpiritModes();
 
-$html .= "<form method='post' action='$url_here'>";
-$html .= "<table class='formtable'>";
-$html .= "<tr><td><label for='globalspiritmode'>" . _("Default Spirit Mode") . "</label></td>";
-$html .= "<td><select class='dropdown' id='globalspiritmode' name='globalspiritmode'>\n";
-$html .= "<option value='0'></option>\n";
-foreach ($spiritmodes as $mode) {
-  $selected = ($sp['globalspiritmode'] == $mode['mode']) ? " selected='selected'" : "";
-  $html .= "<option $selected value='" . utf8entities($mode['mode']) . "'>" . utf8entities(_($mode['name'])) .
-    "</option>\n";
+$html .= "<h2>" . _("Global settings") . "</h2>\n";
+
+if (isSeasonAdmin($seasonId)) {
+  $html .= "<form method='post' action='$url_here'>";
+  $html .= "<table class='formtable'>";
+  $html .= "<tr><td><label for='globalspiritmode'>" . _("Default Spirit Mode") . "</label></td>";
+  $html .= "<td><select class='dropdown' id='globalspiritmode' name='globalspiritmode'>\n";
+  $html .= "<option value='0'></option>\n";
+  foreach ($spiritmodes as $mode) {
+    $selected = ($sp['globalspiritmode'] == $mode['mode']) ? " selected='selected'" : "";
+    $html .= "<option $selected value='" . utf8entities($mode['mode']) . "'>" . utf8entities(_($mode['name'])) .
+      "</option>\n";
+  }
+  $html .= "</select></td></tr>\n";
+
+  $html .= "<tr><td><label for='lock'>" . _("Lock submission for non-admins") . "</label></td>";
+  $html .= "<td><input class='input' type='checkbox' name='lock' id='lock' ";
+  if ($sp['locked']) {
+    $html .= "checked='checked'";
+  }
+  $html .= "/></td>";
+
+  $html .= "<tr><td><label for='public'>" . _("Display results to public") . "</label></td>";
+  $html .= "<td><input class='input' type='checkbox' name='public' id='public' ";
+  if ($sp['public']) {
+    $html .= "checked='checked'";
+  }
+  $html .= "/></td>";
+
+  $html .= "<td><a href='?view=seriesstatus&series=$seriesId'>" . _("public (or division admin) results") . "</a></td>";
+
+  $html .= "<tr><td><label for='displaytoken'>" . _("Display to anyone with link") . "</label></td>";
+  $html .= "<td><input class='input' type='checkbox' name='displaytoken' id='displaytoken' ";
+  if ($sp['displaytoken']) {
+    $html .= "checked='checked'";
+  }
+  $html .= "/></td>";
+  $html .= "<td><a href='?view=seriesstatus&series=$seriesId&token=$resultstoken'>" . _("semi-secret results") .
+    "</a></td>";
+  $html .= "<td><input type='submit' name='change_public_link' value='" . utf8entities(_("Change link")) .
+    "'/></td></tr>\n";
+
+  $html .= "</table>";
+  $html .= "</form>\n";
+} else {
+  $html .= "<p>" . _("Default Spirit Mode") . ": " . utf8entities(_(SpiritMode($sp['globalspiritmode'])['name'])) .
+    "<br />\n";
+  if ($sp['locked']) {
+    $html .= _("Submission locked for non-admins");
+  } else {
+    $html .= _("Submission open for non-admins");
+  }
+  $html .= "<br />\n";
+
+  if ($sp['public']) {
+    $html .= _("Display results to public") . "<br />";
+  }
+  $html .= "<a href='?view=seriesstatus&series=$seriesId'>" . _("public (or division admin) results") . "</a><br />";
+
+  if ($sp['displaytoken'])
+    $html .= "<a href='?view=seriesstatus&series=$seriesId&token=$resultstoken'>" . _("semi-secret results") .
+      "</a></p>\n";
 }
-$html .= "</select></td></tr>\n";
-
-$html .= "<tr><td><label for='lock'>" . _("Lock submission for non-admins") . "</label></td>";
-$html .= "<td><input class='input' type='checkbox' name='lock' id='lock' ";
-if ($sp['locked']) {
-  $html .= "checked='checked'";
-}
-$html .= "/></td>";
-
-$html .= "<tr><td><label for='public'>" . _("Display results to public") . "</label></td>";
-$html .= "<td><input class='input' type='checkbox' name='public' id='public' ";
-if ($sp['public']) {
-  $html .= "checked='checked'";
-}
-$html .= "/></td>";
-
-$html .= "<td><a href='?view=seriesstatus&series=$seriesId'>" . _("public (or division admin) results") . "</a></td>";
-
-$html .= "<tr><td><label for='displaytoken'>" . _("Display to anyone with link") . "</label></td>";
-$html .= "<td><input class='input' type='checkbox' name='displaytoken' id='displaytoken' ";
-if ($sp['public']) {
-  $html .= "checked='checked'";
-}
-$html .= "/></td>";
-$html .= "<td><a href='?view=seriesstatus&series=$seriesId&token=$resultstoken'>" . _("semi-secret results") .
-  "</a></td>";
-$html .= "<td><input type='submit' name='change_public_link' value='" . utf8entities(_("Change link")) .
-  "'/></td></tr>\n";
-
-$html .= "</table>";
-$html .= "</form>\n";
 
 $html .= "<h2>" . _("Division settings") . "</h2>\n";
 
@@ -131,7 +154,8 @@ $html .= "<td><a href='?view=user/addspirit&series=$seriesId&token=$globaltoken'
 $html .= " | $link</td>";
 $html .= "</tr>\n";
 
-$html .= "<tr><td><label for='teamtoken'>" . _("Allow teams to edit their results with link (team administrators are always authorized)") . "</label></td>";
+$html .= "<tr><td><label for='teamtoken'>" .
+  _("Allow teams to edit their results with link (team administrators are always authorized)") . "</label></td>";
 $html .= "<td><input class='input' type='checkbox' name='teamtoken' id='teamtoken' ";
 if ($sp['teamtoken']) {
   $html .= "checked='checked'";
@@ -157,7 +181,6 @@ if ($sp['teamtoken']) {
 }
 $html .= "/></td>";
 
-  
 $html .= "</table>\n";
 
 $html .= "<table class='admintable'>\n";
@@ -193,7 +216,8 @@ foreach ($teams as $team) {
     "</a>";
   $admins = GetTeamAdmins($teamId);
   if (empty($admins)) {
-    $html .= " | " . utf8entities(_("no team admin")) ." <a href='?view=admin/addteamadmins&series=$seriesId'>(" . _("add") . ")</a>";
+    $html .= " | " . utf8entities(_("no team admin")) . " <a href='?view=admin/addteamadmins&series=$seriesId'>(" .
+      _("add") . ")</a>";
   } else {
     if (!$complete) {
       $link = dm_link($admins, _("missing spirit results"), null, _("send reminder"));
@@ -206,7 +230,8 @@ foreach ($teams as $team) {
 
 $html .= "</table>\n";
 
-$html .= "<p><a href=?view=user/addspirit&series=$seriesId&allgames=1>" . _("Enter results for this series") . "</a></p>\n";
+$html .= "<p><a href=?view=user/addspirit&series=$seriesId&allgames=1>" . _("Enter results for this series") .
+  "</a></p>\n";
 
 $html .= "<input class='button' type='submit' name='save' value='" . _("Save") . "'/>";
 

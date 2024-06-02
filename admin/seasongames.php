@@ -6,6 +6,7 @@ include_once 'lib/common.functions.php';
 include_once 'lib/team.functions.php';
 include_once 'lib/game.functions.php';
 include_once 'lib/timetable.functions.php';
+include_once 'lib/spirit.functions.php';
 include_once 'lib/yui.functions.php';
 
 $season = $_GET["season"];
@@ -220,7 +221,7 @@ foreach ($pools as $pool) {
         $html .= "<td class='right linkcol'><a href='?view=user/addresult&amp;game=" . $game['game_id'] . "'>" . _("Result ...") . "</a>";
         /*$html .= "${thinsp}|${thinsp}<a href='?view=user/addplayerlists&amp;game=" . $game['game_id'] . "'>" . _("Players") . "</a>";
         $html .= "${thinsp}|${thinsp}<a href='?view=user/addscoresheet&amp;game=" . $game['game_id'] . "'>" . _("Scoresheet") . "</a>";*/
-        if ($seasoninfo['spiritmode'] > 0) {
+        if (GetSeriesSpiritMode($series_id)) {
           $html .= "${thinsp}|${thinsp}<a href='?view=user/addspirit&amp;game=" . $game['game_id'] . "'>" . _("Spirit") . "</a>";
         }
         /*if (ShowDefenseStats()) {

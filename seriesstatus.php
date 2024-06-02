@@ -4,6 +4,7 @@ include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 include_once 'lib/timetable.functions.php';
+include_once 'lib/spirit.functions.php';
 
 $title = _("Statistics") . " ";
 $viewUrl = "?view=seriesstatus";
@@ -109,7 +110,7 @@ if ($stdElo) {
   add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), null, 2, 'avg');
   // add_column($columns, 'gS', _("sig"), 2, 'avg');
 }
-if ($seasoninfo['spiritmode'] > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
+if (GetSeriesSpiritMode($seriesId) > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
   add_column($columns, 'spirit', _("Spirit Points"), _("Spir"), 2);
 }
 
@@ -363,7 +364,7 @@ if (ShowDefenseStats()) {
 }
 
 if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
-  $categories = SpiritCategories($seasoninfo['spiritmode']);
+  $categories = SpiritCategories(GetSeriesSpiritMode($seriesId));
   $html .= "<h2>" . _("Spirit points average per category") . "</h2>\n";
 
   $mnem = [];

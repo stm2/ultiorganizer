@@ -129,7 +129,7 @@ if($seasonId){
   $sp['organizer'] = $info['organizer'];
   $sp['category'] = $info['category'];
   $sp['isnationalteams'] = $info['isnationalteams'];
-  $sp['spiritmode'] = $info['spiritmode'];
+//   $sp['spiritmode'] = $info['spiritmode'];
   $sp['showspiritpoints'] = $info['showspiritpoints'];
   $sp['timezone'] = $info['timezone'];
   $comment = CommentRaw(1, $info['season_id']);

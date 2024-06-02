@@ -1,6 +1,7 @@
 <?php
 include_once 'lib/timetable.functions.php';
 include_once 'lib/search.functions.php';
+include_once 'lib/spirit.functions.php';
 
 $title = _("Spirit");
 $html = "";

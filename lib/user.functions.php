@@ -1395,7 +1395,7 @@ function emailUsed($email) {
   if (!$result) {
     die('Invalid query: ' . mysql_adapt_error());
   }
-  if ($row = mysqli_fetch_row($result)) {
+  if (mysqli_fetch_row($result)) {
     return true;
   } else {
     return false;

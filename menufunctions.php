@@ -1083,6 +1083,8 @@ function getEditSeasonLinks() {
             $seriesname . " " . _("Games"));
           add_menu($menu, $seriesseason, "?view=admin/seasonstandings&amp;season=$seaLink&amp;single=1&amp;series=$series",
             $seriesname . " " . _("Pool rankings"));
+          add_menu($menu, $seriesseason, "?view=admin/seasonspirit&amp;season=$seaLink&amp;single=1&amp;series=$series",
+            $seriesname . " " . _("Spirit"));
           $adminSeasons[$seriesseason] = true;
           set_menu($menu, $seriesseason, 'respgames');
           set_menu($menu, $season, 'contacts');

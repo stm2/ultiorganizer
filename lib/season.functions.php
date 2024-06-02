@@ -759,47 +759,6 @@ function CanDeleteSeason($seasonId) {
     return false;
 }
 
-function SpiritMode($mode_id) {
-  $query = sprintf("SELECT mode, text AS name FROM `uo_spirit_category`
-          WHERE `mode` = %d AND `index` = 0", (int) $mode_id);
-  return DBQueryToRow($query);
-}
-
-function SpiritModes() {
-  $query = sprintf("SELECT mode, text AS name FROM `uo_spirit_category`
-          WHERE `index` = 0 ORDER BY `group`");
-  return DBQueryToArray($query);
-}
-
-function SpiritCategories($mode_id) {
-  $query = sprintf("SELECT * FROM `uo_spirit_category` 
-      WHERE `mode`=%d
-      ORDER BY `index` ASC", (int) $mode_id);
-  $cats = DBQueryToArray($query);
-  $categories = array();
-  foreach ($cats as $cat) {
-    $categories[$cat['category_id']] = $cat;
-  }
-  return $categories;
-}
-
-function SpiritTotal($points, $categories) {
-  $allset = true;
-  $total = 0;
-  foreach ($categories as $cat) {
-    if ($cat['type'] == 1)
-      if (isset($points[$cat['category_id']])) {
-        $total += $points[$cat['category_id']] * $cat['factor'];
-      } else {
-        $allset = false;
-      }
-  }
-  if ($allset)
-    return $total;
-  else
-    return null;
-}
-
 function SeasonPoolGamesTable($formId, $seasonId, $series = null, $disableunfinished = false) {
   $html = "<table>";
   $html .= "<tr><th class='left'>" . checkAllCheckbox('pools') . "</th>";

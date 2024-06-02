@@ -6,6 +6,7 @@ include_once 'lib/player.functions.php';
 include_once 'lib/standings.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/configuration.functions.php';
+include_once 'lib/spirit.functions.php';
 
 if (version_compare(PHP_VERSION, '5.0.0', '>')) {
 	include_once 'lib/twitter.functions.php';
@@ -201,7 +202,7 @@ if(!$errors){
 	if(IsTwitterEnabled()){
 		$html .=  "<a href='?view=mobile/tweet&amp;game=".$gameId."'>"._("Tweet")."</a> | ";
 	}
-	if(intval($seasoninfo['spiritmode'])>0){
+  if (GetSeriesSpiritMode(GameSeries($gameId)) > 0) {
 		$html .=  "<a href='?view=mobile/addspiritpoints&amp;game=".$gameId."'>"._("Spirit points")."</a> | ";
 	}
 	$html .=  "<a href='?view=mobile/deletescore&amp;game=".$gameId."'>"._("Delete the last goal")."</a>";

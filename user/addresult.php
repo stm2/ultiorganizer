@@ -4,6 +4,7 @@ include_once $include_prefix . 'lib/game.functions.php';
 include_once $include_prefix . 'lib/standings.functions.php';
 include_once $include_prefix . 'lib/pool.functions.php';
 include_once $include_prefix . 'lib/configuration.functions.php';
+include_once $include_prefix . 'lib/spirit.functions.php';
 
 if (version_compare(PHP_VERSION, '5.0.0', '>')) {
   include_once 'lib/twitter.functions.php';
@@ -52,7 +53,7 @@ if (!empty($_POST['save'])) {
 $menutabs[_("Result")] = "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")] = "?view=user/addplayerlists&game=$gameId";
 $menutabs[_("Score sheet")] = "?view=user/addscoresheet&game=$gameId";
-if ($seasoninfo['spiritmode'] > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
+if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
   $menutabs[_("Spirit points")] = "?view=user/addspirit&game=$gameId";
 }
 if (ShowDefenseStats()) {

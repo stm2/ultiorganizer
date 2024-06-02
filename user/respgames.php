@@ -4,6 +4,7 @@ include_once $include_prefix.'lib/common.functions.php';
 include_once $include_prefix.'lib/season.functions.php';
 include_once $include_prefix.'lib/series.functions.php';
 include_once $include_prefix.'lib/timetable.functions.php';
+include_once $include_prefix . 'lib/spirit.functions.php';
 
 $title = _("Game responsibilities");
 $group = "all";
@@ -201,7 +202,7 @@ foreach ($respGameArray as $reservationgroup => $resArray) {
         $html .= "<a href='?view=user/addresult&amp;game=".$gameId."'>"._("Result")."</a> |${thinsp}";
         /*$html .= "<a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Players")."</a>${thinsp}|${thinsp}";*/
         $html .= "<a href='?view=user/addscoresheet&amp;game=$gameId'>"._("Scoresheet")."</a>";
-        if($seasoninfo['spiritmode']>0 && isSeasonAdmin($seasoninfo['season_id'])){
+        if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
           $html .= "${thinsp}|${thinsp}<a href='?view=user/addspirit&amp;game=$gameId'>"._("Spirit")."</a>";
         }
         
