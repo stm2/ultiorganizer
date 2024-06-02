@@ -283,29 +283,31 @@ function showSeasonSelection($seasonId, $series_id, $importstage) {
   return $html;
 }
 
-function matching_division(array $tournament, array $division, array $tournament_filters, array $division_filters) : bool {
+function matching_division(array $tournament, array $division, array $tournament_filters, array $division_filters): bool {
   foreach ($tournament_filters as $key => $value) {
-    if (!empty($value) && $tournament[$key] != $value) return false;    
+    if (!empty($value) && $tournament[$key] != $value)
+      return false;
   }
   foreach ($division_filters as $key => $value) {
-    if (!empty($value) && $division[$key] != $value) return false;
+    if (!empty($value) && $division[$key] != $value)
+      return false;
   }
-  
+
   return true;
 }
 
-function add_filter(string &$html, string $id, string $name, array $options, string $default = '') :string {
+function add_filter(string &$html, string $id, string $name, array $options, string $default = ''): string {
   $html .= "<tr><td><label for='{$id}'>$name</label></td><td><select id='{$id}' name='$id' />";
   $html .= "<option value=''/>\n";
   $selected = $_POST[$id] ?? $default;
   foreach ($options as $opt => $dummy) {
-    $select = ($opt == $selected) ? "selected='1' " : ""; 
+    $select = ($opt == $selected) ? "selected='1' " : "";
     $html .= "<option value='$opt' $select>$opt</opt>\n";
   }
   $html .= "</select></td></tr>\n";
   return $selected;
 }
-  
+
 function fill_choices(array $tournaments, $tournament_attributes, $division_attributes): array {
   $choices = [];
   foreach ($tournaments as $tournament) {
@@ -344,21 +346,21 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
   if (!empty($data['error']))
     $html .= "<p>" . $data['error'] . "</p>\n";
 
-    
   if (count($tournaments)) {
     $html .= "<table>";
     $choices = fill_choices($tournaments, ['year', 'surface'], ['divisionType', 'divisionAge']);
-    
+
     $year_filter = add_filter($html, 'year_filter', _('Year'), $choices['year'], date('Y', time()));
     $surface_filter = add_filter($html, 'surface_filter', _('Surface'), $choices['surface']);
-    $division_filter = add_filter($html, 'division_filter', _('Division'), $choices['divisionType'], division_to_dfv(SeriesInfo($series_id)['type']));
+    $division_filter = add_filter($html, 'division_filter', _('Division'), $choices['divisionType'],
+      division_to_dfv(SeriesInfo($series_id)['type']));
     $age_filter = add_filter($html, 'age_filter', _('Age'), $choices['divisionAge']);
-    
-    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='filter_division' type='submit' value='" . utf8entities(_("Show matching divisions...")) .
-    "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
-    
+
+    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='filter_division' type='submit' value='" .
+      utf8entities(_("Show matching divisions...")) . "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
+
     $html .= "<tr><td>" . utf8entities(_("Add teams from:")) . "</td><td>";
-    
+
     $html .= "<select class='dropdown' name='importteams'>\n";
     $options = [];
     mergesort($tournaments,
@@ -370,8 +372,7 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
         uo_create_multi_key_comparator(
           [['divisionAge', false, true], ['divisionType', true, true], ['divisionIdentifier', false, true]]));
       foreach ($divs as $div) {
-        if (matching_division($tournament, $div, 
-          ['year' => $year_filter, 'surface' => $surface_filter], 
+        if (matching_division($tournament, $div, ['year' => $year_filter, 'surface' => $surface_filter],
           ['divisionType' => $division_filter, 'divisionAge' => $age_filter])) {
           $name = $tournament['name'];
 
@@ -468,7 +469,7 @@ if ($importstage == 0 || isset($_POST['cancel'])) {
         unset($team);
       }
     }
-    
+
     if (!empty($teams)) {
       $html .= shortTeamTable($series_id, $teams, $club, $country);
 
@@ -486,8 +487,8 @@ if ($importstage == 0 || isset($_POST['cancel'])) {
       $html .= "<p>";
       $html .= "<input id='import' class='button' name='import' type='submit' value='" . utf8entities(_("Import...")) .
         "'/>";
-      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" . utf8entities(
-        _("Cancel")) . "'/>";
+      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" .
+        utf8entities(_("Cancel")) . "'/>";
       $html .= "</p>";
     } else {
       $html .= "<p>" . _("No teams") . "</p>\n";
