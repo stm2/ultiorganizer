@@ -193,8 +193,8 @@ function SeriesAllPlayers($seriesId) {
  *          uo_series.series_id
  * @return string The division name.
  */
-function SeriesName($serieId) {
-  $query = sprintf("SELECT name FROM uo_series WHERE series_id=%d", (int) $serieId);
+function SeriesName($seriesId) {
+  $query = sprintf("SELECT name FROM uo_series WHERE series_id=%d", (int) $seriesId);
   $val = DBQueryToValue($query);
   if ($val !== -1)
     return U_($val);
@@ -209,11 +209,11 @@ function SeriesName($serieId) {
  *          uo_series.series_id
  * @return string The season name.
  */
-function SeriesSeasonName($serieId) {
+function SeriesSeasonName($seriesId) {
   $query = sprintf(
     "SELECT s.name FROM uo_series ser
 		LEFT JOIN uo_season s ON(s.season_id=ser.season)
-		WHERE ser.series_id=%d", (int) $serieId);
+		WHERE ser.series_id=%d", (int) $seriesId);
 
   return U_(DBQueryToValue($query));
 }
@@ -225,11 +225,11 @@ function SeriesSeasonName($serieId) {
  *          uo_series.series_id
  * @return string The season id.
  */
-function SeriesSeasonId($serieId) {
+function SeriesSeasonId($seriesId) {
   $query = sprintf(
     "SELECT s.season_id FROM uo_series ser
 		LEFT JOIN uo_season s ON(s.season_id=ser.season)
-		WHERE ser.series_id=%d", (int) $serieId);
+		WHERE ser.series_id=%d", (int) $seriesId);
 
   return DBQueryToValue($query);
 }
@@ -769,8 +769,7 @@ function ConfirmEnrolledTeam($seriesId, $id) {
         "UPDATE uo_team SET abbreviation=UPPER('" . mysql_adapt_real_escape_string($abb) . "') WHERE team_id=$teamId");
     }
 
-    $seriesInfo = SeriesInfo($seriesId);
-    AddSeasonUserRole($teaminfo['userid'], "teamadmin:" . $teamId, $seriesInfo['season']);
+    AddTeamAdmin($teaminfo['userid'], $teamId);
     $query = sprintf("UPDATE uo_enrolledteam SET status=1 WHERE id=%d", (int) $id);
 
     DBQuery($query);

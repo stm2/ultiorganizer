@@ -14,11 +14,10 @@ if (empty($backurl))
 
 $teams = SeriesTeams($seriesId);
 
-ensureSeasonAdmin($seriesinfo['season'], $title);
+ensureEditSeriesRight($seriesId, $title);
 
 if(!empty($_POST['add'])){
  
-
 foreach($teams as $team){
   $tid = $team['team_id'];
   $userid = isset($_POST["userid$tid"]) ? $_POST["userid$tid"] : "";
@@ -36,7 +35,7 @@ foreach($teams as $team){
   
   if(IsRegistered($userid)){
     if ($seriesinfo['season'] == TeamSeason($tid))
-      AddSeasonUserRole($userid, "teamadmin:$tid", $seriesinfo['season']);    
+      AddTeamAdmin($userid, $tid);
     $html .= "<p>"._("User rights added for:")." ".$userid."</p>";
   }else{
     $html .= "<p class='warning'>"._("Invalid user:")." ".$userid."</p>";
@@ -44,7 +43,7 @@ foreach($teams as $team){
   
 }
 }elseif(!empty($_POST['remove_x'])){
-    RemoveSeasonUserRole($_POST['delId'], "teamadmin:".$_POST['teamId'], $seriesinfo['season']);    
+  RemoveTeamAdmin($_POST['delId'], $_POST['teamId']);    
 }
 
 //common page
@@ -53,8 +52,8 @@ addHeaderScript('script/disable_enter.js.inc');
 $html .= "<h3>"._("Team admins").":</h3>";
 $html .= "<form method='post' action='$pageurl' name='teamadmin'>";
 
+$admins = SeriesTeamResponsibles($seriesId);
 
-$admins = SeasonTeamAdmins($seriesinfo['season']);
 $html .= "<table class='formtable'>";
 foreach($admins as $user){
   $teaminfo = TeamInfo($user['team_id']);
@@ -81,8 +80,11 @@ foreach($teams as $team){
   $html .= "</tr>\n";;
 }
 $html .= "</table>";
-$html .= "<p><a href='?view=admin/adduser&amp;season=".$seriesinfo['season']."'>"._("Add new user")."</a></p>\n";
-$html .= "<p>";
+if (isSeasonAdmin($seriesinfo['season'])) {
+  $html .= "<p><a href='?view=admin/adduser&amp;season=" . $seriesinfo['season'] . "'>" . _("Add new user") .
+    "</a></p>\n";
+  $html .= "<p>";
+}
 $html .= "<input class='button' name='add' type='submit' value='"._("Grant rights")."'/>";
 $html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";
 $html .= "</p>";  

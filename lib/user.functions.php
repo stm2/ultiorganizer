@@ -1084,7 +1084,7 @@ function ToPrimaryEmail($userid, $extraEmail) {
   }
 }
 
-function AddPoolSelector($userid, $selector) {
+function AddPoolSelector(int $userid, string $selector) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight()) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='poolselector' AND value='%s'",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($selector));
@@ -1110,7 +1110,7 @@ function AddPoolSelector($userid, $selector) {
   }
 }
 
-function RemoveEditSeason($userid, $propid) {
+function RemoveEditSeason(int $userid, int $propid) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight()) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE prop_id=%d AND userid='%s' AND name='editseason'",
       (int) $propid, mysql_adapt_real_escape_string($userid));
@@ -1129,7 +1129,7 @@ function RemoveEditSeason($userid, $propid) {
   }
 }
 
-function AddEditSeason($userid, $season) {
+function AddEditSeason(int $userid, string $season) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight() || isSeasonAdmin($season)) {
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties 
 			WHERE userid='%s' AND name='editseason' AND value='%s'", mysql_adapt_real_escape_string($userid),
@@ -1156,7 +1156,7 @@ function AddEditSeason($userid, $season) {
   }
 }
 
-function RemoveUserRole($userid, $propid) {
+function RemoveUserRole(int $userid, int $propid) {
   if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE prop_id=%d AND userid='%s' AND name='userrole'", (int) $propid,
       mysql_adapt_real_escape_string($userid));
@@ -1181,7 +1181,7 @@ function RemoveUserRole($userid, $propid) {
  * @param string $role
  * @return boolean
  */
-function AddUserRole($userid, $role) {
+function AddUserRole(int $userid, string $role) {
   if (isSuperAdmin() || ($role != 'superadmin' && hasEditUsersRight())) {
     $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
@@ -1204,28 +1204,28 @@ function AddUserRole($userid, $role) {
 /**
  * Attention: Use this function only if season admin rights for $seasonId are sufficient to grant the role.
  *
- * @param string $userid
+ * @param string $userId
  * @param string $role
  * @param string $seasonId
  * @return boolean
  */
-function AddSeasonUserRole($userid, $role, $seasonId) {
+function AddSeasonUserRole(int $userId, string $role, int $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
 
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
-      mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
+      mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
     $result = DBQueryToValue($query);
 
     if ($result <= 0) {
       $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
-        mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
+        mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
       $result = DBQuery($query);
-      Log1("security", "add", $userid, $seasonId, $role);
-      AddEditSeason($userid, $seasonId);
+      Log1("security", "add", $userId, $seasonId, $role);
+      AddEditSeason($userId, $seasonId);
 
       invalidateSessions();
-      if ($userid == $_SESSION['uid']) {
-        SetUserSessionData($userid);
+      if ($userId == $_SESSION['uid']) {
+        SetUserSessionData($userId);
       }
       return true;
     } else {
@@ -1236,17 +1236,18 @@ function AddSeasonUserRole($userid, $role, $seasonId) {
   }
 }
 
-function RemoveSeasonUserRole($userid, $role, $seasonId) {
+function RemoveSeasonUserRole(int $userId, string $role, int $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
-      mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
+      mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
     $result = DBQuery($query);
+    return !empty($result);
   } else {
     die('Insufficient rights to change user info');
   }
 }
 
-function GetTeamAdmins($teamId) {
+function GetTeamAdmins(int $teamId) {
   $season = TeamSeason($teamId);
 
   if (isSeasonAdmin($season) || hasEditSeriesRight(TeamSeries($teamId))) {
@@ -1260,7 +1261,55 @@ function GetTeamAdmins($teamId) {
   }
 }
 
-function DeleteUser($userid) {
+/**
+ * 
+ *
+ * @param string $userId
+ * @param string $teamId
+ * @return boolean
+ */
+function AddTeamAdmin(int $userId, int $teamId) : bool {
+  $seriesId = getTeamSeries($teamId);
+  if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
+    $role = "teamadmin:$teamId";
+    $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
+      mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
+    $result = DBQueryToValue($query);
+    
+    if ($result <= 0) {
+      $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
+        mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
+      $result = DBQuery($query);
+      Log1("security", "add", $userId, $teamId, $role);
+      AddEditSeason($userId, SeriesSeasonId($seriesId));
+      
+      invalidateSessions();
+      if ($userId == $_SESSION['uid']) {
+        SetUserSessionData($userId);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    die('Insufficient rights to change user info');
+  }
+}
+
+function RemoveTeamAdmin(int $userId, int $teamId) : bool {
+  $seriesId = getTeamSeries($teamId);
+  if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
+    $role = "teamadmin:$teamId";
+    $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
+      mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
+    $result = DBQuery($query);
+    return !empty($result);
+  } else {
+    die('Insufficient rights to change user info');
+  }
+}
+
+function DeleteUser(int $userid) {
   if ($userid != "anonymous") {
     if (hasEditUsersRight($userid) || $userid = $_SESSION['uid']) {
       $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
@@ -1282,11 +1331,11 @@ function DeleteUser($userid) {
   }
 }
 
-function DeleteRegisterRequest($userid) {
-  if ($userid != "anonymous") {
+function DeleteRegisterRequest(int $userId) {
+  if ($userId != "anonymous") {
     if (hasEditUsersRight()) {
-      Log1("security", "delete", $userid, "", "RegisterRequest");
-      $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
+      Log1("security", "delete", $userId, "", "RegisterRequest");
+      $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($userId));
       $result = mysql_adapt_query($query);
       if (!$result) {
         die('Invalid query: ' . mysql_adapt_error());
@@ -1439,24 +1488,27 @@ function ConfirmRegister($token) {
  * @return string|boolean
  */
 function AddUser($newUsername, $newPassword, $newName, $newEmail, $creator) {
-  $message = UserValid($newUsername, $newPassword, $newPassword, $newName, $newEmail, true);
-  if (empty($message)) {
-    $query = sprintf("INSERT INTO uo_users (userid, password, name, email) VALUES ('%s', MD5('%s'), '%s', '%s')",
-      mysql_adapt_real_escape_string($newUsername), mysql_adapt_real_escape_string($newPassword),
-      mysql_adapt_real_escape_string($newName), mysql_adapt_real_escape_string($newEmail));
-    $result = mysql_adapt_query($query);
-    if (!$result) {
-      die('Invalid query: ' . mysql_adapt_error());
+  if (hasEditUsersRight()) {
+    $message = UserValid($newUsername, $newPassword, $newPassword, $newName, $newEmail, true);
+    if (empty($message)) {
+      $query = sprintf("INSERT INTO uo_users (userid, password, name, email) VALUES ('%s', MD5('%s'), '%s', '%s')",
+        mysql_adapt_real_escape_string($newUsername), mysql_adapt_real_escape_string($newPassword),
+        mysql_adapt_real_escape_string($newName), mysql_adapt_real_escape_string($newEmail));
+      $result = mysql_adapt_query($query);
+      if (!$result) {
+        die('Invalid query: ' . mysql_adapt_error());
+      }
+      $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($newUsername));
+      $result = mysql_adapt_query($query);
+      if (!$result) {
+        die('Invalid query: ' . mysql_adapt_error());
+      }
+      FinalizeNewUser($newUsername, $newEmail);
+      Log1("user", "add", $newUsername, $creator, "added by administrator");
     }
-    $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($newUsername));
-    $result = mysql_adapt_query($query);
-    if (!$result) {
-      die('Invalid query: ' . mysql_adapt_error());
-    }
-    FinalizeNewUser($newUsername, $newEmail);
-    Log1("user", "add", $newUsername, $creator, "added by administrator");
-  }
-  return $message;
+    return $message;
+  } else
+    die('insufficient rights to add users');
 }
 
 function FinalizeNewUser($userid, $email) {

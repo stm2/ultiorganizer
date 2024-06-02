@@ -30,7 +30,7 @@ if (!empty($_POST['save'])) {
     AddEditSeason($newUsername, $seasonId);
     if (!empty($_POST['team'])) {
       if (isSuperAdmin() || $seasonId == TeamSeason($_POST['team'])) {
-        AddSeasonUserRole($newUsername, "teamadmin:" . $_POST['team'], $seasonId);
+        AddTeamAdmin($userId, $_POST['team']);
       }
     }
   } else {

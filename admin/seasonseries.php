@@ -6,8 +6,9 @@ include_once 'lib/pool.functions.php';
 
 $season = $_GET["season"];
 $html = "";
-
 $title = (SeasonName($season)).": "._("Divisions");
+
+ensureSeasonAdmin($season);
 
 //process itself on submit
 if(!empty($_POST['remove_x'])){
