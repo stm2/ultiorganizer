@@ -53,15 +53,13 @@ contentStartWide();
 
 //echo "First line"
 $gameId = intval($_GET["game"]);
-$season = GameSeason($gameId);
-$seasoninfo = SeasonInfo($season);
 
 //content
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";
 $menutabs[_("Score sheet")]= "?view=user/addscoresheet&game=$gameId";
-if(GetSeriesSpiritMode(GameSeries($gameId)) && isSeasonAdmin($seasoninfo['season_id'])){
-  $menutabs[_("Spirit points")]= "?view=user/addspirit&game=$gameId";
+if (GetSeriesSpiritMode(GameSeries($gameId)) && hasEditSpiritRight($gameId)) {
+  $menutabs[_("Spirit points")] = "?view=user/addspirit&game=$gameId";
 }
 if(ShowDefenseStats())
 {

@@ -202,7 +202,7 @@ if(!$errors){
 	if(IsTwitterEnabled()){
 		$html .=  "<a href='?view=mobile/tweet&amp;game=".$gameId."'>"._("Tweet")."</a> | ";
 	}
-  if (GetSeriesSpiritMode(GameSeries($gameId)) > 0) {
+	if (GetSeriesSpiritMode(GameSeries($gameId)) && hasEditSpiritRight($gameId)) {
 		$html .=  "<a href='?view=mobile/addspiritpoints&amp;game=".$gameId."'>"._("Spirit points")."</a> | ";
 	}
 	$html .=  "<a href='?view=mobile/deletescore&amp;game=".$gameId."'>"._("Delete the last goal")."</a>";

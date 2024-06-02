@@ -100,7 +100,8 @@ if (!empty($_POST['add'])) {
     $sp['enrollopen'] = !empty($_POST['enrollopen']);
     $sp['enroll_deadline'] = ToInternalTimeFormat($_POST['enrollendtime']);
     $sp['iscurrent'] = !empty($_POST['iscurrent']);
-//     $sp['spiritmode'] = $_POST['spiritmode'];
+    $info = SeasonInfo($seasonId);
+    $sp['spiritmode'] = $info['spiritmode']; // set in admin/seasonspirit
     $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
     $sp['timezone'] = $_POST['timezone'];
     $comment=$_POST['comment'];

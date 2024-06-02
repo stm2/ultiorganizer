@@ -31,7 +31,7 @@ function isAuthorized(int $gameId): bool {
   if ($token == 'XYXYXXYX424342ZZZZZ' || $token == 'SPSPSP424242SPSP')
     return true;
   ensureLogin();
-  return hasEditGameEventsRight($gameId);
+  return hasEditSpiritRight($gameId);
 }
 
 // TODO check token
@@ -50,6 +50,10 @@ if (isset($_POST['save'])) {
 }
 if (isset($_POST['reset'])) {
   $save = false;
+}
+
+if ($seriesId > 0 && GetSeriesSpiritMode($seriesId) == 0) {
+  showPage($title, "<p>" . sprintf(_("Spirit points are not used in %s."), SeriesName($seriesId)) . "</p>");
 }
 
 if ($gameId <= 0) {
@@ -263,7 +267,7 @@ if ($gameId > 0) {
     $html .= "</p>";
     $html .= "</form>\n";
   } else {
-    $html .= "<p>" . sprintf(_("Spirit points not given for %s."), utf8entities($season['name'])) . "</p>";
+    $html .= "<p>" . sprintf(_("Spirit points are not used in %s."), SeriesName($seriesId)) . "</p>";
   }
 }
 showPage($title, $html);

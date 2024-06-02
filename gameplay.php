@@ -494,7 +494,7 @@ if(GameHasStarted($game_result)){
 			<td class='home'>". $nHTO ."</td>
 			<td class='guest'>". $nVTO ."</td></tr>";
 
-      if(GetSeriesSpiritMode(GameSeries($gameId)) >0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seasoninfo['season_id']))){
+      if(GetSeriesSpiritMode(GameSeries($gameId)) > 0){
         $html .= "<tr><td>"._("Spirit points").":</td>
 				<td class='home'>". $game_result['homesotg'] ."</td>
 				<td class='guest'>". $game_result['visitorsotg'] ."</td></tr>";

@@ -1,6 +1,4 @@
 <?php
-include_once 'lib/spirit.functions.php';
-
 $html = "";
 
 $gameId = isset($_GET['game']) ? $_GET['game'] : $_SESSION['game'];
@@ -12,7 +10,9 @@ $_SESSION['team'] = $teamId;
 
 $season = SeasonInfo(GameSeason($gameId));
 $mode = GetSeriesSpiritMode(GameSeries($gameId));
-if (mode > 0) {
+if (!hasEditSpiritRight($gameId)) {
+  $html .= "<p>" . _("Insufficient rights to edit spirit for this game.") . "</p>";  
+} elseif ($mode > 0) {
   $game_result = GameResult($gameId);
   $ishome = $teamId == $game_result['hometeam'] ? 1 : 0;
   $mode = SpiritMode($mode);
@@ -72,7 +72,7 @@ if (mode > 0) {
          utf8entities($game_result['hometeamname']) . "</a>";
   }
 } else {
-  $html .= "<p>".sprintf(_("Spirit points not given for %s."), utf8entities($season['name'])) . "</p>";
+  $html .= "<p>" . sprintf(_("Spirit points are not used in %s."), SeriesName(GameSeries($gameId))) . "</p>";
 }
 
 $html .= " <a href='?view=addscoresheet&amp;game=".$gameId."' data-role='button' data-ajax='false'>"._("Back to score sheet")."</a>";

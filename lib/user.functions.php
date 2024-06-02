@@ -857,6 +857,10 @@ function ensureEditSeriesRight($seriesId, $title = null, $message = null) {
   return ensurePrivileges(hasEditSeriesRight($seriesId), $title, $message, "series", $seriesId);
 }
 
+function hasEditSpiritRight(int $gameId) {
+  return hasEditSeriesRight(GameSeries($gameId));
+}
+
 function hasEditPlacesRight($season) {
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]);

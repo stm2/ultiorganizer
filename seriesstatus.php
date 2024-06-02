@@ -110,7 +110,7 @@ if ($stdElo) {
   add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), null, 2, 'avg');
   // add_column($columns, 'gS', _("sig"), 2, 'avg');
 }
-if (GetSeriesSpiritMode($seriesId) > 0 && ($seasoninfo['showspiritpoints'] || isSeasonAdmin($seriesinfo['season']))) {
+if (GetSeriesSpiritMode($seriesId) > 0 || hasEditSeriesRight($seriesId)) {
   add_column($columns, 'spirit', _("Spirit Points"), _("Spir"), 2);
 }
 
@@ -363,7 +363,7 @@ if (ShowDefenseStats()) {
   }
 }
 
-if ($seasoninfo['showspiritpoints'] && count($spiritAvg) > 0) { // TODO total
+if (GetSeriesSpiritMode($seriesId) > 0 && count($spiritAvg) > 0) { // TODO total
   $categories = SpiritCategories(GetSeriesSpiritMode($seriesId));
   $html .= "<h2>" . _("Spirit points average per category") . "</h2>\n";
 

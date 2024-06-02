@@ -50,6 +50,13 @@ $spiritmodes = SpiritModes();
 $html .= "<h2>" . _("Global settings") . "</h2>\n";
 
 if (isSeasonAdmin($seasonId)) {
+  if (isset($_POST['save'])) {
+    // ... TODO
+    $seasonInfo['spiritmode'] = $_POST['globalspiritmode'];
+    $sp['globalspiritmode'] = $_POST['globalspiritmode'];
+    SetSeason($seasonId, $seasonInfo);
+  }
+  
   $html .= "<form method='post' action='$url_here'>";
   $html .= "<table class='formtable'>";
   $html .= "<tr><td><label for='globalspiritmode'>" . _("Default Spirit Mode") . "</label></td>";
@@ -57,7 +64,7 @@ if (isSeasonAdmin($seasonId)) {
   $html .= "<option value='0'></option>\n";
   foreach ($spiritmodes as $mode) {
     $selected = ($sp['globalspiritmode'] == $mode['mode']) ? " selected='selected'" : "";
-    $html .= "<option $selected value='" . utf8entities($mode['mode']) . "'>" . utf8entities(_($mode['name'])) .
+    $html .= "<option $selected value='" . intval($mode['mode']) . "'>" . utf8entities(_($mode['name'])) .
       "</option>\n";
   }
   $html .= "</select></td></tr>\n";
@@ -90,7 +97,6 @@ if (isSeasonAdmin($seasonId)) {
     "'/></td></tr>\n";
 
   $html .= "</table>";
-  $html .= "</form>\n";
 } else {
   $html .= "<p>" . _("Default Spirit Mode") . ": " . utf8entities(_(SpiritMode($sp['globalspiritmode'])['name'])) .
     "<br />\n";
@@ -233,7 +239,8 @@ $html .= "</table>\n";
 $html .= "<p><a href=?view=user/addspirit&series=$seriesId&allgames=1>" . _("Enter results for this series") .
   "</a></p>\n";
 
-$html .= "<input class='button' type='submit' name='save' value='" . _("Save") . "'/>";
+$html .= "<input type='submit' name='save' value='" . _("Save") . "'/>";
+$html .= "</form>\n";
 
 showPage($title, $html);
 ?>

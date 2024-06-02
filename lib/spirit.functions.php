@@ -171,7 +171,8 @@ function GameSpiritComplete(int $gameId, int $submitterId, int $spiritmode) {
 }
 
 function GetSeriesSpiritMode(int $seriesId) {
-  return SeasonInfo(SeriesSeasonId($seriesId))['spiritmode'];
+  $info =  SeasonInfo(SeriesSeasonId($seriesId));
+  return $info['showspiritpoints'] ? $info['spiritmode'] : 0;
 }
 
 function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories, $checkRights = true) {

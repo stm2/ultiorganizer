@@ -173,7 +173,7 @@ contentStartWide();
 $menutabs[_("Result")]= "?view=user/addresult&game=$gameId";
 $menutabs[_("Players")]= "?view=user/addplayerlists&game=$gameId";
 $menutabs[_("Score sheet")]= "?view=user/addscoresheet&game=$gameId";
-if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
+if (GetSeriesSpiritMode(GameSeries($gameId)) && hasEditSpiritRight($gameId)) {
   $menutabs[_("Spirit points")]= "?view=user/addspirit&game=$gameId";
 }
 if(ShowDefenseStats())

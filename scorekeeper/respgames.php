@@ -144,7 +144,7 @@ foreach ($respGameArray as $tournament => $resArray) {
             $html .= "<a href='?view=addplayerlists&amp;game=".$gameId."&amp;team=".$game['hometeam']."' data-role='button' data-ajax='false'>"._("Players")."</a>";
             $html .= "<a href='?view=addscoresheet&amp;game=$gameId' data-role='button' data-ajax='false'>"._("Scoresheet")."</a>";
 
-            if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
+            if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && hasEditSpiritRight($gameId)) {
               $html .= "<a href='?view=addspiritpoints&amp;game=$gameId&amp;team=".$game['hometeam']."' data-role='button' data-ajax='false'>"._("Spirit")."</a>";
             }
             $html .= "</div>\n";

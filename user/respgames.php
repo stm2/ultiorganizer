@@ -202,7 +202,7 @@ foreach ($respGameArray as $reservationgroup => $resArray) {
         $html .= "<a href='?view=user/addresult&amp;game=".$gameId."'>"._("Result")."</a> |${thinsp}";
         /*$html .= "<a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Players")."</a>${thinsp}|${thinsp}";*/
         $html .= "<a href='?view=user/addscoresheet&amp;game=$gameId'>"._("Scoresheet")."</a>";
-        if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && isSeasonAdmin($seasoninfo['season_id'])) {
+        if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && hasEditSpiritRight($gameId)) {
           $html .= "${thinsp}|${thinsp}<a href='?view=user/addspirit&amp;game=$gameId'>"._("Spirit")."</a>";
         }
         
