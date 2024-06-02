@@ -426,11 +426,12 @@ function SeriesResults($season = NULL, $parameters = [], $multi = true) {
       $selected = array($season => 'selected');
     } else if (!empty($parameters['searchseasons'])) {
       $selected = array_flip($parameters['searchseasons']);
-    } elseif (!empty($GET['Season'])) {
-      $selected = array($GET['Season'] => 'selected');
+    } elseif (!empty($_GET['Season'])) {
+      $selected = array($_GET['Season'] => 'selected');
     } else {
-      $selected = $_SESSION['userproperties']['editseason'];
+      $selected = $_SESSION['userproperties']['editseason'] ?? [ CurrentSeason() => 'selected' ];
     }
+    if (empty($selected)) return "";
 
     $result = SeasonSeriesMult($selected, $parameters['seriesname'] ?? null);
 
