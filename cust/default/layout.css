@@ -534,7 +534,7 @@ table.scheduling .dropdown {
   width:16em;
 }
 
-ul.draglist, ol.draglist, ul.time_list, select.series_select {
+ul.draglist, ol.draglist, ul.time_list, ul.team_list, select.series_select {
   font-size: .8rem;
   position: relative;
   border: 1px solid var(--softbordercolor, #464646);
@@ -548,17 +548,25 @@ ul.draglist, ol.draglist, select.series_select {
   background-color: var(--draglistcolor, #f7f7f7);
   width: 20em;
 }
+
+ul.team_list {
+  background-color: var(--draglistcolor, #f7f7f7);
+  width: 30em;
+}
  
-ul.draglist li, ol.draglist li, ul.time_list li {
+ul.draglist li, ol.draglist li, ul.time_list li, ul.team_list li {
   cursor: move;
-  text-align: center;
-  vertical-align: middle;
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
   margin: -1px;
   padding: 0;
 }
 
-ul.draglist li, ol.draglist li {
+ul.draglist li, ol.draglist li, ul.time_list li {
+  text-align: center;
+  vertical-align: middle;
+}
+
+ul.draglist li, ol.draglist li, ul.team_list li {
   background-color: var(--draglistitemcolor, #d1e6ec);
 }
 
@@ -575,6 +583,10 @@ ul.draglist li.negative, ol.draglist li.negative {
 li.schedule_item {
   background-color: var(--scheduleitemcolor, #aaaaaa);
   border: 1px solid var(--draglistbordercolor, #7ea6b2);
+}
+
+ul.team_list .clubname {
+  font-style: italic;
 }
 
 th.scheduling {

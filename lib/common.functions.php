@@ -1393,6 +1393,21 @@ function mergesort(&$array, $cmp_function = 'strcmp') {
   return;
 }
 
+function get_locale_comparator($locale = null) {
+  if ($locale == null)
+    $locale = getSessionLocale();
+  if (function_exists('collator_create')) {
+    $coll = collator_create($locale);
+    return function ($a, $b) use ($coll) {
+      return collator_compare($coll, _($a['name']), _($b['name']));
+    };
+  } else {
+    return  function ($a, $b) {
+      return strcoll(_($a['name']), _($b['name']));
+    };
+  }
+}
+
 /**
  * Returns a comparator function for comparing arrays of arrays in mergesort (and other sorts).
  * 

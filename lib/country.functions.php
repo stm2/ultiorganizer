@@ -62,26 +62,32 @@ function CountryDropList($id,$name){
 	return $html;
 }
 
-function CountryDropListWithValues($id, $name, $selectedId, $width=""){
-	$html = "";
-	$style = "";
-	if(!empty($width)){
-	  $style = "style='width:$width'";
-	}
-	$query = sprintf("SELECT country_id, name FROM uo_country WHERE valid=1 ORDER BY name");
-	$result =  DBQuery($query);
-	$html .= "<select class='dropdown' $style id='$id' name='$name'>\n";
-	$html .= "<option value='-1'></option>\n";
-	
-	while($row = mysqli_fetch_assoc($result)){
-		if($row['country_id']==$selectedId){
-			$html .= "<option selected='selected' value='".utf8entities($row['country_id'])."'>".utf8entities(_($row['name']))."</option>\n";
-		}else{
-		$html .= "<option value='".utf8entities($row['country_id'])."'>".utf8entities(_($row['name']))."</option>\n";
-		}
-	}
-	$html .= "</select>\n";
-	return $html;
+function CountryDropListWithValues($id, $name, $selectedId, $width = "") {
+  $html = "";
+  $style = "";
+  if (!empty($width)) {
+    $style = "style='width:$width'";
+  }
+  $query = sprintf("SELECT country_id, name FROM uo_country WHERE valid=1 ORDER BY name");
+  // $result = DBQuery($query);
+  $html .= "<select class='dropdown' $style id='$id' name='$name'>\n";
+  $html .= "<option value='-1'></option>\n";
+
+  $countries = DBQueryToArray($query);
+  
+  uasort($countries, get_locale_comparator());
+
+  foreach ($countries as $row) {
+    if ($row['country_id'] == $selectedId) {
+      $html .= "<option selected='selected' value='" . utf8entities($row['country_id']) . "'>" .
+        utf8entities(_($row['name'])) . "</option>\n";
+    } else {
+      $html .= "<option value='" . utf8entities($row['country_id']) . "'>" . utf8entities(_($row['name'])) .
+        "</option>\n";
+    }
+  }
+  $html .= "</select>\n";
+  return $html;
 }
 
 function CountryNumOfTeams($countryId){
