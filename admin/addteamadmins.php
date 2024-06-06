@@ -1,7 +1,7 @@
 <?php
-include_once $include_prefix.'lib/configuration.functions.php';
-include_once $include_prefix.'lib/facebook.functions.php';
-include_once $include_prefix.'lib/url.functions.php';
+include_once $include_prefix . 'lib/configuration.functions.php';
+include_once $include_prefix . 'lib/facebook.functions.php';
+include_once $include_prefix . 'lib/url.functions.php';
 
 $title = _("Team admins");
 $html = "";
@@ -16,37 +16,36 @@ $teams = SeriesTeams($seriesId);
 
 ensureEditSeriesRight($seriesId, $title);
 
-if(!empty($_POST['add'])){
- 
-foreach($teams as $team){
-  $tid = $team['team_id'];
-  $userid = isset($_POST["userid$tid"]) ? $_POST["userid$tid"] : "";
-  $email = isset($_POST["email$tid"]) ? $_POST["email$tid"] : "";
-  
-  if(empty($userid) && empty($email)){
-    continue;    
-  }elseif(empty($userid)){
-    $userid = UserIdForMail($email);
-    if($userid=="-1"){
-      $html .= "<p class='warning'>"._("Invalid user:")." ".$email."</p>";
+if (!empty($_POST['add'])) {
+
+  foreach ($teams as $team) {
+    $tid = $team['team_id'];
+    $userid = isset($_POST["userid$tid"]) ? $_POST["userid$tid"] : "";
+    $email = isset($_POST["email$tid"]) ? $_POST["email$tid"] : "";
+
+    if (empty($userid) && empty($email)) {
       continue;
+    } elseif (empty($userid)) {
+      $userid = UserIdForMail($email);
+      if ($userid == "-1") {
+        $html .= "<p class='warning'>" . _("Invalid user:") . " " . $email . "</p>";
+        continue;
+      }
+    }
+
+    if (IsRegistered($userid)) {
+      if ($seriesinfo['season'] == TeamSeason($tid))
+        AddTeamAdmin($userid, $tid);
+      $html .= "<p>" . _("User rights added for:") . " " . $userid . "</p>";
+    } else {
+      $html .= "<p class='warning'>" . _("Invalid user:") . " " . $userid . "</p>";
     }
   }
-  
-  if(IsRegistered($userid)){
-    if ($seriesinfo['season'] == TeamSeason($tid))
-      AddTeamAdmin($userid, $tid);
-    $html .= "<p>"._("User rights added for:")." ".$userid."</p>";
-  }else{
-    $html .= "<p class='warning'>"._("Invalid user:")." ".$userid."</p>";
-  }
-  
-}
-}elseif(!empty($_POST['remove_x'])){
-  RemoveTeamAdmin($_POST['delId'], $_POST['teamId']);    
+} elseif (!empty($_POST['remove_x'])) {
+  RemoveTeamAdmin($_POST['delId'], $_POST['teamId']);
 }
 
-//common page
+// common page
 addHeaderScript('script/disable_enter.js.inc');
 
 $admins = SeriesTeamResponsibles($seriesId);
@@ -77,16 +76,19 @@ if (!empty($adminList)) {
   $html .= "<p>" . utf8entities(_("No team admins, yet...")) . "</p>\n";
 }
 
-$html .= "<h3>"._("Add more")."</h3>";
+$html .= "<h3>" . _("Add more") . "</h3>";
 $html .= "<table class='formtable'>";
 
-foreach($teams as $team){
+foreach ($teams as $team) {
   $teaminfo = TeamInfo($team['team_id']);
   $html .= "<tr>";
-  $html .= "<td style='width:175px'>".utf8entities(U_($teaminfo['name']))."</td>\n";
-  $html .= "<td>"._("User Id")."</td><td><input class='input' size='20' name='userid".$team['team_id']."' id='userid".$team['team_id']."'/></td><td>"._("or")."</td>\n";
-  $html .= "<td>"._("E-Mail")."</td><td><input class='input' size='20' name='email".$team['team_id']."' id='email".$team['team_id']."'/</td></tr>\n";
-  $html .= "</tr>\n";;
+  $html .= "<td style='width:175px'>" . utf8entities(U_($teaminfo['name'])) . "</td>\n";
+  $html .= "<td>" . _("User Id") . "</td><td><input class='input' size='20' name='userid" . $team['team_id'] .
+    "' id='userid" . $team['team_id'] . "'/></td><td>" . _("or") . "</td>\n";
+  $html .= "<td>" . _("E-Mail") . "</td><td><input class='input' size='20' name='email" . $team['team_id'] .
+    "' id='email" . $team['team_id'] . "'/</td></tr>\n";
+  $html .= "</tr>\n";
+  ;
 }
 $html .= "</table>";
 if (isSeasonAdmin($seriesinfo['season'])) {
@@ -94,9 +96,10 @@ if (isSeasonAdmin($seriesinfo['season'])) {
     "</a></p>\n";
   $html .= "<p>";
 }
-$html .= "<input class='button' name='add' type='submit' value='"._("Grant rights")."'/>";
-$html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";
-$html .= "</p>";  
+$html .= "<input class='button' name='add' type='submit' value='" . _("Grant rights") . "'/>";
+$html .= "<input class='button' type='button' value='" . _("Return") .
+  "' onclick=\"window.location.href='$backurl'\" /></p>";
+$html .= "</p>";
 $html .= "<div><input type='hidden' name='delId'/></div>";
 $html .= "<div><input type='hidden' name='teamId'/></div>";
 $html .= "<div><input type='hidden' name='backurl' value='$backurl'/></div>";
