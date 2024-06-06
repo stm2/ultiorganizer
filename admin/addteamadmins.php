@@ -49,24 +49,33 @@ foreach($teams as $team){
 //common page
 addHeaderScript('script/disable_enter.js.inc');
 
-$html .= "<h3>"._("Team admins").":</h3>";
-$html .= "<form method='post' action='$pageurl' name='teamadmin'>";
-
 $admins = SeriesTeamResponsibles($seriesId);
-
-$html .= "<table class='formtable'>";
-foreach($admins as $user){
+$adminList = "";
+foreach ($admins as $user) {
   $teaminfo = TeamInfo($user['team_id']);
-  if($teaminfo['series'] != $seriesId){
+  if ($teaminfo['series'] != $seriesId) {
     continue;
-  }  
-  $html .= "<tr>";
-  $html .= "<td style='width:175px'>".utf8entities(U_($teaminfo['seriesname'])).", ".utf8entities(U_($teaminfo['name']))."</td>\n";
-  $html .= "<td style='width:75px'>".$user['userid']."</td><td>". utf8entities($user['name'])." (<a href='mailto:".utf8entities($user['email'])."'>".utf8entities($user['email'])."</a>)</td>";
-  $html .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"document.teamadmin.delId.value='".utf8entities($user['userid'])."';document.teamadmin.teamId.value='".utf8entities($user['team_id'])."';\"/></td>";
-  $html .= "</tr>\n";
+  }
+  $adminList .= "<tr>";
+  $adminList .= "<td style='width:175px'>" . utf8entities(U_($teaminfo['seriesname'])) . ", " .
+    utf8entities(U_($teaminfo['name'])) . "</td>\n";
+  $adminList .= "<td style='width:75px'>" . $user['userid'] . "</td><td>" . utf8entities($user['name']) .
+    " (<a href='mailto:" . utf8entities($user['email']) . "'>" . utf8entities($user['email']) . "</a>)</td>";
+  $adminList .= "<td class='center'><input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" .
+    _("X") . "' onclick=\"document.teamadmin.delId.value='" . utf8entities($user['userid']) .
+    "';document.teamadmin.teamId.value='" . utf8entities($user['team_id']) . "';\"/></td>";
+  $adminList .= "</tr>\n";
 }
-$html .= "</table>";
+
+$html .= "<form method='post' action='$pageurl' name='teamadmin'>";
+if (!empty($adminList)) {
+  $html .= "<h3>" . _("Team admins") . ":</h3>";
+  $html .= "<table class='formtable'>";
+  $html .= $adminList;
+  $html .= "</table>";
+} else {
+  $html .= "<p>" . utf8entities(_("No team admins, yet...")) . "</p>\n";
+}
 
 $html .= "<h3>"._("Add more")."</h3>";
 $html .= "<table class='formtable'>";

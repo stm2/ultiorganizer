@@ -551,11 +551,11 @@ function SeriesEnrolledTeamById($seriesId, $id) {
  *
  * @param int $seriesId
  *          uo_series.series_id
- * @param int $userid
+ * @param string $userid
  *          uo_user.userid
  * @return array mysqul array of teams.
  */
-function SeriesEnrolledTeamsByUser($seriesId, $userid) {
+function SeriesEnrolledTeamsByUser(int $seriesId, string $userid) {
   if ($userid == 'anonymous')
     die("Can not enroll for anonymous");
   if ($userid == $_SESSION['uid'] || hasEditTeamsRight($seriesId)) {
@@ -753,12 +753,12 @@ function SeriesTeamResponsibles($seriesId) {
   $season = SeriesSeasonId($seriesId);
   if (isSeasonAdmin($season) || hasEditSeriesRight($seriesId)) {
     $query = sprintf(
-      "SELECT u.userid, u.name, u.email
+      "SELECT u.userid, u.name, u.email, j.series as series_id, ANY_VALUE(j.team_id) team_id, j.name as teamname
 			FROM uo_users u
 			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
 			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
 			WHERE j.series=%d AND SUBSTRING_INDEX(up.value,':',1)='teamadmin'
-			GROUP BY u.userid, u.name, u.email", (int) $seriesId);
+			GROUP BY u.userid, u.name, u.email, j.series, j.name", (int) $seriesId);
 
     return DBQueryToArray($query);
   } else {

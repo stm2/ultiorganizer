@@ -1600,12 +1600,21 @@ function mailto_link($email, $name = null, $text = null, $subject = null) {
   return "<a href='$encode'>$text</a>";
 }
 
-function dm_link(array $rows, $subject = null, $message = null, $text =null) {
-  if (empty($rows))
+/**
+ *
+ * @param array $recipients
+ *          with columns 'email' and 'name'
+ * @param string $subject
+ * @param string $message
+ * @param string $text
+ * @return string
+ */
+function dm_link(array $recipients, string $subject = null, string $message = null, string $text = null) {
+  if (empty($recipients))
     return "<a href='#'>???</a>";
-  if (gettype($rows[0]) == "array") {
+  if (gettype($recipients[0]) == "array") {
     $who = [];
-    foreach ($rows as $row) {
+    foreach ($recipients as $row) {
       if (is_string($row))
         $who[] = ['email' => $row, 'name' => ''];
       else if (isset($row['email']))
@@ -1614,7 +1623,7 @@ function dm_link(array $rows, $subject = null, $message = null, $text =null) {
         $who[] = ['email' => $row['email'], 'name' => $row['name']];
     }
   } else {
-    $who = [['email' => $rows[0], 'name' => $rows[1]]];
+    $who = [['email' => $recipients[0], 'name' => $recipients[1]]];
   }
 
   $argwho = json_encode($who);
