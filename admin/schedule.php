@@ -140,9 +140,9 @@ function pauseEntry($height, $duration, $gameId, $editable = true) {
   $html .= "<input type='hidden' id='$tid' name='$names' value='" . $duration . "'/>";
   $html .= sprintf(_("Pause: %s&thinsp;min."), $duration);
   if ($editable) {
-    $html .= "<span style='align:right;float:right'><a href='javascript:hide(\"$id\");'>x</a></span></li>\n";
+    $html .= "<span style='float:right'><a href='javascript:hide(\"$id\");'>x</a></span></li>\n";
   } else {
-    $html .= "<span style='align:right;float:right;'>#</span>";
+    $html .= "<span style='float:right;'>#</span>";
   }
 
   return $html;
@@ -169,9 +169,9 @@ function gameEntry($gameInfo, $height, $duration, $poolname, $editable = true) {
   $html .= "<span class='ddmode schedule_time'>$sTime</span><span class='ddmode'> - </span>";
   $html .= $poolname;
   if ($editable) {
-    $html .= " <span style='align:right;float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
+    $html .= " <span style='float:right;'><a href='javascript:hide(\"game" . $gameId . "\");'>x</a></span>";
   } else {
-    $html .= "<span style='align:right;float:right;'>#</span>";
+    $html .= "<span style='float:right;'>#</span>";
   }
   $html .= "<br/>\n" . (empty($gamename) ? "" : "<b>$gamename</b> ") . sprintf(_("%d&thinsp;min."), $duration);
   $html .= "</li>\n";
