@@ -445,7 +445,7 @@ function UserSettingsValidationToken() {
   return $_SESSION['SETTINGS_VALIDATION_TOKEN'];
 }
 
-function SetUserSessionData($user_id) {
+function SetUserSessionData(string $user_id) {
   unset($_SESSION['userproperties']);
   unset($_SESSION['navigation']);
   unset($_SESSION['dbversion']);
@@ -455,7 +455,7 @@ function SetUserSessionData($user_id) {
   $_SESSION['SETTINGS_VALIDATION_TOKEN'] = GetSettingsValidationToken();
 }
 
-function loadUserProperties($user_id) {
+function loadUserProperties(string $user_id) {
   $query = sprintf("SELECT prop_id, name, value FROM uo_userproperties WHERE userid='%s'",
     mysql_adapt_real_escape_string($user_id));
   $result = mysql_adapt_query($query);
@@ -1088,7 +1088,7 @@ function ToPrimaryEmail($userid, $extraEmail) {
   }
 }
 
-function AddPoolSelector(int $userid, string $selector) {
+function AddPoolSelector(string $userid, string $selector) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight()) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='poolselector' AND value='%s'",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($selector));
@@ -1114,7 +1114,7 @@ function AddPoolSelector(int $userid, string $selector) {
   }
 }
 
-function RemoveEditSeason(int $userid, int $propid) {
+function RemoveEditSeason(string $userid, int $propid) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight()) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE prop_id=%d AND userid='%s' AND name='editseason'",
       (int) $propid, mysql_adapt_real_escape_string($userid));
@@ -1133,7 +1133,7 @@ function RemoveEditSeason(int $userid, int $propid) {
   }
 }
 
-function AddEditSeason(int $userid, string $season) {
+function AddEditSeason(string $userid, string $season) {
   if ($userid == $_SESSION['uid'] || hasEditUsersRight() || isSeasonAdmin($season)) {
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties 
 			WHERE userid='%s' AND name='editseason' AND value='%s'", mysql_adapt_real_escape_string($userid),
@@ -1160,7 +1160,7 @@ function AddEditSeason(int $userid, string $season) {
   }
 }
 
-function RemoveUserRole(int $userid, int $propid) {
+function RemoveUserRole(string $userid, int $propid) {
   if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE prop_id=%d AND userid='%s' AND name='userrole'", (int) $propid,
       mysql_adapt_real_escape_string($userid));
@@ -1185,7 +1185,7 @@ function RemoveUserRole(int $userid, int $propid) {
  * @param string $role
  * @return boolean
  */
-function AddUserRole(int $userid, string $role) {
+function AddUserRole(string $userid, string $role) {
   if (isSuperAdmin() || ($role != 'superadmin' && hasEditUsersRight())) {
     $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
@@ -1213,7 +1213,7 @@ function AddUserRole(int $userid, string $role) {
  * @param string $seasonId
  * @return boolean
  */
-function AddSeasonUserRole(int $userId, string $role, int $seasonId) {
+function AddSeasonUserRole(string $userId, string $role, int $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
 
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
@@ -1240,7 +1240,7 @@ function AddSeasonUserRole(int $userId, string $role, int $seasonId) {
   }
 }
 
-function RemoveSeasonUserRole(int $userId, string $role, int $seasonId) {
+function RemoveSeasonUserRole(string $userId, string $role, int $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
       mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
@@ -1272,7 +1272,7 @@ function GetTeamAdmins(int $teamId) {
  * @param string $teamId
  * @return boolean
  */
-function AddTeamAdmin(int $userId, int $teamId) : bool {
+function AddTeamAdmin(string $userId, int $teamId) : bool {
   $seriesId = getTeamSeries($teamId);
   if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
     $role = "teamadmin:$teamId";
@@ -1300,7 +1300,7 @@ function AddTeamAdmin(int $userId, int $teamId) : bool {
   }
 }
 
-function RemoveTeamAdmin(int $userId, int $teamId) : bool {
+function RemoveTeamAdmin(string $userId, int $teamId) : bool {
   $seriesId = getTeamSeries($teamId);
   if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
     $role = "teamadmin:$teamId";
@@ -1313,7 +1313,7 @@ function RemoveTeamAdmin(int $userId, int $teamId) : bool {
   }
 }
 
-function DeleteUser(int $userid) {
+function DeleteUser(string $userid) {
   if ($userid != "anonymous") {
     if (hasEditUsersRight($userid) || $userid = $_SESSION['uid']) {
       $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
@@ -1335,7 +1335,7 @@ function DeleteUser(int $userid) {
   }
 }
 
-function DeleteRegisterRequest(int $userId) {
+function DeleteRegisterRequest(string $userId) {
   if ($userId != "anonymous") {
     if (hasEditUsersRight()) {
       Log1("security", "delete", $userId, "", "RegisterRequest");
