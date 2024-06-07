@@ -320,6 +320,7 @@ td.scoreinput.bright {
   margin: 0;
   border: 1px solid var(--bgcolor, #ffffff);
   border-color: transparent;
+  height: 1.4rem;
 }
 
 .deletebutton:hover {
@@ -351,6 +352,7 @@ table.wide {
 .admintable td {
   padding-left: 1px;
   padding-right: 1px;
+  vertical-align: middle;
 }
 
 .infotable+.infotable {
@@ -787,4 +789,55 @@ table.spirit_table td {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.tableicon {
+  height: 1.4rem;
+}
+
+.is_empty {
+  background-color: red;
+}
+
+.not_empty {
+  background-color: lightgreen;
+}
+
+
+.bystandings {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 1ex;
+}
+
+.bys_row {
+  display: table-row;
+}
+
+.bys_col {
+  display: flex;
+  flex-flow: column;
+  margin-left: 1ex;
+  min-width: 10ex;
+  flex: 1 auto;
+}
+
+.bys_th {
+  display: table-cell;
+}
+
+.bys_td {
+  display: table-cell;
+}
+
+.th a:link {
+  color: var(--thlinkcolor, #000000);
+}
+
+.th a:visited {
+  color: var(--thvlinkcolor, #000000);
+}
+
+.th a:hover {
+  color: var(--thhlinkcolor, #000000);
 }

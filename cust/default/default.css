@@ -64,7 +64,7 @@ table {
   padding: 1px;
 }
 
-th {
+th, .th {
   color: var(--thcolor, #ffffff);
   background-color: var(--thbgcolor, #006699);
   text-align: left;
