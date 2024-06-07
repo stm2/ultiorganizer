@@ -536,6 +536,24 @@ table.scheduling .dropdown {
   width:16em;
 }
 
+.draghandle {
+  text-align: center;
+  font-size: 1.2rem;
+  float: left;
+}
+
+img.draghandle {
+  min-width: inherit;
+  height: 1.5rem;
+  text-align: center;
+  background-color: var(--draglistcolor, lightgrey);
+  margin: 1px;
+}
+
+.draggable_wrapper {
+  display:inline;
+}
+
 ul.draglist, ol.draglist, ul.time_list, ul.team_list, select.series_select {
   font-size: .8rem;
   position: relative;

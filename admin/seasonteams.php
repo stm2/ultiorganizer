@@ -33,11 +33,11 @@ $seasonInfo = SeasonInfo($seasonId);
 
 $teamListItems = [];
 
-function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
+function teamTable($series_id, $teams, $club, $country, $edit, $short = false, &$teamListItems) {
   global $focusId;
-  $html = "<table class='admintable'>\n";
+  $html = "<table class='admintable'><tbody id='addedteams'>\n";
 
-  $html .= "<tr><th class='center' title='" . utf8entities(_("Seed")) . "'>#</th>";
+  $html .= "<tr><td></td><th class='center' title='" . utf8entities(_("Seed")) . "'>#</th>";
   $html .= "<th>" . utf8entities(_("Name")) . "</th>";
   $html .= "<th>" . utf8entities(_("Abbrev")) . "</th>";
 
@@ -48,9 +48,7 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
     $html .= "<th>" . utf8entities(_("Country")) . "</th>";
   }
   if ($edit) {
-    $html .= "<th>" . utf8entities(_("Contact person")) . "</th>";
-    $html .= "<th>" . utf8entities(_("Roster")) . "</th>";
-    $html .= "<th></th>";
+    $html .= "<th colspan='4'></th>";
   }
   $html .= "</tr>\n";
 
@@ -65,29 +63,40 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
         "'/></td>\n";
     }
   }
+  $contact = utf8entities(_("Contact person"));
+  $roster = utf8entities(_("Roster"));
+  $details = utf8entities(_("edit details"));
+  $delete = utf8entities(_("Roster"));
 
+  $tId = 0;
   foreach ($teams as $team) {
-    if ($short || !isset($team['team_id']))
+    if ($short || !isset($team['team_id'])) {
       $team_id = "[]";
-    else
+      ++$tId;
+    } else {
       $team_id = $team['team_id'];
+      $tId = $team_id;
+    }
     $total++;
+    $rid = "teamdrag$tId";
+    $hid = "draghandle$tId";
+    $teamListItems[] = ['id' => $rid, 'hId' => $hid, 'parent' => 'addedteams', 'item_class' => 'admintablerow'];
 
-    $html .= "<tr class='admintablerow'>";
+    $html .= "<tr class='admintablerow' id='$rid' ><td class='teamdrag' ><img id='$hid' src='images/draghandle.png' class='draghandle tableicon' /></td>";
     if ($focusId == null) {
       $fid = " id='focus0'";
       $focusId = 'focus0';
     } else {
       $fid = '';
     }
-    $html .= "<td><input class='input' size='2' maxlength='4'$fid name='seed$team_id' value='" . $team['rank'] .
-      "'/></td>";
+    $html .= "<td><input class='input team_item_seed' size='2' maxlength='4'$fid name='seed$team_id' value='" .
+      $team['rank'] . "'/></td>";
 
     $html .= get_field(20, 50, "name$team_id", $team['name'], $short);
-    $html .= get_field(4, 15, "abbrev$team_id", $team['abbreviation'], $short);
+    $html .= get_field(9, 15, "abbrev$team_id", $team['abbreviation'], $short);
 
     if ($club) {
-      $html .= get_field(20, 50, "club$team_id", $team['clubname'], $short);
+      $html .= get_field(18, 50, "club$team_id", $team['clubname'], $short);
     }
 
     $width = "";
@@ -107,26 +116,25 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
       $html .= "<td>";
 
       $admins = getTeamAdmins($team['team_id']);
-
-      for ($i = 0; $i < count($admins); $i++) {
-        $user = $admins[$i];
-        $html .= "<a href='?view=user/userinfo&amp;user=" . $user['userid'] . "'>" . utf8entities($user['name']) . "</a>";
-        if ($i + 1 < count($admins))
-          $html .= "<br/>";
+      if (count($admins) > 0) {
+        $is_empty = "not_empty";
+      } else {
+        $is_empty = "is_empty";
       }
 
-      $html .= "&nbsp;<a href='?view=admin/addteamadmins&amp;series=$series_id'>" . utf8entities(_("...")) . "</a>";
+      $html .= "<a href='?view=admin/addteamadmins&amp;series=$series_id'><img class='tableicon $is_empty' src='images/contact.png' alt='C' title='$contact' /></a>";
       $html .= "</td>";
 
       $html .= "<td class='center'><a href='?view=user/teamplayers&amp;team=" . $team['team_id'] . "'>" .
-        utf8entities(_("Roster")) . "</a></td>";
+        "<img class='tableicon' src='images/playerlist.png' alt='R' title='$roster'/>" . "</a></td>";
 
       $html .= "<td>";
-      $html .= "<a href='?view=admin/addseasonteams&amp;team=$team_id'><img class='deletebutton' src='images/settings.png' alt='D' title='" .
-        utf8entities(_("edit details")) . "'/></a>";
+      $html .= "<a href='?view=admin/addseasonteams&amp;team=$team_id'><img class='deletebutton' src='images/settings.png' alt='D' title='$details'/></a></td>";
       if (CanDeleteTeam($team['team_id'])) {
-        $html .= "<input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" .
+        $html .= "<td><input class='deletebutton tableicon' type='image' src='images/remove.png' alt='X' title='$delete' name='remove' value='" .
           utf8entities(_("X")) . "' onclick=\"setId(" . $team['team_id'] . ");\"/>";
+      } else {
+        $html .= "<td>";
       }
       $html .= "</td>";
     }
@@ -137,29 +145,29 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false) {
 
   if ($edit) {
     $focusId = 'name0';
-    $html .= "<tr>";
-    $html .= "<td style='padding-top:15px'><input class='input' size='2' maxlength='4' name='seed0' value='$total'/></td>";
+    $html .= "<tr><td></td>";
+    $html .= "<td style='padding-top:15px'><input class='input' size='2' maxlength='3' name='seed0' value='$total'/></td>";
     $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='name0' id='name0' value=''/></td>";
-    $html .= "<td style='padding-top:15px'><input class='input' size='4' maxlength='15' name='abbrev0' value=''/></td>";
+    $html .= "<td style='padding-top:15px'><input class='input' size='9' maxlength='15' name='abbrev0' value=''/></td>";
     if ($club) {
-      $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='club0' value=''/></td>";
+      $html .= "<td style='padding-top:15px'><input class='input' size='18' maxlength='50' name='club0' value=''/></td>";
     }
     if ($country) {
       $html .= "<td style='padding-top:15px'>" . CountryDropListWithValues("country0", "country0", "", $width) . "</td>";
     }
 
-    $html .= "<td style='padding-top:15px'><input style='margin-left:15px' id='add' class='button' name='add' type='submit' value='" .
+    $html .= "<td style='padding-top:15px' colspan='4'><input id='add' class='button' name='add' type='submit' value='" .
       utf8entities(_("Add")) . "'/></td>";
     $html .= "</tr>\n";
   }
 
-  $html .= "</table>\n";
+  $html .= "</tbody></table>\n";
   return $html;
 }
 
 function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
 
-  function getItem(array $team, bool $country, array &$teamlist) {
+  function getItem(array $team, bool $country, array &$teamListItems) {
     $teamId = intval($team['team_id']);
     $seed = intval($team['rank']);
     $name = utf8entities($team['name']);
@@ -169,8 +177,11 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
     // $club = utf8entities(ClubName($team['clubname']));
     if ($country)
       $countryId = intval($team['country']);
-    $html = "<li class='team_item' id='team_item$teamId'>";
-    $teamlist[] = "team_item$teamId";
+
+    $teamListItems[] = ['id' => "team_item$teamId", 'hId' => "draggable$teamId", 'parent' => 'addedteams',
+      'item_class' => 'team_item'];
+
+    $html = "<tr class='team_item' id='team_item$teamId'><td>";
     $html .= "<input type='hidden' id='tId$teamId' name='tIds[]' value='$teamId'/>";
     $html .= "<input type='hidden' class='editmode' name='name[]' value='$name'/>\n";
     $html .= "<input type='hidden' class='editmode' name='abbrev[]' value='$abbrev'/>\n";
@@ -178,8 +189,9 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
     if ($country)
       $html .= "<input type='hidden' class='editmode' name='country[]' value='$countryId'/>\n";
 
-    $html .= "<input type='number' class='editmode team_item_seed' name='seed[]' min='0' size='3' id='seed$teamId' style='display:inline' maxlength='5' value='$seed'/>\n";
-
+    $html .= "<input type='number' class='editmode team_item_seed' name='seed[]' min='0' size='3' style='width: 3rem;' id='seed$teamId' style='display:inline' maxlength='5' value='$seed'/>\n";
+    $html .= "<div class ='draggable_wrapper' id='draggable$teamId'>";
+    $html .= "<img id='draghandle$teamId' src='images/draghandle.png' class='draghandle tableicon' />";
     $html .= "<span class='teamname'>" . $name . "</span>";
     if (!empty($club)) {
       $html .= " - <span class='clubname'>" . $club . "</span>";
@@ -191,8 +203,9 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
       else
         $html .= " - <span class='countryname'>???</span>";
     }
+    // $html .= "<span class='draghandle' id='draghandle$teamId'>&#8661;</span></div>";
     $html .= "</input>";
-    $html .= "</li>\n";
+    $html .= "</td></tr>\n";
     return $html;
   }
 
@@ -208,15 +221,17 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
       $notAdded .= getItem($team, $country, $teamlist);
   }
 
-  $html = "<h3>Teams to add</h3>";
-  $html = "<ul class='team_list' id='addedteams' style='min-height:10rem'>\n";
+  $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
+  $html .= "<table><tbody id='addedteams' class='team_list'  style='min-height:10rem'>\n";
+  $html .= "<tr><td>" . _("Teams to add") . "</td></tr>\n";
   $html .= $added;
-  $html .= "</ul>\n";
+  $html .= "</tbody></table></div>\n";
 
-  $html .= "<h3>Ignored teams</h3>";
-  $html .= "<ul class='team_list' id='notaddedteams' style='min-height:10rem'>\n";
+  $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;' id='notaddedteams' >";
+  $html .= "<h3>" . _("Ignored teams") . "</h3>\n";
+  $html .= "<table style='min-height: 2rem; width:100%'><tbody class='team_list' style='min-height:10rem'>\n";
   $html .= $notAdded;
-  $html .= "</ul>\n";
+  $html .= "</tbody></table></div>\n";
   return $html;
 }
 
@@ -601,7 +616,7 @@ if ($showTeams) {
   }
   unset($team);
 
-  $html .= teamTable($series_id, $teams, $club, $country, true);
+  $html .= teamTable($series_id, $teams, $club, $country, true, false, $teamListItems);
 
   $html .= "<p>";
   $html .= "<input id='save' class='button' name='save' type='submit' value='" . utf8entities(_("Save")) . "'/> ";
@@ -630,7 +645,27 @@ $html .= "</form>\n";
 if (!empty($focusId))
   setFocus($focusId);
 
-$html .= <<<EOF
+  $html .= getDragDropApp('TeamApp', ["addedteams", "notaddedteams"], $teamListItems, [ 'endDrag' =>
+    "      updateList(srcEl.parentNode);",  'dragOver' =>
+  "
+      updateList(srcEl.parentNode);
+      var orig = srcEl.getElementsByClassName('team_item_seed')[0];
+      var copy = proxy.getElementsByClassName('team_item_seed')[0];
+      copy.value = parseInt(orig.value) + (goingUp?-1:1);" ],
+  "
+    function updateList(list) {
+      var i = 0;
+      var add = list.id == \"addedteams\";
+      for (child of list.children) {
+        var tId = Number(child.id.replace(/[a-z_]*/, ''));
+        var seeds = child.getElementsByClassName('team_item_seed');
+        if (seeds.length > 0)
+          seeds[0].value = add?++i:\"\";
+      }
+    }");
+
+function getDragDropApp(string $appName, array $targets, array $listItems, array $callbacks = [], $appContent = null) {
+  $html = <<<EOF
   <script type="text/javascript">
   //<![CDATA[
 
@@ -640,60 +675,51 @@ $html .= <<<EOF
     var Event = YAHOO.util.Event;
     var DDM = YAHOO.util.DragDropMgr;
 
-    YAHOO.example.TeamApp = {
+    YAHOO.example.$appName = {
       init: function() {
-        new YAHOO.util.DDTarget("addedteams");
-        new YAHOO.util.DDTarget("notaddedteams");
 
 EOF;
 
-foreach ($teamListItems as $team) {
-  $html .= "      new YAHOO.example.DDList(\"$team\");\n";
-}
+  foreach ($targets as $target) {
+    $html .= "    new YAHOO.util.DDTarget(\"$target\");\n";
+  }
 
-$html .= <<< EOF
+  foreach ($listItems as $item) {
+    $html .= "      new YAHOO.example.DDList(\"{$item['id']}\", \"{$item['hId']}\", \"{$item['parent']}\", \"{$item['item_class']}\");\n";
+  }
+
+  $html .= <<< EOF
       }
     }
 
-    function onDragDropCallback(list) {
-      //updateList(list);
+    function onDragDropCallback(list, parent) {
+{$callbacks['dragDrop']};
+
     }
 
-    function onDragOverCallback(srcEl, proxy) {
-      updateList(srcEl.parentNode);
-//       var orig = srcEl.getElementsByClassName('team_item_seed')[0];
-//       var copy = proxy.getElementsByClassName('team_item_seed')[0];
-//       copy.value = orig.value - 1;
+    function onDragOverCallback(srcEl, proxy, goingUp) {
+{$callbacks['dragOver']};
     }
 
     function onEndDragCallback(srcEl, proxy) {
-      updateList(srcEl.parentNode);
-      var orig = srcEl.getElementsByClassName('team_item_seed')[0];
-      var copy = proxy.getElementsByClassName('team_item_seed')[0];
-      copy.value = orig.value;
+{$callbacks['endDrag']};
     }
 
-    function updateList(list) {
-      var i = 0;
-      var add = list.id == "addedteams";
-      for (child of list.children) {
-        var tId = Number(child.id.replace(/[a-z_]*/, ''));
-        var seeds = child.getElementsByClassName('team_item_seed');
-        seeds[0].value = add?++i:"";
-      }
-    }
+$appContent
 
-
-    YAHOO.example.DDList = function(id, sGroup, config) {
+    YAHOO.example.DDList = function(id, handleId, parentId, itemClass, sGroup, config) {
 
       YAHOO.example.DDList.superclass.constructor.call(this, id, sGroup, config);
 
       this.logger = this.logger || YAHOO;
       var el = this.getDragEl();
       Dom.setStyle(el, "opacity", 0.57); // The proxy is slightly transparent
-
+      this.setHandleElId(handleId);
+      this.parent = parentId;
       this.goingUp = false;
       this.lastY = 0;
+      this.itemClass = itemClass;
+      this.parentClass = 'team_list';
     };
 
     YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
@@ -711,7 +737,7 @@ $html .= <<< EOF
           Dom.setStyle(dragEl, "font-size", Dom.getStyle(clickEl, "font-size"));
           Dom.setStyle(dragEl, "font-family", Dom.getStyle(clickEl, "font-family"));
           Dom.setStyle(dragEl, "border", "2px solid gray");
-          Dom.setStyle(dragEl, "text-align", "center");
+          // onStartDragCallback(clickEl, dragEl, this.parent);
       },
   
       endDrag: function(e) {
@@ -739,12 +765,12 @@ $html .= <<< EOF
                   Dom.setStyle(thisid, "visibility", "");
               });
           a.animate();
-          onEndDragCallback(srcEl, proxy);
+          onEndDragCallback(srcEl, proxy, this.parent);
       },
   
       onDragDrop: function(e, id) {
   
-          // If there is one drop interaction, the li was dropped either on the list,
+          // If there is one drop interaction, the item was dropped either on the list,
           // or it was dropped on the current location of the source element.
           if (DDM.interactionInfo.drop.length === 1) {
   
@@ -757,14 +783,16 @@ $html .= <<< EOF
               // Check to see if we are over the source element's location.  We will
               // append to the bottom of the list once we are sure it was a drop in
               // the negative space (the area of the list without any list items)
+              var parent = null
               if (!region.intersect(pt)) {
                   var destEl = Dom.get(id);
                   var destDD = DDM.getDDById(id);
-                  destEl.appendChild(this.getEl());
+                  parent = destEl.getElementsByClassName(this.parentClass)[0]
+                  parent.appendChild(this.getEl());
                   destDD.isEmpty = false;
                   DDM.refreshCache();
               }
-              onDragDropCallback(Dom.get(id));
+              onDragDropCallback(Dom.get(id), parent);
   
           }
       },
@@ -790,7 +818,7 @@ $html .= <<< EOF
   
           // We are only concerned with list items, we ignore the dragover
           // notifications for the list.
-          if (destEl.nodeName.toLowerCase() == "li") {
+          if (destEl.className == this.itemClass) {
               var orig_p = srcEl.parentNode;
               var p = destEl.parentNode;
   
@@ -799,7 +827,7 @@ $html .= <<< EOF
               } else {
                   p.insertBefore(srcEl, destEl.nextSibling); // insert below
               }
-              onDragOverCallback(destEl, this.getDragEl());
+              onDragOverCallback(destEl, this.getDragEl(), this.goingUp);
 
               DDM.refreshCache();
           }
@@ -807,13 +835,15 @@ $html .= <<< EOF
     });
 
     Event.onDOMReady(YAHOO.example.TeamApp.init, YAHOO.example.ScheduleApp, true);
-
+    
   })();
 
   //]]>
   </script>
 
 EOF;
+  return $html;
+}
 
 showPage($title, $html);
 ?>
