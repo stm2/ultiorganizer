@@ -172,7 +172,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
   $html .= source_selection();
 } else {
   $sourcePar = "&amp;source=" . $_GET['source'];
-  $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataimport$seasonPar$sourcePar'>\n";
+  $html .= "<form method='post' enctype='multipart/form-data' action='?view=admin/eventdataimport$seasonPar$sourcePar' onkeydown='return event.key != \"Enter\";'>\n";
 
   if (empty($step) || (!empty($_POST['load_series']) && empty($_POST['series']))) {
     if ($_GET['source'] == 'xml') {
