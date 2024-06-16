@@ -25,6 +25,11 @@ if (iget("series")) {
   exit();
 }
 
+if (!$seriesinfo['valid'] && !hasEditSeriesRight($seriesId)) {
+  showPage($title, "<p>" . utf8entities(_("Insufficient rights.")) . "</p>\n");
+  exit();
+}
+
 if (iget("sort")) {
   $sort = iget("sort");
 }

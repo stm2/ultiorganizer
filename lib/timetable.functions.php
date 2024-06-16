@@ -704,8 +704,10 @@ function TimetableGames($id, $gamefilter, $timefilter, $order, $groupfilter="", 
     case "poolgroup":
       //keep pool filter as it is to give better performance for single pool query
       //extra explode needed to make parameters safe
-      $pools = explode(",", mysql_adapt_real_escape_string($id));
-      $query .= " WHERE pp.valid=true AND pp.pool IN(".implode(",",$pools).")";
+      $pools = explode(",", $id);
+      array_walk($pools, function (&$o) { $o = intval($o);});
+      $pools = implode(',', $pools);
+      $query .= " WHERE pp.valid=true AND pp.pool IN($pools)";
       break;
       	
     case "team":

@@ -42,20 +42,29 @@ function findPools($games, &$html) {
 $groupheader = true;
 $detail_links = false;
 
+$validOnly = true;
 if (iget("series")) {
   $id = iget("series");
   SetCurrentSeries($id);
   $filters['gamefilter'] = "series";
   $title = _("Schedule") . " " . U_(SeriesName($id));
+  $validOnly = !hasEditSeriesRight($id);
 } elseif (iget("pool")) {
   $id = iget("pool");
   $filters['gamefilter'] = "pool";
   $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
   $detail_links = true;
+  $validOnly = !hasEditSeriesRight(PoolSeries($id));
 } elseif (iget("pools")) {
   $id = iget("pools");
   $filters['gamefilter'] = "poolgroup";
-  $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
+  $validOnly = false;
+  foreach(explode(",", mysql_adapt_real_escape_string($id)) as $part) {
+    if (empty($title))
+      $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
+    $validOnly |= !hasEditSeriesRight($part);
+  }
+  $title .= '...';
 } elseif (iget("team")) {
   $id = iget("team");
   $filters['gamefilter'] = "team";
@@ -66,7 +75,7 @@ if (iget("series")) {
   $id = iget("season");
   $filters['gamefilter'] = "season";
   $title = _("Schedule") . " " . U_(SeasonName($id));
-  $comment = CommentHTML(1, $id);
+  $validOnly = !isSeasonAdmin($id);
 } else {
   $id = CurrentSeason();
   $filters['gamefilter'] = "season";
@@ -96,7 +105,7 @@ if (!isset($filters['time']))
 if (!isset($filters['group']))
   $filters['group'] = "all";
 
-$games = TimetableGames($id, $filters['gamefilter'], $filters['time'], $filters['order'], $filters['group'], true);
+$games = TimetableGames($id, $filters['gamefilter'], $filters['time'], $filters['order'], $filters['group'], $validOnly);
 $groups = TimetableGrouping($id, $filters['gamefilter'], $filters['time']);
 
 if (!$print && !$singleview) {
