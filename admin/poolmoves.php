@@ -67,9 +67,7 @@ function teamName(poolselector, positionInput) {
   if (positionInput.value == '') return null;
   if (poolMap.get(frompool) == ROUNDROBIN || poolMap.get(frompool) == SWISSDRAW)
     return poolselector[poolselector.selectedIndex].innerHTML + " " + positionInput.value;
-  else if (poolMap.get(frompool) == PLAYOFF || poolMap.get(frompool) == 
-
-  ) {
+  else if (poolMap.get(frompool) == PLAYOFF || poolMap.get(frompool) == CROSSMATCH) {
     let pool = poolselector[poolselector.selectedIndex].innerHTML;
     let gameno = Math.floor((parseInt(positionInput.value) + 1) / 2);
     if (isNaN(gameno)) return null;
