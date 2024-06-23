@@ -21,7 +21,7 @@ CurrentSeries($seasonId, $series_id, $single, _("Teams"));
 $title = SeasonName($seasonId) . ": " . _("Teams");
 $html = "";
 
-$html .= JavaScriptWarning();
+// $html .= JavaScriptWarning();
 
 ensureEditSeriesRight($series_id);
 
@@ -35,7 +35,7 @@ $teamListItems = [];
 
 function teamTable($series_id, $teams, $club, $country, $edit, $short = false, &$teamListItems) {
   global $focusId;
-  $html = "<table class='admintable'><tbody id='addedteams'>\n";
+  $html = "<table class='admintable'><tbody id='addedteams' class='dd_target'>\n";
 
   $html .= "<tr><td></td><th class='center' title='" . utf8entities(_("Seed")) . "'>#</th>";
   $html .= "<th>" . utf8entities(_("Name")) . "</th>";
@@ -66,7 +66,7 @@ function teamTable($series_id, $teams, $club, $country, $edit, $short = false, &
   $contact = utf8entities(_("Contact person"));
   $roster = utf8entities(_("Roster"));
   $details = utf8entities(_("edit details"));
-  $delete = utf8entities(_("Roster"));
+  $delete = utf8entities(_("Delete"));
 
   $tId = 0;
   foreach ($teams as $team) {
@@ -221,15 +221,18 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
       $notAdded .= getItem($team, $country, $teamlist);
   }
 
-  $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
-  $html .= "<table><tbody id='addedteams' class='team_list'  style='min-height:10rem'>\n";
-  $html .= "<tr><td>" . _("Teams to add") . "</td></tr>\n";
+//   $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
+  $html = "<h3>" . _("Teams to add") . "</h3>\n";
+  $html .= "<div class='team_list' >";
+  $html .= "<table class='team_list'><tbody id='addedteams' class='dd_target'  style='min-height:10rem'>\n";
   $html .= $added;
+  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
   $html .= "</tbody></table></div>\n";
 
-  $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;' id='notaddedteams' >";
-  $html .= "<h3>" . _("Ignored teams") . "</h3>\n";
-  $html .= "<table style='min-height: 2rem; width:100%'><tbody class='team_list' style='min-height:10rem'>\n";
+  $html .= "<h3>" . _("Teams to ignore") . "</h3>\n";
+  $html .= "<div class='team_list'>";
+  $html .= "<table class='team_list'><tbody id='notaddedteams' class='dd_target' >\n";
+  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
   $html .= $notAdded;
   $html .= "</tbody></table></div>\n";
   return $html;
@@ -551,7 +554,7 @@ if (isset($_POST['import_add']) || isset($_POST['import_replace'])) {
   }
 } else if ($importstage == 0 || isset($_POST['cancel'])) {
   $showTeams = true;
-} else if (!isset($_POST['import']) && ($importstage == 1 || $importstage == 2 || isset($_POST['refresh']))) {
+} else if (!isset($_POST['import_add']) && !isset($_POST['import_replace']) && ($importstage == 1 || $importstage == 2 || isset($_POST['refresh']))) {
   $showTeams = false;
   $html .= "<p><input type='hidden' id='importstage' name='importstage' value='$importstage'/></p>";
 
@@ -592,16 +595,16 @@ if (isset($_POST['import_add']) || isset($_POST['import_replace'])) {
       $html .= teamList($teams, $club, $country, $teamListItems);
 
       $html .= "<p>";
-      $html .= "<input id='import' class='button' name='import_add' type='submit' value='" . utf8entities(_("Add")) .
+      $html .= "<input class='button' name='import_add' type='submit' value='" . utf8entities(_("Add")) .
         "'/> " . _("Add new teams") . "<br />";
       $num = min(count($teams), count(SeriesTeams($series_id)));
       if ($num) {
-        $html .= "<input id='import' class='button' name='import_replace' type='submit' value='" .
+        $html .= "<input class='button' name='import_replace' type='submit' value='" .
           utf8entities(_("Replace")) . "'/> " . utf8entities(sprintf(_("Rename %s teams with lowest seed #"), $num)) .
           "<br />";
       }
-      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" . utf8entities(
-        _("Cancel")) . "'/>";
+      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" .
+        utf8entities(_("Cancel")) . "'/>";
       $html .= "</p>";
     } else {
       $html .= "<p>" . _("No teams") . "</p>\n";
@@ -645,14 +648,17 @@ $html .= "</form>\n";
 if (!empty($focusId))
   setFocus($focusId);
 
-  $html .= getDragDropApp('TeamApp', ["addedteams", "notaddedteams"], $teamListItems, [ 'endDrag' =>
-    "      updateList(srcEl.parentNode);",  'dragOver' =>
-  "
+$html .= getDragDropApp(["addedteams", "notaddedteams"], $teamListItems,
+  ['endDrag' => "
+    function(srcEl, proxy, parent) { updateList(srcEl.parentNode);}",
+    'dragOver' => "
+    function(srcEl, proxy, goingUp) {
       updateList(srcEl.parentNode);
       var orig = srcEl.getElementsByClassName('team_item_seed')[0];
       var copy = proxy.getElementsByClassName('team_item_seed')[0];
-      copy.value = parseInt(orig.value) + (goingUp?-1:1);" ],
-  "
+      copy.value = parseInt(orig.value) + (goingUp ? -1 : 1);
+    }", 
+    'appContent' => "
     function updateList(list) {
       var i = 0;
       var add = list.id == \"addedteams\";
@@ -660,190 +666,9 @@ if (!empty($focusId))
         var tId = Number(child.id.replace(/[a-z_]*/, ''));
         var seeds = child.getElementsByClassName('team_item_seed');
         if (seeds.length > 0)
-          seeds[0].value = add?++i:\"\";
+          seeds[0].value = add ? ++i : \"\";
       }
-    }");
-
-function getDragDropApp(string $appName, array $targets, array $listItems, array $callbacks = [], $appContent = null) {
-  $html = <<<EOF
-  <script type="text/javascript">
-  //<![CDATA[
-
-  var Dom = YAHOO.util.Dom;
-    (function() {
-
-    var Event = YAHOO.util.Event;
-    var DDM = YAHOO.util.DragDropMgr;
-
-    YAHOO.example.$appName = {
-      init: function() {
-
-EOF;
-
-  foreach ($targets as $target) {
-    $html .= "    new YAHOO.util.DDTarget(\"$target\");\n";
-  }
-
-  foreach ($listItems as $item) {
-    $html .= "      new YAHOO.example.DDList(\"{$item['id']}\", \"{$item['hId']}\", \"{$item['parent']}\", \"{$item['item_class']}\");\n";
-  }
-
-  $html .= <<< EOF
-      }
-    }
-
-    function onDragDropCallback(list, parent) {
-{$callbacks['dragDrop']};
-
-    }
-
-    function onDragOverCallback(srcEl, proxy, goingUp) {
-{$callbacks['dragOver']};
-    }
-
-    function onEndDragCallback(srcEl, proxy) {
-{$callbacks['endDrag']};
-    }
-
-$appContent
-
-    YAHOO.example.DDList = function(id, handleId, parentId, itemClass, sGroup, config) {
-
-      YAHOO.example.DDList.superclass.constructor.call(this, id, sGroup, config);
-
-      this.logger = this.logger || YAHOO;
-      var el = this.getDragEl();
-      Dom.setStyle(el, "opacity", 0.57); // The proxy is slightly transparent
-      this.setHandleElId(handleId);
-      this.parent = parentId;
-      this.goingUp = false;
-      this.lastY = 0;
-      this.itemClass = itemClass;
-      this.parentClass = 'team_list';
-    };
-
-    YAHOO.extend(YAHOO.example.DDList, YAHOO.util.DDProxy, {
-  
-      startDrag: function(x, y) {
-          // make the proxy look like the source element
-          var dragEl = this.getDragEl();
-          var clickEl = this.getEl();
-          Dom.setStyle(clickEl, "visibility", "hidden");
-  
-          dragEl.innerHTML = clickEl.innerHTML;
-  
-          Dom.setStyle(dragEl, "color", Dom.getStyle(clickEl, "color"));
-          Dom.setStyle(dragEl, "backgroundColor", Dom.getStyle(clickEl, "backgroundColor"));
-          Dom.setStyle(dragEl, "font-size", Dom.getStyle(clickEl, "font-size"));
-          Dom.setStyle(dragEl, "font-family", Dom.getStyle(clickEl, "font-family"));
-          Dom.setStyle(dragEl, "border", "2px solid gray");
-          // onStartDragCallback(clickEl, dragEl, this.parent);
-      },
-  
-      endDrag: function(e) {
-  
-          var srcEl = this.getEl();
-          var proxy = this.getDragEl();
-  
-          // Show the proxy element and animate it to the src element's location
-          Dom.setStyle(proxy, "visibility", "");
-          var a = new YAHOO.util.Motion( 
-              proxy, { 
-                  points: { 
-                      to: Dom.getXY(srcEl)
-                  }
-              }, 
-              0.2, 
-              YAHOO.util.Easing.easeOut 
-          )
-          var proxyid = proxy.id;
-          var thisid = this.id;
-  
-          // Hide the proxy and show the source element when finished with the animation
-          a.onComplete.subscribe(function() {
-                  Dom.setStyle(proxyid, "visibility", "hidden");
-                  Dom.setStyle(thisid, "visibility", "");
-              });
-          a.animate();
-          onEndDragCallback(srcEl, proxy, this.parent);
-      },
-  
-      onDragDrop: function(e, id) {
-  
-          // If there is one drop interaction, the item was dropped either on the list,
-          // or it was dropped on the current location of the source element.
-          if (DDM.interactionInfo.drop.length === 1) {
-  
-              // The position of the cursor at the time of the drop (YAHOO.util.Point)
-              var pt = DDM.interactionInfo.point; 
-  
-              // The region occupied by the source element at the time of the drop
-              var region = DDM.interactionInfo.sourceRegion; 
-  
-              // Check to see if we are over the source element's location.  We will
-              // append to the bottom of the list once we are sure it was a drop in
-              // the negative space (the area of the list without any list items)
-              var parent = null
-              if (!region.intersect(pt)) {
-                  var destEl = Dom.get(id);
-                  var destDD = DDM.getDDById(id);
-                  parent = destEl.getElementsByClassName(this.parentClass)[0]
-                  parent.appendChild(this.getEl());
-                  destDD.isEmpty = false;
-                  DDM.refreshCache();
-              }
-              onDragDropCallback(Dom.get(id), parent);
-  
-          }
-      },
-  
-      onDrag: function(e) {
-  
-          // Keep track of the direction of the drag for use during onDragOver
-          var y = Event.getPageY(e);
-  
-          if (y < this.lastY) {
-              this.goingUp = true;
-          } else if (y > this.lastY) {
-              this.goingUp = false;
-          }
-  
-          this.lastY = y;
-      },
-  
-      onDragOver: function(e, id) {
-      
-          var srcEl = this.getEl();
-          var destEl = Dom.get(id);
-  
-          // We are only concerned with list items, we ignore the dragover
-          // notifications for the list.
-          if (destEl.className == this.itemClass) {
-              var orig_p = srcEl.parentNode;
-              var p = destEl.parentNode;
-  
-              if (this.goingUp) {
-                  p.insertBefore(srcEl, destEl); // insert above
-              } else {
-                  p.insertBefore(srcEl, destEl.nextSibling); // insert below
-              }
-              onDragOverCallback(destEl, this.getDragEl(), this.goingUp);
-
-              DDM.refreshCache();
-          }
-      }
-    });
-
-    Event.onDOMReady(YAHOO.example.TeamApp.init, YAHOO.example.ScheduleApp, true);
-    
-  })();
-
-  //]]>
-  </script>
-
-EOF;
-  return $html;
-}
+    }"]);
 
 showPage($title, $html);
 ?>

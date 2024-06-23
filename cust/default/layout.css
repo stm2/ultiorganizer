@@ -554,6 +554,26 @@ img.draghandle {
   display:inline;
 }
 
+div.team_list {
+  border: thin solid var(--softbordercolor, #464646);
+  background-color: var(--draglistcolor, #f7f7f7);
+  min-height: 8rem;
+}
+
+table.team_list {
+  width: 100%;
+}
+
+td.placeholder {
+  min-height: 8rem;
+  height: 8rem;
+  border: thin dotted var(--attentioncolor, #ffb6c1);
+}
+
+table tr:not(:first-child) td.placeholder {
+  display: none;
+}
+
 ul.draglist, ol.draglist, ul.time_list, ul.team_list, select.series_select {
   font-size: .8rem;
   position: relative;

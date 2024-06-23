@@ -1724,3 +1724,50 @@ function addMnemonic(&$cat, $name, &$mnemonics, $maxlen = 3) {
     }
   }
 }
+
+function getDragDropApp(array $targets, array $listItems, array $callbacks = []) {
+  $html = "<script src='" . BASEURL . "/script/drag_drop_util.js'></script>\n";
+  
+  $html .= <<<EOF
+  <script type="text/javascript">
+  //<![CDATA[
+  
+  ${callbacks['appContent']}
+  
+  var dragData = {
+     targets : [
+     
+EOF;
+  
+  foreach ($targets as $target) {
+    $html .= "    \"$target\",\n";
+  }
+  $html .= "],\nitems : [\n";
+  foreach ($listItems as $item) {
+    $html .= " { id: \"{$item['id']}\", hId: \"{$item['hId']}\", parent: \"{$item['parent']}\", itemClass: \"{$item['item_class']}\" },\n";
+  }
+  
+  $onStartDrag = $callbacks['startDrag'] ?? "function(){}";
+  $onEndDrag = $callbacks['endDrag'] ?? "function(){}";
+  $onDragOver = $callbacks['dragOver'] ?? "function(){}";
+  $onDragDrop = $callbacks['dragDrop'] ?? "function(){}";
+  
+  $html .= <<< EOF
+     ],
+     parentClass: 'dd_target',
+     handler: {
+       onStartDrag: $onStartDrag,
+       onEndDrag: $onEndDrag,
+       onDragOver: $onDragOver,
+       onDragDrop: $onDragDrop,
+    }
+  };
+  
+  UO.DDUtil(dragData);
+  
+  //]]>
+  </script>
+  
+EOF;
+  return $html;
+}
