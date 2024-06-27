@@ -792,7 +792,8 @@ class EventDataXMLHandler {
           $this->debug .= $query . "\n";
         } else {
           DBQueryInsert($query);
-
+          Log1("season", "add", $newId);
+          
           AddEditSeason($_SESSION['uid'], $newId);
           AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:' . $newId, $newId);
         }
@@ -1020,7 +1021,17 @@ class EventDataXMLHandler {
       $this->debug .= $query . ":" . (++$this->mockId) . "\n";
       return $this->mockId;
     } else {
-      return DBQueryInsert($query, $ignore);
+      $ret = DBQueryInsert($query, $ignore);
+      if ($ret > 0) {
+        switch ($name) {
+          case 'uo_series': Log1("series", "add", $ret); break;
+          case 'uo_team': Log1("team", "add", $ret); break;
+          case 'uo_player': Log1("player", "add", $ret, $row["team"]); break;
+          case 'uo_pool': Log1("pool", "add", $ret); break;
+          case 'uo_game': Log1("game", "add", $ret); break;
+        }
+      }
+      return $ret;
     }
   }
 
