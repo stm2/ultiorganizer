@@ -10,7 +10,7 @@ $body = @file_get_contents('php://input');
 
 $season = "";
 $serieses = array();
-$response = "";
+$response1 = "";
 
 $places = explode("|", $body);
 $saveErrors = array();
@@ -32,7 +32,7 @@ foreach ($places as $placeGameStr) {
       $duration = gameDuration($gameInfo);
       $gameEnd += $duration * 60;
       if ($gameEnd > $resEnd) {
-        $response .= "<p>" .
+        $response1 .= "<p>" .
           sprintf(_("Game %s exceeds reserved time %s."), GameName($gameInfo), ShortTimeFormat($resInfo['endtime'])) .
           "</p>";
       }
@@ -57,60 +57,61 @@ foreach ($places as $placeGameStr) {
   }
 }
 if (!empty($saveErrors)) {
-  $response .= "<p>";
+  $response1 .= "<p>";
   foreach ($saveErrors as $err) {
-    $response .= sprintf(_("Game %s could not be scheduled."), $err['game']) . "<br />";
+    $response1 .= sprintf(_("Game %s could not be scheduled."), $err['game']) . "<br />";
   }
-  $response .= "</p>";
+  $response1 .= "</p>";
 }
 
+$response2 = '';
 if ($season) {
-  $movetimes = TimetableMoveTimes($season);
+//   $movetimes = TimetableMoveTimes($season);
   foreach ($serieses as $series => $dummy) {
     $conflicts = TimetableIntraPoolConflicts($season, $series);
 
     foreach ($conflicts as $conflict) {
-      if (!empty($conflict['time2']) && !empty($conflict['time1'])) {
-        if (strtotime($conflict['time1']) + $conflict['slot1'] * 60 +
-          TimetableMoveTime($movetimes, $conflict['location1'], $conflict['field1'], $conflict['location2'],
-            $conflict['field2']) > strtotime($conflict['time2'])) {
+//       if (!empty($conflict['time2']) && !empty($conflict['time1'])) {
+//         if (strtotime($conflict['time1']) + $conflict['slot1'] * 60 +
+//           TimetableMoveTime($movetimes, $conflict['location1'], $conflict['field1'], $conflict['location2'],
+//             $conflict['field2']) > strtotime($conflict['time2'])) {
           $game1 = GameInfo($conflict['game1']);
           $game2 = GameInfo($conflict['game2']);
-          $response .= "<p>" .
+          $response2 .= "<p>" .
             sprintf(_("Warning: Game %s (%d, pool %d) has a scheduling conflict with %s (%d, pool %d).") . "</p>",
               utf8entities(GameName($game2)), (int) $game2['game_id'], (int) $game2['pool'],
               utf8entities(GameName($game1)), (int) $game1['game_id'], (int) $game1['pool']) . "</p>";
           break;
-        }
-      }
+//         }
+//       }
     }
 
-    if (empty($response)) {
+    if (empty($response2)) {
       $conflicts = TimetableInterPoolConflicts($season, $series);
 
       foreach ($conflicts as $conflict) {
-        if (!empty($conflict['time2']) && !empty($conflict['time1'])) {
-          if (strtotime($conflict['time1']) + $conflict['slot1'] * 60 +
-            TimetableMoveTime($movetimes, $conflict['location1'], $conflict['field1'], $conflict['location2'],
-              $conflict['field2']) > strtotime($conflict['time2'])) {
+//         if (!empty($conflict['time2']) && !empty($conflict['time1'])) {
+//           if (strtotime($conflict['time1']) + $conflict['slot1'] * 60 +
+//             TimetableMoveTime($movetimes, $conflict['location1'], $conflict['field1'], $conflict['location2'],
+//               $conflict['field2']) > strtotime($conflict['time2'])) {
             $game1 = GameInfo($conflict['game1']);
             $game2 = GameInfo($conflict['game2']);
-            $response .= "<p>" .
-              sprintf(_("Warning: Game %s has a scheduling conflict with %s."), utf8entities(GameName($game2)),
-                utf8entities(GameName($game1))) . "</p>";
+            $response2 .= "<p>" .
+              sprintf(_("Warning: Game %s (%d, pool %d) has a pool scheduling conflict with %s (%d pool %d)."), utf8entities(GameName($game2)), (int) $game2['game_id'], (int) $game2['pool'], 
+                utf8entities(GameName($game1)), (int) $game1['game_id'], (int) $game1['pool']) . "</p>";
             break;
-          }
-        }
+//           }
+//         }
       }
     }
   }
 }
 
-if (!empty($response)) {
+if (!empty($response1) || !empty($response2)) {
   if ($saveErrors) {
-    echo "<p>" . _("Some games were not saved! Errors:") . "</p>\n" . $response;
+    echo "<p>" . _("Some games were not saved! Errors:") . "</p>\n" . $response1 . $response2;
   } else {
-    echo "<p>" . _("Schedule saved with errors:") . "</p>\n" . $response;
+    echo "<p>" . _("Schedule saved with errors:") . "</p>\n" . $response1 . $response2;
   }
   responseValue(-1);
 } else {

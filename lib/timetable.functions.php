@@ -944,7 +944,8 @@ function TimetableIntraPoolConflicts($season, $series=null) {
       g2.scheduling_name_home as scheduling_home2, g2.scheduling_name_visitor as scheduling_visitor2, 
       g1.reservation as reservation1, g2.reservation as reservation2, g1.time as time1, g2.time as time2, 
       p1.timeslot as slot1, p2.timeslot as slot2, 
-      res1.location location1, res1.fieldname as field1, res2.location as location2, res2.fieldname as field2  
+      res1.location location1, res1.fieldname as field1, res2.location as location2, res2.fieldname as field2,
+      mt.time as moving_time
       FROM uo_game as g1
       LEFT JOIN uo_game as g2 ON ((g1.hometeam=g2.hometeam OR g1.visitorteam = g2.visitorteam OR g1.hometeam=g2.visitorteam OR g1.visitorteam = g2.hometeam) AND g1.game_id != g2.game_id )
       LEFT JOIN uo_pool as p1 ON (p1.pool_id = g1.pool)
@@ -953,13 +954,16 @@ function TimetableIntraPoolConflicts($season, $series=null) {
       LEFT JOIN uo_reservation as res2 ON (res2.id = g2.reservation)
       LEFT JOIN uo_series as ser1 ON (ser1.series_id = p1.series)
       LEFT JOIN uo_series as ser2 ON (ser2.series_id = p2.series)
+      LEFT JOIN uo_movingtime mt ON (res1.location = mt.fromlocation AND res1.fieldname = mt.fromfield AND res2.location = mt.tolocation AND res2.fieldname = mt.tofield AND mt.season = '%1\$s')
       WHERE g1.reservation IS NOT NULL AND g2.reservation IS NOT NULL 
-      AND ser1.season = '%s' AND ser2.season = '%s'" . 
-      (($series != null) ? " AND ser1.series_id = %d AND ser2.series_id = %d " : "") .
+      AND ser1.season = '%1\$s' AND ser2.season = '%1\$s'" . 
+      (($series != null) ? " AND ser1.series_id = %2\$d AND ser2.series_id = %2\$d " : "") .
       " AND g1.time <= g2.time
+      AND g1.time IS NOT NULL AND g2.time IS NOT NULL 
+      AND g1.time + INTERVAL IFNULL(mt.time, 0) MINUTE + INTERVAL IFNULL(p1.timeslot,0) MINUTE > g2.time
       ORDER BY time2 ASC, time1 ASC",
-      mysql_adapt_real_escape_string($season), mysql_adapt_real_escape_string($season),
-      (int) $series, (int) $series);
+        mysql_adapt_real_escape_string($season), 
+        (int) $series);
   return DBQueryToArray($query);
 }
 
@@ -971,7 +975,7 @@ function TimetableInterPoolConflicts($season, $series=null) {
       g1.reservation as reservation1, g2.reservation as reservation2, g1.time as time1, g2.time as time2, 
       p1.timeslot as slot1, p2.timeslot as slot2, 
       res1.location location1, res1.fieldname as field1, res2.location as location2, res2.fieldname as field2
-      FROM uo_moveteams as mv
+      FROM (SELECT frompool,topool FROM uo_moveteams GROUP BY frompool, topool) as mv
       LEFT JOIN uo_game as g1 ON (g1.pool = mv.frompool)
       LEFT JOIN uo_game as g2 ON (g2.pool = mv.topool AND g1.game_id != g2.game_id )
       LEFT JOIN uo_pool as p1 ON (p1.pool_id = g1.pool)
@@ -980,13 +984,15 @@ function TimetableInterPoolConflicts($season, $series=null) {
       LEFT JOIN uo_reservation as res2 ON (res2.id = g2.reservation)
       LEFT JOIN uo_series as ser1 ON (ser1.series_id = p1.series)
       LEFT JOIN uo_series as ser2 ON (ser2.series_id = p2.series)
-      WHERE ser1.season = '%s' AND ser2.season = '%s'" .
-      (($series != null) ? " AND ser1.series_id = %d AND ser2.series_id = %d " : "") .
-      " AND (g1.hometeam IS NULL OR g1.visitorteam IS NULL OR g2.hometeam IS NULL OR g2.visitorteam IS NULL OR
+      LEFT JOIN uo_movingtime mt ON (res1.location = mt.fromlocation AND res1.fieldname = mt.fromfield AND res2.location = mt.tolocation AND res2.fieldname = mt.tofield AND mt.season = '%1\$s')
+      WHERE ser1.season = '%1\$s' AND ser2.season = '%1\$s'" .
+      (($series != null) ? " AND ser1.series_id = %2\$d AND ser2.series_id = %2\$d " : "") . "
+      AND (g1.hometeam IS NULL OR g1.visitorteam IS NULL OR g2.hometeam IS NULL OR g2.visitorteam IS NULL OR
           (g1.hometeam=g2.hometeam OR g1.visitorteam = g2.visitorteam OR g1.hometeam=g2.visitorteam OR g1.visitorteam = g2.hometeam))
+      AND g1.time IS NOT NULL AND g2.time IS NOT NULL
+      AND g1.time + INTERVAL IFNULL(p1.timeslot,0) MINUTE + INTERVAL IFNULL(mt.time, 0) MINUTE > g2.time
       ORDER BY time2 ASC, time1 ASC",
-      mysql_adapt_real_escape_string($season), mysql_adapt_real_escape_string($season),
-      (int) $series, (int) $series);
+      mysql_adapt_real_escape_string($season), (int) $series);
   return DBQueryToArray($query);
 }
 
