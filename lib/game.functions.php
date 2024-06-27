@@ -4,32 +4,33 @@ include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix.'lib/twitter.functions.php';
 
-function GameSetPools($games) {
-	$query = "SELECT DISTINCT pool_id, p.name from uo_game g left join uo_pool p on (g.pool=p.pool_id) WHERE g.game_id in (";
-	$query .= implode(",", $games);
-	$query .= ") ORDER BY p.ordering ASC";
-	$result = mysql_adapt_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	$ret = array();
-	while ($row = mysqli_fetch_assoc($result)){
-		$ret[$row['pool_id']] = $row;
-	}
-	return $ret;
-}
+// FIXME does not set anything
+// function GameSetPools($games) {
+// 	$query = "SELECT DISTINCT pool_id, p.name from uo_game g left join uo_pool p on (g.pool=p.pool_id) WHERE g.game_id in (";
+// 	$query .= implode(",", $games);
+// 	$query .= ") ORDER BY p.ordering ASC";
+// 	$result = mysql_adapt_query($query);
+// 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+// 	$ret = array();
+// 	while ($row = mysqli_fetch_assoc($result)){
+// 		$ret[$row['pool_id']] = $row;
+// 	}
+// 	return $ret;
+// }
 
-function PoolGameSetResults($pool, $games) {
-	$query = sprintf("SELECT time, k.name As hometeamname, v.name As visitorteamname, p.*,s.name AS gamename
-		FROM uo_game AS p 
-		LEFT JOIN uo_team As k ON (p.hometeam=k.team_id) 
-		LEFT JOIN uo_team AS v ON (p.visitorteam=v.team_id)
-		LEFT JOIN uo_scheduling_name s ON(s.scheduling_id=p.name)
-		WHERE p.game_id IN (%s) AND pool=%d",
-		mysql_adapt_real_escape_string(implode(",", $games)),
-		(int)$pool);
-	$result = mysql_adapt_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	return $result;
-}
+// function PoolGameSetResults($pool, $games) {
+// 	$query = sprintf("SELECT time, k.name As hometeamname, v.name As visitorteamname, p.*,s.name AS gamename
+// 		FROM uo_game AS p 
+// 		LEFT JOIN uo_team As k ON (p.hometeam=k.team_id) 
+// 		LEFT JOIN uo_team AS v ON (p.visitorteam=v.team_id)
+// 		LEFT JOIN uo_scheduling_name s ON(s.scheduling_id=p.name)
+// 		WHERE p.game_id IN (%s) AND pool=%d",
+// 		mysql_adapt_real_escape_string(implode(",", $games)),
+// 		(int)$pool);
+// 	$result = mysql_adapt_query($query);
+// 	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+// 	return $result;
+// }
 
 function GameResult($gameId) {
   $query = sprintf("
@@ -1054,6 +1055,7 @@ function GameSetStartingTeam($gameId, $home) {
 	} else { die('Insufficient rights to edit game'); }
 }
 
+// FIXME unused, does not handle NULL values
 function AddGame($params) {
 	$poolinfo = PoolInfo($params['pool']);
 	if (hasEditGamesRight($poolinfo['series'])) {
@@ -1164,32 +1166,19 @@ function SetGame($gameId, $params) {
  * Swap home and visitor teams and results.
  */
 function GameChangeHome($gameId) {
-	$series = GameSeries($gameId);
-	if (hasEditGamesRight($series)) {
+  $series = GameSeries($gameId);
+  if (hasEditGamesRight($series)) {
 
-	  $query = sprintf("SELECT hometeam,visitorteam,respteam, homescore,visitorscore, scheduling_name_home, scheduling_name_visitor FROM uo_game
-					WHERE game_id=%d",
-					(int)$gameId);
-	  $game = DBQueryToRow($query);
-					
-      $query = sprintf("UPDATE uo_game SET hometeam=%d,visitorteam=%d,homescore=%d,visitorscore=%d, scheduling_name_home=%d, scheduling_name_visitor=%d
-					WHERE game_id=%d",
-                    (int) $game['visitorteam'],
-                    (int) $game['hometeam'],
-                    (int) $game['visitorscore'],
-                    (int) $game['homescore'],
-                    (int) $game['scheduling_name_visitor'],
-                    (int) $game['scheduling_name_home'],
-					(int)$gameId);
-			
-			DBQuery($query);
-		if($game['hometeam']==$game['respteam']){
-		   $query = sprintf("UPDATE uo_game SET respteam=%d	WHERE game_id=%d",
-                    (int) $game['visitorteam'],
-					(int)$gameId);
-		  DBQuery($query);
-		}
-	} else { die('Insufficient rights to delete game'); }
+    $query = sprintf("UPDATE uo_game g1, uo_game g2 
+      SET g1.hometeam = g2.visitorteam, g1.visitorteam=g2.hometeam,
+          g1.homescore = g2.visitorscore, g1.visitorscore=g2.homescore,
+          g1.scheduling_name_home = g2.scheduling_name_visitor, g2.scheduling_name_visitor = g2.scheduling_name_home
+      WHERE g1.game_id = g2.game_id AND g1.game_id = %d", (int) $gameId);
+    
+    DBQuery($query);
+  } else {
+    die('Insufficient rights to delete game');
+  }
 }
 
 function GameChangeName($gameId, $name){

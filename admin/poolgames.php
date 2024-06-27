@@ -81,7 +81,7 @@ if (!empty($_POST['remove_x'])) {
   if ($ok)
     DeleteGame($id);
 } elseif (!empty($_POST['swap_x'])) {
-  $id = $_POST['hiddenDeleteId'];
+  $id = $_POST['hiddenSwapId'];
   $goals = GameAllGoals($id);
   if (!mysqli_num_rows($goals)) {
     GameChangeHome($id);
@@ -393,7 +393,7 @@ if (count($games)) {
     }
     $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaValue&amp;game=" . $row['game_id'] . "'>" .
       _("edit") . "</a></td>";
-    $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->') .
+    $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenSwapId', 'images/swap.png', '<->') .
       "</td>";
     $html .= "<td class='center'>" . getDeleteButton('remove', $row['game_id']) . "</td>";
     $html .= "</tr>\n";
@@ -415,7 +415,7 @@ if (count($games)) {
       "</td><td style='width:2%'>-</td><td style='width:5%'>" . intval($row['visitorscore']) . "</td>";
     $html .= "<td class='center'><a href='?view=admin/editgame&amp;season=$seaValue&amp;game=" . $row['game_id'] . "'>" .
       _("edit") . "</a></td>";
-    $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenDeleteId', 'images/swap.png', '<->') .
+    $html .= "<td class='center'>" . getDeleteButton('swap', $row['game_id'], 'hiddenSwapId', 'images/swap.png', '<->') .
       "</td>";
     $html .= "<td class='center'>" . getDeleteButton('removemoved', $row['game_id']) . "</td>";
     $html .= "</tr>\n";
@@ -469,6 +469,7 @@ if (!$poolInfo['played'] && $hasGames) {
 
 // stores id to delete
 $html .= "<p>" . getHiddenInput(null, 'hiddenDeleteId', 'hiddenDeleteId') . "</p>";
+$html .= "<p>" . getHiddenInput(null, 'hiddenSwapId', 'hiddenSwapId') . "</p>";
 $html .= "</form>\n";
 
 $html .= "<hr><p><a href='?view=admin/seasonpools&amp;season=$seaValue'&series=" . $poolInfo['series'] . ">" . _("Pools") . "</a></p>";
