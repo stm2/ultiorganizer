@@ -115,6 +115,11 @@ td {
   font-weight: bold;
 }
 
+.menuserieslevel.invalid {
+  font-style: italic;
+  filter: brightness(80%);
+}
+
 .menupoollevel {
   font-size: 1.1rem;
 }

@@ -869,6 +869,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
         if (SeriesInfo($series)['valid'] == 0 && !hasEditSeriesRight($series)) {
           continue;
         }
+        $isValid = SeriesInfo($series)['valid'] == 0?' invalid':'';
         if ($lastseason != $season) {
           $lastseason = $season;
           echo "<tr class='menulevel0'><th $colspan class='menuseasonlevel'><a class='seasonnav' href='?view=teams&amp;season=" .
@@ -884,7 +885,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
         if ($lastseries != $series) {
           $lastseries = $series;
           $onclick = "onclick='LeftMenu.toggle(\"seriesNav" . $series . "\");'";
-          echo "<tr class='menulevel1'><td class='menuserieslevel' id='seriesNav" . $series . "'>";
+          echo "<tr class='menulevel1'><td class='menuserieslevel$isValid' id='seriesNav" . $series . "'>";
           echo "<a href='#$series' class='subnav' $onclick>";
           // echo "<a class='subnav' href='?view=poolstatus&amp;series=" . $series . "'>";
           echo utf8entities(U_($row['series_name']));
