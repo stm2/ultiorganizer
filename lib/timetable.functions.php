@@ -452,39 +452,52 @@ function SeriesAndPoolHeaders($info, &$lines=null){
 
 function GameRow($game, $date = false, $time = true, $field = true, $series = false, $pool = false, $info = true,
   $rss = false, $media = true, $history = true, $extra = null, $gamename = true, $emphwinner = false) {
-  $datew = 'max-width:60px';
-  $timew = 'max-width:40px';
-  $fieldw = 'max-width:60px';
-  $teamw = 'max-width:120px';
-  $againstmarkw = 'max-width:5px';
-  $seriesw = 'max-width:80px';
-  $poolw = 'max-width:130px';
-  $scoresw = 'max-width:15px';
-  $infow = 'max-width:80px';
-  $gamenamew = 'max-width:50px';
-  $mediaw='max-width:40px';
+//   $datew = 'max-width:60px';
+//   $timew = 'max-width:40px';
+//   $fieldw = 'max-width:60px';
+//   $teamw = 'max-width:120px';
+//   $againstmarkw = 'max-width:5px';
+//   $seriesw = 'max-width:80px';
+//   $poolw = 'max-width:130px';
+//   $scoresw = 'max-width:15px';
+//   $infow = 'max-width:80px';
+//   $gamenamew = 'max-width:50px';
+//   $mediaw='max-width:40px';
+  
+  $datew='';
+  $timew = '';
+  $fieldw = '';
+  $teamw = '';
+  $againstmarkw = '';
+  $seriesw = '';
+  $poolw = '';
+  $scoresw = '';
+  $infow = '';
+  $gamenamew = '';
+  $mediaw='';
   
   $td = $game?"td":"th";
 
-  $ret = "<tr style='width:100%'>\n";
+  $ret = "<tr style=''>\n";
   
   if($date){
-    $date = $game?ShortDate($game['time']):_("Date");
-    $ret .= "<$td style='$datew'><span>$date</span></$td>\n";
+//     $date = $game?ShortDate($game['time']):_("Date");
+    $date = $game?JustDate($game['time']):_("Date");
+    $ret .= "<$td style='$datew' class='datecol'><span>$date</span></$td>\n";
   }
 
   if($time){
     $time = $game?DefHourFormat($game['time']):_("Time");
-    $ret .= "<$td style='$timew'><span>$time</span></$td>\n";
+    $ret .= "<$td style='$timew' class='timecol'><span>$time</span></$td>\n";
   }
 
   if($field){
     if (!$game) {
-      $ret .= "<$td style='$fieldw'>" . _("Field") . "</$td>\n";
+      $ret .= "<$td style='$fieldw' class='fieldcol'>" . _("Field") . "</$td>\n";
     } elseif (!empty($game['fieldname'])) {
-      $ret .= "<td style='$fieldw'><span>" . _("Field") . " " . utf8entities($game['fieldname']) . "</span></td>\n";
+      $ret .= "<td style='$fieldw' class='fieldcol'><span>" . _("Field") . " " . utf8entities($game['fieldname']) . "</span></td>\n";
     } else {
-      $ret .= "<td style='$fieldw'></td>\n";
+      $ret .= "<td style='$fieldw' class='fieldcol'></td>\n";
     }
   }
 
@@ -506,63 +519,63 @@ function GameRow($game, $date = false, $time = true, $field = true, $series = fa
   }
   
   if (!$game) {
-    $ret .= "<$td style='$teamw'><span class='schedulingname'>". utf8entities(_("Home")) ."</span></$td>\n";
+    $ret .= "<$td style='$teamw' class='teamcol'><span class='schedulingname'>". utf8entities(_("Home")) ."</span></$td>\n";
   }elseif($game['hometeam']){
-    $ret .= "<td style='$teamw'><span class='homename$hbye$hwinner'>". utf8entities($game['hometeamname']) ."</span></td>\n";
+    $ret .= "<td style='$teamw' class='teamcol'><span class='homename$hbye$hwinner'>". utf8entities($game['hometeamname']) ."</span></td>\n";
   }else {
-    $ret .= "<td style='$teamw'><span class='schedulingname'>". utf8entities(U_($game['phometeamname'])) ."</span></td>\n";
+    $ret .= "<td style='$teamw' class='teamcol'><span class='schedulingname'>". utf8entities(U_($game['phometeamname'])) ."</span></td>\n";
   }
 
-  $ret .= "<td style='$againstmarkw'>-</td>\n";
+  $ret .= "<td style='$againstmarkw' class='againstcol'>-</td>\n";
 
   if (!$game) {
-    $ret .= "<$td style='$teamw'><span class='schedulingname'>". utf8entities(_("Away")) ."</span></$td>\n";
+    $ret .= "<$td style='$teamw' class='teamcol'><span class='schedulingname'>". utf8entities(_("Away")) ."</span></$td>\n";
   } elseif($game['visitorteam']){
-    $ret .= "<td style='$teamw'><span class='visitorname$vbye$vwinner'>". utf8entities($game['visitorteamname']) ."</span></td>\n";
+    $ret .= "<td style='$teamw' class='teamcol'><span class='visitorname$vbye$vwinner'>". utf8entities($game['visitorteamname']) ."</span></td>\n";
   }else{
-    $ret .= "<td style='$teamw'><span class='schedulingname'>". utf8entities(U_($game['pvisitorteamname'])) ."</span></td>\n";
+    $ret .= "<td style='$teamw' class='teamcol'><span class='schedulingname'>". utf8entities(U_($game['pvisitorteamname'])) ."</span></td>\n";
   }
 
   if($series){
     $series = $game?utf8entities(U_($game['seriesname'])):_("Division");
-    $ret .= "<$td style='$seriesw'><span>$series</span></$td>\n";
+    $ret .= "<$td style='$seriesw' class='seriescol'><span>$series</span></$td>\n";
   }
 
   if($pool){
     $pool = $game?utf8entities(U_($game['poolname'])):_("Pool");
-    $ret .= "<$td style='$poolw'><span>$pool</span></$td>\n";
+    $ret .= "<$td style='$poolw' class='poolcol'><span>$pool</span></$td>\n";
   }
 
   if (!$game) {
-    $ret .= "<th colspan='3'><span>". _("Result") . "</span></th>\n";
+    $ret .= "<th colspan='3' class='rescol'><span>". _("Result") . "</span></th>\n";
   } elseif(!GameHasStarted($game))	{
-    $ret .= "<td style='$scoresw'><span>?</span></td>\n";
-    $ret .= "<td style='$againstmarkw'><span>-</span></td>\n";
-    $ret .= "<td style='$scoresw'><span>?</span></td>\n";
+    $ret .= "<td style='$scoresw' class='reshomecol'><span>?</span></td>\n";
+    $ret .= "<td style='$againstmarkw' class='againstcol'><span>-</span></td>\n";
+    $ret .= "<td style='$scoresw' class='resawaycol'><span>?</span></td>\n";
   }else{
     if ($game ['isongoing']) {
-      $ret .= "<td style='$scoresw'><span><em>" . intval ( $game ['homescore'] ) . "</em></span></td>\n";
-      $ret .= "<td style='$againstmarkw'><span>-</span></td>\n";
-      $ret .= "<td style='$scoresw'><span><em>" . intval ( $game ['visitorscore'] ) . "</em></span></td>\n";
+      $ret .= "<td style='$scoresw' class='reshomecol'><span><em>" . intval ( $game ['homescore'] ) . "</em></span></td>\n";
+      $ret .= "<td style='$againstmarkw' class='againstcol'><span>-</span></td>\n";
+      $ret .= "<td style='$scoresw' class='resawaycol'><span><em>" . intval ( $game ['visitorscore'] ) . "</em></span></td>\n";
     } else {
-      $ret .= "<td style='$scoresw'><span>" . intval ( $game ['homescore'] ) . "</span></td>\n";
-      $ret .= "<td style='$againstmarkw'><span>-</span></td>\n";
-      $ret .= "<td style='$scoresw'><span>" . intval ( $game ['visitorscore'] ) . "</span></td>\n";
+      $ret .= "<td style='$scoresw' class='reshomecol'><span>" . intval ( $game ['homescore'] ) . "</span></td>\n";
+      $ret .= "<td style='$againstmarkw' class='againstcol'><span>-</span></td>\n";
+      $ret .= "<td style='$scoresw' class='resawaycol'><span>" . intval ( $game ['visitorscore'] ) . "</span></td>\n";
     }
   }
 
   if ($gamename) {
     if ($game && $game['gamename']) {
-      $ret .= "<td style='$gamenamew'><span>" . utf8entities(U_($game['gamename'])) . "</span></td>\n";
+      $ret .= "<td style='$gamenamew' class='gamenamecol'><span>" . utf8entities(U_($game['gamename'])) . "</span></td>\n";
     } else {
-      $ret .= "<$td style='$gamenamew'></$td>\n";
+      $ret .= "<$td style='$gamenamew' class='gamenamecol'></$td>\n";
     }
   }
 
   if ($media) {
     if ($game) {
       $urls = GetMediaUrlList("game", $game['game_id'], "live");
-      $ret .= "<td style='$mediaw;white-space: nowrap;'>";
+      $ret .= "<td style='$mediaw;white-space: nowrap;' class='mediacol'>";
       if (count($urls) && (intval($game['isongoing']) || !GameHasStarted($game))) {
         foreach ($urls as $url) {
           $title = $url['name'];
@@ -575,7 +588,7 @@ function GameRow($game, $date = false, $time = true, $field = true, $series = fa
       }
       $ret .= "</td>\n";
     } else {
-      $ret .= "<th></th>\n";
+      $ret .= "<th class='mediacol'></th>\n";
     }
   }
 
@@ -588,29 +601,29 @@ function GameRow($game, $date = false, $time = true, $field = true, $series = fa
 
         $xgames = GetAllPlayedGames($t1,$t2, $game['type'], "");
         if(mysqli_num_rows($xgames)>0){
-          $ret .= "<td class='right' style='$infow'><span style='white-space: nowrap'>";
+          $ret .= "<td class='infocolright' style='$infow'><span style='white-space: nowrap'>";
           $ret .= "<a href='?view=gamecard&amp;team1=". utf8entities($game['hometeam']) ."&amp;team2=". utf8entities($game['visitorteam']) . "'>";
           $ret .=  _("Game history")."</a></span></td>\n";
         }else{
-          $ret .= "<td class='left' style='$infow'></td>\n";
+          $ret .= "<td class='infocol left' style='$infow'></td>\n";
         }
       }else{
-        $ret .= "<td class='left' style='$infow'></td>\n";
+        $ret .= "<td class='infocol left' style='$infow'></td>\n";
       }
     }else{
       if(!intval($game['isongoing'])){
         if(isset($game['scoresheet']) && intval($game['scoresheet'])){
-          $ret .= "<td class='right' style='$infow'><span>&nbsp;<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>";
+          $ret .= "<td class='playcol right' style='$infow'><span>&nbsp;<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>";
           $ret .= _("Game play") ."</a></span></td>\n";
         }else{
           $ret .= "<td class='left' style='$infow'></td>\n";
         }
       }else{
         if(isset($game['scoresheet']) && intval($game['scoresheet'])){
-          $ret .= "<td class='right' style='$infow'><span>&nbsp;&nbsp;<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>";
+          $ret .= "<td class='playcol right' style='$infow'><span>&nbsp;&nbsp;<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>";
           $ret .= _("Ongoing") ."</a></span></td>\n";
         }else{
-          $ret .= "<td class='right' style='$infow'>&nbsp;&nbsp;"._("Ongoing")."</td>\n";
+          $ret .= "<td class='playcol right' style='$infow'>&nbsp;&nbsp;"._("Ongoing")."</td>\n";
         }
         	
       }
