@@ -193,7 +193,7 @@ function LocationInput($id, $group, $value, $label, $location) {
 }
 
 function LocationInput2($id, $group, $value, $location) {
-  $html = "<input type='hidden'  name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>\n";
+  $html = "<input type='hidden' name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>\n";
   $html .= "<div id='${id}Autocomplete' class='yui-skin-sam'>\n";
   $html .= "<input class='input' id='${id}Name' style='position:relative;' type='text' name='${id}Name' value='";
   $html .= utf8entities($value);

@@ -119,7 +119,9 @@ addHeaderCallback(function () {
 $html .= "<form action='?view=admin/locations&amp;season=$season' method='post'>\n";
 $html .= "<label>" . _("Name or address") . ": <input class='input' name='search' value=''/></label>\n";
 $html .= "<input class='button' type='submit' name='searchbutton' value='" . _("Search") . "'/>\n"; // searchByNameandaddress
-$html .= "<input class='button' type='submit' name='addbutton' value='" . _('Add') . "'/>"; // addLocation
+if (isSeasonAdmin($season)) {
+  $html .= "<input class='button' type='submit' name='addbutton' value='" . _('Add') . "'/>"; // addLocation
+}
 $html .= "</form>\n";
 $html .= "<br/><br/>";
 
@@ -189,8 +191,10 @@ if ($mode == 'search') {
     "'/></td></tr>\n";
   $html .= "</tbody></table>\n";
   $html .= "<p>";
-  $html .= "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";
-  if (!isset($location['new'])) {
+  if (isSeasonAdmin($season)) {
+    $html .= "<input type='submit' id='save' name='save' value='" . _("Save") . "'/>\n";
+  }
+  if (!isset($location['new']) && isSuperAdmin()) {
     $html .= "<input type='submit' id='delete' name='delete' value='" . _("Delete") . "'/>\n";
   }
   $html .= "</p>\n";
