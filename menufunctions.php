@@ -215,7 +215,8 @@ function pageTopHeadClose($title, $printable = false, $bodyfunctions = "") {
 
     if ($user == 'anonymous') {
       echo "</td><td class='right'><span class='topheadertext'>" . "<a class='topheaderlink' href='?view=login&amp;query=" .
-        urlencode($query_string) . "'>" . utf8entities(_("Login / New User")) . "</a></span>";
+        urlencode($query_string) . "'>" . utf8entities(_("Login")) . "</a> / <a class='topheaderlink' href='?view=register&amp;query=" .
+        urlencode($query_string) . "'>" . utf8entities(_("New User")) . "</a></span>";
     } else {
       $userinfo = UserInfo($user);
       echo "</td><td class='right'><span class='topheadertext'>" . utf8entities(_("User")) .

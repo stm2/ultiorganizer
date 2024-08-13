@@ -80,6 +80,12 @@ if (empty($message)) {
 }
 
 if (!$confirmed && !$mailsent) {
+  if (!empty($_GET['query'])) {
+    $query_string = $_GET['query'];
+  } else {
+    $query_string = "view=frontpage";
+  }
+  
   $html .= "<form method='post' action='?view=register";
   $html .= "'>\n";
   $html .= "<table class='formtable'>
@@ -123,12 +129,13 @@ if (!$confirmed && !$mailsent) {
         "I accept the privacy policy. I agree that this site stores my personal data (including name and e-mail given above) as declared in the privacy policy.")) .
     "</label></td></tr>\n";
 
-  $html .= "";
-
-  $html .= "<tr><td colspan = '2' align='right'><br/>
+  $html .= "<tr><td colspan='2' align='right'><br/>
 	      <input class='button' type='submit' name='save' value='" . _("Register") . "' />
 	      </td></tr>\n";
 
+  $html .= "<tr><td colspan='2'>" . _("Already have an account:") . " <a class='topheaderlink' href='?view=login&amp;query=" .
+    urlencode($query_string) . "'>" . utf8entities(_("Login")) . "</a></td></tr>\n";
+    
   $html .= "</table>\n";
   $html .= "</form>";
 }
