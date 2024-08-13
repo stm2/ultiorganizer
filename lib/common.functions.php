@@ -1340,7 +1340,7 @@ function SetComment($type, $id, $comment) {
         (int) $type, 
         mysql_adapt_real_escape_string($id));
   else {
-    $comment = mb_substr($comment, 10000);
+    $comment = mb_substr($comment, 0, 10000);
     $query = sprintf(
         "INSERT INTO uo_comment
   				(type, id, comment) 
