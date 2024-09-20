@@ -29,9 +29,10 @@ $res = array(
 
 function time_fix($post, $key, $date) {
   if (isset($post[$key])) {
-    $time = preg_replace("/^[0-9]+/", "$0:00", $post[$key]);
+    $time = preg_replace("/^([0-9]+)[.]([0-9]+)$/", "$1:$2", $post[$key]);
+    $time = preg_replace("/^[0-9]+$/", "$0:00", $post[$key]);
   } else {
-    $time = "00:00";
+    $time = "08:00";
   }
   return ToInternalTimeFormat("$date $time");
 }
