@@ -53,7 +53,7 @@ if ($_GET['userrole'] == 'superadmin') {
 	$html .= "</form>\n";
 } elseif ($_GET['userrole'] == 'teamadmin') {
 	$html .= "<h3>"._("Team contact person")."</h3>";
-	$html .= SearchTeam($target, array('userrole' => 'teamadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));
+	$html .= SearchTeam($target, array('userrole' => 'teamadmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")), []);
 } elseif ($_GET['userrole'] == 'accradmin') {
 	$html .= "<h3>"._("Accreditation official")."</h3>";
 	$html .= SearchTeam($target, array('userrole' => 'accradmin'), array('selectuserrole' => _("Select"), 'cancel' => _("Cancel")));

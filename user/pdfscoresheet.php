@@ -407,7 +407,7 @@ if (isset($_POST['create'])) {
     $html .= SearchGame('view=user/pdfscoresheet', $source, ['submit' => $create]);
   } else if ($mode == 'team') {
     $html .= "<h2>" . _("Search Teams") . "</h2>";
-    $html .= SearchTeam('view=user/pdfscoresheet', $source, ['submit' => $create]);
+    $html .= SearchTeam('view=user/pdfscoresheet', $source, ['submit' => $create], []);
   } else if ($mode == 'division') {
     $html .= "<h2>" . _("Search Divisions") . "</h2>";
     $html .= SearchSeries('view=user/pdfscoresheet', $source, ['submit' => $create], $season);

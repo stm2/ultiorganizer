@@ -24,7 +24,7 @@ if ($_GET['selectortype'] == 'currentseason') {
 	$html .= "</form>\n";	
 } elseif ($_GET['selectortype'] == 'team') {
 	$html .= "<h3>"._("Team pools")."</h3>";
-	$html .= SearchTeam($target, array('selectortype' => 'team'), array('selectpoolselector' => _("Select"), 'cancel' => _("Cancel")));
+	$html .= SearchTeam($target, array('selectortype' => 'team'), array('selectpoolselector' => _("Select"), 'cancel' => _("Cancel")), []);
 } elseif ($_GET['selectortype'] == 'season') {
 	$html .= "<h3>"._("Event")."</h3>";
 	$html .= SearchSeason($target, array('selectortype' => 'season'), array('selectpoolselector' => _("Select"), 'cancel' => _("Cancel")));
