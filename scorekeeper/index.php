@@ -49,10 +49,11 @@ session_name("UO_SESSID");
 session_start();
 
 
-if (!isset($_SESSION['uid']) && iget('view')!="result") {
-	$_SESSION['uid'] = "anonymous";
-	SetUserSessionData("anonymous");
-	header("location:?view=login");
+if (!isset($_SESSION['uid'])) {
+  $_SESSION['uid'] = "anonymous";
+  SetUserSessionData("anonymous");
+  if (iget('view') != "result")
+    header("location:?view=login");
 } else {
   if (UserSettingsValidationToken() != GetSettingsValidationToken()) {
     // user properties may have changed
