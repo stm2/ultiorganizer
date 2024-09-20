@@ -108,15 +108,20 @@ $html .=  "</select></td>";
   }
 
   $html .= "<td style='white-space: nowrap;'>\n";
-  $html .= "<a href='?view=admin/seasonteams&amp;season=".$season."&amp;series=".$id."'>"._("Teams")."</a> | ";
-  $html .= "<a href='?view=admin/seasonpools&amp;season=".$season."&amp;series=".$id."'>"._("Pools")."</a> | ";
-  $html .= "<a href='?view=admin/seasongames&amp;season=".$season."&amp;series=".$id."'>"._("Games")."</a>";
+  $ttip = utf8entities(_("Teams"));
+  $html .= "<a href='?view=admin/seasonteams&amp;season=" . $season . "&amp;series=" . $id . "'><img class='tableicon' src='images/teams.png' alt='$ttip' title='$ttip'/></a>";
+  $ttip = utf8entities(_("Pools"));
+  $html .= " <a href='?view=admin/seasonpools&amp;season=" . $season . "&amp;series=" . $id . "'><img class='tableicon' src='images/pools.png' alt='$ttip' title='$ttip'/></a>";
+  $ttip = utf8entities(_("Games"));
+  $html .= " <a href='?view=admin/seasongames&amp;season=" . $season . "&amp;series=" . $id . "'><img class='tableicon' src='images/games.png' alt='$ttip' title='$ttip'/></a>";
   
-  $html .= "</td>";
+  $html .= "</td>\n";
 
   $html .= "<td class='center'>";
   if(CanDeleteSeries($id)){
-    $html .= "<input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='"._("X")."' onclick=\"setId(".$id.");\"/>";
+    $html .= "<input class='deletebutton' type='image' src='images/remove.png' alt='X' name='remove' value='" . _("X") .
+      "' title='" . _("Delete") . "' onclick=\"setId(".$id.");\"/>";
+    
   }
   $html .= "</td>";
   $html .= "</tr>\n";
