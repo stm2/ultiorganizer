@@ -326,7 +326,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
       $seasonInfo = $eventdatahandler->XMLStructure(null, $data);
       if (empty($seasonInfo['error'])) {
         $step = 'load_data';
-        $source = 'series';
+        $source = 'database';
         $return_url = '?view=admin/eventdataimport&amp;season=' . $seasonId;
       } else {
         $html .= "<p>" . $seasonInfo['error'] . "</p>\n";
@@ -370,7 +370,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
             $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, $replacers, $mock);
 
             // unlink($filename);
-          } else if ($_POST['source'] == 'series') {
+          } else if ($_POST['source'] == 'database') {
             $template = $_POST['template'] ?? '';
             $importedSeason = SeriesInfo($_POST['selected_series']['0'])['season'];
             $data = $eventdatahandler->EventToXML($importedSeason, $_POST["selected_series"], $template == 'on');
