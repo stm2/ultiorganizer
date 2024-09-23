@@ -134,7 +134,7 @@ foreach ($series as $row) {
           if (!empty($user['email'])) {
             $subject = $row['name'] . ", " . $team['name'];
             $html .= utf8entities($team['name']) . " (" .
-              mailto_link($user['email'], $user['name'], _("email"), $subject) . ", " .
+              mailto_link($user['email'], $user['name'], _("E-mail"), $subject) . ", " .
               dm_link([$user['email'], $user['name']], $subject) . "); ";
             // $html .= " (".utf8entities($user['name']).")";
           }
