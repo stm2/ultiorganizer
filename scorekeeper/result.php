@@ -5,12 +5,17 @@ $saved = isset($_GET['saved']) ? 1 : 0;
 $game = isset($_GET['g']) ? $_GET['g'] : "";
 
 $canSave = true;
+$gameId = 0;
+if (!empty($game))
+  $gameId = (int) substr($game, 0, -1);
 if (!empty($_POST['save'])) {
   $game = intval($_POST['game']);
   $gameId = (int) substr($game, 0, -1);
   $home = intval($_POST['home']);
   $away = intval($_POST['away']);
   $errors = CheckGameResult($game, $home, $away);
+  if (!empty($errors))
+    $errors .= "<p>" . _("Error: Could not save result.") . "</p>\n";
 } else if (!empty($_POST['confirm'])) {
   $game = intval($_POST['game']);
   $gameId = (int) substr($game, 0, -1);
@@ -25,20 +30,9 @@ if (!empty($_POST['save'])) {
       $errors .= "<p>" . _("Error: Could not save result.") . "</p>\n";
   }
 } else {
-  $gameId = (int) substr($game, 0, -1);
-  if ($game > 0 && $gameId > 0) {
-    $errors = CheckGameResult($game, 1, 0);
-    if (!empty($errors)) {
-      // $errors = "<p>" . _("Error: Invalid game number.") . "</p>\n";
-      $gameId = 0;
-    } elseif (!hasEditGameEventsRight($gameId) && GameIsFinished(GameInfo($gameId))) {
-      $errors = "<p>" .
-        sprintf(_("Error: Game result for ID %s already submitted. You are not authorized to change game results."),
-          $game);
-      $canSave = false;
-    }
-  } else {
+  if ($game > 0 && $gameId > 0 && !empty($errors)) {
     $gameId = 0;
+    $canSave = false;
   }
 }
 
@@ -95,13 +89,17 @@ if (!empty($_POST['save']) && empty($errors)) {
   }
 
   $html .= "<br/><br/>";
-  $html .= _("Winner is") . " <span style='font-weight:bold'>";
-  if ($home > $away) {
-    $html .= utf8entities($game_result['hometeamname']);
+  if ($home == $away) {
+    $html .= _("No winner?");
   } else {
-    $html .= utf8entities($game_result['visitorteamname']);
+    $html .= _("Winner is") . " <span style='font-weight:bold'>";
+    if ($home > $away) {
+      $html .= utf8entities($game_result['hometeamname']);
+    } else {
+      $html .= utf8entities($game_result['visitorteamname']);
+    }
+    $html .= "?</span> ";
   }
-  $html .= "?</span> ";
   $html .= "<br/><br/><input type='submit' name='confirm' data-ajax='false' value='" . _("Confirm") . "'/> ";
   $html .= "<input type='submit' name='cancel' data-ajax='false' value='" . _("Cancel") . "'/>";
   $html .= "</p>";
@@ -119,8 +117,8 @@ if (!empty($_POST['save']) && empty($errors)) {
   if (!$canSave)
     $game = '';
 
-  $html .= "<label for='game'>" . _("Game number from Scoresheet") . ":</label>";
-  $html .= "<input type='number' id='game' name='game' size='6' maxlength='5' value='$game' onkeyup='validNumber(this);'/><br />";
+  $html .= "<label for='game'>" . _("Game # from Scoresheet") . ":</label>";
+  $html .= "<input type='number' id='game' name='game' size='6' maxlength='7' value='$game' onkeyup='validNumber(this);'/><br />";
 
   $html .= "<label for='home'>" . _("Home team goals") . ":</label>";
   $html .= "<input type='number' id='home' name='home' size='3' maxlength='3' value='$homescore' onkeyup='validNumber(this);'/><br /> ";
@@ -128,7 +126,7 @@ if (!empty($_POST['save']) && empty($errors)) {
   $html .= "<label for='away'>" . _("Visitor team goals") . ":</label>";
   $html .= "<input type='number' id='away' name='away' size='3' maxlength='3' value='$visitorscore' onkeyup='validNumber(this);'/><br /> ";
 
-  $html .= "<input type='submit' name='save' data-ajax='false' value='" . _("Save") . "'/><br /><br />";
+  $html .= "<input type='submit' name='save' data-ajax='false' value='" . _("Submit...") . "'/><br /><br />";
   $html .= "<a href='?view=login' data-role='button' data-ajax='false'>" . _("Games list") . "</a><br />";
 }
 

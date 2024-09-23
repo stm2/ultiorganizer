@@ -607,12 +607,22 @@ function CheckGameResult($game, $home, $away) {
         $errors .= "<p class='warning'>" . _("Pool is locked.") . "</p>";
       }
     }
-  }
-  if (IsSeasonStatsCalculated(GameSeason($gameId))) {
-    $errors .= "<p class='warning'>" . _("Event played.") . "</p>";
-  }
-  if (!($home + $away)) {
-    $errors .= "<p class='warning'>" . _("No goals.") . "</p>";
+    if (!hasEditGameEventsRight($gameId) && GameIsFinished(GameInfo($gameId))) {
+      $errors .= "<p class='warning'>" .
+        sprintf(
+          _(
+            "Game result for ID %s already submitted. You are not authorized to change game results. Please contact an official if the game result is not correct."),
+          $game);
+    }
+    if (IsSeasonStatsCalculated(GameSeason($gameId))) {
+      $errors .= "<p class='warning'>" . _("Event played.") . "</p>";
+    }
+
+    if (!($home + $away)) {
+      $errors .= "<p class='warning'>" . _("No goals.") . "</p>";
+    } else if ($home == $away && !PoolInfo($pool)['drawsallowed']) {
+      $errors .= "<p class='warning'>" . _("No draws allowed.") . "</p>";
+    }
   }
   return $errors;
 }
