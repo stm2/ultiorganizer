@@ -940,7 +940,7 @@ function PoolTeamsFromStandings($poolId, $activerank, $countbye=true) {
               (int)$poolId,
               (int)$activerank);
   }else{
-    $query = sprintf("SELECT j.team_id, j.name, js.abbreviation, js.activerank, c.flagfile, j.valid
+    $query = sprintf("SELECT j.team_id, j.name, j.abbreviation, js.activerank, c.flagfile, j.valid
               FROM uo_team AS j
               LEFT JOIN uo_team_pool AS js ON (j.team_id = js.team)
               LEFT JOIN uo_country c ON(c.country_id=j.country)
