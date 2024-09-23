@@ -183,7 +183,7 @@ foreach ($pools as $spool) {
   if ($poolNum>0)
     $html .= "<div class='right pagemenu_container'><a href='#Tasks'>" . _("Go to top") . "</a></div>\n";
   $html .= "<h2><a name='P" . $poolId . "' id='P" . $poolId . "'>" . utf8entities(U_($poolinfo['name'])) . "</a>
-    <a href='?view=admin/addseasonpools&amp;pool=$poolId'><img class='button' src='images/settings.png' alt='E' title='"._("edit pool")."'/></a></h2>";
+    <a href='?view=admin/addseasonpools&amp;pool=$poolId'><img class='button icon' src='images/settings.png' alt='E' title='"._("edit pool")."'/></a></h2>";
   
   $style = "class='admintable'";
   
@@ -529,10 +529,10 @@ function moveTable($moves, $type, $poolId, $poolinfo, $seasonId, $seriesId, $sin
 
 function editButton($prefix, $id) {
   $title = ($prefix == "seed")?_("change initial pool ranking"):_("change final pool ranking"); 
-  return "<input class='button " . $prefix . "_display' type='image' src='images/settings.png' alt='D' name='" . $prefix .
+  return "<input class='button icon " . $prefix . "_display' type='image' src='images/settings.png' alt='D' name='" . $prefix .
        "Display' title='".$title."' value='" . _("Edit") . "' onclick='edit(this,\"" . $prefix . "\", " . $id .
        "); return false;'/>
-          <input class='button " .
+          <input class='button icon " .
        $prefix . "_edit' style='display:none' type='image' src='images/save.gif' name='" . $prefix . "Save' title='"._("save ranking")."' value='" .
        _("Save") . "' onclick='setEditId(\"" . $prefix . "\", " . $id . ");'/>";
 }
