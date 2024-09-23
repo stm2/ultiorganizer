@@ -532,4 +532,12 @@ if (!function_exists('gettext')) {
     }
 }
 
+function pgettext($context, $msgid) {
+  $contextString = "{$context}\004{$msgid}";
+  $translation = _($contextString);
+  
+  if($translation == $contextString) return $msgid;
+  else return $translation;
+}
+
 ?>

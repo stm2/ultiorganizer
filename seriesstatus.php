@@ -74,49 +74,50 @@ if ($stdElo) {
 }
 
 add_column($columns, 'fname', _("Team"), null, null, null, 'left');
-add_column($columns, 'seed', _("Initial Seeding"), _("Sd"));
+add_column($columns, 'seed', _("Initial Seeding"), pgettext("team_table", "Sd"));
 
 if ($stdElo || $stdAcc)
-  add_column($columns, 'seed_acc', _("Seeding Accuracy"), _("Sd*"), 2, 'avg');
+  add_column($columns, 'seed_acc', _("Seeding Accuracy"), pgettext("team_table", "Sd*"), 2, 'avg');
 
-add_column($columns, 'ranking', _("Final Ranking"), _("Rnk"));
-
-if ($stdElo || $stdAcc)
-  add_column($columns, 'ranking_acc', _("Ranking Accuracy"), _("Rnk*"), 2, 'avg');
-
-add_column($columns, 'games', _("Games"), _("G"), 0, 'avg');
-add_column($columns, 'wins', _("Wins"), _("W"), 0, 'avg');
-add_column($columns, 'losses', _("Losses"), _("L"), 0, 'avg');
-add_column($columns, 'for', _("Goals for"), _("Pts"), 0, 'avg');
-add_column($columns, 'against', _("Goals against"), _("oPts"), 0, 'avg');
-add_column($columns, 'diff', _("Goals diff"), _("diff"), 0, 'avg');
-add_column($columns, 'winavg', _("Win-%"));
-add_column($columns, 'pwr', _("Power Ranking"), _("PwrR"), 2, 'avg');
+  add_column($columns, 'ranking', _("Final Ranking"), pgettext("team_table", "Rnk"));
 
 if ($stdElo || $stdAcc)
-  add_column($columns, 'pwr_acc', _("Power ranking accuracy"), _("PwR*"), 2, 'avg');
+  add_column($columns, 'ranking_acc', _("Ranking Accuracy"), pgettext("team_table", "Rnk*"), 2, 'avg');
+
+add_column($columns, 'games', _("Games"), pgettext("team_table", "G"), 0, 'avg');
+add_column($columns, 'wins', _("Wins"), pgettext("team_table", "W"), 0, 'avg');
+add_column($columns, 'losses', _("Losses"), pgettext("team_table", "L"), 0, 'avg');
+add_column($columns, 'for', _("Goals for"), pgettext("team_table", "Pts"), 0, 'avg');
+add_column($columns, 'against', _("Goals against"), pgettext("team_table", "oPts"), 0, 'avg');
+add_column($columns, 'diff', _("Goals diff"), pgettext("team_table", "diff"), 0, 'avg');
+add_column($columns, 'winavg', pgettext("team_table", "Win-%"));
+add_column($columns, 'pwr', _("Power Ranking"), pgettext("team_table", "PwrR"), 2, 'avg');
+
+if ($stdElo || $stdAcc)
+  add_column($columns, 'pwr_acc', _("Power ranking accuracy"), pgettext("team_table", "PwR*"), 2, 'avg');
 
 if ($stdElo)
-  add_column($columns, 'wpwr', _("Win/Loss Power Ranking"), _("wPwR"), 2, 'avg');
+  add_column($columns, 'wpwr', _("Win/Loss Power Ranking"), pgettext("team_table", "wPwR"), 2, 'avg');
 if ($stdElo && $stdAcc)
-  add_column($columns, 'wpwr_acc', _("Win/Loss PwR accuracy"), _("wPwR*"), 2, 'avg');
+  add_column($columns, 'wpwr_acc', _("Win/Loss PwR accuracy"), pgettext("team_table", "wPwR*"), 2, 'avg');
 
 if ($stdElo) {
   $active_ratings = ['ELOp1', 'ELOpX', 'ELOpp1', 'ELOppX', 'ELOX', 'ELOdX'];
   foreach ($elos as $name => $ratings) {
     if (in_array($name, $active_ratings)) {
-      add_column($columns, $name, _($name), null, 0, 'avg');
-      add_column($columns, $name . "_acc", _($name) . " " . _("acc"), null, 2, 'avg');
+      // FIXME will not be extracted by gettext
+      add_column($columns, $name, pgettext("team_table", $name), null, 0, 'avg');
+      add_column($columns, $name . "_acc", pgettext("team_table", $name . " acc"), null, 2, 'avg');
     }
   }
 
   add_column($columns, 'glicko2', _("Glicko2"), null, 0, 'avg');
-  add_column($columns, 'gRD', _("RD"), null, 2, 'avg');
-  add_column($columns, 'glicko2_acc', _("Glicko2") . " " . _("acc"), null, 2, 'avg');
+  add_column($columns, 'gRD', pgettext("team_table", "RD"), null, 2, 'avg');
+  add_column($columns, 'glicko2_acc', pgettext("team table", "Glicko2 acc"), null, 2, 'avg');
   // add_column($columns, 'gS', _("sig"), 2, 'avg');
 }
 if (GetSeriesSpiritMode($seriesId) > 0 || hasEditSeriesRight($seriesId)) {
-  add_column($columns, 'spirit', _("Spirit Points"), _("Spir"), 2);
+  add_column($columns, 'spirit', _("Spirit Points"), pgettext("team_table", "Spir"), 2);
 }
 
 function predictionAccuracies($rating, $teams, $games, $debug = false) {
@@ -385,7 +386,7 @@ if (GetSeriesSpiritMode($seriesId) > 0 && count($spiritAvg) > 0) { // TODO total
     if ($cat['index'] > 0 && $cat['type'] == 1)
       $html .= "<th class='center'>" . _($cat['mnem']) . "</th>";
   }
-  $html .= "<th class='center'>" . _("Tot.") . "</th>";
+  $html .= "<th class='center'>" . pgettext("spirit_table", "Tot.") . "</th>";
   $html .= "</tr>\n";
 
   $aggr = ['total' => ['sum' => 0, 'n' => 0]];

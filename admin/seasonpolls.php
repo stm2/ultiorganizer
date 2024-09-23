@@ -37,10 +37,10 @@ if (!count($serieses)) {
 
   $html .= "<tr><th>" . _("Name") . "</th>
       <th>" . _("Division") . "</th>
-      <th class='center' title='" . _("Visible") . "'>" . _("poll_v") . "</th>
-      <th class='center' title='" . _("Option entry") . "'>" . _("poll_o") . "</th>
-      <th class='center' title='" . _("Voting") . "'>" . _("poll_t") . "</th>
-      <th class='center' title='" . _("Results") . "'>" . _("poll_r") . "</th>
+      <th class='center' title='" . _("Visible") . "'>" . pgettext("poll", "v") . "</th>
+      <th class='center' title='" . _("Option entry") . "'>" . pgettext("poll", "o") . "</th>
+      <th class='center' title='" . _("Voting") . "'>" . pgettext("poll", "t") . "</th>
+      <th class='center' title='" . _("Results") . "'>" . pgettext("poll", "r") . "</th>
       <th>" . _("Options") . "</th>
       <th>" . _("Voters") . "</th>
       <th>" . _("Operations") . "</th>
