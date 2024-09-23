@@ -173,11 +173,11 @@ $subset = findPools($games, $html);
 if ($format == "grid" || $format == "list") {
   $pdf = null;
   if ($format == "grid") {
-    $pdf = new PDF('L', 'mm', 'A4');
+    $pdf = new UltiPDF('L', 'mm', 'A4');
     mysqli_data_seek($games, 0);
     $pdf->PrintOnePageSchedule($filters['gamefilter'], $id, $games, true, $title);
   } else {
-    $pdf = new PDF();
+    $pdf = new UltiPDF();
     mysqli_data_seek($games, 0);
     $pdf->PrintSchedule($filters['gamefilter'], $id, $games, $subset, $lines);
   }

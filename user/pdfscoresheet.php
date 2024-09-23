@@ -13,11 +13,8 @@ $html = "<h1>" . utf8entities($title) . "</h2>\n";
 $create = _("Create");
 $subject = "";
 
-if (is_file('cust/' . CUSTOMIZATIONS . '/pdfprinter.php')) {
-  include_once 'cust/' . CUSTOMIZATIONS . '/pdfprinter.php';
-} else {
-  include_once 'cust/default/pdfprinter.php';
-}
+include_once 'cust/default/pdfprinter.php';
+  
 $season = "";
 $filter1 = "";
 $filter2 = "";
@@ -136,18 +133,23 @@ if (!empty($source["reservations"])) {
   $gameResponsibilities = GameResponsibilities($season);
   $games = [];
   $subject = "";
-  foreach ($source['reservations'] as $rr) {
-    $games = array_merge($games,
-      DBResourceToArray(ResponsibleReservationGames($rr == "none" ? null : $rr, $gameResponsibilities)));
+  if (!empty($gameResponsibilities)) {
+    foreach ($source['reservations'] as $rr) {
+      $games = array_merge($games,
+        DBResourceToArray(ResponsibleReservationGames($rr == "none" ? null : $rr, $gameResponsibilities)));
 
-    $reservationname = html_entity_decode(ReservationName(ReservationInfo($rr)));
-    if (empty($subject))
-      $subject .= $reservationname;
-    else if (mb_strlen($subject) < 80)
-      $subject .= ", " . $reservationname;
+      $reservationname = html_entity_decode(ReservationName(ReservationInfo($rr)));
+      if (empty($subject))
+        $subject .= $reservationname;
+      else if (mb_strlen($subject) < 80)
+        $subject .= ", " . $reservationname;
+    }
+    mergesort($games,
+      uo_create_multi_key_comparator([['placename', true, true], ['fieldname', true, true], ['time', true, true]])); 
+    $subject = _("Reservations") . " " . $subject;
+  } else {
+    $subject = _("No reservations for this user!");
   }
-  mergesort($games, uo_create_multi_key_comparator([['placename', true, true], ['fieldname', true, true], ['time', true, true]])); 
-  $subject = _("Reservations") . " " . $subject;
 }
 
 if (!empty($source["group"])) {
@@ -190,16 +192,20 @@ if (!empty($source['empty'])) {
 function modeSelect($default) {
   $html = "<select class='dropdown' name='roster'>";
   if ($default)
-    $html .= "<option value='default_roster'>" . utf8entities(_("Print rosters if teams have rosters set.")) .
+    $html .= "<option value='default_roster'>" . utf8entities(_("print rosters if teams have rosters set")) .
       "</option>\n";
-  $html .= "<option value='force_roster'>" . utf8entities(_("Always print rosters.")) . "</option>\n";
-  $html .= "<option value='no_roster'>" . utf8entities(_("Never print rosters.")) . "</option>\n";
+  $html .= "<option value='force_roster'>" . utf8entities(_("always print rosters")) . "</option>\n";
+  $html .= "<option value='no_roster'>" . utf8entities(_("never print rosters")) . "</option>\n";
   $html .= "</select><br />\n";
 
   $html .= "<select class='dropdown' name='sheet_type'>";
-  $html .= "<option value='short'>" . utf8entities(_("Short sheets (multiple games per page)")) . "</option>\n";
-  $html .= "<option value='long'>" . utf8entities(_("Long sheets (one game per page)")) . "</option>\n";
+  $html .= "<option value='short'>" . utf8entities(_("short sheets (multiple games per page)")) . "</option>\n";
+  $html .= "<option value='long'>" . utf8entities(_("long sheets (one game per page)")) . "</option>\n";
   $html .= "</select><br />\n";
+
+  $html .= "<p><label for='split_fields'>" . _("Fields on separate pages") . "</label>";
+  $html .= "<input class='input' type='checkbox' id='split_fields' name='split_fields' checked='checked'/></p>\n";
+  
   return $html;
 }
 
@@ -221,12 +227,21 @@ function searchModes() {
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=division'>" .
     utf8entities(_("Rosters for a division")) . "</a></li>\n";
   $html .= "</ul>";
+  
+//   $qr = QRcode::svg(BASEURL . "/scorekeeper/?view=result");
+//   $qr = preg_replace("/[<][?]xml.*/","", $qr);
+//   $qr = preg_replace("/[<][!]DOCTYPE.*/","", $qr);
+//   $html .= $qr;
+  
+  
+  
+  
   return $html;
 }
 
 if (isset($_POST['create'])) {
 
-  $pdf = new PDF();
+  $pdf = new UltiPDF();
   $printed = false;
   if ($teamId) {
 
@@ -343,7 +358,7 @@ if (isset($_POST['create'])) {
       }
     } else {
       $printed = true;
-      $pdf->PrintShortScoreSheets(U_($seasonname), $games);
+      $pdf->PrintShortScoreSheets(U_($seasonname), $games, isset($_POST['split_fields']));
     }
   }
 
@@ -354,20 +369,27 @@ if (isset($_POST['create'])) {
     $html .= searchModes();
     showPage($title, $html);
   }
-} else if (isset($_POST['submit']) || !isset($_GET['search'])) {
-  $html .= "<p>" . utf8entities(SeasonName($season)) . "<br/>" . utf8entities($subject) . "</p>";
-  $html .= "<form method='post' action='?view=user/pdfscoresheet'>\n";
-  if (!empty($_GET)) {
-    $html .= getHiddenInput($_GET);
-  }
-  if (!empty($_POST)) {
-    $html .= getHiddenInput($_POST);
-  }
+} else if ((isset($_POST['submit']) || !isset($_GET['search']))) {
+  $html .= "<p>" . utf8entities(SeasonName($season)) . "<br/>";
 
-  $html .= modeSelect(true);
+  if (!empty($subject)) {
+    $html .= utf8entities($subject) . "</p>";
 
-  $html .= "<input type='submit' name='create' value='" . utf8entities($create) . "'/>\n";
-  $html .= "</form>";
+    $html .= "<form method='post' action='?view=user/pdfscoresheet'>\n";
+    if (!empty($_GET)) {
+      $html .= getHiddenInput($_GET);
+    }
+    if (!empty($_POST)) {
+      $html .= getHiddenInput($_POST);
+    }
+
+    $html .= modeSelect(true);
+
+    $html .= "<input type='submit' name='create' value='" . utf8entities($create) . "'/>\n";
+    $html .= "</form>";
+  } else {
+    $html .= utf8entities(_("No games selected")) . "</p>\n";
+  }
 
   $html .= searchModes();
 
@@ -390,7 +412,7 @@ if (isset($_POST['create'])) {
 
     $html .= getHiddenInput('1', 'empty');
     $html .= "<input name='season_name' value='" . utf8entities(SeasonName($season)) . "'/><br />\n";
-    $html .= "<input type='number' min=0 name='num_games' value='5' /><br />\n";
+    $html .= "<input type='number' min=0 name='num_games' value='4' /><br />\n";
 
     $html .= modeSelect(false);
 
@@ -416,6 +438,7 @@ if (isset($_POST['create'])) {
   }
 
   $html .= searchModes();
+  
   showPage($title, $html);
 }
 ?>

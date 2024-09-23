@@ -121,7 +121,8 @@ function ResponsibleReservationGames($placeId, $gameResponsibilities) {
 			ser.name as seriesname, pool.name as poolname,
 			loc.name as placename, res.fieldname,
                pp.hasstarted, pp.isongoing,
-			phome.name AS phometeamname, pvisitor.name AS pvisitorteamname, pool.color, pgame.name AS gamename
+			phome.name AS phometeamname, pvisitor.name AS pvisitorteamname, pool.color, pgame.name AS gamename,
+			pool.scorecap, pool.winningscore
 		FROM uo_game pp left join uo_reservation res on (pp.reservation=res.id) 
 			left join uo_pool pool on (pp.pool=pool.pool_id)
 			left join uo_series ser on (pool.series=ser.series_id)
