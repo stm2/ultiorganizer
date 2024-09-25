@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 384 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="games.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="3.40625"
+     inkscape:cx="191.55963"
+     inkscape:cy="182.89908"
+     inkscape:window-width="1920"
+     inkscape:window-height="1048"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="166.16514,59.302752"
+       orientation="0,-1"
+       id="guide5423" />
+  </sodipodi:namedview>
+  <!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc. -->
+  <path
+     d="M 48,0 C 21.5,0 0,21.5 0,48 v 416 c 0,26.5 21.5,48 48,48 175.47666,1.9236 116.64827,0 288,0 26.5,0 48,-21.5 48,-48 V 48 C 384,21.5 362.5,0 336,0 Z M 37.11889,240 c 0,-8.8 7.2,-16 16,-16 h 277.79456 c 8.8,0 16,7.2 16,16 v 32 c 0,8.8 -7.2,16 -16,16 H 53.11889 c -8.8,0 -16,-7.2 -16,-16 z M 304,96 c -8.8,0 -16,7.2 -16,16 v 32 c 0,8.8 7.2,16 16,16 8.8,0 16,-7.2 16,-16 v -32 c 0,-8.8 -7.2,-16 -16,-16 z m -48,16 c 0,-26.5 21.5,-48 48,-48 26.5,0 48,21.5 48,48 v 32 c 0,26.5 -21.5,48 -48,48 -26.5,0 -48,-21.5 -48,-48 z M 49.1502,86.052989 C 48.722221,66.445214 69.098267,68.097348 79.75258,67.842737 c 7.302513,-0.174511 17.296607,0.133055 22.50791,6.607184 5.01614,6.23167 0.21578,56.013939 0.46219,86.493779 15.65636,0.73543 30.41909,0.6773 30.21007,19.55653 -0.20901,18.87923 -21.14366,15.55797 -52.964425,15.37739 -30.416477,-0.17261 -43.685387,3.76678 -43.685387,-16.74202 0,-20.5088 18.556656,-18.19353 35.406582,-17.60745 0.462392,-19.43303 1.105235,-59.18884 1.105235,-59.18884 C 69.806308,97.25614 49.578178,105.66076 49.1502,86.052989 Z M 91.001491,356.73424 c -8.8,0 -16,7.2 -16,16 v 32 c 0,8.8 7.2,16 16,16 8.8,0 15.999999,-7.2 15.999999,-16 v -32 c 0,-8.8 -7.199999,-16 -15.999999,-16 z m -48,16 c 0,-26.5 21.5,-48 48,-48 26.499999,0 47.999999,21.5 47.999999,48 v 32 c 0,26.5 -21.5,48 -47.999999,48 -26.5,0 -48,-21.5 -48,-48 z M 270.06002,342.92933 c -0.42798,-19.60777 19.94807,-17.95564 30.60238,-18.21025 7.30252,-0.17451 17.29661,0.13306 22.50791,6.60719 5.01614,6.23167 0.21578,56.01393 0.46219,86.49377 15.65636,0.73543 30.41909,0.6773 30.21007,19.55653 -0.20901,18.87923 -17.87847,15.21266 -48.9107,15.26938 -30.41692,0.0556 -47.73911,3.87479 -47.73911,-16.63401 0,-20.5088 18.55666,-18.19353 35.40658,-17.60745 0.46239,-19.43303 1.10524,-59.18884 1.10524,-59.18884 -2.98845,-5.08317 -23.21658,3.32145 -23.64456,-16.28632 z"
+     id="path2"
+     sodipodi:nodetypes="sssccssssssssssssssssssssssssssszssczszcszssssssssssssssssscsssccs" />
+</svg>
