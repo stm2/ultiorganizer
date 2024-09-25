@@ -880,13 +880,17 @@ function hasEditPlayerProfileRight($playerId) {
     isset($_SESSION['userproperties']['userrole']['teamadmin'][$team]);
 }
 
-function hasEditPlayersRight($team) {
-  $series = getTeamSeries($team);
+function hasEditPlayersRight($teamId) {
+  $series = getTeamSeries($teamId);
   $season = SeriesSeasonId($series);
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||
     isset($_SESSION['userproperties']['userrole']['seriesadmin'][$series]) ||
-    isset($_SESSION['userproperties']['userrole']['teamadmin'][$team]);
+    isset($_SESSION['userproperties']['userrole']['teamadmin'][$teamId]);
+}
+
+function ensureEditPlayersRight($teamId, $title = null, $message = null) {
+  return ensurePrivileges(hasEditPlayersRight($teamId), $title, $message);
 }
 
 function hasEditGamePlayersRight($game) {

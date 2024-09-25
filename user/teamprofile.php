@@ -22,6 +22,8 @@ $team = TeamInfo($teamId);
 
 $title = _("Team details").": ". ($team['name']);
 
+ensureEditPlayersRight($teamId, $title);
+
 //team profile
 $tp = array(
 	"team_id"=>$teamId,

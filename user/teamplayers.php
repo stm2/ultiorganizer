@@ -12,6 +12,8 @@ $title = _("Roster");
 $teamId = iget("team");
 $teaminfo = TeamInfo($teamId);
 
+ensureEditPlayersRight($playerInfo['team'], $title);
+
 if(!empty($_POST['remove_x'])){
   $id = $_POST['hiddenDeleteId'];
   $games = PlayerSeasonPlayedGames($id , $teaminfo['season']);

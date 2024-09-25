@@ -166,20 +166,28 @@ function CanDeleteClub($clubId) {
 	return ($row[0] == 0);
 }
 
+function hasEditClubRight($teamId, $clubId) {
+  $teaminfo = TeamInfo($teamId);
+  return isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club'] == $clubId);
+}
+
+function ensureEditClubRight($teamId, $clubId, $title = null, $message = null) {
+  ensurePrivileges(hasEditClubRight($teamId, $clubId), $title, $message);
+}
+
 function SetClubProfile($teamId,$profile) {
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$profile['club_id'])) {
+	if (hasEditClubRight($teamId, $profile['club_id'])) {
     		$profile['contacts'] = mb_substr($profile['contacts'], 0, 5000);
     		$profile['story'] = mb_substr($profile['story'], 0, 5000);
 		$profile['achievements'] = mb_substr($profile['achievements'], 0, 5000);
 		$query = sprintf("UPDATE uo_club SET name='%s', contacts='%s', 
-				country='%s', city='%s', founded='%s', story='%s',
+				country='%s', city='%s', founded=%s, story='%s',
 				achievements='%s', valid=%d WHERE club_id='%s'",
 				mysql_adapt_real_escape_string($profile['name']),
 				mysql_adapt_real_escape_string($profile['contacts']),
 				mysql_adapt_real_escape_string($profile['country']),
 				mysql_adapt_real_escape_string($profile['city']),
-				mysql_adapt_real_escape_string($profile['founded']),
+				$profile['founded'] !=null ? intval($profile['founded']):'NULL',
 				mysql_adapt_real_escape_string($profile['story']),
 				mysql_adapt_real_escape_string($profile['achievements']),
 				(int)$profile['valid'],
@@ -192,8 +200,7 @@ function SetClubProfile($teamId,$profile) {
 }
 
 function UploadClubImage($teamId, $clubId){
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$clubId)) {
+	if (hasEditClubRight($teamId, $clubId)) {
 		 $max_file_size = 5 * 1024 * 1024; //5 MB
 		 
 		 if($_FILES['picture']['size'] > $max_file_size){
@@ -235,9 +242,7 @@ function UploadClubImage($teamId, $clubId){
 
 
 function SetClubProfileImage($teamId, $clubId, $filename) {
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$clubId)) {
-		
+  if (hasEditClubRight($teamId, $clubId)) {
 		$query = sprintf("UPDATE uo_club SET profile_image='%s' WHERE club_id='%s'",
 					mysql_adapt_real_escape_string($filename),
 					mysql_adapt_real_escape_string($clubId));
@@ -248,9 +253,7 @@ function SetClubProfileImage($teamId, $clubId, $filename) {
 }
 
 function RemoveClubProfileImage($teamId, $clubId) {
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$clubId)) {
-	
+  if (hasEditClubRight($teamId, $clubId)) {
 		$profile = ClubInfo($clubId);
 
 		if(!empty($profile['profile_image'])){
@@ -289,8 +292,7 @@ function SetClubValidity($clubId, $valid){
 }
 
 function AddClubProfileUrl($teamId, $clubId, $type, $url, $name) {
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$clubId)) {
+  if (hasEditClubRight($teamId, $clubId)) {
 		$url = SafeUrl($url);
 		$query = sprintf("INSERT INTO uo_urls (owner,owner_id,type,name,url)
 				VALUES('club',%d,'%s','%s','%s')",
@@ -303,8 +305,7 @@ function AddClubProfileUrl($teamId, $clubId, $type, $url, $name) {
 }
 
 function RemoveClubProfileUrl($teamId, $clubId, $urlId) {
-	$teaminfo = TeamInfo($teamId);
-	if (isSuperAdmin() || (hasEditPlayersRight($teamId) && $teaminfo['club']==$clubId)) {
+  if (hasEditClubRight($teamId, $clubId)) {
 		$query = sprintf("DELETE FROM uo_urls WHERE url_id=%d",
 			(int)$urlId);
 		return DBQuery($query);
