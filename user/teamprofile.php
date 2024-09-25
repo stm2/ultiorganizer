@@ -20,6 +20,11 @@ else
 
 $team = TeamInfo($teamId);
 
+if (empty($team)) {
+  showPage(_("Team details"), _("No such team"));
+  exit();
+}
+
 $title = _("Team details").": ". ($team['name']);
 
 ensureEditPlayersRight($teamId, $title);
@@ -122,28 +127,14 @@ $html .= "<table border='0'>";
 
 $urls = GetUrlList("team", $teamId);
 
-foreach($urls as $url){
-	$html .= "<tr style='border-bottom-style:solid;border-bottom-width:1px;'>";
-	$html .= "<td colspan='3'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-	if(!empty($url['name'])){
-		$html .="<a href='". $url['url']."'>". $url['name']."</a> (".$url['url'].")";
-	}else{
-		$html .="<a href='". $url['url']."'>". $url['url']."</a>";
-	}
-	
-	$html .= "</td>";
-	$html .= "<td class='right'><input class='deletebutton' type='image' src='images/remove.png' name='removeurl' value='X' alt='X' onclick='setId(".$url['url_id'].");'/></td>";
-	$html .= "</tr>";
-}
+$html .= UrlTable($urls);
 
 //empty line
 if(count($urls)){
-	$html .= "<tr>";
-	$html .= "<td colspan='3'>&nbsp;</td>";
-	$html .= "</tr>";
+	$html .= "<br />";
 }
 
-$html .= "<tr>";
+$html .= "<table><tr>";
 $html .= "<td>"._("Type")."</td>";
 $html .= "<td>"._("URL")."</td>";
 $html .= "<td>"._("Name")." ("._("optional").")</td>";

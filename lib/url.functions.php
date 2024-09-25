@@ -73,6 +73,89 @@ function GetUrlTypes() {
 	return $types;
 }
 
+function UrlTable(array $urls, array $columns = null, callable|false $can_delete = null, $tablespec = '',
+  callable $is_shown = null) {
+  if (empty($urls))
+    return '';
+
+  if (empty($columns)) {
+    $columns = ['type', 'url'];
+  }
+
+  if ($can_delete === false)
+    $can_delete = function ($url) {
+      return false;
+    };
+
+  $count = 0;
+
+  $html = "<table $tablespec>";
+  $heading = '';
+  foreach ($columns as $head => $key) {
+    if (gettype($head) !== 'integer')
+      $heading .= "<th class='urltable_header'>" . utf8entities($head) . "</th>";
+  }
+  if (!empty($heading))
+    $html .= "<tr>$heading</tr>\n";
+
+  foreach ($urls as $url) {
+    if ($is_shown == null || $is_shown($url)) {
+      ++$count;
+      $html .= "<tr style='border-bottom-style:solid; border-bottom-width:1px;'>";
+      foreach ($columns as $key) {
+        if (gettype($key) === 'string') {
+          $html .= "<td class='urltable_$key'>";
+          if ($key === 'type') {
+            $html .= "<img width='16' height='16' src='images/linkicons/" . $url['type'] . ".png' alt='" . $url['type'] .
+              "'/></td>";
+          } elseif ($key === 'url') {
+            if (!empty($url['name'])) {
+              $html .= "<a href='" . utf8entities($url['url']) . "'>" . utf8entities($url['name']) . "</a> (" .
+                utf8entities($url['url']) . ")";
+            } else {
+              $html .= "<a href='" . utf8entities($url['url']) . "'>" . utf8entities($url['url']) . "</a>";
+            }
+          } else {
+            $html .= utf8entities($url[$key]);
+          }
+        } else {
+          $col = $key($url);
+          debug_to_apache([$url, $col]);
+          $html .= "<td class='urltable_${col['type']}'>";
+          $html .= utf8entities($col['value']);
+        }
+        $html .= "</td>";
+      }
+
+      if (empty($can_delete) || $can_delete($url))
+        $html .= "<td class='urltable_delete right'><input class='deletebutton' type='image' src='images/remove.png' name='removeurl' value='X' alt='X' onclick='setId(" .
+          $url['url_id'] . ");'/></td>";
+      else
+        $html .= "<td class='urltable_delete empty'></td>";
+      $html .= "</tr>\n";
+    }
+  }
+  $html .= "</table>\n";
+  if ($count)
+    return $html;
+  else
+    return "";
+}
+
+function UrlLinks(array $urls) {
+  if (empty($urls))
+    return '';
+  foreach ($urls as $url) {
+    if ($url['type'] == "menulink") {
+      echo "<a class='subnav' href='" . utf8entities($url['url']) . "'>&raquo; " . utf8entities(U_($url['name'])) .
+        "</a>\n";
+    } elseif ($url['type'] == "menumail") {
+      echo "<a class='subnav' href='mailto:" . utf8entities($url['url']) . "'>@ " . utf8entities(U_($url['name'])) .
+        "</a>\n";
+    }
+  }
+}
+
 function GetMediaUrlTypes() {
 	$types = array();
 	$dbtype = array("image", "video", "live");

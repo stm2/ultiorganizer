@@ -12,13 +12,7 @@ $max_new_links = 3;
 $html = "";
 $title = _("Add links");
 $userinfo = UserInfo($_SESSION['uid']);
-$teamId = 0;
-$palyerId = 0;
-$clubId = 0;
-$gameId = 0;
-$countryId = 0;
-$seriesId = 0;
-$poolId = 0;
+
 $owner = "";
 $owner_id = 0;
 
@@ -102,61 +96,33 @@ $html .= "<form method='post' enctype='multipart/form-data' action='". utf8entit
 	
 $urls = GetMediaUrlList($owner, $owner_id);
 
-if(count($urls)){
-	$html .= "<table width='100%'>";
-
-	foreach($urls as $url){
-		$html .= "<tr style='border-bottom-style:solid;border-bottom-width:1px;'>";
-		$html .= "<td><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/></td>";
-		$html .= "<td>";
-		if(!empty($url['name'])){
-			$html .="<a href='". $url['url']."'>". utf8entities($url['name'])."</a> (".utf8entities($url['url']).")";
-		}else{
-			$html .="<a href='". $url['url']."'>". utf8entities($url['url'])."</a>";
-		}
-		$html .= "</td>";
-		$html .= "<td>". $url['mediaowner']."</td>";
-		$html .= "<td>". $url['publisher']."</td>";
-		
-		if($url['publisher_id']==$userinfo['id']){
-			$html .= "<td class='right'><input class='deletebutton' type='image' src='images/remove.png' name='removeurl' value='X' alt='X' onclick='setId(".$url['url_id'].");'/></td>";
-		}
-		$html .= "</tr>";
-	}
-
-	$html .= "</table>";
+if (count($urls)) {
+  $html .= UrlTable($urls, ['type', 'url', 'mediaowner', 'publisher'],
+    function ($url) use ($userinfo) {
+      return $url['publisher_id'] == $userinfo['id'];
+    }, "width='100%'");
 }
-if($owner == "game"){
-	$events = GameMediaEvents($owner_id);
-	
-	//remove if url deleted
-	foreach($events as $event){
-		if(empty($event['url'])){
-			RemoveGameMediaEvent($owner_id, $event['info']);
-		}
-	}
-	
-	$events = GameMediaEvents($owner_id);
-	
-	if(count($events)){
-		$html .= "<table>";
-		$html .= "<tr>";
-		$html .= "<th>"._("Time")."</th>";
-		$html .= "<th colspan='2'>"._("URL")."</th>";
-		$html .= "</tr>";
-		
-		foreach($events as $event){
-			$html .= "<tr>";
-			$html .= "<td>".SecToMin($event['time'])."</td>";
-			$html .= "<td><img width='16' height='16' src='images/linkicons/".$event['type'].".png' alt='".$event['type']."'/></td>";
-			$html .= "<td>".$event['url']."</td>";
-			$html .= "</tr>";
-		}
-		$html .= "</table>";
-	}
+if ($owner == "game") {
+  $events = GameMediaEvents($owner_id);
+
+  // remove if url deleted
+  foreach ($events as $event) {
+    if (empty($event['url'])) {
+      RemoveGameMediaEvent($owner_id, $event['info']);
+    }
+  }
+
+  $events = GameMediaEvents($owner_id);
+  if (count($events)) {
+    $html .= UrlTable($events,
+      [_("Time") => function ($url) {
+        return ['type' => 'time', 'value' => SecToMin($url['time'])];
+      }, _("Type") => 'type', _("URL") => 'url'], false);
+  }
 }
 
-$html .= "<table>";
+
+$html .= "<br /><table>";
 $html .= "<tr>";
 if($owner == "game"){
 	$html .= "<th>"._("Time")." ("._("optional").")</th>";
@@ -182,7 +148,7 @@ for($i=0;$i<$max_new_links;$i++){
 	$html .= "<td><input class='input' maxlength='500' size='30' name='url$i' value=''/></td>";
 	$html .= "<td><input class='input' maxlength='500' size='15' name='urlname$i' value=''/></td>";
 	$html .= "<td><input class='input' maxlength='100' size='15' name='mediaowner$i' value=''/></td>";
-	$html .= "<td style='white-space: nowrap'>". $userinfo['name']."</td>";
+	$html .= "<td style='white-space: nowrap'>". utf8entities($userinfo['name']) . "</td>";
 	$html .= "</tr>";
 }
 $html .= "</table>";

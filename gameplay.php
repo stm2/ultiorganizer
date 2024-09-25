@@ -186,31 +186,40 @@ if(GameHasStarted($game_result)){
 
     $prevgoal = 0;
     mysqli_data_seek($goals, 0);
-    while($goal = mysqli_fetch_assoc($goals)){
-      if (!$bHt && $game_result['halftime']>0 && $goal['time'] > $game_result['halftime']){
-        $html .= "<tr><td colspan='$columns' class='halftime'>"._("Half-time")."</td></tr>";
-        $bHt = 1;
-        $prevgoal = intval($game_result['halftime']);
-      }
-       
-      $html .= "<tr><td style='width:45px;white-space: nowrap'";
-      if(intval($goal['ishomegoal'])==1){
-        $html .= " class='home'>";
-      }else{
-        $html .= " class='guest'>";
-      }
-      $html .= $goal['homescore'] ." - ". $goal['visitorscore'] ."</td>";
+    $game_end = null;
+    while (($goal = mysqli_fetch_assoc($goals)) || $game_end === null) {
+      if (!empty($goal)) {
+        if (!$bHt && $game_result['halftime'] > 0 && $goal['time'] > $game_result['halftime']) {
+          $html .= "<tr><td colspan='$columns' class='halftime'>" . _("Half-time") . "</td></tr>";
+          $bHt = 1;
+          $prevgoal = intval($game_result['halftime']);
+        }
 
-      if(intval($goal['iscallahan'])){
-        $html .= "<td class='callahan'>"._("Callahan-goal")."&nbsp;</td>";
-      }else{
-        $html .= "<td>". utf8entities($goal['assistfirstname']) ." ". utf8entities($goal['assistlastname']) ."&nbsp;</td>";
-      }
-      $html .= "<td>". utf8entities($goal['scorerfirstname']) ." ". utf8entities($goal['scorerlastname']) ."&nbsp;</td>";
-      $html .= "<td>". SecToMin($goal['time']) ."</td>";
-      $duration = $goal['time']-$prevgoal;
+        $html .= "<tr><td style='width:45px;white-space: nowrap'";
+        if (intval($goal['ishomegoal']) == 1) {
+          $html .= " class='home'>";
+        } else {
+          $html .= " class='guest'>";
+        }
+        $html .= $goal['homescore'] . " - " . $goal['visitorscore'] . "</td>";
 
-      $html .= "<td>". SecToMin($duration) ."</td>";
+        if (intval($goal['iscallahan'])) {
+          $html .= "<td class='callahan'>" . _("Callahan-goal") . "&nbsp;</td>";
+        } else {
+          $html .= "<td>" . utf8entities($goal['assistfirstname']) . " " . utf8entities($goal['assistlastname']) .
+            "&nbsp;</td>";
+        }
+        $html .= "<td>" . utf8entities($goal['scorerfirstname']) . " " . utf8entities($goal['scorerlastname']) .
+          "&nbsp;</td>";
+        $html .= "<td>" . SecToMin($goal['time']) . "</td>";
+        $duration = $goal['time'] - $prevgoal;
+
+        $html .= "<td>" . SecToMin($duration) . "</td>";
+      } else {
+        $goal['time'] = PHP_INT_MAX;
+        $game_end = true;
+        $html .= "<td colspan='5'>" . utf8entities(_("End of game")) . "</td>";
+      }
 
       if($columns>5){
         $html .= "<td>";
@@ -240,7 +249,7 @@ if(GameHasStarted($game_result)){
         foreach($mediaevents as $event){
           if((intval($event['time']) >= $prevgoal) &&
           (intval($event['time']) < intval($goal['time']))){
-            $tmphtml .= "<a style='color: #ffffff;' href='". $event['url']."'>";
+            $tmphtml .= "<a style='color: #ffffff;' href='". utf8entities($event['url'])."'>";
             $tmphtml .= "<img width='12' height='12' src='images/linkicons/".$event['type'].".png' alt='".$event['type']."'/></a>";
 
           }
@@ -268,27 +277,8 @@ if(GameHasStarted($game_result)){
 
     if(count($urls) > count($mediaevents)){
       $html .= "<h2>"._("Photos and Videos")."</h2>\n";
-      $html .= "<table>";
-      foreach($urls as $url){
-        //if time set those are shown as gameevent
-        if(!empty($url['time'])){continue;}
-
-        $html .=  "<tr>";
-        $html .=  "<td colspan='2'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-        $html .=  "</td><td>";
-        if(!empty($url['name'])){
-          $html .= "<a href='". $url['url']."'>". $url['name']."</a>";
-        }else{
-          $html .= "<a href='". $url['url']."'>". $url['url']."</a>";
-        }
-        if(!empty($url['mediaowner'])){
-          $html .= " "._("from")." ". $url['mediaowner'];
-        }
-
-        $html .= "</td>";
-        $html .= "</tr>";
-      }
-      $html .= "</table>";
+      
+      $html .= UrlTable($urls, null, false, '', function($url){ return empty($url['time']);} );
     }
 
     if(!intval($game_result['isongoing'])){

@@ -12,16 +12,11 @@ $title = _("Club Card").": ". ($profile['name']);
 
 $html .= "<h1>".utf8entities($profile['name'])."</h1>";
 
-$html .= "<table style='width:100%'><tr>";
-
 if(!empty($profile['profile_image'])){
-  $html .= "<td style='width:165px'><a href='".UPLOAD_DIR."clubs/$clubId/".$profile['profile_image']."'>";
-  $html .= "<img src='".UPLOAD_DIR."clubs/$clubId/thumbs/".$profile['profile_image']."' alt='"._("Profile image")."'/></a></td>";
-}else{
-  $html .= "<td></td>";
+  $html .= "<div class='profile_image'><a href='".UPLOAD_DIR."clubs/$clubId/".$profile['profile_image']."'>";
+  $html .= "<img style='width:165px' src='".UPLOAD_DIR."clubs/$clubId/thumbs/".$profile['profile_image']."' alt='"._("Profile image")."'/></a></div>";
 }
-
-$html .= "<td style='vertical-align:top;text-align:left'><table border='0'>";
+$html .= "<div class='club_details'><table border='0'>";
 $html .= "<tr><td></td></tr>";
 if($profile['country']>0){
   $country_info = CountryInfo($profile['country']);
@@ -39,18 +34,19 @@ if(!empty($profile['city'])){
 
 if(!empty($profile['founded'])){
   $html .= "<tr><td class='profileheader'>"._("Founded").":</td>";
-  $html .= "<td>".$profile['founded']."</td></tr>\n";
+  $html .= "<td>".utf8entities($profile['founded'])."</td></tr>\n";
 }
 
 if(!empty($profile['homepage'])){
   $html .= "<tr><td class='profileheader'>"._("Homepage").":</td>";
   if(mb_substr(strtolower($profile['homepage']),0,4)=="http"){
-    $html .= "<td><a href='".$profile['homepage']."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";
+    $html .= "<td><a href='". utf8entities($profile['homepage']) ."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";
   }else{
-    $html .= "<td><a href='http://".$profile['homepage']."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";
+    $html .= "<td><a href='http://".utf8entities($profile['homepage'])."'>".utf8entities($profile['homepage'])."</a></td></tr>\n";
   }
 }
 if(!empty($profile['contacts'])){
+  $html .= "<tr><td class='profileheader'>"._("Contacts").":</td>";
   $contacts = utf8entities($profile['contacts']);
   $contacts = str_replace("\n",'<br/>',$contacts);
   $html .= "<tr><td class='profileheader' style='vertical-align:top'>"._("Contacts").":</td>";
@@ -58,70 +54,41 @@ if(!empty($profile['contacts'])){
 }
 
 $html .= "</table>";
-$html .= "</td></tr>";
+$html .= "</div>";
 
 if(!empty($profile['story'])){
+  $html .= "<div class='profileheader' colspan='2'>"._("Description").":</div>\n";
   $story = utf8entities($profile['story']);
   $story = str_replace("\n",'<br/>',$story);
-  $html .= "<tr><td colspan='2'>".$story."</td></tr>\n";
+  $html .= "<div class='club_story'>".$story."</div>\n";
 }
 if(!empty($profile['achievements'])){
-  $html .= "<tr><td colspan='2'>&nbsp;</td></tr>\n";
-  $html .= "<tr><td class='profileheader' colspan='2'>"._("Achievements").":</td></tr>\n";
-  $html .= "<tr><td colspan='2'></td></tr>\n";
+  $html .= "<br />\n";
+  $html .= "<div class='profileheader' colspan='2'>"._("Achievements").":</div>\n";
   $achievements = utf8entities($profile['achievements']);
   $achievements = str_replace("\n",'<br/>',$achievements);
-  $html .= "<tr><td colspan='2'>".$achievements."</td></tr>\n";
+  $html .= "<div class='club_achievements'>".$achievements."</div>\n";
 }
 $urls = GetUrlList("club", $clubId);
+
 if(count($urls)){
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Club pages").":</td></tr>";
-  $html .= "<tr><td colspan='2'><table>";
-  foreach($urls as $url){
-    $html .= "<tr>";
-    $html .= "<td colspan='2'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-    $html .= "</td><td>";
-    if(!empty($url['name'])){
-      $html .="<a href='". $url['url']."'>". $url['name']."</a>";
-    }else{
-      $html .="<a href='". $url['url']."'>". $url['url']."</a>";
-    }
-    $html .= "</td>";
-    $html .= "</tr>";
-  }
-  $html .= "</table>";
-  $html .= "</td></tr>";
+  $html .= "<div class='profileheader'>"._("Club pages").":</div>";
+  
+  $html .= UrlTable($urls, null, false);
 }
 
 $urls = GetMediaUrlList("club", $clubId);
+
 if(count($urls)){
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Photos and Videos").":</td></tr>";
-  $html .= "<tr><td colspan='2'><table>";
-  foreach($urls as $url){
-    $html .= "<tr>";
-    $html .= "<td colspan='2'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-    $html .= "</td><td>";
-    if(!empty($url['name'])){
-      $html .="<a href='". $url['url']."'>". $url['name']."</a>";
-    }else{
-      $html .="<a href='". $url['url']."'>". $url['url']."</a>";
-    }
-    if(!empty($url['mediaowner'])){
-      $html .=" "._("from")." ". $url['mediaowner'];
-    }
+  $html .= "<div class='profileheader'>"._("Photos and Videos").":</div>";
 
-    $html .= "</td>";
-    $html .= "</tr>";
-  }
-  $html .= "</table>";
-  $html .= "</td></tr>";
+  $html .= UrlTable($urls,
+    ['type', 'url', 'mediaowner'], false);
 }
-
-$html .= "</table>";
 
 $teams = ClubTeams($clubId, CurrentSeason());
 if(mysqli_num_rows($teams)){
-  $html .= "<h2>".U_(CurrentSeasonName()).":</h2>\n";
+  $html .= "<h2>". utf8entities(U_(CurrentSeasonName())).":</h2>\n";
   $html .= "<table style='white-space: nowrap;' border='0' cellspacing='0' cellpadding='2' width='90%'>\n";
   $html .= "<tr><th>"._("Team")."</th><th>"._("Division")."</th><th colspan='3'></th></tr>\n";
 

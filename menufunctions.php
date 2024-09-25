@@ -902,13 +902,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "<tr><td>";
 
   $urls = GetUrlListByTypeArray(array("menulink", "menumail"), $curseason);
-  foreach ($urls as $url) {
-    if ($url['type'] == "menulink") {
-      echo "<a class='subnav' href='" . $url['url'] . "'>&raquo; " . U_($url['name']) . "</a>\n";
-    } elseif ($url['type'] == "menumail") {
-      echo "<a class='subnav' href='mailto:" . $url['url'] . "'>@ " . U_($url['name']) . "</a>\n";
-    }
-  }
+  echo URLLinks($urls);
   echo "</td></tr>\n";
   echo "<tr><td>";
   echo "<a class='subnav' style='background: url(./images/linkicons/feed_14x14.png) no-repeat 0 50%; padding: 0 0 0 19px;' href='./ext/rss.php?feed=all'>" .
@@ -949,13 +943,7 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
   echo "<tr><th class='menuseasonlevel'>" . utf8entities(_("Links")) . "</th></tr>\n";
   echo "<tr><td>";
   $urls = GetUrlListByTypeArray(array("menulink", "menumail"), 0);
-  foreach ($urls as $url) {
-    if ($url['type'] == "menulink") {
-      echo "<a class='subnav' href='" . $url['url'] . "'>&raquo; " . U_($url['name']) . "</a>\n";
-    } elseif ($url['type'] == "menumail") {
-      echo "<a class='subnav' href='mailto:" . $url['url'] . "'>@ " . U_($url['name']) . "</a>\n";
-    }
-  }
+  echo UrlLinks($urls);
   echo "</td></tr>\n";
   echo "</table>";
 

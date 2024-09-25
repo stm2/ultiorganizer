@@ -102,43 +102,18 @@ if($profile){
 
 $urls = GetUrlList("player", $player['profile_id']);
 if(count($urls)){
-  $html .= "<table class='infotable'>";
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Player pages").":</td></tr>\n";
-  foreach($urls as $url){
-    $html .= "<tr>";
-    $html .= "<td style='width:18px'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-    $html .= "</td><td>";
-    if(!empty($url['name'])){
-      $html .="<a href='". $url['url']."'>". $url['name']."</a>";
-    }else{
-      $html .="<a href='". $url['url']."'>". $url['url']."</a>";
-    }
-    $html .= "</td>";
-    $html .= "</tr>\n";
-  }
-  $html .= "</table>\n";
+  $html .= "<div class='profileheader'>"._("Player pages").":</div>";
+  
+  $html .= UrlTable($urls, null, false);
 }
 
-$urls = GetMediaUrlList("player", $player['profile_id']);
+$urls = GetMediaUrlList("team", $player['profile_id']);
+
 if(count($urls)){
-  $html .= "<table class='infotable'>";
-  $html .= "<tr><td colspan='2' class='profileheader' style='vertical-align:top'>"._("Photos and Videos").":</td></tr>\n";
-  foreach($urls as $url){
-    $html .= "<tr>";
-    $html .= "<td style='width:18px'><img width='16' height='16' src='images/linkicons/".$url['type'].".png' alt='".$url['type']."'/> ";
-    $html .= "</td><td>";
-    if(!empty($url['name'])){
-      $html .="<a href='". $url['url']."'>". $url['name']."</a>";
-    }else{
-      $html .="<a href='". $url['url']."'>". $url['url']."</a>";
-    }
-    if(!empty($url['mediaowner'])){
-      $html .=" "._("from")." ". $url['mediaowner'];
-    }
-    $html .= "</td>";
-    $html .= "</tr>\n";
-  }
-  $html .= "</table>\n";
+  $html .= "<div class='profileheader'>"._("Photos and Videos").":</div>";
+  
+  $html .= UrlTable($urls,
+    ['type', 'url', 'mediaowner'], false);
 }
 
 $games = PlayerSeasonPlayedGames($playerId, $curseason);

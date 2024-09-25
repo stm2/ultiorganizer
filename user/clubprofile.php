@@ -165,31 +165,14 @@ $html .= "<td><textarea class='input borderbox' rows='10' maxlength='5000' name=
 
 $html .= "<tr><td class='infocell' colspan='2'>" . _("Web pages (homepage, blogs, images, videos)") . ":</td></tr>";
 $html .= "<tr><td colspan='2'>";
-$html .= "<table border='0'>";
 
 $urls = GetUrlList("club", $clubId);
 
-foreach ($urls as $url) {
-  $html .= "<tr style='border-bottom-style:solid; border-bottom-width:1px;'>";
-  $html .= "<td colspan='3'><img width='16' height='16' src='images/linkicons/" . $url['type'] . ".png' alt='" .
-    $url['type'] . "'/> ";
-  if (!empty($url['name'])) {
-    $html .= "<a href='" . $url['url'] . "'>" . $url['name'] . "</a> (" . $url['url'] . ")";
-  } else {
-    $html .= "<a href='" . $url['url'] . "'>" . $url['url'] . "</a>";
-  }
+$html .= UrlTable($urls);
 
-  $html .= "</td>";
-  $html .= "<td class='right'><input class='deletebutton' type='image' src='images/remove.png' name='removeurl' value='X' alt='X' onclick='setId(" .
-    $url['url_id'] . ");'/></td>";
-  $html .= "</tr>";
-}
-// empty line
-if (count($urls)) {
-  $html .= "<tr>";
-  $html .= "<td colspan='3'>&nbsp;</td>";
-  $html .= "</tr>";
-}
+$html .= "<br />\n";
+
+$html .= "<table border='0'>";
 
 $html .= "<tr>";
 $html .= "<td>" . _("Type") . "</td>";

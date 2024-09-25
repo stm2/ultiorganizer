@@ -104,7 +104,7 @@ if (!empty($urls)) {
   $html .= "<p>";
   $html .= _("In case of feedback, improvement ideas or any other questions, please contact:");
   foreach ($urls as $url) {
-    $html .= "<br/><a href='mailto:" . $url['url'] . "'>" . U_($url['name']) . "</a>\n";
+    $html .= "<br/><a href='mailto:" . utf8entities($url['url']) . "'>" . (empty($url['name'])?utf8entities($url['url']):utf8entities(U_($url['name']))) . "</a>\n";
   }
   $html .= "</p>";
 }
