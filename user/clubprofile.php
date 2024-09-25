@@ -36,6 +36,7 @@ if ($clubId <= 0) {
   $html .= "<p>" . _("This team has no club") . "</p>";
 
   showPage($title, $html);
+  exit();
 }
 
 //club profile
