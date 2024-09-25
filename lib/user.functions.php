@@ -670,11 +670,6 @@ function getViewPools($selSeasonId) {
 }
 
 function ClearUserSessionData() {
-  if (IsFacebookEnabled()) {
-    global $serverConf;
-    setcookie('fbs_' . $serverConf['FacebookAppId'], "", 1, "/");
-    unset($_COOKIE['fbs_' . $serverConf['FacebookAppId']]);
-  }
   SetUserSessionData("anonymous");
 }
 

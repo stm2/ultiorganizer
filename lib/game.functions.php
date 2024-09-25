@@ -1,6 +1,5 @@
 <?php 
 include_once $include_prefix.'lib/accreditation.functions.php';
-include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';
 
 // FIXME does not set anything
@@ -695,9 +694,6 @@ function GameSetDefenses($gameId, $home, $away) {
         intval($gameId));
     $result = mysql_adapt_query($query);
     if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-    if (IsFacebookEnabled()) {
-      TriggerFacebookEvent($gameId, "game", 0);
-    }
     return $result;
   } else { die('Insufficient rights to edit game'); }
 }
@@ -864,9 +860,6 @@ function GameAddScore($gameId, $pass, $goal, $time, $number, $hscores, $ascores,
 			
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		if (IsFacebookEnabled()) {
-			TriggerFacebookEvent($gameId, "goal", $number);
-		}
 		return $result;
 	} else { die('Insufficient rights to edit game'); }
 }
@@ -894,9 +887,6 @@ function GameAddDefense($gameId, $player, $home, $caught, $time, $iscallahan, $n
 			
 		$result = mysql_adapt_query($query);
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		/*if (IsFacebookEnabled()) {
-			TriggerFacebookEvent($gameId, "goal", $number);
-		}*/
 		return $result;
 	} else { die('Insufficient rights to edit game'); }
 }
@@ -920,9 +910,6 @@ function GameAddScoreEntry($uo_goal) {
 		$result = mysql_adapt_query($query);
 
 		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		if (IsFacebookEnabled()) {
-			TriggerFacebookEvent($gameId, "goal", $number);
-		}
 		return $result;
 	} else { die('Insufficient rights to edit game'); }
 }

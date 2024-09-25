@@ -1,6 +1,5 @@
 <?php
 include_once $include_prefix.'lib/configuration.functions.php';
-include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
 $title = _("Server configuration");
@@ -227,18 +226,6 @@ $html .= "<h1>". _("3rd party API settings") ."</h1>";
 $html .= "<table style='white-space: nowrap' cellpadding='2'>\n";
 $html .= $htmltmp1;
 $html .= "</table>\n";
-if (IsFacebookEnabled()) {
-	$html .= "<table style='white-space: nowrap' cellpadding='2'>\n";
-	if (!isset($serverConf['FacebookUpdateToken']) || (strlen($serverConf['FacebookUpdateToken']) == 0)) {
-		$html .= "<tr><td><a href='javascript:authorize()'>"._("Authorize facebook updates")."</a>\n";
-		$html .= "<input type='hidden' id='FacebookUpdateId' name='FacebookUpdateId' value=''/></td></tr>\n";
-	} else {
-		$html .= "<tr><td><a href='javascript:unauthorize()'>"._("Unauthorize facebook updates")."</a>\n";
-		$html .= "<input type='hidden' id='FacebookUnauthorize' name='FacebookUnauthorize' value='no'/></td></tr>\n";
-	}
-	$html .= "</table>\n";
-	
-}
 
 $html .= "<hr/>";
 $html .= "<h1>". _("Internal settings") ."</h1>";
@@ -251,32 +238,6 @@ $html .= "<input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
 $html .= "</form>";
 echo $html;
 contentEnd();
-if (IsFacebookEnabled()) {
-		echo "<script src='http://connect.facebook.net/en_US/all.js'></script>
-<script>
-
-FB.init({appId: '";
-		echo $serverConf['FacebookAppId'];
-      	echo "', status: true, 
-      	cookie: true, xfbml: true});
-function authorize() {
-	FB.login(function(response) {
-		if (response.session) {
-			if (response.perms && response.perms.indexOf('manage_pages') > -1) {
-				window.document.getElementById('FacebookUpdateId').value = response.session.uid;
-				window.document.getElementById('Form').submit();
-			}
-		}
-	}, {perms:'offline_access,manage_pages'});
-}
-
-function unauthorize() {
-	window.document.getElementById('FacebookUnauthorize').value = 'yes';
-	window.document.getElementById('Form').submit();
-}
-
-</script>";	
-	}
 		
 pageEnd();
 ?>

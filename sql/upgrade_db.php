@@ -831,6 +831,21 @@ function upgrade86() {
       'INSERT INTO `uo_spirit_category` (`mode`, `group`, `type`, `index`, `factor`, `text`) VALUES ("1004", 3, 2, 11, 0, "Comment")');
 }
 
+function upgrade87() {
+  // removed facebook / twitter
+  runQuery("DELETE FROM `uo_setting` WHERE name LIKE 'Twitter%%'");
+  runQuery("DELETE FROM `uo_keys` WHERE type='twitter'");
+  
+  runQuery("DELETE FROM `uo_userproperties` WHERE name='facebookuid'");
+  runQuery("DELETE FROM `uo_userproperties` WHERE name LIKE 'facebook%%'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookUpdateToken'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookAppId'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookAppKey'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookAppSecret'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookGameMessage'");
+  runQuery("DELETE FROM `uo_setting` WHERE name='FacebookUpdatePage'");
+}
+
 function runQuery($query) {
   $result = mysql_adapt_query($query);
   if (!$result) {

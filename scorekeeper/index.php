@@ -22,7 +22,6 @@ OpenConnection();
 
 include_once $include_prefix.'lib/common.functions.php';
 include_once $include_prefix.'lib/user.functions.php';
-include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/logging.functions.php';
 include_once $include_prefix.'lib/debug.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';

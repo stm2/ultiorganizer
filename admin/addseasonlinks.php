@@ -1,6 +1,5 @@
 <?php
 include_once $include_prefix.'lib/configuration.functions.php';
-include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/url.functions.php';
 
 $title = _("Event links");
@@ -11,11 +10,6 @@ if(!empty($_POST['savebutton'])){
 
 	$settings = array();
 
-	$setting = array();
-	$setting['name']="FacebookUpdatePage";
-	$setting['value']=$_POST['FacebookUpdatePage'];
-	$settings[] = $setting;
-	
 	SetServerConf($settings);
 	
 	for($i=0;!empty($_POST["urlid$i"]);$i++){
@@ -67,17 +61,6 @@ $settings = GetServerConf();
 
 $htmltmp1 = "";
 $htmltmp2 = "";
-
-foreach($settings as $setting){
-	
-	if($setting['name']=="FacebookUpdatePage"){
-		$htmltmp1 .= "<tr>";
-		$htmltmp1 .= "<td class='infocell'>"._("Facebook Update Page").":</td>";
-		$htmltmp1 .= "<td><input class='input' size='60' name='FacebookUpdatePage' value='".utf8entities($setting['value'])."'/></td>";
-		$htmltmp1 .= "</tr>\n";
-	}
-	
-}			
 
 $html .= "<form method='post' action='?view=admin/addseasonlinks&amp;season=".$seasonId."' id='Form'>";
 
