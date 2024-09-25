@@ -214,22 +214,6 @@ yuicalendar.table {
 	color: #006699;
 }
 
-.twitter-list {
-  margin: 0 0 15px 15px;
-  padding: 0;
-  list-style-type: none;
-} 
-
-.twitter-list li{
-  margin: 0 0 10px 0;
-  padding: 0;
-  list-style-type: none;
-} 
-
-.twitter-list li a{
-  padding: 0 0 0 19px;
-  background: url("../../images/linkicons/twitter_14x14.png") no-repeat 0 50%;
-} 
 .feed {
   margin-left: 3px;
   padding: 0 0 0 19px;

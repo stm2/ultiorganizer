@@ -405,20 +405,6 @@ class RestoreFilter extends RestoreHandler {
     if (empty($this->error)) {
       debug_to_apache("Committing...");
       DBCommit();
-      // disable facebook and twitter updates after restore to avoid false postings
-      // (f.ex. if restored database is used for testing purpose)
-      $setting = array();
-      $setting['name'] = "FacebookEnabled";
-      $setting['value'] = "false";
-      $settings[] = $setting;
-      $setting['name'] = "TwitterEnabled";
-      $setting['value'] = "false";
-      $settings[] = $setting;
-
-      SetServerConf($settings);
-
-      echo "<p>" . _("Disabled Facebook and Twitter to avoid false postings.") . "</p>\n";
-
       echo "<p>" . _("Done!") . "</p>";
     } else {
       debug_to_apache("Rolling back...");

@@ -7,10 +7,6 @@ include_once $include_prefix.'lib/location.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix . 'lib/spirit.functions.php';
 
-if (version_compare(PHP_VERSION, '5.0.0', '>')) {
-	include_once 'lib/twitter.functions.php';
-}
-
 $title = _("Feed in defense sheet");
 $maxtimeouts = 6;
 $maxdefenses = 31;

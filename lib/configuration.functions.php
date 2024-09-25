@@ -4,83 +4,8 @@ $serverConf = GetSimpleServerConf();
 global $locales;
 $locales = getAvailableLocalizations();
 
-$twitterConfKeys = array("TwitterConsumerKey", "TwitterConsumerSecret", "TwitterOAuthCallback");
-$facebookConfKeys = array("FacebookEnabled", "FacebookAppId", "FacebookAppSecret", "FacebookAppKey", "FacebookGameMessage", "FacebookUpdatePage", "FacebookUpdateId", "FacebookUpdateToken");
-
-function SetTwitterKey($access_token, $purpose, $id) {
-	if(isSuperAdmin()){
-		$query = sprintf("SELECT key_id	FROM uo_keys 
-				WHERE type='twitter' AND purpose='%s' AND id='%s'",
-			mysql_adapt_real_escape_string($purpose),
-			mysql_adapt_real_escape_string($id));
-		
-		$key_id = DBQueryToValue($query);
-		
-		if($key_id>=0){
-			$query = sprintf("UPDATE uo_keys SET
-				purpose='%s',id='%s',keystring='%s',secrets='%s'
-				WHERE key_id=$key_id",
-			mysql_adapt_real_escape_string($purpose),
-			mysql_adapt_real_escape_string($id),
-			mysql_adapt_real_escape_string($access_token['oauth_token']),
-			mysql_adapt_real_escape_string($access_token['oauth_token_secret']));
-		
-		}else{
-		$query = sprintf("INSERT INTO uo_keys 
-				(type,purpose,id,keystring,secrets)
-				VALUES ('twitter','%s','%s','%s','%s')",
-			mysql_adapt_real_escape_string($purpose),
-			mysql_adapt_real_escape_string($id),
-			mysql_adapt_real_escape_string($access_token['oauth_token']),
-			mysql_adapt_real_escape_string($access_token['oauth_token_secret']));
-		}
-		return DBQuery($query);
-	} else { die('Insufficient rights to configure twitter'); }
-}
-
-function GetTwitterKey($season, $purpose) {
-		$query = sprintf("SELECT key_id, keystring, secrets
-				FROM uo_keys 
-				WHERE type='twitter' AND purpose='%s' AND id='%s'",
-			mysql_adapt_real_escape_string($purpose),
-			mysql_adapt_real_escape_string($season));
-			
-		return DBQueryToRow($query);
-}
-
-function GetTwitterKeyById($keyId) {
-	if(isSuperAdmin()){
-		$query = sprintf("SELECT key_id, keystring, secrets, purpose, id
-				FROM uo_keys 
-				WHERE key_id='%s'",
-			mysql_adapt_real_escape_string($keyId));
-			
-		return DBQueryToRow($query);
-	} else { die('Insufficient rights to configure twitter'); }
-}
-
-function DeleteTwitterKey($keyId) {
-	if(isSuperAdmin()){
-		$query = sprintf("DELETE FROM uo_keys WHERE key_id='%s'",
-			mysql_adapt_real_escape_string($keyId));
-			
-		return DBQuery($query);
-	} else { die('Insufficient rights to configure twitter'); }
-}
-
-function GetTwitterConf() {
-	global $serverConf;
-	global $twitterConfKeys;
-	$conf = array();
-	foreach ($twitterConfKeys as $key) {
-		$conf[$key] = $serverConf[$key];
-	}
-		return $conf;
-}
-
 function IsTwitterEnabled() {
-	global $serverConf;
-	return ($serverConf['TwitterEnabled'] == "true");
+	return false;
 }
 
 function GetPageTitle() {
@@ -98,20 +23,8 @@ function GetDefTimeZone() {
 	return $serverConf['DefaultTimezone'];
 }
 
-
-function GetFacebookConf() {
-	global $serverConf;
-	global $facebookConfKeys;
-	$conf = array();
-	foreach ($facebookConfKeys as $key) {
-		$conf[$key] = $conf[$key];
-	}
-	return $conf;
-}
-
 function IsFacebookEnabled() {
-	global $serverConf;
-	return ($serverConf['FacebookEnabled'] == "true");
+	return false;
 }
 
 function IsGameRSSEnabled() {

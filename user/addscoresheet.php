@@ -7,10 +7,6 @@ include_once $include_prefix.'lib/location.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';
 include_once $include_prefix . 'lib/spirit.functions.php';
 
-if (version_compare(PHP_VERSION, '5.0.0', '>')) {
-  include_once 'lib/twitter.functions.php';
-}
-
 $gameId = intval($_GET["game"]);
 
 $title = _("Feed in score sheet");

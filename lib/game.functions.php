@@ -2,7 +2,6 @@
 include_once $include_prefix.'lib/accreditation.functions.php';
 include_once $include_prefix.'lib/facebook.functions.php';
 include_once $include_prefix.'lib/configuration.functions.php';
-include_once $include_prefix.'lib/twitter.functions.php';
 
 // FIXME does not set anything
 // function GameSetPools($games) {
@@ -659,12 +658,6 @@ function GameSetResult($gameId, $home, $away, $updatePools = true, $checkRights 
       ResolvePoolStandings($poolId);
       PoolResolvePlayed($poolId);
     }
-    if (IsTwitterEnabled()) {
-      TweetGameResult($gameId);
-    }
-    if (IsFacebookEnabled()) {
-      TriggerFacebookEvent($gameId, "game", 0);
-    }
     return $result;
   } else {
     die('Insufficient rights to edit game');
@@ -686,12 +679,6 @@ function GameClearResult($gameId, $updatepools = true) {
       $poolId = GamePool($gameId);
       ResolvePoolStandings($poolId);
       PoolResolvePlayed($poolId);
-    }
-    if (IsTwitterEnabled()) {
-      TweetGameResult($gameId);
-    }
-    if (IsFacebookEnabled()) {
-      TriggerFacebookEvent($gameId, "game", 0);
     }
     
     return $result;

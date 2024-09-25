@@ -2721,7 +2721,7 @@ function PoolUndoAllGames($poolId) {
     
     GameSetScoreSheetKeeper($game['game_id'], NULL);
     
-    GameClearResult($game['game_id'], false); // FIXME: twitter/facebook
+    GameClearResult($game['game_id'], false);
   }
   
   undoPoolMoves($poolId);

@@ -93,9 +93,6 @@ $html .=  "<p>";
 $html .=  "<a href='?view=admin/addseasons&amp;season=$seasonIdUrl'>&raquo; ".utf8entities(_("Change event properties"))."</a><br/>";
 $html .=  "<a href='?view=admin/addseasonusers&amp;season=$seasonIdUrl'>&raquo; ".utf8entities(_("Edit User access rights"))."</a><br/>";
 $html .=  "<a href='?view=admin/addseasonlinks&amp;season=$seasonIdUrl'>&raquo; ".utf8entities(_("Edit side menu links"))."</a><br/>";
-if(IsTwitterEnabled()){
-  $html .=  "<a href='?view=admin/twitterconf&amp;season=$seasonIdUrl'>&raquo; ".utf8entities(_("Configure Twitter"))."</a><br/>";
-}
 
 if(IsSeasonStatsCalculated($info['season_id'])){
   $html .=  "<a href='?view=admin/stats&amp;season=$seasonIdUrl'>&raquo; ".utf8entities(_("Re-archive statistics"))."</a><br/>";

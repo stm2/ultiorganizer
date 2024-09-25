@@ -86,9 +86,6 @@ while ($row = mysqli_fetch_assoc($seasons)) {
   $html .= "<td>" . utf8entities($visible) . "</td>";
 
   $html .= "<td>";
-  if (IsTwitterEnabled()) {
-    $html .= "<a href='?view=admin/twitterconf&amp;season=" . urlencode($seasonId) . "'>" . utf8entities(_("Conf. Twitter")) . "</a> | ";
-  }
   if (!CanDeleteSeason($seasonId)) {
     if (IsSeasonStatsCalculated($seasonId)) {
       $html .= "<a href='?view=admin/stats&amp;season=" . urlencode($seasonId) . "'>" . utf8entities(_("Re-calc. stats")) . "</a>";
