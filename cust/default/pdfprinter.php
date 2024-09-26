@@ -96,10 +96,8 @@ class UltiPDF extends FPDF {
   }
 
   function PrintShortScoreSheets($seasonname, $games, $split_fields = true) {
-    // $this->setFooter(null, $seasonname, null);
     $width = ($this->w - $this->rMargin - $this->x);
     
-    //$perpage = 5;
     $g = 0;
     $lastplace = null;
     $this->SetLineWidth(0);

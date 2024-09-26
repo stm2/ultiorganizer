@@ -14,7 +14,7 @@ $create = _("Create");
 $subject = "";
 
 include_once 'cust/default/pdfprinter.php';
-  
+
 $season = "";
 $filter1 = "";
 $filter2 = "";
@@ -227,15 +227,7 @@ function searchModes() {
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=division'>" .
     utf8entities(_("Rosters for a division")) . "</a></li>\n";
   $html .= "</ul>";
-  
-//   $qr = QRcode::svg(BASEURL . "/scorekeeper/?view=result");
-//   $qr = preg_replace("/[<][?]xml.*/","", $qr);
-//   $qr = preg_replace("/[<][!]DOCTYPE.*/","", $qr);
-//   $html .= $qr;
-  
-  
-  
-  
+
   return $html;
 }
 
@@ -438,7 +430,7 @@ if (isset($_POST['create'])) {
   }
 
   $html .= searchModes();
-  
+
   showPage($title, $html);
 }
 ?>
