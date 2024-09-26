@@ -46,7 +46,7 @@ function PoolPalette($num = 3) {
  * @param int $palette The palette (currently 1 to 3) from which to choose colors
  * @param array $order if given, the positions of the colors in the palette is stored here
  */
-function PoolColors(int | string $offset = 0, $distance = 5, $palette = 3, &$order = null) {
+function PoolColors($offset = 0, $distance = 5, $palette = 3, &$order = null) {
   $colors = PoolPalette($palette);
   $max = count($colors) -1;
 

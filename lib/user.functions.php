@@ -2132,7 +2132,7 @@ function GetUserYears($admin = false) {
   return DBQueryToArray($query);
 }
 
-function DeleteUsersBefore(int | null $year = 0, bool $confirmed) {
+function DeleteUsersBefore($year, bool $confirmed) {
   if (!isSuperAdmin())
     die('insufficient rights to delete users');
 

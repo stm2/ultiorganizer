@@ -73,8 +73,8 @@ function GetUrlTypes() {
 	return $types;
 }
 
-function UrlTable(array $urls, array $columns = null, callable|false $can_delete = null, $tablespec = '',
-  callable $is_shown = null) {
+function UrlTable(array $urls, array $columns = null, $can_delete = null, $tablespec = '',
+  $is_shown = null) {
   if (empty($urls))
     return '';
 
