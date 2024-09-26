@@ -54,8 +54,8 @@ function GetMediaUrlList($owner, $ownerId, $type="") {
 			mysql_adapt_real_escape_string($owner),
 			mysql_adapt_real_escape_string($ownerId));
 	}
-	if(!empty($filter)){
-	  $query.= sprintf(" AND type='%s'",mysql_adapt_real_escape_string($type));
+	if(!empty($type)){
+	  $query.= sprintf(" AND urls.type='%s'",mysql_adapt_real_escape_string($type));
 	}
 	
 	return DBQueryToArray($query);

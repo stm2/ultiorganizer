@@ -582,7 +582,7 @@ function GameRow($game, $date = false, $time = true, $field = true, $series = fa
           if (empty($title)) {
             $title = _("Live Broadcasting");
           }
-          $ret .= "<a href='" . $url['url'] . "'>" . "<img border='0' width='16' height='16' title='" .
+          $ret .= "<a href='" . utf8entities($url['url']) . "'>" . "<img border='0' width='16' height='16' title='" .
             utf8entities($title) . "' src='images/linkicons/" . $url['type'] . ".png' alt='" . $url['type'] . "'/></a>";
         }
       }
