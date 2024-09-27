@@ -45,7 +45,7 @@ if (isset($_SESSION['uid'])) {
 
 $canVote = CanVote($user, $name, $pollId);
 
-if (!($canVote && IsVisible($pollId)) && !hasEditSeriesRight($seriesId)) {
+if (!($canVote && (IsVisible($pollId)) || hasEditSeriesRight($seriesId))) {
   $html .= "<h2>" . utf8entities($title) . "</h2>";
   $html .= "<p>" . _("You cannot vote for this poll.") . "</p>";
 } else if (empty($name)) {

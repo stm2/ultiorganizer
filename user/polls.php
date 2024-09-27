@@ -39,7 +39,7 @@ if (!count($serieses)) {
     foreach ($polls as $poll) {
       ++$pollNum;
       $pollId = $poll['poll_id'];
-      if (IsVisible($pollId) && !hasEditSeriesRight($seriesId))
+      if (!IsVisible($pollId) && !hasEditSeriesRight($seriesId))
         continue;
       if (empty($poll['name'])) {
         $html .= "<h3>" . sprintf(_("Poll %d"), $pollNum) . "</h3>";
