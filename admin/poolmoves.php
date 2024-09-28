@@ -4,23 +4,21 @@ include_once 'lib/series.functions.php';
 include_once 'lib/pool.functions.php';
 include_once 'lib/team.functions.php';
 
+$title = _("Continuing pool");
+
+$poolId = (int) ($_GET["pool"] ?? 0);
+$poolinfo = PoolInfo($poolId);
+$seriesId = $poolinfo['series']??0;
+$season = $poolinfo['sason']??'';
+
+ensureEditSeriesRight($seriesId, $title);
+
 if (isset($_SERVER['HTTP_REFERER']))
   $backurl = utf8entities($_SERVER['HTTP_REFERER']);
-else 
-  $backurl = '';
-$seriesId = 0;
-if(!empty($_GET["pool"]))
-$poolId = intval($_GET["pool"]);
-
-if(!empty($_GET["series"]))
-$seriesId = intval($_GET["series"]);
-
-if(!empty($_GET["season"]))
-$season = $_GET["season"];
+else
+  $backurl = "?view=admin/seasonpools&season=" . utf8entities($season);
 
 $pools = SeriesPools($seriesId);
-
-$title = _("Continuing pool");
 
 function js_string_encode($userinput) {
   return str_replace(["'", '"'], ["\\&#39;", '\\&quot;'], ($userinput));
@@ -103,7 +101,6 @@ function checkMove(frompool, infield, outfield, pteamname) {
 pageTopHeadClose($title);
 leftMenu();
 contentStart();
-$poolinfo = PoolInfo($poolId);
 $typeRR = $poolinfo['type'] === PoolTypes('roundrobin');
 $typePlayoff = $poolinfo['type'] === PoolTypes('playoff');
 $typeSwiss = $poolinfo['type'] === PoolTypes('swissdraw');
@@ -191,7 +188,7 @@ if(!empty($_POST['add']))
     }
   }
 }
-echo "<form method='post' action='?view=admin/poolmoves&amp;series=$seriesId&amp;pool=$poolId&amp;season=$season'>";
+echo "<form method='post' action='?view=admin/poolmoves&amp;pool=$poolId'>";
 
 echo $err;
 

@@ -232,7 +232,7 @@ foreach($pools as $pool){
         $html .= "<a href='?view=admin/serieteams&amp;season=$season&amp;series=".$series_id."&amp;pool=".$info['pool_id']."'>"._("Move teams")."</a> | ";
       }
     }else{
-      $html .= "<b><a href='?view=admin/poolmoves&amp;season=$season&amp;series=".$series_id."&amp;pool=".$info['pool_id']."'>"._("Manage moves")."</a></b> | ";
+      $html .= "<b><a href='?view=admin/poolmoves&amp;pool=".$info['pool_id']."'>"._("Manage moves")."</a></b> | ";
     }
   }
 

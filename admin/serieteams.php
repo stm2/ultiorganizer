@@ -308,7 +308,7 @@ if ($continuation && $SwissOK==-1) {
   if ($poolinfo['type']==2 && $PlayoffOK==-1) {
     echo "<p><b>" . _("Warning:"). "</b> " . _("You are about to move an odd number of teams which might result in one of the teams having another BYE.") . "</p>";
   }
-  echo "<p><a href='?view=admin/poolmoves&amp;season=$season&amp;series=".$seriesId."&amp;pool=".$poolId."'>"._("Manage moves")."</a></p>";
+  echo "<p><a href='?view=admin/poolmoves&amp;pool=$poolId'>"._("Manage moves")."</a></p>";
 
   echo "<p>"._("Games to move").":</p>";
   $mvgames = intval($poolinfo['mvgames']);

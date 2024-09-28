@@ -6,22 +6,15 @@ include_once 'lib/yui.functions.php';
 
 $seriesId = 0;
 $season = 0;
-$order = "to";
 $title = _("Moved teams");
 $html = "";
 
-if (!empty($_GET["season"]))
-  $season = $_GET["season"];
 
-if (!empty($_GET["series"])) {
-  $seriesId = $_GET["series"];
-  if (empty($season)) {
-    $season = SeriesSeasonId($seriesId);
-  }
-}
+$seriesId = $_GET["series"] ?? 0;
+ensureEditSeriesRight($seriesId, $title);
+$season = SeriesSeasonId($seriesId);
 
-if (!empty($_GET["order"]))
-  $order = $_GET["order"];
+$order = $_GET["order"] ?? "to";
 
 $preText = yuiLoad(array("utilities"));
 

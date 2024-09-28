@@ -842,6 +842,8 @@ function ensureSeasonSeriesAdmin($season, $title = null, $message = null) {
 }
 
 function hasEditSeriesRight($seriesId) {
+  if ($seriesId <= 0)
+    return false;
   $season = SeriesSeasonId($seriesId);
   return isset($_SESSION['userproperties']['userrole']['superadmin']) ||
     isset($_SESSION['userproperties']['userrole']['seasonadmin'][$season]) ||

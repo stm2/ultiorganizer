@@ -20,6 +20,8 @@ if ($poolId > 0) {
     die("missing parameter");
 }
 
+ensureEditSeriesRight($seriesId);
+
 // pool parameters
 $pp = array(
   "name" => "",
@@ -375,7 +377,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   
   if (intval($pp['continuingpool'])) {
     echo "<tr><td class='infocell'>" . _("Initial moves") . ":</td>
-      <td><a href='?view=admin/poolmoves&amp;season=$season&amp;series=" . $pp['series'] . "&amp;pool=" . $poolId . "'>" . _("select") . "</a></td>
+      <td><a href='?view=admin/poolmoves&amp;pool=$poolId'>" . _("select") . "</a></td>
       <td></td></tr>";
   }
   echo "<tr><td class='infocell'>" . _("Color") . ":</td>";
@@ -468,7 +470,8 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
 
     <tr><td class='infocell'>" . _("Time-outs in overtime") . ":</td>
       <td><input class='input' id='timeoutsOnOvertime' name='timeoutsOnOvertime' value='" . utf8entities($pp['timeoutsovertime']) . "'/></td>
-      <td>" . _("per team") . "</td></tr>    ";
+      <td>" . _("per team") . "</td></tr>
+    ";
   
   echo "
     <tr><td class='infocell'>" . _("Forfeit/BYE against") . ":</td>
