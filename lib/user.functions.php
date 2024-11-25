@@ -1214,7 +1214,7 @@ function AddUserRole(string $userid, string $role) {
  * @param string $seasonId
  * @return boolean
  */
-function AddSeasonUserRole(string $userId, string $role, int $seasonId) {
+function AddSeasonUserRole(string $userId, string $role, string $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
 
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
@@ -1241,7 +1241,7 @@ function AddSeasonUserRole(string $userId, string $role, int $seasonId) {
   }
 }
 
-function RemoveSeasonUserRole(string $userId, string $role, int $seasonId) {
+function RemoveSeasonUserRole(string $userId, string $role, string $seasonId) {
   if (hasEditUsersRight() || isSeasonAdmin($seasonId)) {
     $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
       mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
