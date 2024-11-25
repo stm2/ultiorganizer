@@ -360,6 +360,7 @@ if (empty($_GET['source']) || isset($_POST['cancel'])) {
         break;
       }
       if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
+        $html .= getHiddenInput($_POST['selected_series'][0], 'selected_series[]');
         set_time_limit(300);
         $eventdatahandler = new EventDataXMLHandler();
         $mock = !empty($_POST['mock']);
