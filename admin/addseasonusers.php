@@ -183,7 +183,7 @@ $html .= adminHeader(_("Event admins"), 'eventadmin');
 $admins = SeasonAdmins($seasonId);
 $html .= adminTable($admins, 'eventadmin', null, array(
   'delId' => 'userid'
-), 'seasonusers');
+), 'seasonusers', [ [ 'name' => $seasonName, 'season_id' => $seasonId]], 'season', 'season_id', 'name');
 
 $html .= adminHeader(_("Division admins"), 'seriesadmin');
 $series = SeasonSeries($seasonId);
