@@ -345,7 +345,7 @@ function groupSelection($season, $group, $url_params) {
 
 function ReservationsForLocation($id, $limit, $order = 'date_reversed') {
   $query = sprintf(
-    "SELECT MIN(res.date) as date, ss.season_id as season_id, ANY_VALUE(ss.name) as season_name, count(res.id) as count
+    "SELECT MIN(res.date) as date, ss.season_id as season_id, MIN(ss.name) as season_name, count(res.id) as count
 		FROM uo_reservation as res 
           LEFT JOIN uo_season ss ON (ss.season_id = res.season)
 		WHERE res.location = %d

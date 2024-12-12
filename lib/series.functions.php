@@ -753,7 +753,7 @@ function SeriesTeamResponsibles($seriesId) {
   $season = SeriesSeasonId($seriesId);
   if (isSeasonAdmin($season) || hasEditSeriesRight($seriesId)) {
     $query = sprintf(
-      "SELECT u.userid, u.name, u.email, j.series as series_id, ANY_VALUE(j.team_id) team_id, j.name as teamname
+      "SELECT u.userid, u.name, u.email, j.series as series_id, MIN(j.team_id) team_id, j.name as teamname
 			FROM uo_users u
 			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
 			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
