@@ -86,25 +86,31 @@ class UltiPDF extends FPDF {
     $this->printGenderBar();
   }
   
-  function getTimeAndPlace($game) {
+  function getDateAndPlace($game) {
     $place = !empty($game["time"]) ? (ShortDate($game["time"]) . " - "):"";
     $place .= !empty($game["placename"]) ? (U_($game["placename"]) . " " ):"";
     $place .= !empty($game['fieldname']) ? (_("field") . " " . U_($game['fieldname'])) : "";
     if (empty($place))
       $place = _("Unscheduled");
+      return $place;
+  }
+  
+  function getTime($game) {
+    $place = !empty($game["time"]) ? (ShortTimeFormat($game["time"])):_("Unscheduled");
     return $place;
   }
 
   function PrintShortScoreSheets($seasonname, $games, $split_fields = true) {
     $width = ($this->w - $this->rMargin - $this->x);
-    
+    $fontsize = 9;
+
     $g = 0;
     $lastplace = null;
     $this->SetLineWidth(0);
     foreach ($games as $game) {
       if ($game !== null) {
         $game['result_id'] = $game['game_id'] . "" . getChkNum($game['game_id']);
-        $place = $this->getTimeAndPlace($game);
+        $place = $this->getDateAndPlace($game);
       } else {
         $place = "";
       }
@@ -123,8 +129,8 @@ class UltiPDF extends FPDF {
           if ($split_fields && !empty($place))
             $txt .= " - " . $place;
           $txt = utf8_decode($txt);
-          $this->Cell($x, 9, $txt, 1, 1, 'L', true);
-          $y2 = $this->y;
+          $this->Cell($x, $fontsize + 1, $txt, 1, 1, 'L', true);
+          $yBase = $this->y;
           $filename = UPLOAD_DIR . "qr" . ".png";
           $url = BASEURL . "/scorekeeper/?view=result";
           QRcode::png($url, $filename, 'h', $qrsize, 1);
@@ -133,13 +139,18 @@ class UltiPDF extends FPDF {
           unlink($filename);
           // $this->Ln();
             
-          $this->sety($y2 + 2);
+          $this->sety($yBase + 2);
           $data = utf8_decode($this->getShortScoresheetInstructions());
           $this->setEmptyStyle();
-          $this->SetFont('Arial', '', 8);
-          $this->WriteHTML($data);
+          $this->SetFont('Arial', '', $fontsize);
+          $margin = $this->rMargin;
+          $this->SetRightMargin($margin + $this->qrWidth);
+          $this->WriteHTML($data, $fontsize / 2);
+          $this->SetRightMargin($margin);
           $this->Ln();
           $this->Ln();
+          
+          $this->SetY(max($this->GetY(), $yBase + $this->qrWidth- $fontsize));
         }
         $this->setEmptyStyle();
         $this->setPreFilledStyle();        
@@ -191,7 +202,7 @@ class UltiPDF extends FPDF {
     $width = ($this->w - $this->rMargin - $this->x) / $units_per_line;
     $width_score = ($this->w - $this->rMargin - $this->x - 2 * $width) / ($score_cap);
     $height = 8.3;
-    $height_lo = 6;
+    $height_lo = 5.5;
     $height_hi = 9;
     
     $fontsize = 10;
@@ -202,7 +213,7 @@ class UltiPDF extends FPDF {
       $gamedescription = _("Time and place");
       $color = 150;
     } else {
-      $gamedescription = $this->getTimeAndPlace($gameRow);
+      $gamedescription = $this->getTime($gameRow);
       $color = 0;
     }
     $this->SetFont('Arial', 'B', $fontsize);
@@ -1476,7 +1487,7 @@ class UltiPDF extends FPDF {
     $this->Ln();
   }
 
-  function WriteHTML($html) {
+  function WriteHTML($html, $lineheight = 4) {
     // HTML parser
     $html = str_replace("\n", ' ', $html);
     $a = preg_split('/<(.*)>/U', $html, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -1486,7 +1497,7 @@ class UltiPDF extends FPDF {
         if ($this->HREF)
           $this->PutLink($this->HREF, $e);
         else
-          $this->Write(4, $e);
+          $this->Write($lineheight, $e);
       } else {
         // Tag
         if ($e[0] == '/')
@@ -1500,20 +1511,20 @@ class UltiPDF extends FPDF {
             if (preg_match('/([^=]*)=["\']?([^"\']*)/', $v, $a3))
               $attr[strtoupper($a3[1])] = $a3[2];
           }
-          $this->OpenTag($tag, $attr);
+          $this->OpenTag($tag, $attr, $lineheight);
         }
       }
     }
   }
 
-  function OpenTag($tag, $attr) {
+  function OpenTag($tag, $attr, $lineheight = 4) {
     // Opening tag
     if ($tag == 'B' || $tag == 'I' || $tag == 'U')
       $this->SetStyle($tag, true);
     if ($tag == 'A')
       $this->HREF = $attr['HREF'];
     if ($tag == 'BR')
-      $this->Ln(5);
+      $this->Ln($lineheight);
   }
 
   function CloseTag($tag) {

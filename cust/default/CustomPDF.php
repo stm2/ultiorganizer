@@ -33,14 +33,13 @@ class CustomPDF {
   function getShortScoresheetInstructions() {
     $data = "1. " . _("Fill in team names if missing.") . "<br>";
     $data .= "2. " . _("Mark first offence and gender ratio of first point for mixed games.") . "<br>";
-    $data .= "4. " . _("Mark goals scored.") . "<br>";
-    $data .= "5. " . _("When a team takes a time-out, check appropriate box.") . "<br>";
-    $data .= "6. " .
-      _(
-        "For the current ABBA gender ratio, look up the sum of the current scores in the table at the bottom of the page.") .
+    $data .= "3. " . _("Mark goals scored.") . "<br>";
+    $data .= "4. " . _("When a team takes a time-out, check appropriate box.") . "<br>";
+    $data .= "5. " .
+      _("Current ABBA gender ratio: look up the sum of the current scores in the table at the bottom of the page.") .
       "<br>";
-    $data .= "7. " . _("After the game, fill in the final score and get the captains' signature.") . "<br>";
-    $data .= "8. " . _("Report the game result using the QR code and the game # at the top right of the game record.");
-    return $data;
+      $data .= "6. " . _("After the game, fill in the final score and get the captains' signature.") . "<br>";
+      $data .= "7. " . _("Report the game result using the QR code and the game # at the top right of the game record.");
+      return $data;
   }
 }
