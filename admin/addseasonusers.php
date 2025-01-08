@@ -159,7 +159,7 @@ function adminTable($admins, $formId, $groupTag, $delIds, $inputId, $adminGroups
       $html .= "</table>\n";
       $html .= "<p><input class='button' name='add' type='submit' value='" . _("Grant rights") . "'/></p>\n";
     } else {
-      $html .= "</table>\n";
+      $html .= "</tr></table>\n";
     }
   } else {
     $html .= "<p><a href='?view=admin/addseasonusers&amp;season=" . $seaLink . "&amp;access=$formId'>" . _("Add more ...") . "</a></p>\n";
@@ -177,6 +177,10 @@ function adminTable($admins, $formId, $groupTag, $delIds, $inputId, $adminGroups
   return $html;
 }
 
+function emptyAdmins($message) {
+  return "<p>" . utf8entities($message) . "</p>\n</form>\n";
+}
+
 $seasonName = SeasonName($seasonId);
 
 $html .= adminHeader(_("Event admins"), 'eventadmin');
@@ -189,10 +193,17 @@ $html .= adminHeader(_("Division admins"), 'seriesadmin');
 $series = SeasonSeries($seasonId);
 $admins = SeasonSeriesAdmins($seasonId, false, 'series');
 
-$html .= adminTable($admins, 'seriesadmin', 'seriesname', array(
-  'delId' => 'userid',
-  'seriesId' => 'series_id'
-), 'seriesusers', $series, 'series', 'series_id', 'name', empty($_POST['series']) ? null : $_POST['series']);
+if (empty($series)) {
+  $html .= emptyAdmins(_("No divisions defined."));
+} else {
+  
+  $html .= adminTable($admins, 'seriesadmin', 'seriesname', array(
+    'delId' => 'userid',
+    'seriesId' => 'series_id'
+  ), 'seriesusers', $series, 'series', 'series_id', 'name', empty($_POST['series']) ? null : $_POST['series']);
+  
+}
+
 
 $html .= adminHeader(_("Team admins"), 'teamadmin');
 $admins = SeasonTeamAdmins($seasonId);
@@ -203,7 +214,7 @@ foreach ($admins as &$user) {
 unset($user);
 $teams = SeasonTeams($seasonId);
 if (empty($teams)) {
-  $html .= "<p>" . utf8entities(_("No teams defined.")) . "</p>";
+  $html .= emptyAdmins(_("No teams defined."));
 } else {
   foreach ($teams as &$team) {
     $team['name'] = $team['seriesname'] . ", " . $team['name'];

@@ -2071,7 +2071,7 @@ function SelectionScript($id, $type, $hiddenId = false, $minQueryLength = 1) {
         }
         format += ')';
       }
-      format += '</div>';
+      format += '<\/div>';
       return format;
     };
     ${type}AutoComp.minQueryLength = $minQueryLength;
