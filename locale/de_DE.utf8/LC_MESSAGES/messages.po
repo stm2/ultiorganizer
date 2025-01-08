@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-11 12:45+0100\n"
+"POT-Creation-Date: 2024-12-13 14:42+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -533,7 +533,7 @@ msgstr "Kommentar (Sie können <b>, </em> und <br />-Tags benutzen)"
 #: admin/serieteams.php:21 admin/stats.php:53 lib/season.functions.php:769
 #: menufunctions.php:845 menufunctions.php:885 menufunctions.php:920
 #: menufunctions.php:1002 menufunctions.php:1023 seasonlist.php:27 teams.php:7
-#: teams.php:42 user/pdfscoresheet.php:181
+#: teams.php:42 user/pdfscoresheet.php:184
 msgid "Teams"
 msgstr "Teams"
 
@@ -948,7 +948,7 @@ msgstr "Benutzer-ID(s)"
 #: mobile/respgames.php:106 mobile/respgames.php:110 reservationinfo.php:11
 #: reservationinfo.php:25 scorekeeper/respgames.php:101
 #: user/adddefensesheet.php:203 user/addscoresheet.php:384
-#: user/pdfscoresheet.php:344
+#: user/pdfscoresheet.php:347
 #, php-format
 msgid "Field"
 msgstr "Feld"
@@ -1528,7 +1528,7 @@ msgstr "Beendete Spiele zurücksetzen"
 #: admin/select_userrole.php:68 admin/select_userrole.php:71
 #: admin/select_userrole.php:74 admin/select_userrole.php:77
 #: admin/translations.php:137 mobile/addscoresheet.php:209 result.php:104
-#: scorekeeper/addscoresheet.php:282 scorekeeper/result.php:104
+#: scorekeeper/addscoresheet.php:282 scorekeeper/result.php:112
 #: user/adddefensesheet.php:340 user/addscoresheet.php:522
 #: user/addspirit.php:67 user/addspirit.php:73 user/select_poolselector.php:27
 #: user/select_poolselector.php:30 user/select_poolselector.php:33
@@ -2792,7 +2792,7 @@ msgstr "Klassen"
 msgid "Players"
 msgstr "Spieler"
 
-#: admin/seasonadmin.php:78 user/pdfscoresheet.php:149
+#: admin/seasonadmin.php:78 user/pdfscoresheet.php:152
 msgid "Reservations"
 msgstr "Reservierungen"
 
@@ -4267,10 +4267,6 @@ msgid "When a team takes a time-out, check appropriate box."
 msgstr "Markieren, wenn ein Team eine Auszeit nimmt."
 
 #: cust/default/CustomPDF.php:39
-#, fuzzy
-#| msgid ""
-#| "For the current ABBA gender ratio, look up the sum of the current scores "
-#| "in the table at the bottom of the page."
 msgid ""
 "Current ABBA gender ratio: look up the sum of the current scores in the "
 "table at the bottom of the page."
@@ -5491,7 +5487,7 @@ msgstr "Name muss mindestens zwei Buchstaben haben!"
 #: cust/default/teamplayers.functions.php:52
 #: cust/default_var/teamplayers.functions.php:52
 #: cust/slkl/teamplayers.functions.php:50 result.php:103
-#: scorekeeper/result.php:103 user/enrollteam.php:113
+#: user/enrollteam.php:113
 msgid "Confirm"
 msgstr "Bestätigen"
 
@@ -6332,7 +6328,7 @@ msgstr "Zeit der Defense-Aktion"
 msgid "Callahan defense"
 msgstr "Callahan-Defense"
 
-#: gameplay.php:624 result.php:60 scorekeeper/result.php:60
+#: gameplay.php:624 result.php:60 scorekeeper/result.php:67
 msgid "on field"
 msgstr "auf Feld"
 
@@ -6892,7 +6888,7 @@ msgstr ""
 
 #: login.php:112 menufunctions.php:208 menufunctions.php:372
 #: menufunctions.php:1260 menufunctions.php:1262 mobile/index.php:16
-#: register.php:137 scorekeeper/login.php:23
+#: register.php:137 scorekeeper/index.php:106 scorekeeper/login.php:23
 msgid "Login"
 msgstr "Login"
 
@@ -7697,53 +7693,53 @@ msgstr "Reservierung"
 msgid "Add result"
 msgstr "Neues Ergebnis"
 
-#: result.php:20 result.php:32 scorekeeper/result.php:18
-#: scorekeeper/result.php:30
+#: result.php:20 result.php:32 scorekeeper/result.php:25
+#: scorekeeper/result.php:37
 msgid "Error: Could not save result."
 msgstr "Fehler: Konnte Ergebnis nicht speichern."
 
-#: result.php:48 scorekeeper/result.php:48
+#: result.php:48 scorekeeper/result.php:55
 msgid "Result not saved!"
 msgstr "Ergebnis nicht gespeichert!"
 
-#: result.php:51 scorekeeper/result.php:51
+#: result.php:51 scorekeeper/result.php:58
 msgid "Result saved!"
 msgstr "Ergebnis gespeichert!"
 
-#: result.php:57 scorekeeper/result.php:57
+#: result.php:57 scorekeeper/result.php:64
 #, php-format
 msgid "Game ID %s"
 msgstr "Spielnummer %s"
 
-#: result.php:83 scorekeeper/result.php:83
+#: result.php:83 scorekeeper/result.php:90
 msgid "Game is already played. Result:"
 msgstr "Spiel beendet. Ergebnis:"
 
-#: result.php:86 scorekeeper/result.php:86
+#: result.php:86 scorekeeper/result.php:93
 msgid "Change result to"
 msgstr "Spielergebnis ändern"
 
-#: result.php:93 scorekeeper/result.php:93
+#: result.php:93 scorekeeper/result.php:100
 msgid "No winner?"
 msgstr "Kein Gewinner?"
 
-#: result.php:95 scorekeeper/result.php:95
+#: result.php:95 scorekeeper/result.php:102
 msgid "Winner is"
 msgstr "Sieger ist"
 
-#: result.php:122 scorekeeper/result.php:120
+#: result.php:122 scorekeeper/result.php:128
 msgid "Game # from Scoresheet"
 msgstr "Spielnummer vom Spielbericht"
 
-#: result.php:127 scorekeeper/result.php:123
+#: result.php:127 scorekeeper/result.php:131
 msgid "Home team goals"
 msgstr "Punkte Heimteam"
 
-#: result.php:131 scorekeeper/result.php:126
+#: result.php:131 scorekeeper/result.php:134
 msgid "Visitor team goals"
 msgstr "Punkte Besucherteam"
 
-#: result.php:137 scorekeeper/result.php:129
+#: result.php:137
 msgid "Submit..."
 msgstr "Abschicken..."
 
@@ -7892,13 +7888,25 @@ msgstr "Spiele, für die Sie verantwortlich sind"
 msgid "Games in selected event"
 msgstr "Spiele im gewählten Turnier"
 
-#: scorekeeper/result.php:40
+#: scorekeeper/result.php:47
 msgid "Add result with game id"
 msgstr "Ergebnis mit Spiel-ID eingeben"
 
-#: scorekeeper/result.php:130
+#: scorekeeper/result.php:110
+msgid "Reverse teams..."
+msgstr "Teams vertauschen"
+
+#: scorekeeper/result.php:111
+msgid "Confirm result"
+msgstr "Ergebnis bestätigen"
+
+#: scorekeeper/result.php:137
+msgid "Check..."
+msgstr "Prüfen..."
+
+#: scorekeeper/result.php:139
 msgid "Games list"
-msgstr "Frühere Spiele"
+msgstr "Spielliste"
 
 #: seasonlist.php:5
 msgid "Old events"
@@ -8826,97 +8834,97 @@ msgstr "Ohne Reservierung"
 msgid "Reservation %s"
 msgstr "Reservierung %s"
 
-#: user/pdfscoresheet.php:151
+#: user/pdfscoresheet.php:154
 msgid "No reservations for this user!"
 msgstr "Keine Reservierungen für diesen Benutzer!"
 
-#: user/pdfscoresheet.php:156
+#: user/pdfscoresheet.php:159
 #, php-format
 msgid "Group %s"
 msgstr "Gruppe %s"
 
-#: user/pdfscoresheet.php:159
+#: user/pdfscoresheet.php:162
 msgid "upcoming"
 msgstr "Nächste Spiele"
 
-#: user/pdfscoresheet.php:168
+#: user/pdfscoresheet.php:171
 #, php-format
 msgid "Team %s"
 msgstr "Team %s"
 
-#: user/pdfscoresheet.php:195
+#: user/pdfscoresheet.php:198
 msgid "print rosters if teams have rosters set"
 msgstr "Aufstellung drucken, falls bei den Teams vorhanden"
 
-#: user/pdfscoresheet.php:197
+#: user/pdfscoresheet.php:200
 msgid "always print rosters"
 msgstr "Aufstellung immer drucken"
 
-#: user/pdfscoresheet.php:198
+#: user/pdfscoresheet.php:201
 msgid "never print rosters"
 msgstr "Aufstellung nie drucken"
 
-#: user/pdfscoresheet.php:202
+#: user/pdfscoresheet.php:205
 msgid "short sheets (multiple games per page)"
 msgstr "Kurze Spielberichte (mehrere Spiele pro Seite)"
 
-#: user/pdfscoresheet.php:203
+#: user/pdfscoresheet.php:206
 msgid "long sheets (one game per page)"
 msgstr "Lange Spielberichte (ein Spiel pro Blatt)"
 
-#: user/pdfscoresheet.php:206
+#: user/pdfscoresheet.php:209
 msgid "Fields on separate pages"
 msgstr "Felder auf getrennten Seiten"
 
-#: user/pdfscoresheet.php:218
+#: user/pdfscoresheet.php:221
 msgid "Score sheets for a pool "
 msgstr "Spielberichte für einen Pool"
 
-#: user/pdfscoresheet.php:220
+#: user/pdfscoresheet.php:223
 msgid "Score sheets for a reservation"
 msgstr "Spielberichte für eine Reservierung"
 
-#: user/pdfscoresheet.php:222
+#: user/pdfscoresheet.php:225
 msgid "Score sheets for a game"
 msgstr "Spielberichte für ein Spiel"
 
-#: user/pdfscoresheet.php:224
+#: user/pdfscoresheet.php:227
 msgid "Blank score sheets"
 msgstr "Blanko-Spielberichte"
 
-#: user/pdfscoresheet.php:226
+#: user/pdfscoresheet.php:229
 msgid "Roster for a team"
 msgstr "Aufstellung für ein Team"
 
-#: user/pdfscoresheet.php:228
+#: user/pdfscoresheet.php:231
 msgid "Rosters for a division"
 msgstr "Aufstellungen für eine Klasse"
 
-#: user/pdfscoresheet.php:360 user/pdfscoresheet.php:383
+#: user/pdfscoresheet.php:363 user/pdfscoresheet.php:386
 msgid "No games selected"
 msgstr "Keine Spiele ausgewählt"
 
-#: user/pdfscoresheet.php:396
+#: user/pdfscoresheet.php:399
 msgid "Empty Sheets"
 msgstr "Blanko-Spielberichte"
 
-#: user/pdfscoresheet.php:414
+#: user/pdfscoresheet.php:417
 msgid "Search Pools"
 msgstr "Pools suchen"
 
-#: user/pdfscoresheet.php:417
+#: user/pdfscoresheet.php:420
 msgid "Search Reservations"
 msgstr "Reservierungen suchen"
 
-#: user/pdfscoresheet.php:420
+#: user/pdfscoresheet.php:423
 msgid "Search Games"
 msgstr "Spiele suchen"
 
-#: user/pdfscoresheet.php:423
+#: user/pdfscoresheet.php:426
 msgid "Search Teams"
 msgstr "Teams suchen"
 
-#: user/pdfscoresheet.php:426
+#: user/pdfscoresheet.php:429
 msgid "Search Divisions"
 msgstr "Klassen / Ligen suchen"
 
