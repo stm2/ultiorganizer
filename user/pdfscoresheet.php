@@ -125,8 +125,11 @@ if (!empty($source["reservation"])) {
     $subject = sprintf(_("Reservation %s"), $reservationname);
   }
   $gameResponsibilities = GameResponsibilities($season);
-  $games = DBResourceToArray(
-    ResponsibleReservationGames($source["reservation"] == "none" ? null : $source["reservation"], $gameResponsibilities));
+  if (empty($gameResponsibilities))
+    $games = [];
+  else
+    $games = DBResourceToArray(
+      ResponsibleReservationGames($source["reservation"] == "none" ? null : $source["reservation"], $gameResponsibilities));
 }
 
 if (!empty($source["reservations"])) {

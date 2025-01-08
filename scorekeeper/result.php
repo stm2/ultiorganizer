@@ -8,6 +8,13 @@ $canSave = true;
 $gameId = 0;
 if (!empty($game))
   $gameId = (int) substr($game, 0, -1);
+if (!empty($_POST['reverse'])) {
+  $swap = $_POST['home'];
+  $_POST['home'] = $_POST['away'];
+  $_POST['away'] = $swap;
+  $_POST['save'] = "save";
+}
+
 if (!empty($_POST['save'])) {
   $game = intval($_POST['game']);
   $gameId = (int) substr($game, 0, -1);
@@ -100,7 +107,8 @@ if (!empty($_POST['save']) && empty($errors)) {
     }
     $html .= "?</span> ";
   }
-  $html .= "<br/><br/><input type='submit' name='confirm' data-ajax='false' value='" . _("Confirm") . "'/> ";
+  $html .= "<br/><br/><input type='submit' name='reverse' data-ajax='false' value='" . _("Reverse teams...") . "'/> ";
+  $html .= "<br/><br/><input type='submit' name='confirm' data-ajax='false' value='" . _("Confirm result") . "'/> ";
   $html .= "<input type='submit' name='cancel' data-ajax='false' value='" . _("Cancel") . "'/>";
   $html .= "</p>";
 } else {
@@ -126,8 +134,10 @@ if (!empty($_POST['save']) && empty($errors)) {
   $html .= "<label for='away'>" . _("Visitor team goals") . ":</label>";
   $html .= "<input type='number' id='away' name='away' size='3' maxlength='3' value='$visitorscore' onkeyup='validNumber(this);'/><br /> ";
 
-  $html .= "<input type='submit' name='save' data-ajax='false' value='" . _("Submit...") . "'/><br /><br />";
-  $html .= "<a href='?view=login' data-role='button' data-ajax='false'>" . _("Games list") . "</a><br />";
+  $html .= "<input type='submit' name='save' data-ajax='false' value='" . _("Check...") . "'/><br /><br />";
+  if($_SESSION['uid'] != "anonymous"){
+    $html .= "<a href='?view=respgames' data-role='button' data-ajax='false'>" . _("Games list") . "</a><br />";
+  }
 }
 
 $html .= "</form>";
