@@ -159,7 +159,7 @@ function adminTable($admins, $formId, $groupTag, $delIds, $inputId, $adminGroups
       $html .= "</table>\n";
       $html .= "<p><input class='button' name='add' type='submit' value='" . _("Grant rights") . "'/></p>\n";
     } else {
-      
+      $html .= "</table>\n";
     }
   } else {
     $html .= "<p><a href='?view=admin/addseasonusers&amp;season=" . $seaLink . "&amp;access=$formId'>" . _("Add more ...") . "</a></p>\n";
