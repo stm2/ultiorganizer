@@ -315,7 +315,7 @@ function fill_choices(array $tournaments, $tournament_attributes, $division_attr
     foreach ($tournament_attributes as $att) {
       $choices[$att][$tournament[$att]] = 1;
     }
-    $divs = $tournament['divisions'];
+    $divs = $tournament['divisions'] ?? []; 
     foreach ($divs as $div) {
       foreach ($division_attributes as $att) {
         $choices[$att][$div[$att]] = 1;
@@ -327,6 +327,7 @@ function fill_choices(array $tournaments, $tournament_attributes, $division_attr
 
 function showDFVSelection($seasonId, $series_id, $importstage) {
   $data = DFVTournaments(($_GET['refresh'] ?? 0) == 1);
+
   $tournaments = $data['tournaments'] ?? null;
 
   $seaLink = urlencode($seasonId);
@@ -368,7 +369,7 @@ function showDFVSelection($seasonId, $series_id, $importstage) {
       uo_create_multi_key_comparator([['year', true, true], ['surface', true, true], ['id', true, true]]));
 
     foreach ($tournaments as $tournament) {
-      $divs = $tournament['divisions'];
+      $divs = $tournament['divisions'] ?? [];
       mergesort($divs,
         uo_create_multi_key_comparator(
           [['divisionAge', false, true], ['divisionType', true, true], ['divisionIdentifier', false, true]]));
