@@ -210,6 +210,8 @@ function PoolPlayoffFollowersArray($poolId) {
   $followers = DBQueryToArray($query);
 
   foreach($followers as $follower){
+    // TODO no sure why follower could be 0, but it sometimes is
+    if ($follower['follower'] == 0) continue; 
     $ids[] = $follower['follower'];
     $ids = array_merge($ids, PoolPlayoffFollowersArray($follower['follower']));
   }

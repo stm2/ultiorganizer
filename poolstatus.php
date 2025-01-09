@@ -81,7 +81,8 @@ foreach ($pools as $pool) {
     }
   }
   $prevseries = $poolinfo['series'];
-  $seriesName = U_($poolinfo['seriesname']).", ". U_($poolinfo['name']);
+  $seriesName = U_($poolinfo['seriesname']).", ". U_($poolinfo['name']);
+
   $html .= "<h2>".utf8entities($seriesName)."</h2>";
   
   $html .= CommentHTML(3, $pool['pool_id']);
@@ -500,7 +501,6 @@ function printRoundRobinPool($seasoninfo, $poolinfo){
 }
 
 function printPlayoffTree($seasoninfo, $poolinfo){
-
   $ret = "";
   $pools = array();
   $pools[] = $poolinfo['pool_id'];
@@ -508,9 +508,13 @@ function printPlayoffTree($seasoninfo, $poolinfo){
   //find out total rounds played
   $followers = PoolPlayoffFollowersArray($poolinfo['pool_id']);
 
+  /*
+  // FIXME why is this here?
   if(count($followers)==0){
     $followers = PoolFollowersArray($poolinfo['pool_id']);
   }
+  debug_to_apache($followers);
+  */
   $pools = array_merge($pools,$followers);
   $rounds = count($pools);
 
@@ -526,6 +530,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
 
   global $include_prefix;
   
+
   $template = PlayoffTemplate($totalteams, $rounds, $poolinfo['playoff_template']);
   if (empty($template)) {
     $ret .= "<p>"._("No playoff tree template found.")."</p>\n";
@@ -534,6 +539,7 @@ function printPlayoffTree($seasoninfo, $poolinfo){
 
   $round=0;
   $previousRoundByeName = '???';
+
   foreach($pools as $poolId){
     $pool = PoolInfo($poolId);
 
