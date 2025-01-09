@@ -9,7 +9,7 @@ $title = _("Continuing pool");
 $poolId = (int) ($_GET["pool"] ?? 0);
 $poolinfo = PoolInfo($poolId);
 $seriesId = $poolinfo['series']??0;
-$season = $poolinfo['sason']??'';
+$season = $poolinfo['season']??'';
 
 ensureEditSeriesRight($seriesId, $title);
 
