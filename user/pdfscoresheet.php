@@ -129,7 +129,8 @@ if (!empty($source["reservation"])) {
     $games = [];
   else
     $games = DBResourceToArray(
-      ResponsibleReservationGames($source["reservation"] == "none" ? null : $source["reservation"], $gameResponsibilities));
+      ResponsibleReservationGames($source["reservation"] == "none" ? null : $source["reservation"], $gameResponsibilities)
+    );
 }
 
 if (!empty($source["reservations"])) {
@@ -138,8 +139,10 @@ if (!empty($source["reservations"])) {
   $subject = "";
   if (!empty($gameResponsibilities)) {
     foreach ($source['reservations'] as $rr) {
-      $games = array_merge($games,
-        DBResourceToArray(ResponsibleReservationGames($rr == "none" ? null : $rr, $gameResponsibilities)));
+      $games = array_merge(
+        $games,
+        DBResourceToArray(ResponsibleReservationGames($rr == "none" ? null : $rr, $gameResponsibilities))
+      );
 
       $reservationname = html_entity_decode(ReservationName(ReservationInfo($rr)));
       if (empty($subject))
@@ -147,8 +150,10 @@ if (!empty($source["reservations"])) {
       else if (mb_strlen($subject) < 80)
         $subject .= ", " . $reservationname;
     }
-    mergesort($games,
-      uo_create_multi_key_comparator([['placename', true, true], ['fieldname', true, true], ['time', true, true]])); 
+    mergesort(
+      $games,
+      uo_create_multi_key_comparator([['placename', true, true], ['fieldname', true, true], ['time', true, true]])
+    );
     $subject = _("Reservations") . " " . $subject;
   } else {
     $subject = _("No reservations for this user!");
@@ -208,7 +213,7 @@ function modeSelect($default) {
 
   $html .= "<p><label for='split_fields'>" . _("Fields on separate pages") . "</label>";
   $html .= "<input class='input' type='checkbox' id='split_fields' name='split_fields' checked='checked'/></p>\n";
-  
+
   return $html;
 }
 
@@ -240,8 +245,7 @@ if (isset($_POST['create'])) {
   $printed = false;
   if ($teamId) {
 
-    function print_team_roster($teamId) {
-      global $pdf;
+    function print_team_roster($pdf, $teamId) {
       $teaminfo = TeamInfo($teamId);
       $players = array();
       if ($result = TeamPlayerList($teamId)) {
@@ -253,17 +257,16 @@ if (isset($_POST['create'])) {
     }
     if (gettype($teamId) == 'array') {
       foreach ($teamId as $tt) {
-        print_team_roster($tt);
+        print_team_roster($pdf, $tt);
         $printed = true;
       }
     } else {
-      print_team_roster($teamId);
+      print_team_roster($pdf, $teamId);
       $printed = true;
     }
   } elseif ($seriesId) {
 
-    function print_series_rosters($seriesId) {
-      global $pdf;
+    function print_series_rosters($pdf, $seriesId) {
       $teams = SeriesTeams($seriesId, true);
       if (empty($teams))
         return false;
@@ -282,9 +285,9 @@ if (isset($_POST['create'])) {
     }
     if (gettype($seriesId) == "array") {
       foreach ($seriesId as $sr)
-        $printed |= print_series_rosters($sr);
+        $printed |= print_series_rosters($pdf, $sr);
     } else {
-      $printed |= print_series_rosters($seriesId);
+      $printed |= print_series_rosters($pdf, $seriesId);
     }
   } else {
     $seasonname = $_POST['season_name'] ?? SeasonName($season);
@@ -436,4 +439,3 @@ if (isset($_POST['create'])) {
 
   showPage($title, $html);
 }
-?>
