@@ -26,8 +26,18 @@ $html = "";
 ensureEditSeriesRight($series_id);
 
 // team parameters
-$tp = array("team_id" => "", "name" => "", "club" => "", "country" => "", "abbreviation" => "", "series" => $series_id,
-  "pool" => "", "rank" => "", "valid" => "1", "bye" => "");
+$tp = array(
+  "team_id" => "",
+  "name" => "",
+  "club" => "",
+  "country" => "",
+  "abbreviation" => "",
+  "series" => $series_id,
+  "pool" => "",
+  "rank" => "",
+  "valid" => "1",
+  "bye" => ""
+);
 
 $seasonInfo = SeasonInfo($seasonId);
 
@@ -171,6 +181,8 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
     $teamId = intval($team['team_id']);
     $seed = intval($team['rank']);
     $name = utf8entities($team['name']);
+    $displayName = $team['name'] != $team['teamName'] ?
+      utf8entities($team['name'] . " (" . $team['teamName'] . ")") : utf8entities($team['name']);
     $abbrev = utf8entities($team['abbreviation']);
     // $club = intval($team['club']);
     $club = utf8entities($team['clubname']);
@@ -178,8 +190,12 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
     if ($country)
       $countryId = intval($team['country']);
 
-    $teamListItems[] = ['id' => "team_item$teamId", 'hId' => "draggable$teamId", 'parent' => 'addedteams',
-      'item_class' => 'team_item'];
+    $teamListItems[] = [
+      'id' => "team_item$teamId",
+      'hId' => "draggable$teamId",
+      'parent' => 'addedteams',
+      'item_class' => 'team_item'
+    ];
 
     $html = "<tr class='team_item' id='team_item$teamId'><td>";
     $html .= "<input type='hidden' id='tId$teamId' name='tIds[]' value='$teamId'/>";
@@ -192,7 +208,7 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
     $html .= "<input type='number' class='editmode team_item_seed' name='seed[]' min='0' size='3' style='width: 3rem;' id='seed$teamId' style='display:inline' maxlength='5' value='$seed'/>\n";
     $html .= "<div class ='draggable_wrapper' id='draggable$teamId'>";
     $html .= "<img id='draghandle$teamId' src='images/draghandle.png' class='draghandle tableicon' />";
-    $html .= "<span class='teamname'>" . $name . "</span>";
+    $html .= "<span class='teamname'>" . $displayName . "</span>";
     if (!empty($club)) {
       $html .= " - <span class='clubname'>" . $club . "</span>";
     }
@@ -221,7 +237,7 @@ function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
       $notAdded .= getItem($team, $country, $teamlist);
   }
 
-//   $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
+  //   $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
   $html = "<h3>" . _("Teams to add") . "</h3>\n";
   $html .= "<div class='team_list' >";
   $html .= "<table class='team_list'><tbody id='addedteams' class='dd_target'  style='min-height:10rem'>\n";
@@ -315,7 +331,7 @@ function fill_choices(array $tournaments, $tournament_attributes, $division_attr
     foreach ($tournament_attributes as $att) {
       $choices[$att][$tournament[$att]] = 1;
     }
-    $divs = $tournament['divisions'] ?? []; 
+    $divs = $tournament['divisions'] ?? [];
     foreach ($divs as $div) {
       foreach ($division_attributes as $att) {
         $choices[$att][$div[$att]] = 1;
@@ -323,93 +339,6 @@ function fill_choices(array $tournaments, $tournament_attributes, $division_attr
     }
   }
   return $choices;
-}
-
-function showDFVSelection($seasonId, $series_id, $importstage) {
-  $data = DFVTournaments(($_GET['refresh'] ?? 0) == 1);
-
-  $tournaments = $data['tournaments'] ?? null;
-
-  $seaLink = urlencode($seasonId);
-  $html = "";
-
-  if ($tournaments == null) {
-    $html .= "<p>" . utf8entities(_("Error: could not read DFV data!"));
-    $tournaments = [];
-  } else {
-    $html .= "<p>" .
-      utf8entities(
-        sprintf(_("Data retrieved from DFV (%s) at %s"), utf8entities($data['source']),
-          utf8entities(EpocToMysql($data['retrieved']))));
-  }
-  $html .= " <a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series=${series_id}&amp;importstage=$importstage&amp;refresh=1'>" .
-    utf8entities(_("Refresh")) . "</a></p>\n";
-
-  if (!empty($data['error']))
-    $html .= "<p>" . $data['error'] . "</p>\n";
-
-  if (count($tournaments)) {
-    $html .= "<table>";
-    $choices = fill_choices($tournaments, ['year', 'surface'], ['divisionType', 'divisionAge']);
-
-    $year_filter = add_filter($html, 'year_filter', _('Year'), $choices['year'], date('Y', time()));
-    $surface_filter = add_filter($html, 'surface_filter', _('Surface'), $choices['surface']);
-    $division_filter = add_filter($html, 'division_filter', _('Division'), $choices['divisionType'],
-      division_to_dfv(SeriesInfo($series_id)['type']));
-    $age_filter = add_filter($html, 'age_filter', _('Age'), $choices['divisionAge']);
-
-    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='filter_division' type='submit' value='" .
-      utf8entities(_("Show matching divisions...")) . "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
-
-    $html .= "<tr><td>" . utf8entities(_("Add teams from:")) . "</td><td>";
-
-    $html .= "<select class='dropdown' name='importteams'>\n";
-    $options = [];
-    mergesort($tournaments,
-      uo_create_multi_key_comparator([['year', true, true], ['surface', true, true], ['id', true, true]]));
-
-    foreach ($tournaments as $tournament) {
-      $divs = $tournament['divisions'] ?? [];
-      mergesort($divs,
-        uo_create_multi_key_comparator(
-          [['divisionAge', false, true], ['divisionType', true, true], ['divisionIdentifier', false, true]]));
-      foreach ($divs as $div) {
-        if (matching_division($tournament, $div, ['year' => $year_filter, 'surface' => $surface_filter],
-          ['divisionType' => $division_filter, 'divisionAge' => $age_filter])) {
-          $name = $tournament['name'];
-
-          if (!empty($tournament['year']))
-            $name .= " - " . $tournament['year'];
-          if (!empty($tournament['surface']))
-            $name .= " (" . $tournament['surface'] . ")";
-          if (!empty($div['divisionIdentifier']))
-            $name .= " - " . $div['divisionIdentifier'];
-          $name .= " (" . $div['divisionType'] . ", " . $div['divisionAge'] . ")";
-
-          $val = $div['teams'];
-          $options[$div['id']] = ['name' => $name, 'val' => $val];
-        }
-      }
-    }
-
-    foreach (array_reverse($options) as $div) {
-      $val = utf8entities(json_encode($div['val']));
-      $html .= "<option class='dropdown' value='$val'>" . utf8entities($div['name']) . "</option>";
-    }
-
-    $html .= "</select></td></tr></table>\n";
-
-    $html .= "<p><input id='refresh' class='button' name='refresh' type='submit' value='" . utf8entities(_("Load...")) .
-      "'/>";
-    $html .= "<input id='cancel_load' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
-      "'/>";
-    $html .= "</p>\n";
-  } else {
-    $html .= "<p>";
-    $html .= "<input id='cancel_load' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
-      "'/></p>";
-  }
-  return $html;
 }
 
 $focusId = null;
@@ -439,31 +368,13 @@ if (!empty($_POST['remove_x'])) {
   if (CanDeleteTeam($id)) {
     DeleteTeam($id);
   }
-} else 
-// add
-if (!empty($_POST['add'])) {
-  $tp['name'] = $_POST['name0'] ?? "no name";
-  $tp['club'] = $_POST['club0'] ?? "";
-  $tp['rank'] = $_POST["seed0"] ?? "0";
+} else
+  // add
+  if (!empty($_POST['add'])) {
+    $tp['name'] = $_POST['name0'] ?? "no name";
+    $tp['club'] = $_POST['club0'] ?? "";
+    $tp['rank'] = $_POST["seed0"] ?? "0";
 
-  if (!empty($tp['club'])) {
-    $clubId = ClubId($tp['club']);
-    if ($clubId == -1) {
-      $clubId = AddClub($series_id, $tp['club']);
-    }
-    $tp['club'] = $clubId;
-  }
-  $tp['country'] = !empty($_POST['country0']) ? $_POST['country0'] : "";
-  $tp['abbreviation'] = !empty($_POST['abbrev0']) ? $_POST['abbrev0'] : "";
-  AddTeam($tp);
-} else 
-// import
-if (!empty($_POST['add_multi'])) {
-  foreach ($_POST['seed'] as $i => $seed) {
-    $tp['rank'] = $_POST['seed'][$i] ?? "0";
-    $tp['name'] = $_POST['name'][$i] ?? "no name";
-    $tp['abbreviation'] = $_POST['abbrev'][$i] ?? "";
-    $tp['club'] = $_POST['club'][$i] ?? "";
     if (!empty($tp['club'])) {
       $clubId = ClubId($tp['club']);
       if ($clubId == -1) {
@@ -471,147 +382,171 @@ if (!empty($_POST['add_multi'])) {
       }
       $tp['club'] = $clubId;
     }
-    $tp['country'] = $_POST['country'][$i] ?? "";
-
+    $tp['country'] = !empty($_POST['country0']) ? $_POST['country0'] : "";
+    $tp['abbreviation'] = !empty($_POST['abbrev0']) ? $_POST['abbrev0'] : "";
     AddTeam($tp);
-  }
-} else 
-// set
-if (!empty($_POST['save'])) {
-  $teams = SeriesTeams($series_id, true);
-  foreach ($teams as $team) {
-    $team_id = $team['team_id'];
-    $tp['team_id'] = $team_id;
-    $tp['name'] = !empty($_POST["name$team_id"]) ? $_POST["name$team_id"] : "no name";
-    $tp['club'] = !empty($_POST["club$team_id"]) ? $_POST["club$team_id"] : "";
-    $tp['rank'] = !empty($_POST["seed$team_id"]) ? $_POST["seed$team_id"] : "0";
-    if (!empty($tp['club'])) {
-      $clubId = ClubId($tp['club']);
-      if ($clubId == -1) {
-        $clubId = AddClub($series_id, $tp['club']);
-      }
-      $tp['club'] = $clubId;
-    }
-    $tp['country'] = !empty($_POST["country$team_id"]) ? $_POST["country$team_id"] : "";
-    $tp['abbreviation'] = !empty($_POST["abbrev$team_id"]) ? $_POST["abbrev$team_id"] : "";
-    SetTeam($tp);
-  }
-} else 
-// import
-if (isset($_POST['import_add']) || isset($_POST['import_replace'])) {
-  $renamemode = (isset($_POST['import_replace']));
-
-  $new_teams = [];
-  foreach ($_POST['seed'] as $i => $seed) {
-    if ($seed !== "") {
-      $clubId = 0;
-      if ($club && !empty($_POST['clubname'])) {
-        $clubId = ClubId($_POST['clubname'][$i]);
-        if ($clubId == -1) {
-          $clubId = AddClub($series_id, $_POST['club'][$i]);
+  } else
+    // import
+    if (!empty($_POST['add_multi'])) {
+      foreach ($_POST['seed'] as $i => $seed) {
+        $tp['rank'] = $_POST['seed'][$i] ?? "0";
+        $tp['name'] = $_POST['name'][$i] ?? "no name";
+        $tp['abbreviation'] = $_POST['abbrev'][$i] ?? "";
+        $tp['club'] = $_POST['club'][$i] ?? "";
+        if (!empty($tp['club'])) {
+          $clubId = ClubId($tp['club']);
+          if ($clubId == -1) {
+            $clubId = AddClub($series_id, $tp['club']);
+          }
+          $tp['club'] = $clubId;
         }
+        $tp['country'] = $_POST['country'][$i] ?? "";
+
+        AddTeam($tp);
       }
-
-      $new_teams[] = ['rank' => $seed, 'name' => $_POST['name'][$i], 'abbreviation' => $_POST['abbrev'][$i],
-        'clubname' => $_POST['club'][$i] ?? null, 'club' => $clubId, 'country' => $_POST['country'][$i] ?? null];
-    }
-  }
-  mergesort($new_teams, function ($a, $b) {
-    return (int) $a['rank'] > (int) $b['rank'];
-  });
-
-  if ($renamemode) {
-    $teams = SeriesTeams($series_id, true);
-
-    foreach ($teams as $i => &$team) {
-      if (isset($new_teams[$i]) && !empty($new_teams[$i]['rank'])) {
-        $team['valid'] = 1;
-        $team['series'] = $series_id;
-        $team['pool'] = "";
-
-        $team['rank'] = $new_teams[$i]['rank'];
-        $team['name'] = $new_teams[$i]['name'];
-        $team['abbreviation'] = $new_teams[$i]['abbreviation'];
-        $team['club'] = $new_teams[$i]['club'];
-        $team['clubname'] = $new_teams[$i]['clubname'];
-        if ($country) {
-          $team['country'] = $new_teams[$i]['country'];
+    } else
+      // set
+      if (!empty($_POST['save'])) {
+        $teams = SeriesTeams($series_id, true);
+        foreach ($teams as $team) {
+          $team_id = $team['team_id'];
+          $tp['team_id'] = $team_id;
+          $tp['name'] = !empty($_POST["name$team_id"]) ? $_POST["name$team_id"] : "no name";
+          $tp['club'] = !empty($_POST["club$team_id"]) ? $_POST["club$team_id"] : "";
+          $tp['rank'] = !empty($_POST["seed$team_id"]) ? $_POST["seed$team_id"] : "0";
+          if (!empty($tp['club'])) {
+            $clubId = ClubId($tp['club']);
+            if ($clubId == -1) {
+              $clubId = AddClub($series_id, $tp['club']);
+            }
+            $tp['club'] = $clubId;
+          }
+          $tp['country'] = !empty($_POST["country$team_id"]) ? $_POST["country$team_id"] : "";
+          $tp['abbreviation'] = !empty($_POST["abbrev$team_id"]) ? $_POST["abbrev$team_id"] : "";
+          SetTeam($tp);
         }
-        SetTeam($team);
-      }
-    }
-    unset($team);
-  } else {
-    $teams = [];
-    foreach ($new_teams as $newteam) {
-      if (!empty($newteam['rank'])) {
-        $newteam['valid'] = 1;
-        $newteam['series'] = $series_id;
-        $newteam['pool'] = "";
-        $teams[] = $newteam;
-        AddTeam($newteam);
-      }
-    }
-  }
-} else if ($importstage == 0 || isset($_POST['cancel'])) {
-  $showTeams = true;
-} else if (!isset($_POST['import_add']) && !isset($_POST['import_replace']) && ($importstage == 1 || $importstage == 2 || isset($_POST['refresh']))) {
-  $showTeams = false;
-  $html .= "<p><input type='hidden' id='importstage' name='importstage' value='$importstage'/></p>";
+      } else
+        // import
+        if (isset($_POST['import_add']) || isset($_POST['import_replace'])) {
+          $renamemode = (isset($_POST['import_replace']));
 
-  if ($importstage == 1) {
-    $html .= showSeasonSelection($seasonId, $series_id, $importstage);
-  }
-  if ($importstage == 2) {
-    $html .= showDFVSelection($seasonId, $series_id, $importstage);
-  }
+          $new_teams = [];
+          foreach ($_POST['seed'] as $i => $seed) {
+            if ($seed !== "") {
+              $clubId = 0;
+              if ($club && !empty($_POST['clubname'])) {
+                $clubId = ClubId($_POST['clubname'][$i]);
+                if ($clubId == -1) {
+                  $clubId = AddClub($series_id, $_POST['club'][$i]);
+                }
+              }
 
-  if (isset($_POST['refresh'])) {
-    if ($importstage == 1) {
-      $importSeries = SeriesInfo($_POST['copyteams']);
-      $html .= "<p>" . utf8entities(sprintf(_("Teams from %s"), $importSeries['name'])) . "</p>";
-      $teams = SeriesTeams($_POST['copyteams'], true);
-      foreach ($teams as $i => &$team) {
-        if ($team['rank'] === null)
-          $team['rank'] = $i + 1;
-        $team['country'] = TeamFullInfo($team['team_id'])['country'];
-      }
-      unset($team);
-    } else {
-      if (!empty($_POST['importteams'])) {
-        $teams = json_decode($_POST['importteams'], true);
-        $valid = 0;
-        foreach ($teams as $i => &$team) {
-          $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';
-          $team['name'] = $team['teamName'];
-          $team['clubname'] = $team['teamLocation'];
-          $team['abbreviation'] = null;
-          $team['country'] = null;
+              $new_teams[] = [
+                'rank' => $seed,
+                'name' => $_POST['name'][$i],
+                'abbreviation' => $_POST['abbrev'][$i],
+                'clubname' => $_POST['club'][$i] ?? null,
+                'club' => $clubId,
+                'country' => $_POST['country'][$i] ?? null
+              ];
+            }
+          }
+          mergesort($new_teams, function ($a, $b) {
+            return (int) $a['rank'] > (int) $b['rank'];
+          });
+
+          if ($renamemode) {
+            $teams = SeriesTeams($series_id, true);
+
+            foreach ($teams as $i => &$team) {
+              if (isset($new_teams[$i]) && !empty($new_teams[$i]['rank'])) {
+                $team['valid'] = 1;
+                $team['series'] = $series_id;
+                $team['pool'] = "";
+
+                $team['rank'] = $new_teams[$i]['rank'];
+                $team['name'] = $new_teams[$i]['name'];
+                $team['abbreviation'] = $new_teams[$i]['abbreviation'];
+                $team['club'] = $new_teams[$i]['club'];
+                $team['clubname'] = $new_teams[$i]['clubname'];
+                if ($country) {
+                  $team['country'] = $new_teams[$i]['country'];
+                }
+                SetTeam($team);
+              }
+            }
+            unset($team);
+          } else {
+            $teams = [];
+            foreach ($new_teams as $newteam) {
+              if (!empty($newteam['rank'])) {
+                $newteam['valid'] = 1;
+                $newteam['series'] = $series_id;
+                $newteam['pool'] = "";
+                $teams[] = $newteam;
+                AddTeam($newteam);
+              }
+            }
+          }
+        } else if ($importstage == 0 || isset($_POST['cancel'])) {
+          $showTeams = true;
+        } else if (!isset($_POST['import_add']) && !isset($_POST['import_replace']) && ($importstage == 1 || $importstage == 2 || isset($_POST['refresh']))) {
+          $showTeams = false;
+          $html .= "<p><input type='hidden' id='importstage' name='importstage' value='$importstage'/></p>";
+
+          if ($importstage == 1) {
+            $html .= showSeasonSelection($seasonId, $series_id, $importstage);
+          }
+          if ($importstage == 2) {
+            $html .= showDFVSelection($seasonId, $series_id, $importstage);
+          }
+
+          if (isset($_POST['refresh'])) {
+            if ($importstage == 1) {
+              $importSeries = SeriesInfo($_POST['copyteams']);
+              $html .= "<p>" . utf8entities(sprintf(_("Teams from %s"), $importSeries['name'])) . "</p>";
+              $teams = SeriesTeams($_POST['copyteams'], true);
+              foreach ($teams as $i => &$team) {
+                if ($team['rank'] === null)
+                  $team['rank'] = $i + 1;
+                $team['country'] = TeamFullInfo($team['team_id'])['country'];
+              }
+              unset($team);
+            } else {
+              if (!empty($_POST['importteams'])) {
+                $teams = json_decode($_POST['importteams'], true);
+                $valid = 0;
+                foreach ($teams as $i => &$team) {
+                  $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';
+                  $team['name'] = $team['name'];
+                  $team['clubname'] = $team['teamLocation'];
+                  $team['abbreviation'] = null;
+                  $team['country'] = null;
+                }
+                unset($team);
+              }
+            }
+
+            if (!empty($teams)) {
+              $html .= teamList($teams, $club, $country, $teamListItems);
+
+              $html .= "<p>";
+              $html .= "<input class='button' name='import_add' type='submit' value='" . utf8entities(_("Add")) .
+                "'/> " . _("Add new teams") . "<br />";
+              $num = min(count($teams), count(SeriesTeams($series_id)));
+              if ($num) {
+                $html .= "<input class='button' name='import_replace' type='submit' value='" .
+                  utf8entities(_("Replace")) . "'/> " . utf8entities(sprintf(_("Rename %s teams with lowest seed #"), $num)) .
+                  "<br />";
+              }
+              $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" .
+                utf8entities(_("Cancel")) . "'/>";
+              $html .= "</p>";
+            } else {
+              $html .= "<p>" . _("No teams") . "</p>\n";
+            }
+          }
         }
-        unset($team);
-      }
-    }
-
-    if (!empty($teams)) {
-      $html .= teamList($teams, $club, $country, $teamListItems);
-
-      $html .= "<p>";
-      $html .= "<input class='button' name='import_add' type='submit' value='" . utf8entities(_("Add")) .
-        "'/> " . _("Add new teams") . "<br />";
-      $num = min(count($teams), count(SeriesTeams($series_id)));
-      if ($num) {
-        $html .= "<input class='button' name='import_replace' type='submit' value='" .
-          utf8entities(_("Replace")) . "'/> " . utf8entities(sprintf(_("Rename %s teams with lowest seed #"), $num)) .
-          "<br />";
-      }
-      $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" .
-        utf8entities(_("Cancel")) . "'/>";
-      $html .= "</p>";
-    } else {
-      $html .= "<p>" . _("No teams") . "</p>\n";
-    }
-  }
-}
 
 if ($showTeams) {
   $teams = SeriesTeams($series_id, true);
@@ -630,9 +565,9 @@ if ($showTeams) {
 
   $seaLink = urlencode($seasonId);
 
-  $html .= "<a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series=${series_id}&amp;importstage=1'>" .
+  $html .= "<a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series={$series_id}&amp;importstage=1'>" .
     utf8entities(_("Import teams from other division")) . "</a><br />\n";
-  $html .= "<a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series=${series_id}&amp;importstage=2'>" .
+  $html .= "<a href='?view=admin/seasonteams&amp;season=$seaLink&amp;series={$series_id}&amp;importstage=2'>" .
     utf8entities(_("Import teams from DFV")) . "</a><br />\n";
 }
 
@@ -649,8 +584,11 @@ $html .= "</form>\n";
 if (!empty($focusId))
   setFocus($focusId);
 
-$html .= getDragDropApp(["addedteams", "notaddedteams"], $teamListItems,
-  ['endDrag' => "
+$html .= getDragDropApp(
+  ["addedteams", "notaddedteams"],
+  $teamListItems,
+  [
+    'endDrag' => "
     function(srcEl, proxy, parent) { updateList(srcEl.parentNode);}",
     'dragOver' => "
     function(srcEl, proxy, goingUp) {
@@ -658,7 +596,7 @@ $html .= getDragDropApp(["addedteams", "notaddedteams"], $teamListItems,
       var orig = srcEl.getElementsByClassName('team_item_seed')[0];
       var copy = proxy.getElementsByClassName('team_item_seed')[0];
       copy.value = parseInt(orig.value) + (goingUp ? -1 : 1);
-    }", 
+    }",
     'appContent' => "
     function updateList(list) {
       var i = 0;
@@ -669,7 +607,8 @@ $html .= getDragDropApp(["addedteams", "notaddedteams"], $teamListItems,
         if (seeds.length > 0)
           seeds[0].value = add ? ++i : \"\";
       }
-    }"]);
+    }"
+  ]
+);
 
 showPage($title, $html);
-?>
