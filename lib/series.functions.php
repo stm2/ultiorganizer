@@ -44,7 +44,7 @@ function CurrentSeries($season, &$seriesId, &$single, $title = null) {
       die("series parameter required");
     $seriesId = $_GET['series'];
   }
-  
+
   if ($seriesId <= 0) {
     showPage($title ?? _("Error"), "<p>" . _("No divisions defined. Define at least one division first.") . "</p>");
     exit();
@@ -243,7 +243,7 @@ function SeriesSeasonId($seriesId) {
  *          one of: "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit
  *          Numbers of rows returned, 0 if unlimited
- * @return array mysql array of players.
+ * @return mixed mysql array of players.
  */
 function SeriesScoreBoard($seriesId, $sorting, $limit) {
   $query = sprintf(
@@ -326,7 +326,7 @@ function SeriesScoreBoard($seriesId, $sorting, $limit) {
  *          one of: "total", "games", "team", "name", "callahan"
  * @param int $limit
  *          Numbers of rows returned, 0 if unlimited
- * @return array mysql array of players.
+ * @return mixed mysql array of players.
  */
 function SeriesDefenseBoard($seriesId, $sorting, $limit) {
   $query = sprintf(
@@ -792,4 +792,3 @@ function SeriesCopyTeams($to, $from) {
   }
 }
 
-?>

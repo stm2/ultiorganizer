@@ -448,7 +448,7 @@ function PoolSchedulingTeams($poolId){
  * @param int $poolId uo_pool.pool_id
  * @param string $sorting one of: "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return array mysql array of players.
+ * @return mixed mysql array of players.
  */
 function PoolScoreBoard($poolId, $sorting, $limit){
   $query = sprintf("
@@ -529,7 +529,7 @@ function PoolScoreBoard($poolId, $sorting, $limit){
  * @param string $pools comma separated list of pools
  * @param string $sorting one of: "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return array mysql array of players.
+ * @return mixed mysql array of players.
  */
 function PoolsScoreBoard($pools, $sorting, $limit){
 
@@ -690,7 +690,7 @@ function PoolsScoreBoardWithDefenses($pools, $sorting, $limit){
  * @param int $poolId uo_pool.pool_id
  * @param string $sorting one of: "deftotal", "total", "goal", "pass", "games", "team", "name", "callahan"
  * @param int $limit Numbers of rows returned, 0 if unlimited
- * @return array mysql array of players.
+ * @return mixed mysql array of players.
  */
 function PoolScoreBoardWithDefenses($poolId, $sorting, $limit){
 
@@ -1508,7 +1508,7 @@ function AddByePool($name, $type, $ordering, $seriesId) {
     mysql_adapt_real_escape_string($ordering),
     mysql_adapt_real_escape_string($name),
     (int)$seriesId);
-  
+
   $newId = DBQueryInsert($query);
   return $newId;
 }
@@ -1562,7 +1562,7 @@ function SetPoolVisibility($poolId, $visible) {
   $poolinfo = PoolInfo($poolId);
   $query = sprintf("UPDATE uo_pool SET visible=%d
             WHERE pool_id=%d", (int) $visible, (int) $poolId);
-  
+
   return DBQuery($query);
 }
 
@@ -1800,7 +1800,7 @@ function PoolMakeMoves($toPoolId) {
       PoolMakeAMove($row['frompool'], $row['fromplacing'], $poolInfo['type']!=2, // do not count BYE team if we are moving to a playoff pool
           $row['topool'], $row['torank'], true,
           $row['scheduling_id']);
-      
+
     }
 
     //games to move
@@ -1843,10 +1843,10 @@ function PoolMakeMove($frompool, $fromplacing, $checkrights=true) {
       (int)$fromplacing);
     $row = DBQueryToRow($query);
     LogPoolUpdate($row['frompool'], "Teams moved");
-    
+
     PoolMakeAMove($row['frompool'], $row['fromplacing'], $poolInfo['type'] != 2, // do not count BYE team if we are moving to a playoff pool
         $row['topool'], $row['torank'], $checkrights, $row['scheduling_id']);
-    
+
     // FIXME move games?
 
   } else { die('Insufficient rights to move teams'); }
@@ -1865,7 +1865,7 @@ function PoolMakeAMove($frompool, $fromplacing, $countbye, $topool, $torank, $ch
   }
 
   PoolDeleteTeam($topool, $team['team_id']);
-  
+
   PoolAddTeam($topool,$team['team_id'],$torank, true, $checkrights);
 
   //replace pseudo team with real team in games
@@ -2252,7 +2252,7 @@ function GeneratePlayoffPools($poolId, $generate=true){
           $update .= ", placementpool=1";
         }
         DBQuery("UPDATE uo_pool SET $update WHERE pool_id=$id");
-        
+
 
         //add moves
 
@@ -2335,7 +2335,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
   if (hasEditTeamsRight($poolInfo['series'])) {
     if (CanGenerateGames($poolId)) {
       $pseudoteams = false;
-      
+
       $query = sprintf(
         "SELECT team.team_id, team.valid from uo_team_pool as tp left join uo_team team
                 on (tp.team = team.team_id) WHERE tp.pool=%d ORDER BY tp.`rank`", (int) $poolId);
@@ -2353,7 +2353,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
       } else {
         $result = $moved_teams;
       }
-        
+
       $teams = array();
       $bye = false;
       while ($row = mysqli_fetch_row($result)) {
@@ -2361,7 +2361,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
           $bye = true;
         $teams[] = $row[0];
       }
-      
+
       if (count($teams) < 2)
         return array(0 => -1);
 
@@ -2425,7 +2425,7 @@ function GenerateGames($poolId, $rounds=1, $generate=true, $nomutual=false, $hom
         }
       } elseif ($poolInfo['type'] == 3) {
         // game generation for Swiss draw round
-        
+
         if(count($teams) % 2 == 1) {
           $games[] = -2;
         }else {
@@ -2653,10 +2653,10 @@ function PlayoffTemplates() {
 
 function undoPoolMoves($poolId) {
   $frompools = PoolMovingsToPool($poolId);
-  
+
   foreach ($frompools as $pool) {
     $poolinfo = PoolInfo($pool['topool']);
-    
+
 //     $savePerm = $_SESSION['userproperties']['userrole']['seriesadmin'][$poolinfo['series']];
 //     $_SESSION['userproperties']['userrole']['seriesadmin'][$poolinfo['series']] = 1;
     PoolUndoMove($pool['frompool'], $pool['fromplacing'], $poolId);
@@ -2709,25 +2709,25 @@ function PoolUndoAllGames($poolId) {
   $poolinfo = PoolInfo($poolId);
   $games = PoolGames($poolId);
   set_time_limit(300); // game simulation takes time because so much inserts
-  
+
   foreach ($games as $game) {
-    
+
     GameRemoveAllPlayers($game['game_id']);
-    
+
     GameSetStartingTeam($game['game_id'], NULL);
-    
+
     GameRemoveAllScores($game['game_id']);
     GameSetHalftime($game['game_id'], NULL);
-    
+
     GameRemoveAllTimeouts($game['game_id']);
-    
+
     GameSetScoreSheetKeeper($game['game_id'], NULL);
-    
+
     GameClearResult($game['game_id'], false);
   }
-  
+
   undoPoolMoves($poolId);
-  
+
   ResolvePoolStandings($poolId);
   PoolResolvePlayed($poolId);
   // TODO undo moves, uo_team_pool.activerank, special ranks, ...
@@ -2746,7 +2746,7 @@ function NextPools($mode) {
     $select = "gg.time <= now()";
     $order = "DESC";
   }
-  
+
   $query = //
   "SELECT pp.pool_id, pp.name as pool_name, sr.series_id, sr.name as series_name, ss.season_id, ss.name as season_name, min(gg.time) as time
     FROM uo_pool pp
@@ -2756,8 +2756,7 @@ function NextPools($mode) {
     WHERE $select AND pp.visible=1 AND sr.valid=1 AND ss.iscurrent=1
     GROUP BY pp.pool_id
     ORDER BY ss.starttime $order, ss.endtime $order, sr.ordering ASC, time $order";
-  
+
   return DBQueryToArray($query);
 }
 
-?>
