@@ -1,62 +1,74 @@
 <?php
 
+/**
+ * Retrieves a list of locations based on the specified mode and search criteria.
+ *
+ * @param string $mode The mode of the search: 'search' searches for the search term in name and address, 'id' searches for a specific location by id, 'all' returns all locations, 'exact_name' searches exact matches.
+ * @param string $search The search term to filter locations.
+ * @param string|null $locale Optional. The locale for the location info. Defaults to the session locale.
+ * @return array The mysqli result list of locations matching the search criteria with additional fields locale, locale_info, default_locale, and info.
+ */
 function GetLocations($mode, $search, $locale = null) {
   if ($locale == null)
     $locale = str_replace(".", "_", getSessionLocale());
+
   if ($mode == 'search') {
-    $query1 = sprintf("SELECT loc.*,
-		    inf1.locale as locale, inf1.info as locale_info,
-		    inf2.locale as default_locale, inf2.info as info
-		    FROM uo_location loc
-		    LEFT JOIN uo_location_info inf1 ON (loc.id = inf1.location_id)
-		    LEFT JOIN uo_location_info inf2 ON (loc.id = inf2.location_id and inf2.locale='%s' )
-		    WHERE (name like '%%%s%%' OR address like '%%%s%%') ORDER BY name",
-      mysql_adapt_real_escape_string($locale), mysql_adapt_real_escape_string($search), mysql_adapt_real_escape_string($search));
-    
+    $where = sprintf(
+      "WHERE (name like '%%%s%%' OR address like '%%%s%%')",
+      mysql_adapt_real_escape_string($search),
+      mysql_adapt_real_escape_string($search)
+    );
   } else if ($mode == 'id') {
-    $query1 = sprintf("SELECT loc.*,
-		    inf1.locale as locale, inf1.info as locale_info,
-		    inf2.locale as default_locale, inf2.info as info
-		    FROM uo_location loc
-		    LEFT JOIN uo_location_info inf1 ON (loc.id = inf1.location_id)
-		    LEFT JOIN uo_location_info inf2 ON (loc.id = inf2.location_id and inf2.locale='%s' )
-	      WHERE id=%d ORDER BY name",
-      mysql_adapt_real_escape_string($locale),
-      (int)$search);
+    $where = sprintf(
+      "WHERE id=%d",
+      (int)$search
+    );
   } else if ($mode == 'all') {
-    $query1 = sprintf("SELECT loc.*,
+    $where = "";
+  } else if ($mode == 'exact_name') {
+    $where = sprintf(
+      "WHERE name='%s'",
+      mysql_adapt_real_escape_string($search)
+    );
+  } else {
+    error_log("Invalid mode: $mode", 0);
+    return [];
+  }
+  $query1 = sprintf(
+    "SELECT loc.*,
 		    inf1.locale as locale, inf1.info as locale_info,
 		    inf2.locale as default_locale, inf2.info as info
 		    FROM uo_location loc
 		    LEFT JOIN uo_location_info inf1 ON (loc.id = inf1.location_id)
-		    LEFT JOIN uo_location_info inf2 ON (loc.id = inf2.location_id and inf2.locale='%s' )
-	      WHERE 1 ORDER BY name",
-      mysql_adapt_real_escape_string($locale));
-  }
+		    LEFT JOIN uo_location_info inf2 ON (loc.id = inf2.location_id and inf2.locale='%s' )",
+    mysql_adapt_real_escape_string($locale)
+  );
+  $query1 .=  " $where ORDER BY name ASC";
+
   $result1 = mysql_adapt_query($query1);
-  
-  if (!$result1) { die('Invalid query: ' . mysql_adapt_error()); }
+
+  if (!$result1) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
   return $result1;
 }
 
 function GetSearchLocations() {
-	$locale = str_replace(".", "_", getSessionLocale());
-	if (isset($_GET['search']) || isset($_GET['query']) || isset($_GET['q'])) {
-		if (isset($_GET['search']))
-			$search = $_GET['search'];
-		elseif (isset($_GET['query']))
-			$search = $_GET['query'];
-		else
-			$search = $_GET['q'];
-		return GetLocations('search', $search, $locale);
-		
-	} elseif (isset($_GET['id'])) {
-	  return GetLocations('id', (int) $_GET['id'], $locale);
-	} else {
-	  return GetLocations('all', null, $locale);
-	  
-	}
-	die('Invalid call');
+  $locale = str_replace(".", "_", getSessionLocale());
+  if (isset($_GET['search']) || isset($_GET['query']) || isset($_GET['q'])) {
+    if (isset($_GET['search']))
+      $search = $_GET['search'];
+    elseif (isset($_GET['query']))
+      $search = $_GET['query'];
+    else
+      $search = $_GET['q'];
+    return GetLocations('search', $search, $locale);
+  } elseif (isset($_GET['id'])) {
+    return GetLocations('id', (int) $_GET['id'], $locale);
+  } else {
+    return GetLocations('all', null, $locale);
+  }
+  die('Invalid call');
 }
 
 function LocationDescription($id, $locale = null) {
@@ -66,8 +78,10 @@ function LocationDescription($id, $locale = null) {
 	    FROM uo_location_info
 	    WHERE location_id=%d AND `locale`='%s'", (int)$id, mysql_adapt_real_escape_string($locale));
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-  
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
+
   $result = mysqli_fetch_assoc($result);
   if (empty($result))
     return null;
@@ -76,13 +90,15 @@ function LocationDescription($id, $locale = null) {
 
 
 function LocationInfo($id) {
-	$locale = str_replace(".", "_", getSessionLocale());
-	$query = sprintf("SELECT id, name, fields, indoor, address, inf.info as info, lat, lng 
+  $locale = str_replace(".", "_", getSessionLocale());
+  $query = sprintf("SELECT id, name, fields, indoor, address, inf.info as info, lat, lng 
 	    FROM uo_location loc LEFT JOIN uo_location_info inf ON ( loc.id = inf.location_id and inf.locale='%s' )
 	    WHERE id=%d", mysql_adapt_real_escape_string($locale), (int)$id);
-	$result = mysql_adapt_query($query);
-	if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-	return mysqli_fetch_assoc($result);
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
+  return mysqli_fetch_assoc($result);
 }
 
 /**
@@ -97,37 +113,50 @@ function LocationInfo($id) {
  * @param unknown $season user has to be any season admin
  */
 function SetLocation($id, $name, $address, $info, $fields, $indoor, $lat, $lng, $season) {
-	if (isSuperAdmin()||isSeasonAdmin($season)) {
-		$query = sprintf("UPDATE uo_location SET name='%s', address='%s', fields=%d, indoor=%d, lat='%s', lng='%s'  WHERE id=%d", 
-			mysql_adapt_real_escape_string($name),
-			mysql_adapt_real_escape_string($address),
-			(int)$fields,
-			(int)$indoor,
-			mysql_adapt_real_escape_string($lat),
-			mysql_adapt_real_escape_string($lng),
-		    (int)$id);
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		
-		updateInfos($id, $info);
-	} else { die('Insufficient rights to change location'); }	
+  if (isSuperAdmin() || isSeasonAdmin($season)) {
+    $query = sprintf(
+      "UPDATE uo_location SET name='%s', address='%s', fields=%d, indoor=%d, lat='%s', lng='%s'  WHERE id=%d",
+      mysql_adapt_real_escape_string($name),
+      mysql_adapt_real_escape_string($address),
+      (int)$fields,
+      (int)$indoor,
+      mysql_adapt_real_escape_string($lat),
+      mysql_adapt_real_escape_string($lng),
+      (int)$id
+    );
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+
+    updateInfos($id, $info);
+  } else {
+    die('Insufficient rights to change location');
+  }
 }
 
 function updateInfos($id, $info) {
   foreach ($info as $locale => $infostr) {
     if (empty($infostr)) {
-      $query = sprintf("DELETE FROM uo_location_info WHERE location_id=%d AND locale='%s'",
-          (int)$id, mysql_adapt_real_escape_string($locale));
+      $query = sprintf(
+        "DELETE FROM uo_location_info WHERE location_id=%d AND locale='%s'",
+        (int)$id,
+        mysql_adapt_real_escape_string($locale)
+      );
     } else {
-      $query = sprintf("INSERT INTO uo_location_info (location_id, locale, info) VALUE (%d, '%s', '%s')
+      $query = sprintf(
+        "INSERT INTO uo_location_info (location_id, locale, info) VALUE (%d, '%s', '%s')
 		    ON DUPLICATE KEY UPDATE info='%s'",
-          (int)$id,
-          mysql_adapt_real_escape_string($locale),
-          mysql_adapt_real_escape_string($infostr),
-          mysql_adapt_real_escape_string($infostr));
+        (int)$id,
+        mysql_adapt_real_escape_string($locale),
+        mysql_adapt_real_escape_string($infostr),
+        mysql_adapt_real_escape_string($infostr)
+      );
     }
     $result = mysql_adapt_query($query);
-    if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
   }
 }
 
@@ -143,25 +172,31 @@ function updateInfos($id, $info) {
  * @return unknown
  */
 function AddLocation($name, $address, $info, $fields, $indoor, $lat, $lng, $season) {
-	if (isSuperAdmin()||isSeasonAdmin($season)) {
-	   $query = sprintf("INSERT INTO uo_location (name, address, fields, indoor, lat, lng)
+  if (isSuperAdmin() || isSeasonAdmin($season)) {
+    $query = sprintf(
+      "INSERT INTO uo_location (name, address, fields, indoor, lat, lng)
 	       VALUES ('%s', '%s', %d, %d, '%s', '%s')",
-	       mysql_adapt_real_escape_string($name),
-	       mysql_adapt_real_escape_string($address),
-	       (int)$fields,
-	       (int)$indoor,
-	       mysql_adapt_real_escape_string($lat),
-	       mysql_adapt_real_escape_string($lng));
-	       
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
+      mysql_adapt_real_escape_string($name),
+      mysql_adapt_real_escape_string($address),
+      (int)$fields,
+      (int)$indoor,
+      mysql_adapt_real_escape_string($lat),
+      mysql_adapt_real_escape_string($lng)
+    );
 
-		$locationId = mysql_adapt_insert_id();
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
 
-		updateInfos($locationId, $info);
-		
-		return $locationId;
-	} else { die('Insufficient rights to add location'); }		
+    $locationId = mysql_adapt_insert_id();
+
+    updateInfos($locationId, $info);
+
+    return $locationId;
+  } else {
+    die('Insufficient rights to add location');
+  }
 }
 
 function LocationUsed($id) {
@@ -170,16 +205,21 @@ function LocationUsed($id) {
 }
 
 function RemoveLocation($id) {
-	if (isSuperAdmin()) {
-		$query = sprintf("DELETE FROM uo_location WHERE id=%d", (int)$id);
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		
-		$query = sprintf("DELETE FROM uo_location_info WHERE location_id=%d", (int)$id);
-		$result = mysql_adapt_query($query);
-		if (!$result) { die('Invalid query: ' . mysql_adapt_error()); }
-		
-	} else { die('Insufficient rights to remove location'); }	
+  if (isSuperAdmin()) {
+    $query = sprintf("DELETE FROM uo_location WHERE id=%d", (int)$id);
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+
+    $query = sprintf("DELETE FROM uo_location_info WHERE location_id=%d", (int)$id);
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+  } else {
+    die('Insufficient rights to remove location');
+  }
 }
 
 function LocationInput($id, $group, $value, $label, $location) {
@@ -193,11 +233,11 @@ function LocationInput($id, $group, $value, $label, $location) {
 }
 
 function LocationInput2($id, $group, $value, $location) {
-  $html = "<input type='hidden' name='${group}[]' id='${id}' value='" . utf8entities($location) . "'/>\n";
-  $html .= "<div id='${id}Autocomplete' class='yui-skin-sam'>\n";
-  $html .= "<input class='input' id='${id}Name' style='position:relative;' type='text' name='${id}Name' value='";
+  $html = "<input type='hidden' name='{$group}[]' id='{$id}' value='" . utf8entities($location) . "'/>\n";
+  $html .= "<div id='{$id}Autocomplete' class='yui-skin-sam'>\n";
+  $html .= "<input class='input' id='{$id}Name' style='position:relative;' type='text' name='{$id}Name' value='";
   $html .= utf8entities($value);
-  $html .= "'/><div id='${id}NameContainer'></div></div>";
+  $html .= "'/><div id='{$id}NameContainer'></div></div>";
 
   return $html;
 }
@@ -205,20 +245,20 @@ function LocationInput2($id, $group, $value, $location) {
 function LocationScript($id) {
   return "<script type=\"text/javascript\">
 //<![CDATA[
-  var ${id}SelectHandler = function(sType, aArgs) {
+  var {$id}SelectHandler = function(sType, aArgs) {
     var oData = aArgs[2];
-    document.getElementById(\"${id}\").value = oData[2];
-    var x = document.getElementById(\"${id}Name\").className; 
-    document.getElementById(\"${id}Name\").className = x.replaceAll(' highlight','');
+    document.getElementById(\"{$id}\").value = oData[2];
+    var x = document.getElementById(\"{$id}Name\").className; 
+    document.getElementById(\"{$id}Name\").className = x.replaceAll(' highlight','');
   };
 
-  var ${id}SelectHandler2 = function() {
-    var x = document.getElementById(\"${id}Name\").className;
+  var {$id}SelectHandler2 = function() {
+    var x = document.getElementById(\"{$id}Name\").className;
     if (!x || !x.includes(' highlight'))
-      document.getElementById(\"${id}Name\").className+=' highlight';
+      document.getElementById(\"{$id}Name\").className+=' highlight';
   };
 
-  Fetch${id} = function(){        
+  Fetch{$id} = function(){        
     var locationSource = new YAHOO.util.XHRDataSource(\"ext/locationtxt.php\");
     locationSource.responseSchema = {
       recordDelim: \"\\n\",
@@ -228,7 +268,7 @@ function LocationScript($id) {
     locationSource.maxCacheEntries = 60;
 
     // First AutoComplete
-    var locationAutoComp = new YAHOO.widget.AutoComplete(\"${id}Name\",\"${id}NameContainer\",locationSource);
+    var locationAutoComp = new YAHOO.widget.AutoComplete(\"{$id}Name\",\"{$id}NameContainer\",locationSource);
     locationAutoComp.formatResult = function(oResultData, sQuery, sResultMatch) { 
 
       // some other piece of data defined by schema 
@@ -237,8 +277,8 @@ function LocationScript($id) {
       return `<div class='myCustomResult'>
   <span style='font-weight:bold'>\${sResultMatch}<\/span> / \${moreData1}<\/div>`; 
     }; 
-    locationAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
-    locationAutoComp.textboxFocusEvent.subscribe(${id}SelectHandler2);
+    locationAutoComp.itemSelectEvent.subscribe({$id}SelectHandler);
+    locationAutoComp.textboxFocusEvent.subscribe({$id}SelectHandler2);
     return {
       oDS: locationSource,
       oAC: locationAutoComp
@@ -317,5 +357,3 @@ google.maps.event.addDomListener(window, 'load', function () {
 </script>
 HEREDOC;
 }
-
-?>

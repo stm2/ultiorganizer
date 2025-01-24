@@ -91,8 +91,7 @@ class EventDataXMLHandler {
     $content['season_id'] = $reader->getAttribute("season_id");
     $content['name'] = $reader->getAttribute("name");
 
-    while ($reader->read() && $reader->name !== "uo_series") {
-      ;
+    while ($reader->read() && $reader->name !== "uo_series") {;
     }
     if ($reader->name == "uo_series") {
       $content['series'] = array();
@@ -193,14 +192,14 @@ class EventDataXMLHandler {
    */
   function XMLToEvent($filename, $eventId = "", $mode = "new", $replacers, $mock = false, $data = null) {
     switch ($mode) {
-    case "new":
-    case "insert":
-    case "replace":
-      $this->mode = $mode;
-      break;
-    default:
-      $this->error = sprintf(_("Invalid mode '%s'"), $mode);
-      return;
+      case "new":
+      case "insert":
+      case "replace":
+        $this->mode = $mode;
+        break;
+      default:
+        $this->error = sprintf(_("Invalid mode '%s'"), $mode);
+        return;
     }
     $this->eventId = $eventId;
     $this->replacers = $replacers;
@@ -263,61 +262,67 @@ class EventDataXMLHandler {
     }
   }
 
+  /** event id under processing */
   var $eventId;
 
-  // event id under processing
+  /** event id mapping array */
   var $uo_season = array();
 
-  // event id mapping array
+  /** series id mapping array */
   var $uo_series = array();
 
-  // series id mapping array
+  /** team id mapping array */
   var $uo_team = array();
 
-  // team id mapping array
+  /** scheduling id mapping array */
   var $uo_scheduling_name = array();
 
-  // scheduling id mapping array
+  /** pool id mapping array */
   var $uo_pool = array();
 
-  // pool id mapping array
+  /** player id mapping array */
   var $uo_player = array();
 
-  // player id mapping array
+  /** game id mapping array */
   var $uo_game = array();
 
-  // game id mapping array
+  /** reservation id mapping array */
   var $uo_reservation = array();
 
-  // reservation id mapping array
+  /** pools with unresolved followers  */
   var $followers = array();
 
-  // pools with unresolved followers
+  /** import mode: 'new', 'insert', or 'replace' */
   var $mode;
 
-  // import mode: 'new', 'insert', or 'replace'
+  var $replacers;
+
+  /** should we do a dry run? */
   var $mock;
 
-  // should we do a dry run?
+
   var $mockId = 10000;
 
+  /**  logging */
   var $debug;
 
-  // logging
+
   var $error;
 
+  /**  document structure*/
   var $structure;
 
-  // document structure
+
+  /** current series in structure parse */
   var $structure_seriesId;
 
-  // current series in structure parse
   const NULL_MARKER = "%NULL";
 
   /**
-   * Default construction
+   * Default constructor
    */
-  function __construct() {}
+  function __construct() {
+  }
 
   // //////////////// WRITER ///////////////////////////
   function write_season($eventId, $template) {
@@ -364,8 +369,9 @@ class EventDataXMLHandler {
       $times = DBQuery(
         "SELECT * FROM `uo_movingtime` 
         WHERE `season`='" . mysql_adapt_real_escape_string($eventId) . "' AND (`fromlocation` IN (" .
-        implode(',', array_keys($locationIds)) . ") 
-          OR `tolocation` IN (" . implode(',', array_keys($locationIds)) . "))");
+          implode(',', array_keys($locationIds)) . ") 
+          OR `tolocation` IN (" . implode(',', array_keys($locationIds)) . "))"
+      );
       while ($time = mysqli_fetch_assoc($times)) {
         $ret .= $this->RowToXML("uo_movingtime", $time);
       }
@@ -393,7 +399,8 @@ class EventDataXMLHandler {
 
       // uo_player
       $players = DBQuery(
-        "SELECT * FROM `uo_player` WHERE `team`='" . mysql_adapt_real_escape_string($team['team_id']) . "'");
+        "SELECT * FROM `uo_player` WHERE `team`='" . mysql_adapt_real_escape_string($team['team_id']) . "'"
+      );
       while ($player = mysqli_fetch_assoc($players)) {
         $ret .= $this->RowToXML("uo_player", $player);
       }
@@ -401,18 +408,18 @@ class EventDataXMLHandler {
     }
 
     // uo_scheduling_name, referenced by either games or moves
-    $schedulings = 
-    // DBQuery("SELECT sched.* FROM uo_scheduling_name sched
-    // LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
-    // LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
-    // LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
-    // LEFT JOIN uo_pool pool2 ON (mv.frompool = pool2.pool_id OR mv.topool = pool2.pool_id)
-    // WHERE pool2.series = $seriesId OR pool.series = $seriesId
-    // GROUP BY scheduling_id");
+    $schedulings =
+      // DBQuery("SELECT sched.* FROM uo_scheduling_name sched
+      // LEFT JOIN uo_game game ON (sched.scheduling_id = game.scheduling_name_home OR sched.scheduling_id = game.scheduling_name_visitor)
+      // LEFT JOIN uo_pool pool ON (game.pool = pool.pool_id)
+      // LEFT JOIN uo_moveteams mv ON (sched.scheduling_id = mv.scheduling_id)
+      // LEFT JOIN uo_pool pool2 ON (mv.frompool = pool2.pool_id OR mv.topool = pool2.pool_id)
+      // WHERE pool2.series = $seriesId OR pool.series = $seriesId
+      // GROUP BY scheduling_id");
 
-    // this is faster
-    DBQuery(
-      "SELECT `scheduling_id`, MIN(`name`) as `name` FROM (
+      // this is faster
+      DBQuery(
+        "SELECT `scheduling_id`, MIN(`name`) as `name` FROM (
                 (SELECT `sched`.*
                     FROM `uo_scheduling_name` `sched`
                     LEFT JOIN `uo_game` `game` ON (`sched`.`scheduling_id` = `game`.`scheduling_name_home` OR `sched`.`scheduling_id` = `game`.`scheduling_name_visitor`)
@@ -425,7 +432,8 @@ class EventDataXMLHandler {
                     LEFT JOIN `uo_pool` `pool` ON (`mv`.`frompool` = `pool`.`pool_id` OR `mv`.`topool` = `pool`.`pool_id`)
                     WHERE `pool`.`series` = $seriesId )
                 ) as `unioned`
-                GROUP BY `scheduling_id`");
+                GROUP BY `scheduling_id`"
+      );
 
     while ($row = mysqli_fetch_assoc($schedulings)) {
       $ret .= $this->RowToXML("uo_scheduling_name", $row);
@@ -464,7 +472,8 @@ class EventDataXMLHandler {
       if (!$template || !$this->is_continuing($poolRow)) { /* FIXME playoff pools may have continuing == FALSE */
         // uo_team_pool
         $teampools = DBQuery(
-          "SELECT * FROM `uo_team_pool` WHERE `pool`='" . mysql_adapt_real_escape_string($poolRow['pool_id']) . "'");
+          "SELECT * FROM `uo_team_pool` WHERE `pool`='" . mysql_adapt_real_escape_string($poolRow['pool_id']) . "'"
+        );
         while ($teampool = mysqli_fetch_assoc($teampools)) {
           $ret .= $this->RowToXML("uo_team_pool", $teampool);
         }
@@ -527,7 +536,8 @@ class EventDataXMLHandler {
     $moveteams = DBQuery(
       "SELECT m.* FROM `uo_moveteams` m
 				LEFT JOIN `uo_pool` p ON(m.`frompool`=p.`pool_id`)
-				WHERE p.`series`='$seriesId'");
+				WHERE p.`series`='$seriesId'"
+    );
     while ($moveteam = mysqli_fetch_assoc($moveteams)) {
       if ($template) {
         $moveteam['ismoved'] = 0;
@@ -542,7 +552,8 @@ class EventDataXMLHandler {
     $gamepools = DBQuery(
       "SELECT g.* FROM `uo_game_pool` g
 				LEFT JOIN `uo_pool` p ON(g.`pool`=p.`pool_id`)
-				WHERE p.`series`='$seriesId'");
+				WHERE p.`series`='$seriesId'"
+    );
     while ($gamepool = mysqli_fetch_assoc($gamepools)) {
       if (!$template || $gamepool['timetable'] == 1) {
         $ret .= $this->RowToXML("uo_game_pool", $gamepool);
@@ -625,32 +636,36 @@ class EventDataXMLHandler {
         $this->get_attribute($row, strtolower($key), $val);
       }
       switch (strtolower($name)) {
-      case 'uo_season':
-        $this->structure['season_id'] = $row['season_id'];
-        $this->structure['season_name'] = $row['name'];
-        $this->structure['series'] = array();
-        $this->structure['reservations'] = array();
-        break;
+        case 'uo_season':
+          $this->structure['season_id'] = $row['season_id'];
+          $this->structure['season_name'] = $row['name'];
+          $this->structure['series'] = array();
+          $this->structure['reservations'] = array();
+          break;
 
-      case 'uo_series':
-        $this->structure['series'][$row['series_id']] = array('name' => $row['name'], 'teams' => array());
-        $this->structure_seriesId = $row['series_id'];
-        break;
+        case 'uo_series':
+          $this->structure['series'][$row['series_id']] = array('name' => $row['name'], 'teams' => array());
+          $this->structure_seriesId = $row['series_id'];
+          break;
 
-      case 'uo_team':
-        if (empty($this->structure_seriesId)) {
-          $this->structure['error'] .= sprintf(_("uo_team without uo_series (%s)"), $row['team_id']);
-        } else {
-          $this->structure['series'][$this->structure_seriesId]['teams'][$row['team_id']] = array(
-            'name' => $row['name']);
-        }
-        break;
+        case 'uo_team':
+          if (empty($this->structure_seriesId)) {
+            $this->structure['error'] .= sprintf(_("uo_team without uo_series (%s)"), $row['team_id']);
+          } else {
+            $this->structure['series'][$this->structure_seriesId]['teams'][$row['team_id']] = array(
+              'name' => $row['name']
+            );
+          }
+          break;
 
-      case 'uo_reservation':
-        $this->structure['reservations'][$row['id']] = array('location' => $row['location'],
-          'starttime' => $row['starttime'], 'reservationgroup' => $row['reservationgroup'],
-          'fieldname' => $row['fieldname']);
-        break;
+        case 'uo_reservation':
+          $this->structure['reservations'][$row['id']] = array(
+            'location' => $row['location'],
+            'starttime' => $row['starttime'],
+            'reservationgroup' => $row['reservationgroup'],
+            'fieldname' => $row['fieldname']
+          );
+          break;
       }
     }
   }
@@ -663,7 +678,8 @@ class EventDataXMLHandler {
    * @param string $name
    *          a element name
    */
-  function end_tag_structure($parser, $name) {}
+  function end_tag_structure($parser, $name) {
+  }
 
   /**
    * Callback function for element start.
@@ -682,14 +698,14 @@ class EventDataXMLHandler {
         $this->get_attribute($row, $key, $val);
       }
       switch ($this->mode) {
-      case "new":
-      case "insert":
-        $this->InsertToDatabase(strtolower($name), $row);
-        break;
+        case "new":
+        case "insert":
+          $this->InsertToDatabase(strtolower($name), $row);
+          break;
 
-      case "replace":
-        $this->ReplaceInDatabase(strtolower($name), $row);
-        break;
+        case "replace":
+          $this->ReplaceInDatabase(strtolower($name), $row);
+          break;
       }
     }
   }
@@ -702,7 +718,8 @@ class EventDataXMLHandler {
    * @param string $name
    *          a element name
    */
-  function end_tag($parser, $name) {}
+  function end_tag($parser, $name) {
+  }
 
   function shiftTime($date, $resId) {
     if (empty($this->replacers['date'][$resId]))
@@ -713,39 +730,39 @@ class EventDataXMLHandler {
 
   function replace(&$row, $key, $name) {
     switch ($name) {
-    case "uo_reservation":
-      if (!empty($this->replacers['location'][$key])) {
-        $row['location'] = $this->replacers['location'][$key];
-      }
-      if (!empty($this->replacers['reservationgroup'][$key])) {
-        $row['reservationgroup'] = $this->replacers['reservationgroup'][$key];
-      }
-      if (!empty($this->replacers['date'][$key])) {
-        $this->debug .= "(" . $row['starttime'] . "->" . $this->shiftTime($row['starttime'], $key) . ")\n";
-        $row['starttime'] = $this->shiftTime($row['starttime'], $key);
-        $row['endtime'] = $this->shiftTime($row['endtime'], $key);
-        $row['date'] = $this->shiftTime($row['date'], $key);
-      }
-      break;
+      case "uo_reservation":
+        if (!empty($this->replacers['location'][$key])) {
+          $row['location'] = $this->replacers['location'][$key];
+        }
+        if (!empty($this->replacers['reservationgroup'][$key])) {
+          $row['reservationgroup'] = $this->replacers['reservationgroup'][$key];
+        }
+        if (!empty($this->replacers['date'][$key])) {
+          $this->debug .= "(" . $row['starttime'] . "->" . $this->shiftTime($row['starttime'], $key) . ")\n";
+          $row['starttime'] = $this->shiftTime($row['starttime'], $key);
+          $row['endtime'] = $this->shiftTime($row['endtime'], $key);
+          $row['date'] = $this->shiftTime($row['date'], $key);
+        }
+        break;
 
-    case "uo_series":
-      if (!empty($this->replacers['series_name'][$key])) {
-        $row['name'] = $this->replacers['series_name'][$key];
-      }
-      break;
+      case "uo_series":
+        if (!empty($this->replacers['series_name'][$key])) {
+          $row['name'] = $this->replacers['series_name'][$key];
+        }
+        break;
 
-    case "uo_team":
-      if (!empty($this->replacers['team_name'][$key])) {
-        $row['name'] = $this->replacers['team_name'][$key];
-      }
-      break;
+      case "uo_team":
+        if (!empty($this->replacers['team_name'][$key])) {
+          $row['name'] = $this->replacers['team_name'][$key];
+        }
+        break;
 
-    case "uo_game":
-      if (!empty($this->replacers['date'][$key])) {
-        $this->debug .= "(" . $row['time'] . "->" . $this->shiftTime($row['time'], $key) . ")";
-        $row['time'] = $this->shiftTime($row['time'], $key);
-      }
-      break;
+      case "uo_game":
+        if (!empty($this->replacers['date'][$key])) {
+          $this->debug .= "(" . $row['time'] . "->" . $this->shiftTime($row['time'], $key) . ")";
+          $row['time'] = $this->shiftTime($row['time'], $key);
+        }
+        break;
     }
   }
 
@@ -761,210 +778,210 @@ class EventDataXMLHandler {
    */
   function InsertToDatabase($tagName, $row) {
     switch ($tagName) {
-    case "uo_season":
-      if ($this->mode == "new") {
-        $seasonId = $row["season_id"];
-        $newId = empty($this->replacers['season_id']) ? $seasonId : $this->replacers['season_id'];
-        $newName = empty($this->replacers['season_name']) ? $row["name"] : $this->replacers['season_name'];
+      case "uo_season":
+        if ($this->mode == "new") {
+          $seasonId = $row["season_id"];
+          $newId = empty($this->replacers['season_id']) ? $seasonId : $this->replacers['season_id'];
+          $newName = empty($this->replacers['season_name']) ? $row["name"] : $this->replacers['season_name'];
 
-        $max = 1;
-        while (SeasonExists($newId) || SeasonNameExists($newName)) {
-          $modifier = rand(1, ++$max);
-          $newId = mb_substr($seasonId, 0, 7) . "_$modifier";
-          $newName = $row["name"] . " ($modifier)";
-        }
-        $this->debug .= "new season " . $newName . " (" . $seasonId . " -> " . $newId . ")\n";
-        $row["name"] = $newName;
-        $this->uo_season[$row["season_id"]] = $newId;
-        unset($row["season_id"]);
+          $max = 1;
+          while (SeasonExists($newId) || SeasonNameExists($newName)) {
+            $modifier = rand(1, ++$max);
+            $newId = mb_substr($seasonId, 0, 7) . "_$modifier";
+            $newName = $row["name"] . " ($modifier)";
+          }
+          $this->debug .= "new season " . $newName . " (" . $seasonId . " -> " . $newId . ")\n";
+          $row["name"] = $newName;
+          $this->uo_season[$row["season_id"]] = $newId;
+          unset($row["season_id"]);
 
-        $values = "'" . implode("','", array_values($row)) . "'";
-        $fields = "`" . implode("`,`", array_keys($row)) . "`";
+          $values = "'" . implode("','", array_values($row)) . "'";
+          $fields = "`" . implode("`,`", array_keys($row)) . "`";
 
-        $query = "INSERT INTO `" . mysql_adapt_real_escape_string($tagName) . "` (";
-        $query .= "`season_id`,";
-        $query .= mysql_adapt_real_escape_string($fields);
-        $query .= ") VALUES (";
-        $query .= "'" . mysql_adapt_real_escape_string($newId) . "',";
-        $query .= $values;
-        $query .= ")";
-        if ($this->mock) {
-          $this->debug .= $query . "\n";
-        } else {
-          DBQueryInsert($query);
-          Log1("season", "add", $newId);
-          
-          AddEditSeason($_SESSION['uid'], $newId);
-          AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:' . $newId, $newId);
-        }
-      } else if ($this->mode == "insert") {
-        $key = $row['season_id'];
-        unset($row['season_id']);
-        $this->uo_season[$key] = empty($this->replacers['season_id']) ? $this->eventId : $this->replacers['season_id'];
+          $query = "INSERT INTO `" . mysql_adapt_real_escape_string($tagName) . "` (";
+          $query .= "`season_id`,";
+          $query .= mysql_adapt_real_escape_string($fields);
+          $query .= ") VALUES (";
+          $query .= "'" . mysql_adapt_real_escape_string($newId) . "',";
+          $query .= $values;
+          $query .= ")";
+          if ($this->mock) {
+            $this->debug .= $query . "\n";
+          } else {
+            DBQueryInsert($query);
+            Log1("season", "add", $newId);
 
-        $cond = "`season_id`='" . $this->uo_season[$key] . "'";
-        $query = "SELECT `season_id` FROM `uo_season` WHERE $cond";
-        $this->debug .= "insert season " . $key . " -> " . $this->uo_season[$key] . "\n";
-        $exist = DBQueryRowCount($query);
-        if ($exist) {
-          // don't update
-        } else {
-          throw new Exception(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
+            AddEditSeason($_SESSION['uid'], $newId);
+            AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:' . $newId, $newId);
+          }
+        } else if ($this->mode == "insert") {
+          $key = $row['season_id'];
+          unset($row['season_id']);
+          $this->uo_season[$key] = empty($this->replacers['season_id']) ? $this->eventId : $this->replacers['season_id'];
+
+          $cond = "`season_id`='" . $this->uo_season[$key] . "'";
+          $query = "SELECT `season_id` FROM `uo_season` WHERE $cond";
+          $this->debug .= "insert season " . $key . " -> " . $this->uo_season[$key] . "\n";
+          $exist = DBQueryRowCount($query);
+          if ($exist) {
+            // don't update
+          } else {
+            throw new Exception(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
+          }
+          break;
         }
         break;
-      }
-      break;
 
-    case "uo_series":
-      $key = $row["series_id"];
-      unset($row["series_id"]);
-      $row["season"] = $this->uo_season[$row["season"]];
-      $this->debug .= "replace series " . $key . "\n";
-      $this->replace($row, $key, $tagName);
+      case "uo_series":
+        $key = $row["series_id"];
+        unset($row["series_id"]);
+        $row["season"] = $this->uo_season[$row["season"]];
+        $this->debug .= "replace series " . $key . "\n";
+        $this->replace($row, $key, $tagName);
 
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_series[$key] = $newId;
-      break;
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_series[$key] = $newId;
+        break;
 
-    case "uo_scheduling_name":
-      $key = $row["scheduling_id"];
-      unset($row["scheduling_id"]);
+      case "uo_scheduling_name":
+        $key = $row["scheduling_id"];
+        unset($row["scheduling_id"]);
 
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_scheduling_name[$key] = $newId;
-      break;
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_scheduling_name[$key] = $newId;
+        break;
 
-    case "uo_team":
-      $key = $row["team_id"];
-      unset($row["team_id"]);
-      $row["series"] = $this->uo_series[$row["series"]];
+      case "uo_team":
+        $key = $row["team_id"];
+        unset($row["team_id"]);
+        $row["series"] = $this->uo_series[$row["series"]];
 
-      $this->replace($row, $key, $tagName);
+        $this->replace($row, $key, $tagName);
 
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_team[$key] = $newId;
-      break;
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_team[$key] = $newId;
+        break;
 
-    case "uo_player":
-      $key = $row["player_id"];
-      unset($row["player_id"]);
-      $row["team"] = $this->uo_team[$row["team"]];
+      case "uo_player":
+        $key = $row["player_id"];
+        unset($row["player_id"]);
+        $row["team"] = $this->uo_team[$row["team"]];
 
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_player[$key] = $newId;
-      break;
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_player[$key] = $newId;
+        break;
 
-    case "uo_pool":
-      $key = $row["pool_id"];
-      unset($row["pool_id"]);
-      $row["series"] = $this->uo_series[$row["series"]];
+      case "uo_pool":
+        $key = $row["pool_id"];
+        unset($row["pool_id"]);
+        $row["series"] = $this->uo_series[$row["series"]];
 
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_pool[$key] = $newId;
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_pool[$key] = $newId;
 
-      if (!empty($row["follower"]) && !is_null($row["follower"])) {
-        $this->followers[$newId] = (int) $row["follower"];
-      }
-
-      break;
-
-    case "uo_reservation":
-      $key = $row["id"];
-      unset($row["id"]);
-      $row["season"] = $this->uo_season[$row["season"]];
-
-      $this->replace($row, $key, $tagName);
-      $newId = $this->InsertRow($tagName, $row);
-      $this->uo_reservation[$key] = $newId;
-      break;
-
-    case "uo_movingtime":
-      $row["season"] = $this->uo_season[$row["season"]];
-
-      $newId = $this->InsertRow($tagName, $row, true);
-      break;
-
-    case "uo_game":
-      $key = $row["game_id"];
-      $reservationKey = $row["reservation"];
-      unset($row["game_id"]);
-
-      if (!empty($row["hometeam"]) && !is_null($row["hometeam"]) && $row["hometeam"] > 0) {
-        $row["hometeam"] = $this->uo_team[$row["hometeam"]];
-      }
-      if (!empty($row["visitorteam"]) && !is_null($row["visitorteam"]) && $row["visitorteam"] > 0) {
-        $row["visitorteam"] = $this->uo_team[$row["visitorteam"]];
-      }
-      if (!empty($row["respteam"]) && !is_null($row["respteam"]) && $row["respteam"] > 0) {
-        if (is_null($row["hometeam"])) {
-          if (!isset($this->uo_scheduling_name[$row["respteam"]])) {
-            $this->error .= sprintf("no match for responsible team %d in game %d<br />", $row['respteam'], $key);
-          } else
-            $row["respteam"] = $this->uo_scheduling_name[$row["respteam"]];
-        } else {
-          $row["respteam"] = $this->uo_team[$row["respteam"]];
+        if (!empty($row["follower"]) && !is_null($row["follower"])) {
+          $this->followers[$newId] = (int) $row["follower"];
         }
-      }
-      if (!empty($row["reservation"]) && isset($this->uo_reservation[$row["reservation"]])) {
-        $row["reservation"] = $this->uo_reservation[$row["reservation"]];
-      }
-      if (!empty($row["pool"])) {
+
+        break;
+
+      case "uo_reservation":
+        $key = $row["id"];
+        unset($row["id"]);
+        $row["season"] = $this->uo_season[$row["season"]];
+
+        $this->replace($row, $key, $tagName);
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_reservation[$key] = $newId;
+        break;
+
+      case "uo_movingtime":
+        $row["season"] = $this->uo_season[$row["season"]];
+
+        $newId = $this->InsertRow($tagName, $row, true);
+        break;
+
+      case "uo_game":
+        $key = $row["game_id"];
+        $reservationKey = $row["reservation"];
+        unset($row["game_id"]);
+
+        if (!empty($row["hometeam"]) && !is_null($row["hometeam"]) && $row["hometeam"] > 0) {
+          $row["hometeam"] = $this->uo_team[$row["hometeam"]];
+        }
+        if (!empty($row["visitorteam"]) && !is_null($row["visitorteam"]) && $row["visitorteam"] > 0) {
+          $row["visitorteam"] = $this->uo_team[$row["visitorteam"]];
+        }
+        if (!empty($row["respteam"]) && !is_null($row["respteam"]) && $row["respteam"] > 0) {
+          if (is_null($row["hometeam"])) {
+            if (!isset($this->uo_scheduling_name[$row["respteam"]])) {
+              $this->error .= sprintf("no match for responsible team %d in game %d<br />", $row['respteam'], $key);
+            } else
+              $row["respteam"] = $this->uo_scheduling_name[$row["respteam"]];
+          } else {
+            $row["respteam"] = $this->uo_team[$row["respteam"]];
+          }
+        }
+        if (!empty($row["reservation"]) && isset($this->uo_reservation[$row["reservation"]])) {
+          $row["reservation"] = $this->uo_reservation[$row["reservation"]];
+        }
+        if (!empty($row["pool"])) {
+          $row["pool"] = $this->uo_pool[$row["pool"]];
+        }
+        if (!empty($row["scheduling_name_home"]) && isset($this->uo_scheduling_name[$row["scheduling_name_home"]])) {
+          $row["scheduling_name_home"] = $this->uo_scheduling_name[$row["scheduling_name_home"]];
+        }
+        if (!empty($row["scheduling_name_visitor"]) && isset($this->uo_scheduling_name[$row["scheduling_name_visitor"]])) {
+          $row["scheduling_name_visitor"] = $this->uo_scheduling_name[$row["scheduling_name_visitor"]];
+        }
+
+        $this->replace($row, $reservationKey, $tagName);
+
+        $newId = $this->InsertRow($tagName, $row);
+
+        $this->uo_game[$key] = $newId;
+        break;
+
+      case "uo_goal":
+        $row["game"] = $this->uo_game[$row["game"]];
+        if ($row["assist"] >= 0) {
+          $row["assist"] = $this->uo_player[$row["assist"]];
+        }
+        if ($row["scorer"] >= 0) {
+          $row["scorer"] = $this->uo_player[$row["scorer"]];
+        }
+        $this->InsertRow($tagName, $row);
+        break;
+
+      case "uo_gameevent":
+        $row["game"] = $this->uo_game[$row["game"]];
+        $this->InsertRow($tagName, $row);
+        break;
+
+      case "uo_played":
+        $row["game"] = $this->uo_game[$row["game"]];
+        $row["player"] = $this->uo_player[$row["player"]];
+        $this->InsertRow($tagName, $row);
+        break;
+
+      case "uo_team_pool":
+        $row["team"] = $this->uo_team[$row["team"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
-      }
-      if (!empty($row["scheduling_name_home"]) && isset($this->uo_scheduling_name[$row["scheduling_name_home"]])) {
-        $row["scheduling_name_home"] = $this->uo_scheduling_name[$row["scheduling_name_home"]];
-      }
-      if (!empty($row["scheduling_name_visitor"]) && isset($this->uo_scheduling_name[$row["scheduling_name_visitor"]])) {
-        $row["scheduling_name_visitor"] = $this->uo_scheduling_name[$row["scheduling_name_visitor"]];
-      }
+        $this->InsertRow($tagName, $row);
+        break;
 
-      $this->replace($row, $reservationKey, $tagName);
+      case "uo_game_pool":
+        $row["game"] = $this->uo_game[$row["game"]];
+        $row["pool"] = $this->uo_pool[$row["pool"]];
+        $this->InsertRow($tagName, $row);
+        break;
 
-      $newId = $this->InsertRow($tagName, $row);
-
-      $this->uo_game[$key] = $newId;
-      break;
-
-    case "uo_goal":
-      $row["game"] = $this->uo_game[$row["game"]];
-      if ($row["assist"] >= 0) {
-        $row["assist"] = $this->uo_player[$row["assist"]];
-      }
-      if ($row["scorer"] >= 0) {
-        $row["scorer"] = $this->uo_player[$row["scorer"]];
-      }
-      $this->InsertRow($tagName, $row);
-      break;
-
-    case "uo_gameevent":
-      $row["game"] = $this->uo_game[$row["game"]];
-      $this->InsertRow($tagName, $row);
-      break;
-
-    case "uo_played":
-      $row["game"] = $this->uo_game[$row["game"]];
-      $row["player"] = $this->uo_player[$row["player"]];
-      $this->InsertRow($tagName, $row);
-      break;
-
-    case "uo_team_pool":
-      $row["team"] = $this->uo_team[$row["team"]];
-      $row["pool"] = $this->uo_pool[$row["pool"]];
-      $this->InsertRow($tagName, $row);
-      break;
-
-    case "uo_game_pool":
-      $row["game"] = $this->uo_game[$row["game"]];
-      $row["pool"] = $this->uo_pool[$row["pool"]];
-      $this->InsertRow($tagName, $row);
-      break;
-
-    case "uo_moveteams":
-      $row["topool"] = $this->uo_pool[$row["topool"]];
-      $row["frompool"] = $this->uo_pool[$row["frompool"]];
-      $row["scheduling_id"] = $this->uo_scheduling_name[$row["scheduling_id"]];
-      $this->InsertRow($tagName, $row);
-      break;
+      case "uo_moveteams":
+        $row["topool"] = $this->uo_pool[$row["topool"]];
+        $row["frompool"] = $this->uo_pool[$row["frompool"]];
+        $row["scheduling_id"] = $this->uo_scheduling_name[$row["scheduling_id"]];
+        $this->InsertRow($tagName, $row);
+        break;
     }
   }
 
@@ -976,7 +993,8 @@ class EventDataXMLHandler {
         return "'" . mysql_adapt_real_escape_string($value) . "'";
       } else {
         throw new Exception(
-          $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ").");
+          $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ")."
+        );
       }
     } else {
       if ($type === 'datetime' && is_null($value)) {
@@ -1024,11 +1042,21 @@ class EventDataXMLHandler {
       $ret = DBQueryInsert($query, $ignore);
       if ($ret > 0) {
         switch ($name) {
-          case 'uo_series': Log1("series", "add", $ret); break;
-          case 'uo_team': Log1("team", "add", $ret); break;
-          case 'uo_player': Log1("player", "add", $ret, $row["team"]); break;
-          case 'uo_pool': Log1("pool", "add", $ret); break;
-          case 'uo_game': Log1("game", "add", $ret); break;
+          case 'uo_series':
+            Log1("series", "add", $ret);
+            break;
+          case 'uo_team':
+            Log1("team", "add", $ret);
+            break;
+          case 'uo_player':
+            Log1("player", "add", $ret, $row["team"]);
+            break;
+          case 'uo_pool':
+            Log1("pool", "add", $ret);
+            break;
+          case 'uo_game':
+            Log1("game", "add", $ret);
+            break;
         }
       }
       return $ret;
@@ -1049,296 +1077,300 @@ class EventDataXMLHandler {
    */
   function ReplaceInDatabase($tagName, $row) {
     switch ($tagName) {
-    case "uo_season":
-      // no replace
+      case "uo_season":
+        // no replace
 
-      $cond = "`season_id`='" . $row["season_id"] . "'";
-      $query = "SELECT `season_id` FROM `uo_season` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
-      if ($exist) {
-        if ($this->eventId === $row["season_id"]) {
-          $this->debug .= "replace season " . $this->eventId . "\n";
+        $cond = "`season_id`='" . $row["season_id"] . "'";
+        $query = "SELECT `season_id` FROM `uo_season` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+        if ($exist) {
+          if ($this->eventId === $row["season_id"]) {
+            $this->debug .= "replace season " . $this->eventId . "\n";
 
-          $this->SetRow($tagName, $row, $cond);
-          $this->uo_season[$row["season_id"]] = $row["season_id"];
+            $this->SetRow($tagName, $row, $cond);
+            $this->uo_season[$row["season_id"]] = $row["season_id"];
+          } else {
+            throw new Exception(
+              sprintf(
+                _("Target event %s is not the same as in the file (%s)."),
+                $this->eventId,
+                utf8entities($row["season_id"])
+              )
+            );
+          }
         } else {
-          throw new Exception(
-            sprintf(_("Target event %s is not the same as in the file (%s)."), $this->eventId,
-              utf8entities($row["season_id"])));
+          throw new Exception(sprintf(_("Event to replace (%s) doesn't exist."), utf8entities($row['season_id'])));
         }
-      } else {
-        throw new Exception(sprintf(_("Event to replace (%s) doesn't exist."), utf8entities($row['season_id'])));
-      }
-      break;
+        break;
 
-    case "uo_series":
-      $key = $row["series_id"];
-      unset($row["series_id"]);
+      case "uo_series":
+        $key = $row["series_id"];
+        unset($row["series_id"]);
 
-      $this->replace($row, $key, $tagName);
+        $this->replace($row, $key, $tagName);
 
-      $cond = "`series_id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`series_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->debug .= "replace series " . $key . "\n";
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_series[$key] = $key;
-      } else {
-        $this->debug .= "insert series " . $key . "\n";
-        $row["season"] = $this->uo_season[$row["season"]];
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_series[$key] = $newId;
-      }
-      break;
+        if ($exist) {
+          $this->debug .= "replace series " . $key . "\n";
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_series[$key] = $key;
+        } else {
+          $this->debug .= "insert series " . $key . "\n";
+          $row["season"] = $this->uo_season[$row["season"]];
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_series[$key] = $newId;
+        }
+        break;
 
-    case "uo_scheduling_name":
-      $key = $row["scheduling_id"];
-      unset($row["scheduling_id"]);
+      case "uo_scheduling_name":
+        $key = $row["scheduling_id"];
+        unset($row["scheduling_id"]);
 
-      $cond = "`scheduling_id`='$key'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`scheduling_id`='$key'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_scheduling_name[$key] = $newId;
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_scheduling_name[$key] = $newId;
+        }
+        break;
 
-    case "uo_team":
-      $key = $row["team_id"];
-      unset($row["team_id"]);
+      case "uo_team":
+        $key = $row["team_id"];
+        unset($row["team_id"]);
 
-      $this->replace($row, $key, $tagName);
+        $this->replace($row, $key, $tagName);
 
-      $cond = "`team_id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`team_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_team[$key] = $key;
-      } else {
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_team[$key] = $key;
+        } else {
+          $row["series"] = $this->uo_series[$row["series"]];
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_team[$key] = $newId;
+        }
+        break;
+
+      case "uo_player":
+        $key = $row["player_id"];
+        unset($row["player_id"]);
+        $row["team"] = $this->uo_team[$row["team"]];
+
+        $cond = "`player_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_player[$key] = $key;
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_player[$key] = $newId;
+        }
+        break;
+
+      case "uo_pool":
+        $key = $row["pool_id"];
+        unset($row["pool_id"]);
         $row["series"] = $this->uo_series[$row["series"]];
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_team[$key] = $newId;
-      }
-      break;
 
-    case "uo_player":
-      $key = $row["player_id"];
-      unset($row["player_id"]);
-      $row["team"] = $this->uo_team[$row["team"]];
+        $cond = "`pool_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      $cond = "`player_id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_pool[$key] = $key;
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_pool[$key] = $newId;
+        }
+        break;
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_player[$key] = $key;
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_player[$key] = $newId;
-      }
-      break;
+      case "uo_reservation":
+        $key = $row["id"];
+        unset($row["id"]);
+        $row["season"] = $this->uo_season[$row["season"]];
 
-    case "uo_pool":
-      $key = $row["pool_id"];
-      unset($row["pool_id"]);
-      $row["series"] = $this->uo_series[$row["series"]];
+        $this->replace($row, $key, $tagName);
 
-      $cond = "`pool_id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_pool[$key] = $key;
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_pool[$key] = $newId;
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_reservation[$key] = $key;
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_reservation[$key] = $newId;
+        }
+        break;
 
-    case "uo_reservation":
-      $key = $row["id"];
-      unset($row["id"]);
-      $row["season"] = $this->uo_season[$row["season"]];
+      case "uo_movingtime":
+        $row["season"] = $this->uo_season[$row["season"]];
 
-      $this->replace($row, $key, $tagName);
+        $season = $row["season"];
+        $from = $row["fromlocation"];
+        $fromfield = $row["fromfield"];
+        $to = $row["tolocation"];
+        $tofield = $row["tofield"];
+        $cond = "`season`='$season' AND `fromlocation`='$from' AND `fromfield`='$fromfield' AND `tolocation`='$to' AND `tofield`='$tofield'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      $cond = "`id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+        }
+        break;
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_reservation[$key] = $key;
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_reservation[$key] = $newId;
-      }
-      break;
+      case "uo_game":
+        $key = $row["game_id"];
+        $reservationKey = $row["reservation"];
+        unset($row["game_id"]);
 
-    case "uo_movingtime":
-      $row["season"] = $this->uo_season[$row["season"]];
+        if (!empty($row["hometeam"]) && !is_null($row["hometeam"]) && $row["hometeam"] > 0) {
+          $row["hometeam"] = $this->uo_team[$row["hometeam"]];
+        }
+        if (!empty($row["visitorteam"]) && !is_null($row["visitorteam"]) && $row["visitorteam"] > 0) {
+          $row["visitorteam"] = $this->uo_team[$row["visitorteam"]];
+        }
+        if (!empty($row["respteam"]) && !is_null($row["respteam"]) && $row["respteam"] > 0) {
+          $row["respteam"] = $this->uo_team[$row["respteam"]];
+        }
+        if (!empty($row["reservation"]) && isset($this->uo_reservation[$row["reservation"]])) {
+          $row["reservation"] = $this->uo_reservation[$row["reservation"]];
+        }
+        if (!empty($row["pool"])) {
+          $row["pool"] = $this->uo_pool[$row["pool"]];
+        }
+        if (!empty($row["scheduling_name_home"]) && isset($this->uo_scheduling_name[$row["scheduling_name_home"]])) {
+          $row["scheduling_name_home"] = $this->uo_scheduling_name[$row["scheduling_name_home"]];
+        }
+        if (!empty($row["scheduling_name_visitor"]) && isset($this->uo_scheduling_name[$row["scheduling_name_visitor"]])) {
+          $row["scheduling_name_visitor"] = $this->uo_scheduling_name[$row["scheduling_name_visitor"]];
+        }
 
-      $season = $row["season"];
-      $from = $row["fromlocation"];
-      $fromfield = $row["fromfield"];
-      $to = $row["tolocation"];
-      $tofield = $row["tofield"];
-      $cond = "`season`='$season' AND `fromlocation`='$from' AND `fromfield`='$fromfield' AND `tolocation`='$to' AND `tofield`='$tofield'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`game_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_game[$key] = $key;
+        } else {
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_game[$key] = $newId;
+        }
+        break;
 
-    case "uo_game":
-      $key = $row["game_id"];
-      $reservationKey = $row["reservation"];
-      unset($row["game_id"]);
+      case "uo_goal":
+        $row["game"] = $this->uo_game[$row["game"]];
+        if ($row["assist"] >= 0) {
+          $row["assist"] = $this->uo_player[$row["assist"]];
+        }
+        if ($row["scorer"] >= 0) {
+          $row["scorer"] = $this->uo_player[$row["scorer"]];
+        }
 
-      if (!empty($row["hometeam"]) && !is_null($row["hometeam"]) && $row["hometeam"] > 0) {
-        $row["hometeam"] = $this->uo_team[$row["hometeam"]];
-      }
-      if (!empty($row["visitorteam"]) && !is_null($row["visitorteam"]) && $row["visitorteam"] > 0) {
-        $row["visitorteam"] = $this->uo_team[$row["visitorteam"]];
-      }
-      if (!empty($row["respteam"]) && !is_null($row["respteam"]) && $row["respteam"] > 0) {
-        $row["respteam"] = $this->uo_team[$row["respteam"]];
-      }
-      if (!empty($row["reservation"]) && isset($this->uo_reservation[$row["reservation"]])) {
-        $row["reservation"] = $this->uo_reservation[$row["reservation"]];
-      }
-      if (!empty($row["pool"])) {
+        $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
+        break;
+
+      case "uo_gameevent":
+        $row["game"] = $this->uo_game[$row["game"]];
+
+        $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
+
+        break;
+
+      case "uo_played":
+        $row["game"] = $this->uo_game[$row["game"]];
+        $row["player"] = $this->uo_player[$row["player"]];
+
+        $cond = "`game`='" . $row["game"] . "' AND `player`='" . $row["player"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
+        break;
+
+      case "uo_team_pool":
+        $row["team"] = $this->uo_team[$row["team"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
-      }
-      if (!empty($row["scheduling_name_home"]) && isset($this->uo_scheduling_name[$row["scheduling_name_home"]])) {
-        $row["scheduling_name_home"] = $this->uo_scheduling_name[$row["scheduling_name_home"]];
-      }
-      if (!empty($row["scheduling_name_visitor"]) && isset($this->uo_scheduling_name[$row["scheduling_name_visitor"]])) {
-        $row["scheduling_name_visitor"] = $this->uo_scheduling_name[$row["scheduling_name_visitor"]];
-      }
 
-      $cond = "`game_id`='" . $key . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`team`='" . $row["team"] . "' AND `pool`='" . $row["pool"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-        $this->uo_game[$key] = $key;
-      } else {
-        $newId = $this->InsertRow($tagName, $row);
-        $this->uo_game[$key] = $newId;
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
+        break;
 
-    case "uo_goal":
-      $row["game"] = $this->uo_game[$row["game"]];
-      if ($row["assist"] >= 0) {
-        $row["assist"] = $this->uo_player[$row["assist"]];
-      }
-      if ($row["scorer"] >= 0) {
-        $row["scorer"] = $this->uo_player[$row["scorer"]];
-      }
+      case "uo_game_pool":
+        $row["game"] = $this->uo_game[$row["game"]];
+        $row["pool"] = $this->uo_pool[$row["pool"]];
 
-      $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+        $cond = "`game`='" . $row["game"] . "' AND `pool`='" . $row["pool"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
 
-    case "uo_gameevent":
-      $row["game"] = $this->uo_game[$row["game"]];
+        break;
 
-      $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
+      case "uo_moveteams":
+        $row["topool"] = $this->uo_pool[$row["topool"]];
+        $row["frompool"] = $this->uo_pool[$row["frompool"]];
 
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
+        $cond = "`topool`='" . $row["topool"] . "' AND `fromplacing`='" . $row["fromplacing"] . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
 
-      break;
-
-    case "uo_played":
-      $row["game"] = $this->uo_game[$row["game"]];
-      $row["player"] = $this->uo_player[$row["player"]];
-
-      $cond = "`game`='" . $row["game"] . "' AND `player`='" . $row["player"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
-
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
-      break;
-
-    case "uo_team_pool":
-      $row["team"] = $this->uo_team[$row["team"]];
-      $row["pool"] = $this->uo_pool[$row["pool"]];
-
-      $cond = "`team`='" . $row["team"] . "' AND `pool`='" . $row["pool"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
-
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
-      break;
-
-    case "uo_game_pool":
-      $row["game"] = $this->uo_game[$row["game"]];
-      $row["pool"] = $this->uo_pool[$row["pool"]];
-
-      $cond = "`game`='" . $row["game"] . "' AND `pool`='" . $row["pool"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
-
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
-
-      break;
-
-    case "uo_moveteams":
-      $row["topool"] = $this->uo_pool[$row["topool"]];
-      $row["frompool"] = $this->uo_pool[$row["frompool"]];
-
-      $cond = "`topool`='" . $row["topool"] . "' AND `fromplacing`='" . $row["fromplacing"] . "'";
-      $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
-      $exist = DBQueryRowCount($query);
-
-      if ($exist) {
-        $this->SetRow($tagName, $row, $cond);
-      } else {
-        $this->InsertRow($tagName, $row);
-      }
-      break;
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+        } else {
+          $this->InsertRow($tagName, $row);
+        }
+        break;
     }
   }
 
@@ -1372,4 +1404,76 @@ class EventDataXMLHandler {
     }
   }
 }
-?>
+
+
+
+function do_event_data_import($importmode, $mock, $replacers, $source, $filename, $seasonId, $new_season_name, $import_data, $selected_series, $template, $post) {
+
+  $html = "";
+  $mode = null;
+  $error_message = "";
+  switch ($importmode) {
+    case 'new_mode':
+      if (isSuperAdmin()) {
+        $mode = 'new';
+      } else {
+        die("Insufficient rights");
+      }
+      break;
+    case 'replace_mode':
+      $mode = 'replace';
+      break;
+    case 'insert_mode':
+      $mode = 'insert';
+      break;
+  }
+  $wasImported = false;
+  if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
+
+
+    set_time_limit(300);
+    $eventdatahandler = new EventDataXMLHandler();
+
+    try {
+      if ($source == 'xml') {
+        $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, $replacers, $mock);
+        // unlink($filename);
+      } else if ($source == 'database') {
+        $html .= getHiddenInput($selected_series[0], 'selected_series[]');
+        $importedSeason = SeriesInfo($selected_series[0])['season'];
+        $data = $eventdatahandler->EventToXML($importedSeason, $selected_series, $template);
+
+        $eventdatahandler->XMLToEvent(null, $seasonId, $mode, $replacers, $mock, $data);
+      }
+
+      $html .= "<ul>";
+      foreach ($replacers['series_name'] as $newSeriesName) {
+        $html .= "<li>" . utf8entities($newSeriesName) . "</li>\n";
+      }
+      $html .= "</ul>";
+      if (empty($eventdatahandler->error)) {
+        $html .= "<p>" . sprintf(_("Successfully imported into %s."), $new_season_name) . "</p>\n";
+        $wasImported = true;
+      } else {
+        $html .= "<p>" . sprintf(_("Error while importing into %s:"), $new_season_name) . "<br />" .
+          $eventdatahandler->error . "</p>\n";
+      }
+    } catch (Exception $e) {
+      $error_message = "<p class='warning'>" . sprintf(_("Error while importing %s:"), $new_season_name) .
+        "<br />" . $e->getMessage() . "</p>\n";
+    }
+
+
+    if ($mock) {
+      $wasImported = false;
+      $html .= "<p>" .
+        _("Your data was not actually imported. The debug output is shown below. Do you want to import now?") .
+        "</p>";
+
+      $html .= "<p>" . _("Debug output:");
+      $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($post, true) . "\n\n" .
+        $eventdatahandler->debug . "</textarea></p>\n";
+    }
+  }
+  return [$html, $error_message, $wasImported];
+}

@@ -45,23 +45,28 @@ $teamListItems = [];
 
 $focusId = null;
 
-$get_link = function ($seasonId, $seriesId, $single = 0, $htmlEntities = false) {
+$get_link = function ($seasonId, $seriesId, $add = null, $single = 0, $htmlEntities = false) {
   $single = $single == 0 ? "" : "&single=1";
   $seaLink = urlencode($seasonId);
   $link = "?view=admin/seasonteams&season=$seaLink&series={$seriesId}$single";
+  if (!empty($add))
+    foreach ($add as $key => $value) {
+      $link .= "&$key=$value";
+    }
   return $htmlEntities ? utf8entities($link) : $link;
 };
-
-$url_here = $get_link($seasonId, $series_id, $single, true);
-
-$html .= SeriesPageMenu($seasonId, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$seasonId");
-
-$html .= "<form method='post' action='$url_here'>";
 
 $importstage = $_GET['importstage'] ?? $_POST['importstage'] ?? 0;
 
 $club = !intval($seasonInfo['isnationalteams']);
 $country = intval($seasonInfo['isinternational']);
+
+$url_here = $get_link($seasonId, $series_id, ['importstage' => $importstage, 'refresh' => 0], $single, true);
+
+$html .= SeriesPageMenu($seasonId, $series_id, $single, $get_link, "?view=admin/seasonseries&season=$seasonId");
+
+$html .= "<form method='post' action='$url_here'>";
+
 
 $showTeams = true;
 // remove
@@ -90,6 +95,7 @@ if (!empty($_POST['remove_x'])) {
   } else
     // import
     if (!empty($_POST['add_multi'])) {
+      // FIXME dead code?
       foreach ($_POST['seed'] as $i => $seed) {
         $tp['rank'] = $_POST['seed'][$i] ?? "0";
         $tp['name'] = $_POST['name'][$i] ?? "no name";
@@ -200,7 +206,8 @@ if (!empty($_POST['remove_x'])) {
             $html .= showSeasonSelection($seasonId, $series_id, $importstage);
           }
           if ($importstage == 2) {
-            $html .= showDFVSelection($seasonId, $series_id, $importstage);
+            $url_here = $get_link($seasonId, $series_id, ['importstage' => $importstage, 'refresh' => 1], $single, true);
+            $html .= showDFVSelection($seasonId, $series_id, $importstage, $url_here);
           }
 
           if (isset($_POST['refresh'])) {
@@ -215,8 +222,8 @@ if (!empty($_POST['remove_x'])) {
               }
               unset($team);
             } else {
-              if (!empty($_POST['importteams'])) {
-                $teams = json_decode($_POST['importteams'], true);
+              if (!empty($_POST['importdivision'])) {
+                $teams = json_decode($_POST['importdivision'], true)['teams'];
                 $valid = 0;
                 foreach ($teams as $i => &$team) {
                   $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';

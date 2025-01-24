@@ -1,11 +1,11 @@
 <?php
-include_once $include_prefix.'sql/upgrade_db.php';
+include_once $include_prefix . 'sql/upgrade_db.php';
 
 //When adding new update function into upgrade_db.php change this number
 //Also when you change the database, please add a database definition into
 // 'lib/table-definition-cache' with the database version in the file name.
 // You can get it by getting ext/restful/show_tables.php
-define('DB_VERSION', 87); //Database version matching to upgrade functions.
+define('DB_VERSION', 88); //Database version matching to upgrade functions.
 
 $mysqlconnectionref = null;
 
@@ -13,23 +13,23 @@ $mysqlconnectionref = null;
  * Open database connection.
  */
 function OpenConnection() {
-  
+
   global $mysqlconnectionref;
-  
+
   //connect to database
   $mysqlconnectionref = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD);
-  if(!$mysqlconnectionref) {
+  if (!$mysqlconnectionref) {
     die('Failed to connect to server: ' . mysql_adapt_error());
   }
 
   //select schema
-  $db = ((bool)mysqli_query($mysqlconnectionref, "USE `" . DB_DATABASE ."`"));
+  $db = ((bool)mysqli_query($mysqlconnectionref, "USE `" . DB_DATABASE . "`"));
   mysqli_set_charset($mysqlconnectionref, 'utf8');
 
-  if(!$db) {
-      die("Unable to select database " . mysql_adapt_error());
+  if (!$db) {
+    die("Unable to select database " . mysql_adapt_error());
   }
-  
+
   //check if database is up-to-date
   if (!isset($_SESSION['dbversion'])) {
     CheckDB();
@@ -52,10 +52,10 @@ function CloseConnection() {
 function CheckDB() {
   global $include_prefix;
   require_once $include_prefix . 'lib/configuration.functions.php';
-  
+
   $installedDb = getDBVersion();
-  for ($i = $installedDb+1; $i <= DB_VERSION; $i++) {
-    $upgradeFunc = 'upgrade'.$i;
+  for ($i = $installedDb + 1; $i <= DB_VERSION; $i++) {
+    $upgradeFunc = 'upgrade' . $i;
     LogDbUpgrade($i);
     $upgradeFunc();
     $query = sprintf("insert into uo_database (version, updated) values (%d, now())", $i);
@@ -113,7 +113,9 @@ function getDBVersion() {
  */
 function DBQuery($query) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
   return $result;
 }
 
@@ -125,7 +127,9 @@ function DBQuery($query) {
  */
 function DBQueryInsert($query) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
   return mysql_adapt_insert_id();
 }
 
@@ -135,17 +139,19 @@ function DBQueryInsert($query) {
  * @param string $query database query
  * @return mixed Value of first cell on first row; -1 if no rows
  */
-function DBQueryToValue($query, $docasting=false) {
+function DBQueryToValue($query, $docasting = false) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
 
-  if(mysqli_num_rows($result)){
+  if (mysqli_num_rows($result)) {
     $row = mysqli_fetch_row($result);
     if ($docasting) {
       $row = DBCastArray($result, $row);
     }
     return $row[0];
-  }else{
+  } else {
     return -1;
   }
 }
@@ -158,7 +164,9 @@ function DBQueryToValue($query, $docasting=false) {
  */
 function DBQueryRowCount($query) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
 
   return mysqli_num_rows($result);
 }
@@ -168,10 +176,12 @@ function DBQueryRowCount($query) {
  * @param string $query database query
  * @return Array of rows
  */
-function DBQueryToArray($query, $docasting=false) {
+function DBQueryToArray($query, $docasting = false) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
-  return DBResourceToArray($result,$docasting);
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
+  return DBResourceToArray($result, $docasting);
 }
 
 
@@ -181,10 +191,12 @@ function DBQueryToArray($query, $docasting=false) {
  * @param $result mixed The database resource returned from mysql_query
  * @return array of rows
  */
-function DBResourceToArray($result, $docasting=false) {
+function DBResourceToArray($result, $docasting = false) {
   $retarray = array();
   while ($row = mysqli_fetch_assoc($result)) {
-    if ($docasting) {$row = DBCastArray($result, $row);}
+    if ($docasting) {
+      $row = DBCastArray($result, $row);
+    }
     $retarray[] = $row;
   }
   return $retarray;
@@ -196,35 +208,39 @@ function DBResourceToArray($result, $docasting=false) {
  * @param string $query database query
  * @return array first row in array or null if the result was empty
  */
-function DBQueryToRow($query, $docasting=false) {
+function DBQueryToRow($query, $docasting = false) {
   $result = mysql_adapt_query($query);
-  if (!$result) { die('Invalid query: ("'.$query.'")'."<br/>\n" . mysql_adapt_error()); }
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
   $ret = mysqli_fetch_assoc($result);
-  if ($docasting && $ret) {$ret = DBCastArray($result, $ret);}
+  if ($docasting && $ret) {
+    $ret = DBCastArray($result, $ret);
+  }
   return $ret;
 }
 
-  /**
-   * Set data into database by updating existing row.
-   * @param string $name Name of the table to update
-   * @param array $row Data to insert: key=>field, value=>data
-   */
- function DBSetRow($name, $data, $cond){
+/**
+ * Set data into database by updating existing row.
+ * @param string $name Name of the table to update
+ * @param array $row Data to insert: key=>field, value=>data
+ */
+function DBSetRow($name, $data, $cond) {
 
-    $values = array_values($data);
-    $fields = array_keys($data);
+  $values = array_values($data);
+  $fields = array_keys($data);
 
-    $query = "UPDATE ".mysql_adapt_real_escape_string($name)." SET ";
+  $query = "UPDATE " . mysql_adapt_real_escape_string($name) . " SET ";
 
-    for($i=0;$i<count($fields);$i++){
-      $query .= mysql_adapt_real_escape_string($fields[$i]) ."='".mysql_adapt_real_escape_string($values[$i])."', ";
-    }
-    $query = rtrim($query,', ');
-    $query .= " WHERE ";
-    $query .= $cond;
-    return DBQuery($query);
+  for ($i = 0; $i < count($fields); $i++) {
+    $query .= mysql_adapt_real_escape_string($fields[$i]) . "='" . mysql_adapt_real_escape_string($values[$i]) . "', ";
   }
-  
+  $query = rtrim($query, ', ');
+  $query .= " WHERE ";
+  $query .= $cond;
+  return DBQuery($query);
+}
+
 /**
  * Copy mysql_associative array row to regular php array.
  *
@@ -234,7 +250,7 @@ function DBQueryToRow($query, $docasting=false) {
  */
 function DBCastArray($result, $row) {
   $ret = array();
-  $i=0;
+  $i = 0;
   foreach ($row as $key => $value) {
     if (mysql_adapt_field_type($result, $i) == "int") {
       $ret[$key] = (int)$value;
@@ -257,11 +273,11 @@ if (function_exists('mysqli_set_charset') === false) {
    * @param resource $link_identifier The MySQL connection
    * @return TRUE on success or FALSE on failure
    */
-  function mysqli_set_charset($charset, $link_identifier = null){
+  function mysqli_set_charset($charset, $link_identifier = null) {
     if ($link_identifier == null) {
-      return mysql_adapt_query('SET CHARACTER SET "'.$charset.'"');
+      return mysql_adapt_query('SET CHARACTER SET "' . $charset . '"');
     } else {
-      return mysql_adapt_query('SET CHARACTER SET "'.$charset.'"', $link_identifier);
+      return mysql_adapt_query('SET CHARACTER SET "' . $charset . '"', $link_identifier);
     }
   }
 }
@@ -271,7 +287,7 @@ if (function_exists('mysqli_set_charset') === false) {
 
 function DBLink() {
   global $mysqlconnectionref;
-  
+
   return $mysqlconnectionref;
 }
 
@@ -323,13 +339,13 @@ function mysql_adapt_field_type($result, $field_offset) {
     MYSQLI_TYPE_FLOAT,
     MYSQLI_TYPE_DOUBLE,
     MYSQLI_TYPE_DECIMAL,
-    ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : - 1)
+    ((defined("MYSQLI_TYPE_NEWDECIMAL")) ? constant("MYSQLI_TYPE_NEWDECIMAL") : -1)
   ))) ? "real " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIMESTAMP) ? "timestamp " : "") . (($___mysqli_tmp == MYSQLI_TYPE_YEAR) ? "year " : "") . ((($___mysqli_tmp == MYSQLI_TYPE_DATE) || ($___mysqli_tmp == MYSQLI_TYPE_NEWDATE)) ? "date " : "") . (($___mysqli_tmp == MYSQLI_TYPE_TIME) ? "time " : "") . (($___mysqli_tmp == MYSQLI_TYPE_SET) ? "set " : "") . (($___mysqli_tmp == MYSQLI_TYPE_ENUM) ? "enum " : "") . (($___mysqli_tmp == MYSQLI_TYPE_GEOMETRY) ? "geometry " : "") . (($___mysqli_tmp == MYSQLI_TYPE_DATETIME) ? "datetime " : "") . ((in_array($___mysqli_tmp, array(
     MYSQLI_TYPE_TINY_BLOB,
     MYSQLI_TYPE_BLOB,
     MYSQLI_TYPE_MEDIUM_BLOB,
     MYSQLI_TYPE_LONG_BLOB
-  ))) ? "blob " : "") . (($___mysqli_tmp == MYSQLI_TYPE_NULL) ? "null " : ""), 0, - 1))) == "") ? "unknown" : $___mysqli_tmp) : false);
+  ))) ? "blob " : "") . (($___mysqli_tmp == MYSQLI_TYPE_NULL) ? "null " : ""), 0, -1))) == "") ? "unknown" : $___mysqli_tmp) : false);
 }
 
 function mysql_adapt_is_blob($result, $field_offset) {
@@ -339,5 +355,3 @@ function mysql_adapt_is_blob($result, $field_offset) {
 function mysql_adapt_is_int($result, $field_offset) {
   return mysql_adapt_field_type($result, $field_offset) === 'int';
 }
-
-?>

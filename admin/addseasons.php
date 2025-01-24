@@ -5,35 +5,35 @@ include_once $include_prefix . 'lib/common.functions.php';
 
 $seasonId = "";
 $html = "";
-    
+
 //season parameters
 $sp = array(
-  "season_id"=>"",
-  "name"=>"",
-  "type"=>"",
-  "starttime"=>"",
-  "istournament"=>0,
-  "isinternational"=>0,
-  "organizer"=>"",
-  "category"=>"",
-  "isnationalteams"=>0,
-  "endtime"=>"",
-//   "spiritmode"=>0,
-  "showspiritpoints"=>0,
-  "iscurrent"=>0,
-  "enrollopen"=>0,
-  "enroll_deadline"=>"",
-  "timezone"=>GetDefTimeZone()
-  );
+  "season_id" => "",
+  "name" => "",
+  "type" => "",
+  "starttime" => "",
+  "istournament" => 0,
+  "isinternational" => 0,
+  "organizer" => "",
+  "category" => "",
+  "isnationalteams" => 0,
+  "endtime" => "",
+  //   "spiritmode"=>0,
+  "showspiritpoints" => 0,
+  "iscurrent" => 0,
+  "enrollopen" => 0,
+  "enroll_deadline" => "",
+  "timezone" => GetDefTimeZone()
+);
 
 if (!empty($_GET["season"]))
   $seasonId = $_GET["season"];
 
-$backurl = utf8entities($_SERVER['HTTP_REFERER']??"");
+$backurl = utf8entities($_SERVER['HTTP_REFERER'] ?? "");
 if (empty($backurl))
   if (empty($seasonId))
     $backurl = "?view=admin/seasons";
-  else 
+  else
     $backurl = "?view=admin/seasonadmin&amp;season=" . $seasonId;
 
 // process itself on submit
@@ -53,40 +53,40 @@ if (!empty($_POST['add'])) {
   $sp['enrollopen'] = !empty($_POST['enrollopen']);
   $sp['enroll_deadline'] = isset($_POST['enrollendtime']) ? ToInternalTimeFormat($_POST['enrollendtime']) : ToInternalTimeFormat($_POST['seasonstarttime']);
   $sp['iscurrent'] = !empty($_POST['iscurrent']);
-//   $sp['spiritmode'] = $_POST['spiritmode'];
+  $sp['spiritmode'] = $info['spiritmode']; // set in admin/seasonspirit
   $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
-  $comment=$_POST['comment'];
+  $comment = $_POST['comment'];
 
-  if(empty($_POST['added_id'])){
-    $html .= "<p class='warning'>"._("Event id can not be empty").".</p>";
-  }else if(preg_match('/[ \'"]/', $_POST['added_id']) || !preg_match('/[\w_~$@-]{1,10}/iu', $_POST['added_id'])){
-    $html .= "<p class='warning'>"._("Event id may not contain spaces or special characters and may only be 10 characters long").".</p>";
-  }else if(empty($_POST['seasonname'])){
-    $html .= "<p class='warning'>"._("Name can not be empty").".</p>";
-  }else if(empty($_POST['type'])){
-    $html .= "<p class='warning'>"._("Type can not be empty").".</p>";
-  }else{
+  if (empty($_POST['added_id'])) {
+    $html .= "<p class='warning'>" . _("Event id can not be empty") . ".</p>";
+  } else if (preg_match('/[ \'"]/', $_POST['added_id']) || !preg_match('/^[\w_~$@-]{1,20}$/iu', $_POST['added_id'])) {
+    $html .= "<p class='warning'>" . _("Event id may not contain spaces or special characters and may only be 20 characters long") . ".</p>";
+  } else if (empty($_POST['seasonname'])) {
+    $html .= "<p class='warning'>" . _("Name can not be empty") . ".</p>";
+  } else if (empty($_POST['type'])) {
+    $html .= "<p class='warning'>" . _("Type can not be empty") . ".</p>";
+  } else {
     AddSeason($sp['season_id'], $sp, $comment);
     $seasonId = $sp['season_id'];
 
     // add rights for season creator
     AddEditSeason($_SESSION['uid'], $sp['season_id']);
-    AddUserRole($_SESSION['uid'], 'seasonadmin:'.$sp['season_id']);
-    
-    if($sp['istournament']){
-      $_SESSION['title'] = _("New tournament added") .":";
-    }else{
-      $_SESSION['title'] = _("New season added") .":";
+    AddUserRole($_SESSION['uid'], 'seasonadmin:' . $sp['season_id']);
+
+    if ($sp['istournament']) {
+      $_SESSION['title'] = _("New tournament added") . ":";
+    } else {
+      $_SESSION['title'] = _("New season added") . ":";
     }
-    
+
     session_write_close();
-    header("location:?view=admin/seasonadmin&season=". urlencode($seasonId));
+    header("location:?view=admin/seasonadmin&season=" . urlencode($seasonId));
   }
-}else if(!empty($_POST['save'])){
-  $backurl = utf8entities($_POST['backurl']??'');
-  if(empty($_POST['seasonname'])){
-    $html .= "<p class='warning'>"._("Name can not be empty").".</p>";
-  }else{
+} else if (!empty($_POST['save'])) {
+  $backurl = utf8entities($_POST['backurl'] ?? '');
+  if (empty($_POST['seasonname'])) {
+    $html .= "<p class='warning'>" . _("Name can not be empty") . ".</p>";
+  } else {
     $sp['season_id'] = $seasonId;
     $sp['name'] = $_POST['seasonname'];
     $sp['type'] = $_POST['type'];
@@ -104,19 +104,19 @@ if (!empty($_POST['add'])) {
     $sp['spiritmode'] = $info['spiritmode']; // set in admin/seasonspirit
     $sp['showspiritpoints'] = !empty($_POST['showspiritpoints']);
     $sp['timezone'] = $_POST['timezone'];
-    $comment=$_POST['comment'];
+    $comment = $_POST['comment'];
     SetSeason($sp['season_id'], $sp, $comment);
   }
 }
 
 $title = _("Edit event");
 if (strlen($sp['name']) > 0) {
-  $title .= ": ".$sp['name'];
+  $title .= ": " . $sp['name'];
 }
 
-if($seasonId){
+if ($seasonId) {
   $info = SeasonInfo($seasonId);
-  
+
   $sp['season_id'] = $info['season_id'];
   $sp['name'] = $info['name'];
   $sp['type'] = $info['type'];
@@ -130,7 +130,7 @@ if($seasonId){
   $sp['organizer'] = $info['organizer'];
   $sp['category'] = $info['category'];
   $sp['isnationalteams'] = $info['isnationalteams'];
-//   $sp['spiritmode'] = $info['spiritmode'];
+  $sp['spiritmode'] = $info['spiritmode'];
   $sp['showspiritpoints'] = $info['showspiritpoints'];
   $sp['timezone'] = $info['timezone'];
   $comment = CommentRaw(1, $info['season_id']);
@@ -146,21 +146,22 @@ addHeaderCallback(
     echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
 
     echo getCalendarScript(['seasonstarttime', 'seasonendtime', 'enrollendtime']);
-  });
+  }
+);
 
 
-if(empty($seasonId)){
+if (empty($seasonId)) {
   $sValue = utf8entities($_POST['added_id'] ?? "");
   ensureSuperAdmin($title);
-  $html .= "<h2>"._("Add new season/tournament")."</h2>\n";
+  $html .= "<h2>" . _("Add new season/tournament") . "</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons'>";
-  $disabled="";
-}else{
+  $disabled = "";
+} else {
   ensureSeasonAdmin($seasonId, $title);
   $sValue = utf8entities($seasonId);
-  $html .= "<h2>"._("Edit season/tournament")."</h2>\n";
+  $html .= "<h2>" . _("Edit season/tournament") . "</h2>\n";
   $html .= "<form method='post' action='?view=admin/addseasons&amp;season=" . urlencode($seasonId) . "'>";
-  $disabled="disabled='disabled'";
+  $disabled = "disabled='disabled'";
 }
 
 function addTooltip($tooltip) {
@@ -171,13 +172,12 @@ function addTooltip($tooltip) {
 
 $html .= "<table class='formtable'>";
 $html .= "<tr><td class='infocell'>" . _("Event id") . ":</td>\n";
-$html .= "<td><input class='input' size='30' name='added_id' $disabled value='$sValue'></input>" .
-  addTooltip(_("Unique identifier for the event, internal use only")) .
-  "</td></tr>\n";
+$html .= "<td><input class='input' size='20' name='added_id' $disabled value='$sValue' maxlength='20'></input>" .
+  addTooltip(_("Unique identifier for the event, internal use only")) . "</td></tr>\n";
 $html .= "<tr><td class='infocell'>" . _("Name") . ": </td>
   <td>" . TranslatedField2("seasonname", $sp['name'], '') . "</td>
     </tr>\n";
-$html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
+$html .= "<tr><td class='infocell'>" . _("Type") . ": </td><td><select class='dropdown' name='type'>\n";
 
 $types = SeasonTypes();
 
@@ -190,19 +190,19 @@ foreach ($types as $type) {
 
 $html .= "</select></td></tr>\n";
 
-$html .= "<tr><td class='infocell'>"._("Tournament").": </td><td><input class='input' type='checkbox' name='istournament' ";
+$html .= "<tr><td class='infocell'>" . _("Tournament") . ": </td><td><input class='input' type='checkbox' name='istournament' ";
 if ($sp['istournament']) {
   $html .= "checked='checked'";
 }
 $html .= "/>" . addTooltip(_("Affects the name in pages (tournament or season)")) . "</td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("International").": </td><td><input class='input' type='checkbox' name='isinternational' ";
+$html .= "<tr><td class='infocell'>" . _("International") . ": </td><td><input class='input' type='checkbox' name='isinternational' ";
 if ($sp['isinternational']) {
   $html .= "checked='checked'";
 }
 $html .= "/>" . addTooltip(_("Teams are have a nationality and flag")) . "</td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("For national teams").": </td><td><input class='input' type='checkbox' name='isnationalteams' ";
+$html .= "<tr><td class='infocell'>" . _("For national teams") . ": </td><td><input class='input' type='checkbox' name='isnationalteams' ";
 if ($sp['isnationalteams']) {
   $html .= "checked='checked'";
 }
@@ -218,8 +218,9 @@ $html .= "/>" . addTooltip(_("Teams are national teams only and have no club nam
 // }
 // $html .= "</select>\n";
 // $html .= "</td></tr>\n";
+$html .= "<input type='hidden' name='spiritmode' value='0'>";
 
-$html .= "<tr><td class='infocell'>"._("Spirit points visible").": </td><td><input class='input' type='checkbox' name='showspiritpoints' ";
+$html .= "<tr><td class='infocell'>" . _("Spirit points visible") . ": </td><td><input class='input' type='checkbox' name='showspiritpoints' ";
 if ($sp['showspiritpoints']) {
   $html .= "checked='checked'";
 }
@@ -229,18 +230,18 @@ $html .= "<tr><td class='infocell'>" . _("Organizer") . ": </td><td><input class
 $html .= "<tr><td class='infocell'>" . _("Category") . ": </td><td><input class='input' size='50' maxlength='50' name='category' value='" . utf8entities($sp['category']) . "'/>" .
   addTooltip(_("For finding tournaments")) . "</td></tr>";
 
-$html .= "<tr><td class='infocell'>".utf8entities(_("Comment (you can use <b>, <em>, and <br /> tags)")).":</td>
-    <td><textarea class='input' rows='10' cols='70' maxlength='10000' name='comment'>".utf8entities($comment)."</textarea></td></tr>";
+$html .= "<tr><td class='infocell'>" . utf8entities(_("Comment (you can use <b>, <em>, and <br /> tags)")) . ":</td>
+    <td><textarea class='input' rows='10' cols='70' maxlength='10000' name='comment'>" . utf8entities($comment) . "</textarea></td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("Timezone").": </td><td>";
+$html .= "<tr><td class='infocell'>" . _("Timezone") . ": </td><td>";
 $dateTimeZone = GetTimeZoneArray();
 $html .= "<select class='dropdown' id='timezone' name='timezone'>\n";
 $html .= "<option value=''></option>\n";
-foreach($dateTimeZone as $tz){
-  if($sp['timezone']==$tz){
-    $html .= "<option selected='selected' value='$tz'>".utf8entities($tz)."</option>\n";
-  }else{
-    $html .= "<option value='$tz'>".utf8entities($tz)."</option>\n";
+foreach ($dateTimeZone as $tz) {
+  if ($sp['timezone'] == $tz) {
+    $html .= "<option selected='selected' value='$tz'>" . utf8entities($tz) . "</option>\n";
+  } else {
+    $html .= "<option value='$tz'>" . utf8entities($tz) . "</option>\n";
   }
 }
 $html .= "</select>\n";
@@ -259,10 +260,10 @@ if ($sp['enrollopen']) {
   $html .= "checked='checked'";
 }
 $html .= "/>" . addTooltip(_("Enable public enrollment of teams'")) . "</td></tr>";
-$html .= "<tr><td class='infocell'>"._("Enrolling ends")."<br/>("._("only informational")."): </td>";
+$html .= "<tr><td class='infocell'>" . _("Enrolling ends") . "<br/>(" . _("only informational") . "): </td>";
 $html .= "<td>" . getCalendarInput('enrollendtime', ShortDate($sp['enroll_deadline'])) . "</td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("Shown in main menu").": </td><td><input class='input' type='checkbox' name='iscurrent' ";
+$html .= "<tr><td class='infocell'>" . _("Shown in main menu") . ": </td><td><input class='input' type='checkbox' name='iscurrent' ";
 if ($sp['iscurrent']) {
   "</td><td>" .
     $html .= "checked='checked'";
@@ -270,18 +271,17 @@ if ($sp['iscurrent']) {
 $html .= "/>" . addTooltip(_("Display to the public'")) . "</td></tr>";
 
 $html .= "</table>\n";
-if(empty($seasonId)){
-  $html .= "<p><input class='button' type='submit' name='add' value='"._("Add")."' />";
-}else{
-  $html .= "<p><input class='button' type='submit' name='save' value='"._("Save")."' />";
+if (empty($seasonId)) {
+  $html .= "<p><input class='button' type='submit' name='add' value='" . _("Add") . "' />";
+} else {
+  $html .= "<p><input class='button' type='submit' name='save' value='" . _("Save") . "' />";
 }
 if ($backurl) {
   $html .= "<input type='hidden' name='backurl' value='$backurl'/>";
-  $html .= "<input class='button' type='button' value='"._("Return")."' onclick=\"window.location.href='$backurl'\" /></p>";
+  $html .= "<input class='button' type='button' value='" . _("Return") . "' onclick=\"window.location.href='$backurl'\" /></p>";
 }
 $html .= "</form>\n";
 
 $html .= TranslationScript("seasonname");
 
 showPage($title, $html);
-?>

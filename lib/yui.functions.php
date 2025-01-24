@@ -1,18 +1,18 @@
-<?php 
-include_once $include_prefix.'lib/yuiloader/phploader/loader.php';
+<?php
+include_once $include_prefix . 'lib/yuiloader/phploader/loader.php';
 
 function yuiLoad($libs) {
-	$loader = new YAHOO_util_Loader("2.8.0r4");
-	global $styles_prefix;
-	global $include_prefix;
-	if (!isset($styles_prefix)) {
-		$styles_prefix = $include_prefix;
-	}
-	$loader->base = $styles_prefix."script/yui/";
-	foreach ($libs as $lib) {
-		$loader->loadSingle($lib);
-	}
-	return $loader->tags();
+  $loader = new YAHOO_util_Loader("2.8.0r4");
+  global $styles_prefix;
+  global $include_prefix;
+  if (!isset($styles_prefix)) {
+    $styles_prefix = $include_prefix;
+  }
+  $loader->base = $styles_prefix . "script/yui/";
+  foreach ($libs as $lib) {
+    $loader->loadSingle($lib);
+  }
+  return $loader->tags();
 }
 
 function getCalendarScript($fieldIds) {
@@ -39,7 +39,7 @@ YAHOO.calendar.init = function() {
 ';
   foreach ($fieldIds as $i => $fieldId) {
     $html .= "
-  YAHOO.calendar.cal{$i} = new YAHOO.widget.Calendar('cal{$i}','${fieldId}Container');
+  YAHOO.calendar.cal{$i} = new YAHOO.widget.Calendar('cal{$i}','{$fieldId}Container');
   YAHOO.calendar.cal{$i}.cfg.setProperty('START_WEEKDAY', '1');
   YAHOO.calendar.cal{$i}.render();
     
@@ -56,7 +56,7 @@ YAHOO.calendar.init = function() {
     var date = dates[0];
     var year = date[0], month = date[1], day = date[2];
     
-    var txtDate = document.getElementById('${fieldId}');
+    var txtDate = document.getElementById('{$fieldId}');
     txtDate.value = day + '.' + month + '.' + year;
   }
     
@@ -81,7 +81,7 @@ YAHOO.calendar.init = function() {
 YAHOO.util.Event.onDOMReady(YAHOO.calendar.init);
 //-->
 </script>';
-  
+
   return $html;
 }
 
@@ -89,7 +89,6 @@ function getCalendarInput($id, $val) {
   $val = utf8entities($val);
   $html = "<input class='input' size='12' maxlength='10' id='$id' name='$id' value='$val'/>&nbsp;&nbsp;";
   $html .= "<button type='button' class='button' id='show$id'><img width='12' height='10' src='images/calendar.gif' alt='cal'/></button><br />";
-  $html .= "<div id='${id}Container'></div>\n";
+  $html .= "<div id='{$id}Container'></div>\n";
   return $html;
 }
-?>

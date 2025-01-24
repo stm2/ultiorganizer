@@ -94,7 +94,8 @@ function SeriesPools($seriesId, $onlyvisible = false, $nocontinuingpools = false
 function SeriesPlacementPoolIds($seriesId) {
   $query = sprintf(
     "SELECT pool_id, played, type FROM uo_pool WHERE series=%d AND placementpool=1 ORDER BY ordering ASC",
-    (int) $seriesId);
+    (int) $seriesId
+  );
 
   return DBQueryToArray($query);
 }
@@ -105,8 +106,23 @@ function SeriesPlacementPoolIds($seriesId) {
  * @return array Hardcoded PHP array of division types.
  */
 function SeriesTypes() {
-  return array("open", "women", "mixed", "master open", "master women", "master mixed", "grand master", "U19 open",
-    "U19 women", "U19 mixed", "U23 open", "U23 women", "U23 mixed", "junior open", "junior women");
+  return array(
+    "open",
+    "women",
+    "mixed",
+    "master open",
+    "master women",
+    "master mixed",
+    "grand master",
+    "U19 open",
+    "U19 women",
+    "U19 mixed",
+    "U23 open",
+    "U23 women",
+    "U23 mixed",
+    "junior open",
+    "junior women"
+  );
 }
 
 /**
@@ -128,7 +144,9 @@ function SeriesTeams($seriesId, $orderbyseeding = false) {
 			LEFT JOIN uo_country c ON(c.country_id=t.country)
 			WHERE t.series = %d
 			GROUP BY t.team_id
-			", (int) ($seriesId));
+			",
+    (int) ($seriesId)
+  );
 
   if ($orderbyseeding) {
     $query .= " ORDER BY t.`rank`, t.name, t.team_id";
@@ -152,7 +170,9 @@ function SeriesTeamsWithoutPool($seriesId) {
 		LEFT JOIN uo_team_pool pjs ON (pj.team_id=pjs.team)
 		LEFT JOIN uo_club club ON (pj.club=club.club_id)	
 		WHERE pj.series = %d AND pjs.pool IS NULL
-		ORDER BY pj.`rank` ASC", (int) $seriesId);
+		ORDER BY pj.`rank` ASC",
+    (int) $seriesId
+  );
   return DBQueryToArray($query);
 }
 
@@ -166,7 +186,8 @@ function Series($filter = null, $ordering = null) {
   $query = sprintf(
     "SELECT series_id, series.name as name, season.name as seasonname, series.season
 	FROM uo_series series LEFT JOIN uo_season season ON (series.season=season.season_id)
-	$where $orderby");
+	$where $orderby"
+  );
   return DBQuery(trim($query));
 }
 
@@ -182,7 +203,9 @@ function SeriesAllPlayers($seriesId) {
     "SELECT p.player_id, p.accreditation_id, p.profile_id FROM uo_player p
 			LEFT JOIN uo_team t ON (p.team=t.team_id)
 			LEFT JOIN uo_series ser ON (t.series=ser.series_id)
-			WHERE ser.series_id=%d", (int) $seriesId);
+			WHERE ser.series_id=%d",
+    (int) $seriesId
+  );
   return DBQueryToArray($query);
 }
 
@@ -213,7 +236,9 @@ function SeriesSeasonName($seriesId) {
   $query = sprintf(
     "SELECT s.name FROM uo_series ser
 		LEFT JOIN uo_season s ON(s.season_id=ser.season)
-		WHERE ser.series_id=%d", (int) $seriesId);
+		WHERE ser.series_id=%d",
+    (int) $seriesId
+  );
 
   return U_(DBQueryToValue($query));
 }
@@ -229,7 +254,9 @@ function SeriesSeasonId($seriesId) {
   $query = sprintf(
     "SELECT s.season_id FROM uo_series ser
 		LEFT JOIN uo_season s ON(s.season_id=ser.season)
-		WHERE ser.series_id=%d", (int) $seriesId);
+		WHERE ser.series_id=%d",
+    (int) $seriesId
+  );
 
   return DBQueryToValue($query);
 }
@@ -273,41 +300,46 @@ function SeriesScoreBoard($seriesId, $sorting, $limit) {
 			LEFT JOIN uo_pool pool ON(g4.pool=pool.pool_id)
 			WHERE pool.series=%d AND g4.isongoing=0 
 			GROUP BY player) AS pel ON (p.player_id=pel.player) 
-		WHERE pel.games > 0 AND j.series=%d", (int) $seriesId, (int) $seriesId, (int) $seriesId, (int) $seriesId,
-    (int) $seriesId);
+		WHERE pel.games > 0 AND j.series=%d",
+    (int) $seriesId,
+    (int) $seriesId,
+    (int) $seriesId,
+    (int) $seriesId,
+    (int) $seriesId
+  );
 
   switch ($sorting) {
-  case "total":
-    $query .= " ORDER BY total DESC, done DESC, fedin DESC, lastname ASC";
-    break;
+    case "total":
+      $query .= " ORDER BY total DESC, done DESC, fedin DESC, lastname ASC";
+      break;
 
-  case "goal":
-    $query .= " ORDER BY done DESC, total DESC, fedin DESC, lastname ASC";
-    break;
+    case "goal":
+      $query .= " ORDER BY done DESC, total DESC, fedin DESC, lastname ASC";
+      break;
 
-  case "pass":
-    $query .= " ORDER BY fedin DESC, total DESC, done DESC, lastname ASC";
-    break;
+    case "pass":
+      $query .= " ORDER BY fedin DESC, total DESC, done DESC, lastname ASC";
+      break;
 
-  case "games":
-    $query .= " ORDER BY games DESC, total DESC, done DESC, fedin DESC, lastname ASC";
-    break;
+    case "games":
+      $query .= " ORDER BY games DESC, total DESC, done DESC, fedin DESC, lastname ASC";
+      break;
 
-  case "team":
-    $query .= " ORDER BY teamname ASC, total DESC, done DESC, fedin DESC, lastname ASC";
-    break;
+    case "team":
+      $query .= " ORDER BY teamname ASC, total DESC, done DESC, fedin DESC, lastname ASC";
+      break;
 
-  case "name":
-    $query .= " ORDER BY firstname,lastname ASC, total DESC, done DESC, fedin DESC";
-    break;
+    case "name":
+      $query .= " ORDER BY firstname,lastname ASC, total DESC, done DESC, fedin DESC";
+      break;
 
-  case "callahan":
-    $query .= " ORDER BY callahan DESC, total DESC, lastname ASC";
-    break;
+    case "callahan":
+      $query .= " ORDER BY callahan DESC, total DESC, lastname ASC";
+      break;
 
-  default:
-    $query .= " ORDER BY total DESC, done DESC, fedin DESC, lastname ASC";
-    break;
+    default:
+      $query .= " ORDER BY total DESC, done DESC, fedin DESC, lastname ASC";
+      break;
   }
 
   if ($limit > 0) {
@@ -346,32 +378,36 @@ function SeriesDefenseBoard($seriesId, $sorting, $limit) {
 			LEFT JOIN uo_pool pool ON(g4.pool=pool.pool_id)
 			WHERE pool.series=%d AND g4.isongoing=0 
 			GROUP BY player) AS pel ON (p.player_id=pel.player) 
-		WHERE pel.games > 0 AND j.series=%d", (int) $seriesId, (int) $seriesId, (int) $seriesId);
+		WHERE pel.games > 0 AND j.series=%d",
+    (int) $seriesId,
+    (int) $seriesId,
+    (int) $seriesId
+  );
 
   switch ($sorting) {
-  case "deftotal":
-    $query .= " ORDER BY deftotal DESC, lastname ASC";
-    break;
+    case "deftotal":
+      $query .= " ORDER BY deftotal DESC, lastname ASC";
+      break;
 
-  case "games":
-    $query .= " ORDER BY games DESC, deftotal DESC, lastname ASC";
-    break;
+    case "games":
+      $query .= " ORDER BY games DESC, deftotal DESC, lastname ASC";
+      break;
 
-  case "team":
-    $query .= " ORDER BY teamname ASC, deftotal DESC, lastname ASC";
-    break;
+    case "team":
+      $query .= " ORDER BY teamname ASC, deftotal DESC, lastname ASC";
+      break;
 
-  case "name":
-    $query .= " ORDER BY firstname,lastname ASC, deftotal DESC";
-    break;
+    case "name":
+      $query .= " ORDER BY firstname,lastname ASC, deftotal DESC";
+      break;
 
-  case "callahan":
-    $query .= " ORDER BY callahan DESC, deftotal DESC, lastname ASC";
-    break;
+    case "callahan":
+      $query .= " ORDER BY callahan DESC, deftotal DESC, lastname ASC";
+      break;
 
-  default:
-    $query .= " ORDER BY deftotal DESC, lastname ASC";
-    break;
+    default:
+      $query .= " ORDER BY deftotal DESC, lastname ASC";
+      break;
   }
 
   if ($limit > 0) {
@@ -396,7 +432,9 @@ function SeriesAllGames($seriesId) {
 		LEFT JOIN uo_pool pool ON (pool.pool_id=gp.pool) 
 		LEFT JOIN uo_series ser ON (ser.series_id=pool.series)
 		WHERE ser.series_id=%d AND gp.timetable=1
-		ORDER BY gp.game", (int) $seriesId);
+		ORDER BY gp.game",
+    (int) $seriesId
+  );
 
   return DBQueryToArray($query);
 }
@@ -427,7 +465,9 @@ function SeriesEnrolledTeams($seriesId) {
     $query = sprintf(
       "SELECT team.*, user.name AS username FROM uo_enrolledteam team
 		LEFT JOIN uo_users user ON(team.userid=user.userid)
-		WHERE team.series=%d ORDER BY team.enroll_time ASC", (int) $seriesId);
+		WHERE team.series=%d ORDER BY team.enroll_time ASC",
+      (int) $seriesId
+    );
     return DBQuery($query);
   } else
     die("Insufficient rights to get all enrolled teams");
@@ -467,9 +507,14 @@ function AddSeries($params) {
     $query = sprintf(
       "INSERT INTO uo_series
 				(name,type,ordering,season,valid,pool_template)
-				VALUES ('%s','%s','%s','%s',%d,%d)", mysql_adapt_real_escape_string($params['name']),
-      mysql_adapt_real_escape_string($params['type']), mysql_adapt_real_escape_string($params['ordering']),
-      mysql_adapt_real_escape_string($params['season']), (int) $params['valid'], (int) $params['pool_template']);
+				VALUES ('%s','%s','%s','%s',%d,%d)",
+      mysql_adapt_real_escape_string($params['name']),
+      mysql_adapt_real_escape_string($params['type']),
+      mysql_adapt_real_escape_string($params['ordering']),
+      mysql_adapt_real_escape_string($params['season']),
+      (int) $params['valid'],
+      (int) $params['pool_template']
+    );
 
     $id = DBQueryInsert($query);
     Log1("series", "add", $id);
@@ -494,9 +539,14 @@ function SetSeries($params) {
 			UPDATE uo_series SET
 			name='%s', type='%s', ordering='%s', valid=%d,
 			pool_template=%d
-			WHERE series_id=%d", mysql_adapt_real_escape_string($params['name']), mysql_adapt_real_escape_string($params['type']),
-      mysql_adapt_real_escape_string($params['ordering']), (int) $params['valid'], (int) $params['pool_template'],
-      (int) $params['series_id']);
+			WHERE series_id=%d",
+      mysql_adapt_real_escape_string($params['name']),
+      mysql_adapt_real_escape_string($params['type']),
+      mysql_adapt_real_escape_string($params['ordering']),
+      (int) $params['valid'],
+      (int) $params['pool_template'],
+      (int) $params['series_id']
+    );
 
     return DBQuery($query);
   } else
@@ -516,9 +566,12 @@ function SetSeries($params) {
 function SetSeriesName($seriesId, $name) {
   $seriesInfo = SeriesInfo($seriesId);
   if (hasEditSeasonSeriesRight($seriesInfo['season'])) {
-    $query = sprintf("
-			UPDATE uo_series SET name='%s' WHERE series_id='%s'", mysql_adapt_real_escape_string($name),
-      mysql_adapt_real_escape_string($seriesId));
+    $query = sprintf(
+      "
+			UPDATE uo_series SET name='%s' WHERE series_id='%s'",
+      mysql_adapt_real_escape_string($name),
+      mysql_adapt_real_escape_string($seriesId)
+    );
 
     return DBQuery($query);
   } else
@@ -562,8 +615,10 @@ function SeriesEnrolledTeamsByUser(int $seriesId, string $userid) {
     $query = sprintf(
       "SELECT team.*, user.name AS username FROM uo_enrolledteam team
 				LEFT JOIN uo_users user ON(team.userid=user.userid)
-				WHERE team.series=%d and team.userid='%s' ORDER BY team.enroll_time ASC", (int) $seriesId,
-      mysql_adapt_real_escape_string($userid));
+				WHERE team.series=%d and team.userid='%s' ORDER BY team.enroll_time ASC",
+      (int) $seriesId,
+      mysql_adapt_real_escape_string($userid)
+    );
     return DBQuery($query);
   } else
     die("Insufficient rights to get all enrolled teams for other users");
@@ -592,9 +647,13 @@ function AddSeriesEnrolledTeam($seriesId, $userid, $name, $club, $country) {
   if ($userid == $_SESSION['uid'] || hasEditTeamsRight($seriesId)) {
     $query = sprintf(
       "INSERT INTO uo_enrolledteam (series, userid, name, clubname, countryname, enroll_time)
-				VALUES (%d, '%s', '%s', '%s', '%s', now())", (int) $seriesId, mysql_adapt_real_escape_string($userid),
-      mysql_adapt_real_escape_string($name), mysql_adapt_real_escape_string($club),
-      mysql_adapt_real_escape_string($country));
+				VALUES (%d, '%s', '%s', '%s', '%s', now())",
+      (int) $seriesId,
+      mysql_adapt_real_escape_string($userid),
+      mysql_adapt_real_escape_string($name),
+      mysql_adapt_real_escape_string($club),
+      mysql_adapt_real_escape_string($country)
+    );
     $id = DBQueryInsert($query);
     Log1("enrolment", "add", $seriesId, "$name");
     return $id;
@@ -653,8 +712,11 @@ function ConfirmEnrolledTeam($seriesId, $id) {
       $clubId = AddClub($seriesId, $teaminfo['clubname']);
     }
 
-    $query = sprintf("INSERT INTO uo_team (name, series, valid) VALUES ('%s', %d, 1)",
-      mysql_adapt_real_escape_string($teaminfo['name']), (int) $seriesId);
+    $query = sprintf(
+      "INSERT INTO uo_team (name, series, valid) VALUES ('%s', %d, 1)",
+      mysql_adapt_real_escape_string($teaminfo['name']),
+      (int) $seriesId
+    );
 
     DBQuery($query);
     $teamId = (int) mysql_adapt_insert_id();
@@ -670,8 +732,12 @@ function ConfirmEnrolledTeam($seriesId, $id) {
     if ($countryId && !$clubId) {
       $countryinfo = CountryInfo($countryId);
       DBQuery(
-        sprintf("UPDATE uo_team SET abbreviation=UPPER('%s') WHERE team_id=%d",
-          mysql_adapt_real_escape_string($countryinfo['abbreviation']), (int) $teamId));
+        sprintf(
+          "UPDATE uo_team SET abbreviation=UPPER('%s') WHERE team_id=%d",
+          mysql_adapt_real_escape_string($countryinfo['abbreviation']),
+          (int) $teamId
+        )
+      );
     } else {
       $allteams = SeriesTeams($seriesId);
       $notfound = true;
@@ -698,7 +764,8 @@ function ConfirmEnrolledTeam($seriesId, $id) {
         }
       }
       DBQuery(
-        "UPDATE uo_team SET abbreviation=UPPER('" . mysql_adapt_real_escape_string($abb) . "') WHERE team_id=$teamId");
+        "UPDATE uo_team SET abbreviation=UPPER('" . mysql_adapt_real_escape_string($abb) . "') WHERE team_id=$teamId"
+      );
     }
 
     AddTeamAdmin($teaminfo['userid'], $teamId);
@@ -758,7 +825,9 @@ function SeriesTeamResponsibles($seriesId) {
 			LEFT JOIN uo_userproperties up ON (u.userid=up.userid)
 			LEFT JOIN uo_team j ON (SUBSTRING_INDEX(up.value, ':', -1)=j.team_id)
 			WHERE j.series=%d AND SUBSTRING_INDEX(up.value,':',1)='teamadmin'
-			GROUP BY u.userid, u.name, u.email, j.series, j.name", (int) $seriesId);
+			GROUP BY u.userid, u.name, u.email, j.series, j.name",
+      (int) $seriesId
+    );
 
     return DBQueryToArray($query);
   } else {
@@ -783,8 +852,14 @@ function SeriesCopyTeams($to, $from) {
     foreach ($teams as $team) {
       $query = sprintf(
         "INSERT INTO uo_team(name, club, country, `rank`, abbreviation, valid, series )
-      			VALUES ('%s',%d,%d,%d,'%s',1,%d)", mysql_adapt_real_escape_string($team['name']), (int) $team['club'],
-        (int) $team['country'], (int) $team['rank'], mysql_adapt_real_escape_string($team['abbreviation']), (int) $to);
+      			VALUES ('%s',%d,%d,%d,'%s',1,%d)",
+        mysql_adapt_real_escape_string($team['name']),
+        (int) $team['club'],
+        (int) $team['country'],
+        (int) $team['rank'],
+        mysql_adapt_real_escape_string($team['abbreviation']),
+        (int) $to
+      );
       DBQuery($query);
     }
   } else {
@@ -792,3 +867,19 @@ function SeriesCopyTeams($to, $from) {
   }
 }
 
+function SeriesReservations($seriesId) {
+  $query = sprintf(
+    "SELECT r.id, r.location, r.fieldname, l.name as location_name, COUNT(g.game_id) as game_count, r.date, r.starttime, r.reservationgroup
+    FROM uo_reservation r
+    LEFT JOIN uo_location l ON (r.location = l.id)
+    LEFT JOIN uo_game g ON (r.id = g.reservation)
+    LEFT JOIN uo_pool p ON (g.pool = p.pool_id)
+    WHERE p.series = %d
+    GROUP BY r.id
+    ORDER BY r.starttime ASC",
+    (int) $seriesId
+  );
+
+  debug_to_apache($query);
+  return DBQueryToArray($query);
+}
