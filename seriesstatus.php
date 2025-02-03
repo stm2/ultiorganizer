@@ -25,6 +25,8 @@ if (iget("series")) {
   exit();
 }
 
+SetCurrentSeries($seriesId);
+
 if (!$seriesinfo['valid'] && !hasEditSeriesRight($seriesId)) {
   showPage($title, "<p>" . utf8entities(_("Insufficient rights.")) . "</p>\n");
   exit();
@@ -35,9 +37,10 @@ if (iget("sort")) {
 }
 
 $tabs = array( //
-_("Statistics") => MakeUrl($_GET), //
-_("Games") => MakeUrl(array('view' => 'games', 'series' => $seriesId)), //
-  _("Show all pools") => MakeUrl(array('view' => 'poolstatus', 'series' => $seriesId)));
+  _("Statistics") => MakeUrl($_GET), //
+  _("Games") => MakeUrl(array('view' => 'games', 'series' => $seriesId)), //
+  _("Show all pools") => MakeUrl(array('view' => 'poolstatus', 'series' => $seriesId))
+);
 
 foreach (SeriesPools($seriesId, true) as $pool) {
   if (!isset($tabs[$pool['name']]))
@@ -52,12 +55,24 @@ $columns = array();
 function add_column(&$columns, $abbr, $name, $mnem = null, $prec = null, $acc = null, $classes = 'center') {
   if (intval($prec) !== $prec && $prec !== null)
     die("invalid prec $abbr $prec");
-  $columns[$abbr] = array('name' => $name, 'mnem' => $mnem == null ? $name : $mnem, 'classes' => $classes,
-    'prec' => $prec, 'acc' => $acc);
+  $columns[$abbr] = array(
+    'name' => $name,
+    'mnem' => $mnem == null ? $name : $mnem,
+    'classes' => $classes,
+    'prec' => $prec,
+    'acc' => $acc
+  );
 }
 
 $allteams = array();
 $teams = SeriesTeams($seriesId);
+
+if (empty($teams)) {
+  $html .= "<p>" . _("No teams in this division.") . "</p>";
+  showPage($title, $html);
+  exit();
+}
+
 $spiritAvg = SeriesSpiritBoard($seriesId);
 
 $games = series_games($seriesId);
@@ -79,7 +94,7 @@ add_column($columns, 'seed', _("Initial Seeding"), pgettext("team_table", "Sd"))
 if ($stdElo || $stdAcc)
   add_column($columns, 'seed_acc', _("Seeding Accuracy"), pgettext("team_table", "Sd*"), 2, 'avg');
 
-  add_column($columns, 'ranking', _("Final Ranking"), pgettext("team_table", "Rnk"));
+add_column($columns, 'ranking', _("Final Ranking"), pgettext("team_table", "Rnk"));
 
 if ($stdElo || $stdAcc)
   add_column($columns, 'ranking_acc', _("Ranking Accuracy"), pgettext("team_table", "Rnk*"), 2, 'avg');
@@ -413,15 +428,15 @@ if (GetSeriesSpiritMode($seriesId) > 0 && count($spiritAvg) > 0) { // TODO total
     $aggr['total']['sum'] += $teamAvg['total'];
     ++$aggr['total']['n'];
   }
-  $html .= "<tr><td>". _ ("Average") . "</td><td></td>";
+  $html .= "<tr><td>" . _("Average") . "</td><td></td>";
   foreach ($categories as $cat) {
     if ($cat['index'] > 0 && $cat['type'] == 1) {
       if (isset($aggr[$cat['index']])) {
-      $val = numf($aggr[$cat['index']]['sum'] / max(1, $aggr[$cat['index']]['n']), 2);
-      $html .= "<td>$val</td>";
-    } else {
-      $html .= "<td></td>";
-    }
+        $val = numf($aggr[$cat['index']]['sum'] / max(1, $aggr[$cat['index']]['n']), 2);
+        $html .= "<td>$val</td>";
+      } else {
+        $html .= "<td></td>";
+      }
     }
   }
   $val = numf($aggr['total']['sum'] / max(1, $aggr['total']['n']), 2);
@@ -456,7 +471,4 @@ if ($stdElo || $stdAcc) {
   $html .= "</table>";
 }
 
-SetCurrentSeries($seriesId);
 showPage($title, $html);
-
-?>

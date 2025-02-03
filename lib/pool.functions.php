@@ -2634,9 +2634,9 @@ function PlayoffTemplate($teams, $rounds, $id="") {
 }
 
 function add_entries(&$entries, $path) {
-  if ($handle = opendir($path)) {
+  if (file_exists($path) && $handle = opendir($path)) {
     while (false !== ($entry = readdir($handle))) {
-      if (preg_match("/^.*\.html$/", $entry) && is_file($path.$entry) && is_readable($path.$entry)) {
+      if (preg_match("/^.*\.html$/", $entry) && is_file($path . $entry) && is_readable($path . $entry)) {
         $entries[] = $entry;
       }
     }

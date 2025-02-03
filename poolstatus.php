@@ -88,7 +88,11 @@ foreach ($pools as $pool) {
 
   $html .= CommentHTML(3, $pool['pool_id']);
 
-  if ($poolinfo['type'] == 1) {
+  $teams = PoolSchedulingTeams($poolinfo['pool_id']);
+
+  if (empty($teams)) {
+    $html .= "<p>" . _("No teams in this pool.") . "</p>";
+  } else if ($poolinfo['type'] == 1) {
     // round robin
     $html .= printRoundRobinPool($seasoninfo, $poolinfo);
   } elseif ($poolinfo['type'] == 2) {
@@ -114,6 +118,11 @@ foreach ($pools as $pool) {
     }
   }
 }
+
+if (empty($pools)) {
+  $html .= "<p>" . _("No pools in this division.") . "</p>";
+}
+
 if ($seriesScoreboard && !$print) {
   $html .= scoreboard($prevseries, true);
 }
