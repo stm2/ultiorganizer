@@ -880,6 +880,5 @@ function SeriesReservations($seriesId) {
     (int) $seriesId
   );
 
-  debug_to_apache($query);
   return DBQueryToArray($query);
 }

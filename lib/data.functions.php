@@ -19,23 +19,24 @@ class EventDataXMLHandler {
    *
    * xml-structure
    * <uo_season>
-   * <uo_reservation></uo_reservation>
-   * <uo_movingtime></uo_movingtime>
+   * <uo_reservation/>
+   * <uo_movingtime/>
+   * <uo_club/>
    * <uo_series>
-   * <uo_team>
-   * <uo_player></uo_player>
-   * </uo_team>
-   * <uo_scheduling_name></uo_scheduling_name>
+   *   <uo_team>
+   *     <uo_player/>
+   *   </uo_team>
+   * <uo_scheduling_name/>
    * <uo_pool>
-   * <uo_team_pool></uo_team_pool>
-   * <uo_game>
-   * <uo_goal></uo_goal>
-   * <uo_gameevent></uo_gameevent>
-   * <uo_played></uo_played>
-   * </uo_game>
+   *   <uo_team_pool/>
+   *   <uo_game>
+   *     <uo_goal/>
+   *     <uo_gameevent/>
+   *     <uo_played/>
+   *   </uo_game>
    * </uo_pool>
-   * <uo_game_pool></uo_game_pool>
-   * <uo_moveteams></uo_moveteams>
+   * <uo_game_pool/>
+   * <uo_moveteams/>
    * </uo_series>
    * </uo_season>
    *
@@ -60,6 +61,7 @@ class EventDataXMLHandler {
       // uo_movingtime
       $ret .= $this->write_reservations($eventId, $template, $series);
 
+      $ret .= $this->write_clubs($eventId, $series, $template);
       // uo_series
       $seriesResult = $this->selectSeries($eventId, $series);
       while ($ser = mysqli_fetch_assoc($seriesResult)) {
@@ -205,6 +207,7 @@ class EventDataXMLHandler {
     $this->replacers = $replacers;
     $this->mock = $mock;
     $this->debug = "";
+    $this->resetLog();
 
     if ($this->mock)
       $this->debug .= "Replacers: \n" . print_r($replacers, true) . "\nLog:\n";
@@ -274,6 +277,9 @@ class EventDataXMLHandler {
   /** team id mapping array */
   var $uo_team = array();
 
+  /** club id mapping array */
+  var $uo_club = array();
+
   /** scheduling id mapping array */
   var $uo_scheduling_name = array();
 
@@ -306,6 +312,8 @@ class EventDataXMLHandler {
   /**  logging */
   var $debug;
 
+  /** structured logging */
+  var $insertLog;
 
   var $error;
 
@@ -375,6 +383,23 @@ class EventDataXMLHandler {
       while ($time = mysqli_fetch_assoc($times)) {
         $ret .= $this->RowToXML("uo_movingtime", $time);
       }
+    }
+    return $ret;
+  }
+
+  function write_clubs($eventId, $series, $template) {
+    $ret = '';
+
+    // TODO select by series
+    // uo_club
+    $clubs = DBQuery(sprintf("
+      SELECT DISTINCT c.*
+      FROM `uo_club` c
+      JOIN `uo_team` t ON t.club = c.club_id
+      JOIN `uo_series` sr on (sr.series_id = t.series)
+      WHERE sr.`season` = '%s'", mysql_adapt_real_escape_string($eventId)));
+    while ($club = mysqli_fetch_assoc($clubs)) {
+      $ret .= $this->RowToXML("uo_club", $club);
     }
     return $ret;
   }
@@ -653,9 +678,18 @@ class EventDataXMLHandler {
             $this->structure['error'] .= sprintf(_("uo_team without uo_series (%s)"), $row['team_id']);
           } else {
             $this->structure['series'][$this->structure_seriesId]['teams'][$row['team_id']] = array(
-              'name' => $row['name']
+              'name' => $row['name'],
+              'club' => $row['club'], // club ID
             );
           }
+          break;
+
+        case 'uo_club':
+          $this->structure['clubs'][$row['club_id']] = array(
+            'name' => $row['name'],
+            'city' => $row['city'],
+            'country' => $row['country'],
+          );
           break;
 
         case 'uo_reservation':
@@ -754,6 +788,7 @@ class EventDataXMLHandler {
       case "uo_team":
         if (!empty($this->replacers['team_name'][$key])) {
           $row['name'] = $this->replacers['team_name'][$key];
+          $row['club'] = $this->replacers['club'][$key] ?? null;
         }
         break;
 
@@ -814,6 +849,7 @@ class EventDataXMLHandler {
             AddEditSeason($_SESSION['uid'], $newId);
             AddSeasonUserRole($_SESSION['uid'], 'seasonadmin:' . $newId, $newId);
           }
+          $this->log($this->mode, $tagName, $newId);
         } else if ($this->mode == "insert") {
           $key = $row['season_id'];
           unset($row['season_id']);
@@ -828,6 +864,7 @@ class EventDataXMLHandler {
           } else {
             throw new Exception(sprintf(_("Event to insert (%s) doesn't exist."), utf8entities($this->uo_season[$key])));
           }
+          $newId = $this->uo_season[$key];
           break;
         }
         break;
@@ -851,10 +888,21 @@ class EventDataXMLHandler {
         $this->uo_scheduling_name[$key] = $newId;
         break;
 
+      case "uo_club":
+        $key  = $row['club_id'];
+        unset($row['club_id']);
+
+        $this->replace($row, $key, $tagName);
+        $newId = $this->InsertRow($tagName, $row);
+        $this->uo_club[$key] = $newId;
+        break;
+
       case "uo_team":
         $key = $row["team_id"];
         unset($row["team_id"]);
         $row["series"] = $this->uo_series[$row["series"]];
+
+        $row['club'] = $this->uo_club[$row['club']] ?? null;
 
         $this->replace($row, $key, $tagName);
 
@@ -950,42 +998,43 @@ class EventDataXMLHandler {
         if ($row["scorer"] >= 0) {
           $row["scorer"] = $this->uo_player[$row["scorer"]];
         }
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
 
       case "uo_gameevent":
         $row["game"] = $this->uo_game[$row["game"]];
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
 
       case "uo_played":
         $row["game"] = $this->uo_game[$row["game"]];
         $row["player"] = $this->uo_player[$row["player"]];
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
 
       case "uo_team_pool":
         $row["team"] = $this->uo_team[$row["team"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
 
       case "uo_game_pool":
         $row["game"] = $this->uo_game[$row["game"]];
         $row["pool"] = $this->uo_pool[$row["pool"]];
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
 
       case "uo_moveteams":
         $row["topool"] = $this->uo_pool[$row["topool"]];
         $row["frompool"] = $this->uo_pool[$row["frompool"]];
         $row["scheduling_id"] = $this->uo_scheduling_name[$row["scheduling_id"]];
-        $this->InsertRow($tagName, $row);
+        $newId = $this->InsertRow($tagName, $row);
         break;
     }
+    $this->log($this->mode, $tagName, $newId);
   }
 
-  function value2sql($value, $type) {
+  function value2sql($value, $type, $key, $table) {
     if ($type === 'int') {
       if (is_null($value)) {
         return "NULL";
@@ -993,7 +1042,7 @@ class EventDataXMLHandler {
         return "'" . mysql_adapt_real_escape_string($value) . "'";
       } else {
         throw new Exception(
-          $this->debug . "Invalid column value '$value' for column $key of table $name. (" . json_encode($row) . ")."
+          $this->debug . "Invalid column value '$value' for column '$key' of type $type in table '$table'."
         );
       }
     } else {
@@ -1021,7 +1070,7 @@ class EventDataXMLHandler {
 
     $values = "";
     foreach ($row as $key => $value) {
-      $values .= $this->value2sql($value, $columns[strtolower($key)]) . ",";
+      $values .= $this->value2sql($value, $columns[strtolower($key)], $key, $name) . ",";
     }
 
     $values = mb_substr($values, 0, -1);
@@ -1044,6 +1093,9 @@ class EventDataXMLHandler {
         switch ($name) {
           case 'uo_series':
             Log1("series", "add", $ret);
+            break;
+          case 'uo_club':
+            Log1("club", "add", $ret);
             break;
           case 'uo_team':
             Log1("team", "add", $ret);
@@ -1079,22 +1131,23 @@ class EventDataXMLHandler {
     switch ($tagName) {
       case "uo_season":
         // no replace
+        $key = $row['season_id'];
 
-        $cond = "`season_id`='" . $row["season_id"] . "'";
+        $cond = "`season_id`='" . $key . "'";
         $query = "SELECT `season_id` FROM `uo_season` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
         if ($exist) {
-          if ($this->eventId === $row["season_id"]) {
+          if ($this->eventId === $key) {
             $this->debug .= "replace season " . $this->eventId . "\n";
 
             $this->SetRow($tagName, $row, $cond);
-            $this->uo_season[$row["season_id"]] = $row["season_id"];
+            $this->uo_season[$key] = $key;
           } else {
             throw new Exception(
               sprintf(
                 _("Target event %s is not the same as in the file (%s)."),
                 $this->eventId,
-                utf8entities($row["season_id"])
+                utf8entities($key)
               )
             );
           }
@@ -1138,6 +1191,26 @@ class EventDataXMLHandler {
         } else {
           $newId = $this->InsertRow($tagName, $row);
           $this->uo_scheduling_name[$key] = $newId;
+        }
+        break;
+
+      case 'uo_club':
+        $key = $row["club_id"];
+        unset($row["club_id"]);
+
+        $this->replace($row, $key, $tagName);
+
+        $cond = "`club_id`='" . $key . "'";
+        $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
+        $exist = DBQueryRowCount($query);
+
+        if ($exist) {
+          $this->SetRow($tagName, $row, $cond);
+          $this->uo_club[$key] = $key;
+        } else {
+          $row["club"] = $this->uo_club[$row["club"]];
+          $newId = $this->InsertRow($tagName, $row);
+          $this->uo_club[$key] = $newId;
         }
         break;
 
@@ -1225,6 +1298,7 @@ class EventDataXMLHandler {
         $fromfield = $row["fromfield"];
         $to = $row["tolocation"];
         $tofield = $row["tofield"];
+        $key = [$season, $from, $fromfield, $to, $tofield];
         $cond = "`season`='$season' AND `fromlocation`='$from' AND `fromfield`='$fromfield' AND `tolocation`='$to' AND `tofield`='$tofield'";
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
@@ -1286,6 +1360,7 @@ class EventDataXMLHandler {
         }
 
         $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
+        $key = [$row['game'], $row['num']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1300,6 +1375,7 @@ class EventDataXMLHandler {
         $row["game"] = $this->uo_game[$row["game"]];
 
         $cond = "`game`='" . $row["game"] . "' AND `num`='" . $row["num"] . "'";
+        $key = [$row['game'], $row['num']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1316,6 +1392,7 @@ class EventDataXMLHandler {
         $row["player"] = $this->uo_player[$row["player"]];
 
         $cond = "`game`='" . $row["game"] . "' AND `player`='" . $row["player"] . "'";
+        $key = [$row['game'], $row['player']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1331,6 +1408,7 @@ class EventDataXMLHandler {
         $row["pool"] = $this->uo_pool[$row["pool"]];
 
         $cond = "`team`='" . $row["team"] . "' AND `pool`='" . $row["pool"] . "'";
+        $key = [$row['team'], $row['pool']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1346,6 +1424,7 @@ class EventDataXMLHandler {
         $row["pool"] = $this->uo_pool[$row["pool"]];
 
         $cond = "`game`='" . $row["game"] . "' AND `pool`='" . $row["pool"] . "'";
+        $key = [$row['game'], $row['pool']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1362,6 +1441,7 @@ class EventDataXMLHandler {
         $row["frompool"] = $this->uo_pool[$row["frompool"]];
 
         $cond = "`topool`='" . $row["topool"] . "' AND `fromplacing`='" . $row["fromplacing"] . "'";
+        $key = [$row['frompool'], $row['fromplacing'], $row['topool'], $row['toplacing']];
         $query = "SELECT * FROM `" . $tagName . "` WHERE " . $cond;
         $exist = DBQueryRowCount($query);
 
@@ -1372,6 +1452,8 @@ class EventDataXMLHandler {
         }
         break;
     }
+
+    $this->log($exist ? "replace" : "replace_insert", $tagName, $key);
   }
 
   /**
@@ -1387,7 +1469,7 @@ class EventDataXMLHandler {
     $query = "UPDATE `" . mysql_adapt_real_escape_string($name) . "` SET ";
 
     foreach ($row as $key => $value) {
-      $svalue = $this->value2sql($value, $columns[strtolower($key)]);
+      $svalue = $this->value2sql($value, $columns[strtolower($key)], $key, $name);
 
       $query .= '`' . mysql_adapt_real_escape_string($key) . "`=$svalue, ";
     }
@@ -1402,6 +1484,18 @@ class EventDataXMLHandler {
     } else {
       return DBQueryInsert($query);
     }
+  }
+
+  function resetLog() {
+    $this->insertLog = [];
+  }
+
+  function log($mode, $tag, $id) {
+    $this->insertLog[] = ['mode' => $mode, 'tag' => $tag, 'id' => $id];
+  }
+
+  function getLog() {
+    return $this->insertLog;
   }
 }
 
@@ -1427,7 +1521,7 @@ function do_event_data_import($importmode, $mock, $replacers, $source, $filename
       $mode = 'insert';
       break;
   }
-  $wasImported = false;
+  $wasImported = [];
   if ($mode === 'new' || $mode === 'replace' || $mode == 'insert') {
 
 
@@ -1439,7 +1533,6 @@ function do_event_data_import($importmode, $mock, $replacers, $source, $filename
         $eventdatahandler->XMLToEvent($filename, $seasonId, $mode, $replacers, $mock);
         // unlink($filename);
       } else if ($source == 'database') {
-        $html .= getHiddenInput($selected_series[0], 'selected_series[]');
         $importedSeason = SeriesInfo($selected_series[0])['season'];
         $data = $eventdatahandler->EventToXML($importedSeason, $selected_series, $template);
 
@@ -1453,10 +1546,15 @@ function do_event_data_import($importmode, $mock, $replacers, $source, $filename
       $html .= "</ul>";
       if (empty($eventdatahandler->error)) {
         $html .= "<p>" . sprintf(_("Successfully imported into %s."), $new_season_name) . "</p>\n";
-        $wasImported = true;
+        // debug_to_apache($eventdatahandler->getLog());
+        $wasImported = array_filter(
+          $eventdatahandler->getLog(),
+          fn($l) => $l['tag'] == 'uo_series'
+        );
       } else {
-        $html .= "<p>" . sprintf(_("Error while importing into %s:"), $new_season_name) . "<br />" .
-          $eventdatahandler->error . "</p>\n";
+        $html .= "<p>" . sprintf(_("Error while importing into %s:"), $new_season_name) .
+          "<br /><textarea cols='70' rows='10' style='width:100%' readonly>" .
+          $eventdatahandler->error . "</textarea></p>\n";
       }
     } catch (Exception $e) {
       $error_message = "<p class='warning'>" . sprintf(_("Error while importing %s:"), $new_season_name) .
@@ -1465,15 +1563,442 @@ function do_event_data_import($importmode, $mock, $replacers, $source, $filename
 
 
     if ($mock) {
-      $wasImported = false;
       $html .= "<p>" .
         _("Your data was not actually imported. The debug output is shown below. Do you want to import now?") .
         "</p>";
 
       $html .= "<p>" . _("Debug output:");
-      $html .= "<textarea cols='70' rows='10' style='width:100%'>_POST:" . print_r($post, true) . "\n\n" .
+      $html .= "<textarea cols='70' rows='10' style='width:100%' readonly>_POST:" . print_r($post, true) . "\n\n" .
         $eventdatahandler->debug . "</textarea></p>\n";
     }
   }
   return [$html, $error_message, $wasImported];
+}
+
+function copy_box($reference, $id, $label, $checked, $listener = '') {
+  $cid = $id . $reference;
+  $checked = $checked ? "checked='true'" : '';
+  return "<label for='$cid'>" .
+    "<input class='input' type='checkbox' $checked name='{$cid}' id='$cid' onchange='$listener'/>" .
+    "$label</label>";
+}
+
+function link_script($all_listeners) {
+  $script = "<script type=\"text/javascript\">
+//<![CDATA[
+  window.onload = function() {\n";
+  $map = "  var dependent = new Map();\n";
+  foreach ($all_listeners as $type => $listeners) {
+    $map .= "  dependent.set('{$type}',new Map());\n";
+    foreach ($listeners as $location => $rkeys) {
+      if (!empty($rkeys['copys'])) {
+        $origin = $rkeys['origin'];
+        $dependent = '';
+        foreach ($rkeys['copys'] as $id) {
+          if (empty($dependent))
+            $dependent .= '[';
+          else
+            $dependent .= ',';
+          $dependent .= '"' . ($rkeys['getDisplay'])($id) . '"';
+          if (empty($rkeys['getChkBox'])) {
+            $script .= "    var masterChecked = false;\n";
+          } else {
+            $script .= "    var masterChecked = document.getElementById (\"" . ($rkeys['getChkBox']) . "\").checked;\n";
+          }
+          $script .= "    document.getElementById (\"" . ($rkeys['getDisplay'])($id) . "\").disabled = masterChecked;\n";
+        }
+        $dependent .= ']';
+        $map .= "  dependent.get('{$type}').set($origin, $dependent);\n";
+        $script .= "    document.getElementById (\"" . ($rkeys['getDisplay'])($origin) .
+          "\").addEventListener('change',
+        (event) => {
+          updateDependent(\"$type\", $origin, event.target.value);
+        });\n";
+      }
+    }
+  }
+  $script .= "  };\n
+$map
+  var toggleDependent = function(type, checkbox, rkey) {
+    var active = checkbox.checked;
+    if (dependent.get(type) != null && dependent.get(type).get(rkey) != null)
+      dependent.get(type).get(rkey).forEach((dep) => document.getElementById(dep).disabled = active);
+  };
+  var updateDependent = function(type, origin, value) {
+    dependent.get(type).get(origin).forEach((dep) => { 
+      var elem = document.getElementById(dep); 
+      if (elem.disabled) elem.value = value; 
+    });
+  };
+//]]>
+</script>\n";
+  return $script;
+}
+
+function get_replacement_form($error_message, $seasonId, $import_data, $modified_import_data, $firstRun) {
+  $html = '';
+  $scripts = '';
+
+  function locationsSorted(&$reservations) {
+    $locationsSorted = [];
+    foreach ($reservations as $rkey => $rval) {
+      if (isset($locationsSorted[$rval['location']])) {
+        $location = &$locationsSorted[$rval['location']];
+      } else {
+        $location = ['date' => $rval['starttime'], 'reservations' => []];
+        $locationsSorted[$rval['location']] = &$location;
+      }
+      if ($location['date'] > $rval['starttime'])
+        $location['date'] = $rval['starttime'];
+      $location['reservations'][$rkey] = $rval;
+      unset($location);
+    }
+    uasort($locationsSorted, function ($a, $b) {
+      return $a['date'] <=> $b['date'];
+    });
+    return $locationsSorted;
+  }
+
+  function reservationsSorted(&$reservations) {
+    uasort(
+      $reservations,
+      function ($a, $b) {
+        $cmp1 = $a['starttime'] <=> $b['starttime'];
+        if ($cmp1 != 0)
+          return $cmp1;
+        return $a['fieldname'] <=> $b['fieldname'];
+      }
+    );
+    return $reservations;
+  }
+
+  if (!empty($error_message)) {
+    $html .= $error_message;
+  }
+
+  $html .= "<p><a href='?view=admin/locations' target='_blank'>" . _("Add a location") . "</a></p>\n";
+
+
+  if (!empty($seasonId)) {
+    $html .= "<fieldset>";
+    $html .= "<p><input type='radio' checked='checked' id='insert_mode' name='import_mode' value='insert_mode' />";
+    $html .= "<label for='insert_mode'>" .
+      _(
+        "This operation inserts one or more new divisions into the event. It will only add, not alter any data or change user rights."
+      ) .
+      "</label></p>\n";
+    $html .= "<p><input type='radio' id='replace_mode' name='import_mode' value='replace_mode' />";
+    $html .= "<label for='replace_mode'>" .
+      _(
+        "This operation updates and adds event data in the database. It will not delete any data or change user rights."
+      ) .
+      "</label></p>\n";
+    $html .= "</fieldset>";
+  } else {
+    $html .= "<fieldset>";
+    $html .= "<p><input type='radio' checked='checked' id='new_mode' name='import_mode' value='new_mode' />";
+    $html .= "<label for='new_mode'>" .
+      _(
+        "This operation creates a new season and inserts one or more new divisions. It will only not change user rights."
+      ) .
+      "</label></p>\n";
+    $html .= "</fieldset>";
+  }
+  $html .= "<br /><table class='formtable'><tr><td colspan='4' class='infocell'>" . _(
+    "Confirm or replace event data:"
+  ) . "</td></tr>\n";
+  if (!empty($seasonId)) {
+    $html .= "<td class='infocell'>" . _("Event ID") .
+      "</td><td><input type='hidden' name='new_season_id' value='$seasonId'/>$seasonId</td>\n";
+    $html .= "<td class='infocell'>" . _("Event Name") . "</td><td><input type='hidden' name='new_season_name' value='" .
+      utf8entities(SeasonName($seasonId)) . "'/>" . utf8entities(SeasonName($seasonId)) . "</td></tr>\n";
+  } else {
+    $html .= "<td>" . _("Event ID") .
+      "</td><td><input class='input' size='30' maxlength='30' name='new_season_id' value='" .
+      utf8entities($import_data['season_id']) . "'/></td>\n";
+    $html .= "<td>" . _("Event Name") .
+      "</td><td><input class='input' size='30' maxlength='50' name='new_season_name' value='" .
+      utf8entities($import_data['season_name']) . "'/></td></tr>\n";
+  }
+  $html .= "</table><br />\n";
+  $html .= "<table class='formtable'>\n";
+
+  if (!empty($import_data['reservations'])) {
+    $html .= "<tr><td colspan='4' class='infocell'>" . _("Change reservations?") . "</td></tr>\n";
+    $locations = array();
+    $dates = array();
+    $dateIds = array();
+    $resgroups = array();
+    $listeners = array('location' => array());
+    foreach (locationsSorted($import_data['reservations']) as $loc => $locres) {
+      foreach (reservationsSorted($locres['reservations']) as $rkey => $rval) {
+        $id = "rlocation" . utf8entities($rkey);
+        $locId0 = $rval['location'];
+        $rval2 = $modified_import_data['reservations'][$rkey];
+        $locId2 = $rval2['location'];
+        $value = utf8entities($locId0);
+        $label = "<input type='hidden' id='reservation" . utf8entities($rkey) . "' name='reservations[]' value='" .
+          utf8entities($rkey) . "' />" . sprintf(_("Location %s map to"), $value);
+        if (isset($locations[$locId0])) {
+          $origin = $listeners['location'][$locId0]['origin'];
+          $postText = "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+            sprintf(_("copy of location %s"), $value);
+          $listeners['location'][$locId0]['copys'][] = $rkey;
+        } else {
+          $label2 = sprintf(_("Change all locations %s to this value"), $value);
+          $postText = copy_box($rkey, "copyloc", $label2, $firstRun, "toggleDependent(\"location\", this, $rkey)");
+          $locations[$locId0] = $id;
+          $listeners['location'][$locId0] = array(
+            'origin' => $rkey,
+            'copys' => array(),
+            'getDisplay' => function ($id) {
+              return "rlocation" . utf8entities($id) . "Name";
+            },
+            'getChkBox' => "copyloc" . utf8entities($rkey),
+          );
+        }
+
+        $html .= "<tr><th>" . sprintf(_("Reservation %d"), $rkey) . "</th><th>" . _("replacement value") .
+          "</th><th></th></tr>\n";
+        $html .= "<tr><td><label for='{$id}Name'>$label</label></td><td>";
+        // FIXME location id refers to old location
+        $lname = LocationInfo($locId2)['name'] ?? '';
+        $html .= LocationInput2($id, 'rlocations', $lname, $locId2);
+        $html .= "</td><td>" . $postText . "</td></tr>\n";
+
+        $scripts .= LocationScript($id);
+
+        $id = "resgroup" . utf8entities($rkey);
+        $value = $rval2['reservationgroup'];
+
+        $html .= "<tr><td><label for='$id'>" . _("Reservation Group") . "</label>:</td><td>" .
+          "<input type='text' class='input' name='$id' id='$id' value='$value'/></td><td>";
+
+        if (isset($resgroups[$value])) {
+          $origin = $listeners['reservationgroup'][$value]['origin'];
+          $html .= "&nbsp;<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+            sprintf(_("copy of reservation group %s"), $value) . "</td></tr>\n";
+          $listeners['reservationgroup'][$value]['copys'][] = $rkey;
+        } else {
+          $label = sprintf(_("Change all reservation groups %s to this value"), $value);
+          $html .= copy_box($rkey, "copyrgroup", $label, $firstRun, "toggleDependent(\"reservationgroup\", this, $rkey)") .
+            "</td></tr>\n";
+          $resgroups[$value] = $id;
+          $listeners['reservationgroup'][$value] = array(
+            'origin' => $rkey,
+            'copys' => array(),
+            'getDisplay' => function ($id) {
+              return "resgroup" . utf8entities($id);
+            },
+            'getChkBox' => "copyrgroup" . utf8entities($rkey),
+          );
+        }
+
+        $id = "olddates" . utf8entities($rkey);
+        $olddate = ShortDate($rval['starttime']);
+        $olddateVal = utf8entities($olddate);
+        $newdate = ShortDate($rval2['starttime']);
+        $newdateVal = utf8entities($newdate);
+        $nid = "newdates" . utf8entities($rkey);
+        $html .= "<tr><td><label for='$nid'>" . _("Date") . " (" . _("dd.mm.yyyy") . ")</label>:</td><td>" .
+          "<input type='hidden' name='olddates[]' id='$id' value='$olddateVal' />" . getCalendarInput($nid, $newdate) .
+          "</td><td>";
+        $dateIds[] = $nid;
+
+        if (isset($dates[$olddate])) {
+          $origin = $listeners['date'][$olddate]['origin'];
+          $html .= "<input type='hidden' name='copyof$id' id='copyof$id' value='$origin' />" .
+            sprintf(_("copy of date %s"), $olddate) . "</td></tr>\n";
+          $listeners['date'][$olddate]['copys'][] = $rkey;
+        } else {
+          $label = sprintf(_("Change all dates %s to this value"), $olddate);
+          $html .= copy_box($rkey, "copydate", $label, $firstRun, "toggleDependent(\"date\", this, $rkey)") . "</td></tr>\n";
+          $dates[$olddate] = $id;
+          $listeners['date'][$olddate] = array(
+            'origin' => $rkey,
+            'copys' => array(),
+            'getDisplay' => function ($id) {
+              return "newdates" . utf8entities($id);
+            },
+            'getChkBox' => "copydate" . utf8entities($rkey),
+          );
+        }
+      }
+    }
+    $scripts .= getCalendarScript($dateIds);
+
+    $scripts .= link_script($listeners);
+  }
+
+  $html .= "</table><br />\n";
+  $html .= "<table class='formtable'>\n";
+
+  if (!isset($modified_import_data)) {
+    $modified_import_data = $import_data;
+  }
+
+  $html .= "<tr><td colspan='4' class='infocell'>" . _("Change divisions or teams?") . "</td></tr>\n";
+  foreach ($modified_import_data['series'] as $skey => $sval) {
+    $id = "seriesnames" . utf8entities($skey);
+    $html .= "<tr><td  class='infocell'><label for='$id'>" . _("Division Name") . "</label></td><td>" .
+      "<input type='hidden' id='import_series" . utf8entities($skey) . "' name='rename_series[]' value='" .
+      utf8entities($skey) . "' />" . "<input class='input' maxlength='50' id='$id' name='seriesnames[]' value='" .
+      utf8entities($sval['name']) . "'/></td></tr>\n";
+    foreach ($sval['teams'] as $tkey => $tval) {
+      $tid = "teamnames" . utf8entities($tkey);
+      $cid = "clubnames" . utf8entities($tkey);
+      $html .= "<tr><td>" . "<input type='hidden' id='teams" . utf8entities($tkey) . "' name='teams[]' value='" .
+        utf8entities($tkey) . "' /><label for='$tid'>" . _("Team / Club") .
+        "</label></td><td colspan='2'><input class='input' maxlength='50' id='$tid' name='teamnames[]' value='" .
+        utf8entities($tval['name']) . "'/></td>" .
+        "<td colspan='2'><input class='input' maxlength='50' id='$cid' name='clubnames[]' value='" .
+        utf8entities($tval['club_name']) . "'/></td></tr>\n";
+    }
+  }
+  $html .= "</table>\n";
+
+  $html .= "<input class='button' type='submit' name='mock' value='" . utf8entities(_("Mock (test only)")) . "'/>";
+  $html .= " <input class='button' type='submit' name='action_import' value='" . utf8entities(_("Import")) . "'/>";
+  $html .= " <input class='button' type='submit' name='action_cancel' value='" . utf8entities(_("Cancel")) . "'/></p>";
+
+  return [$html, $scripts];
+}
+
+
+/**
+ * @param array $post
+ * @param array $import_data
+ * @return array $replacers 
+ *   ['season_id'] => new season ID, <br>
+ *   ['season_name'] => new season name, <br>
+ *   ['location'][$resId] => new reservation ID, <br>
+ *   ['reservationgroup'][$resId] => new reservation group, <br>
+ *   ['date'][$resId] => new date of reservation, <br>
+ *   ['series_name'][$serId] => new series name, <br>
+ *   ['team_name'][$teamId] => new team name <br>
+ *   ['club_name'][$teamId] => new club name <br>
+ */
+
+function get_replacers($post, &$import_data = null) {
+  $replacers = array();
+  if (!empty($import_data)) {
+    $import_data['season_id'] = $replacers['season_id'] = $post['new_season_id'];
+    $import_data['season_name'] = $replacers['season_name'] = $post['new_season_name'];
+  }
+  $help_replacers = array();
+  if (!empty($post['reservations'])) {
+    foreach ($post['reservations'] as $i => $resId) {
+      if (!empty($import_data)) {
+        $sres = $import_data['reservations'][$resId];
+      }
+      // debug_to_apache($resId . " sres: " . print_r($sres, true) . "import_data: " . print_r($import_data, true));
+
+      $origin = null;
+      if (isset($post["copyofrlocation$resId"])) // is this a copy?
+        $origin = $post["copyofrlocation$resId"];
+      if (!empty($origin) && isset($post["copyloc$origin"])) { // should we copy
+        $id = $post["copyofrlocation$resId"];
+        $loc = $replacers['location'][$id];
+      } else {
+        $loc = $post['rlocations'][$i];
+      }
+      $replacers['location'][$resId] = $loc;
+
+      if (!empty($sres) && isset($replacers['location'][$resId]))
+        $sres['location'] = $replacers['location'][$resId];
+
+      $origin = null;
+      if (isset($post["copyofresgroup$resId"])) // is this a copy?
+        $origin = $post["copyofresgroup$resId"];
+      if (!empty($origin) && isset($post["copyrgroup$origin"])) { // should we copy
+        $replacers['reservationgroup'][$resId] = $replacers['reservationgroup'][$post["copyofresgroup$resId"]];
+      } else
+        $replacers['reservationgroup'][$resId] = $post["resgroup$resId"];
+
+      if (!empty($sres) && isset($replacers['reservationgroup'][$resId]))
+        $sres['reservationgroup'] = $replacers['reservationgroup'][$resId];
+
+      $date0 = $post['olddates'][$i];
+
+      $origin = null;
+      if (isset($post["copyofolddates$resId"])) // is this a copy?
+        $origin = $post["copyofolddates$resId"];
+      if (!empty($origin) && isset($post["copydate$origin"])) { // should we copy
+        $help_replacers['newdate'][$resId] = $help_replacers['newdate'][$post["copyofolddates$resId"]];
+      } else
+        $help_replacers['newdate'][$resId] = $post["newdates$resId"];
+      $date1 = $help_replacers['newdate'][$resId];
+      // $date1 = $post['newdates'][$i];
+
+      if ($date0 !== $date1) {
+        $replacers['date'][$resId] = strtotime($date1) - strtotime($date0);
+
+        if (!empty($sres))
+          $sres['starttime'] = EpocToMysql(strtotime($sres['starttime']) + $replacers['date'][$resId]);
+      }
+      // debug_to_apache([$resId, "sres" =>  $sres, "rep" => $replacers, "help" => $help_replacers]);
+      if (!empty($sres))
+        $import_data['reservations'][$resId] = $sres;
+      // debug_to_apache(["import_data" => $import_data]);
+    }
+  }
+  foreach ($post['rename_series'] as $i => $serId) {
+    $replacers['series_name'][$serId] = $post['seriesnames'][$i];
+    if (!empty($import_data)) {
+      $import_data['series'][$serId]['name'] = $replacers['series_name'][$serId];
+    }
+  }
+  foreach ($post['teams'] as $i => $teamId) {
+    $replacers['team_name'][$teamId] = $post['teamnames'][$i];
+    $replacers['club_name'][$teamId] = $post['clubnames'][$i];
+    if (!empty($import_data)) {
+      foreach ($import_data['series'] as $serId => $ser) {
+        if (isset($ser['teams'][$teamId])) {
+          // debug_to_apache("teamId: $teamId, serId: $serId, old: {$import_data['series'][$serId]['teams'][$teamId]['name']}, new: {$replacers['team_name'][$teamId]}");
+          $import_data['series'][$serId]['teams'][$teamId]['name'] = $replacers['team_name'][$teamId];
+          $import_data['series'][$serId]['teams'][$teamId]['club_name'] = $replacers['club_name'][$teamId];
+          break;
+        }
+      }
+    }
+  }
+  return $replacers;
+}
+
+function check_replacers($post, $replacers) {
+  $message = "";
+  if (!empty($post['reservations'])) {
+    foreach ($post['reservations'] as $i => $resId) {
+      $origin = null;
+      if (isset($post["copyofrlocation$resId"])) // is this a copy?
+        $origin = $post["copyofrlocation$resId"];
+      if (!empty($origin) && isset($post["copyloc$origin"])) { // should we copy
+        $id = $post["copyofrlocation$resId"];
+        $loc = $replacers['location'][$id];
+        $locName = $post["rlocation{$id}Name"];
+      } else {
+        $loc = $post['rlocations'][$i];
+        $locName = $post["rlocation{$resId}Name"];
+      }
+
+      $locHere = LocationInfo($loc)['name'] ?? null;
+      if (empty($locName) || $locName != $locHere) {
+        $message .= utf8entities(
+          sprintf(
+            _(
+              "Reservation %s, Location %s: Your name '%s' does not match our name '%s'. Add a location or confirm existing location."
+            ),
+            $resId,
+            $loc,
+            $locName,
+            $locHere
+          )
+        ) . "<br />\n";
+      }
+    }
+  }
+  if (!empty($message)) {
+    throw new Exception($message);
+  }
+  return $replacers;
 }

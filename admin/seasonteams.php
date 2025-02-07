@@ -140,7 +140,7 @@ if (!empty($_POST['remove_x'])) {
 
           $new_teams = [];
           foreach ($_POST['seed'] as $i => $seed) {
-            if ($seed !== "") {
+            if ($seed > 0) {
               $clubId = 0;
               if ($club && !empty($_POST['clubname'])) {
                 $clubId = ClubId($_POST['clubname'][$i]);
@@ -196,7 +196,7 @@ if (!empty($_POST['remove_x'])) {
               }
             }
           }
-        } else if ($importstage == 0 || isset($_POST['cancel'])) {
+        } else if ($importstage == 0 || isset($_POST['action_cancel'])) {
           $showTeams = true;
         } else if (!isset($_POST['import_add']) && !isset($_POST['import_replace']) && ($importstage == 1 || $importstage == 2 || isset($_POST['refresh']))) {
           $showTeams = false;
@@ -206,11 +206,11 @@ if (!empty($_POST['remove_x'])) {
             $html .= showSeasonSelection($seasonId, $series_id, $importstage);
           }
           if ($importstage == 2) {
-            $url_here = $get_link($seasonId, $series_id, ['importstage' => $importstage, 'refresh' => 1], $single, true);
+            $url_here = $get_link($seasonId, $series_id, ['importstage' => $importstage], $single, true);
             $html .= showDFVSelection($seasonId, $series_id, $importstage, $url_here);
           }
 
-          if (isset($_POST['refresh'])) {
+          if (isset($_POST['action_load_teams'])) {
             if ($importstage == 1) {
               $importSeries = SeriesInfo($_POST['copyteams']);
               $html .= "<p>" . utf8entities(sprintf(_("Teams from %s"), $importSeries['name'])) . "</p>";
@@ -248,7 +248,7 @@ if (!empty($_POST['remove_x'])) {
                   utf8entities(_("Replace")) . "'/> " . utf8entities(sprintf(_("Rename %s teams with lowest seed #"), $num)) .
                   "<br />";
               }
-              $html .= "<input id='cancel_import' class='button' name='cancel' type='submit' value='" .
+              $html .= "<input id='action_cancel' class='button' name='action_cancel' type='submit' value='" .
                 utf8entities(_("Cancel")) . "'/>";
               $html .= "</p>";
             } else {
@@ -268,7 +268,7 @@ if ($showTeams) {
 
   $html .= "<p>";
   $html .= "<input id='save' class='button' name='save' type='submit' value='" . utf8entities(_("Save")) . "'/> ";
-  $html .= "<input id='cancel_save' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
+  $html .= "<input id='cancel_save' class='button' name='action_cancel' type='submit' value='" . utf8entities(_("Cancel")) .
     "'/>";
   $html .= "</p>";
 

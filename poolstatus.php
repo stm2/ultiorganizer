@@ -40,7 +40,8 @@ if (iget("season")) {
   }
   $pools[] = array(
     "pool_id" => $poolinfo['pool_id'],
-    "name" => $poolinfo['name']
+    "name" => $poolinfo['name'],
+    'type' => $poolinfo['type'],
   );
 
 

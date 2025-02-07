@@ -73,30 +73,31 @@ class DFVParsed {
 
     if ($base == null)
       $base = $this->raw;
+    $current = $base;
 
     foreach ($path as $step) {
       if (is_int($step)) {
-        if (!isset($base[$step])) {
-          throw new Exception("not found");
+        if (!isset($current[$step])) {
+          throw new Exception(sprintf("%s not found in %s / %s", $step, json_encode($base), json_encode($path)));
         }
-        $base = $base[$step];
+        $current = $current[$step];
       } else {
-        $element = $base->$step ?? null;
+        $element = $current->$step ?? null;
         if (is_array($element)) {
           if (isset($element->{'@ref'})) {
             throw new Exception("not implemented");
           } else {
-            $base = $element;
+            $current = $element;
           }
         }
         if (isset($element->{'@ref'})) {
-          $base = $this->find_ref($step, $element->{'@ref'});
+          $current = $this->find_ref($step, $element->{'@ref'});
         } else {
-          $base = $element;
+          $current = $element;
         }
       }
     }
-    return $base;
+    return $current;
   }
 }
 
@@ -110,34 +111,45 @@ $dfv_refresh_interval = 86400; // 24h
  *          force refresh
  *          
  * @return array[] Tournament data:
- *         <code>
- *         [
- *         'source' : string (api url),
- *         'retrieved' : int (UNIX timestamp of latest call,
- *         'tournaments' :
- *         [ 'id' : int,
- *         'name' : string,
- *         'surface' : string,
- *         'year' : int,
- *         'divisions' : [
+ * <code>
+ * [
+ *   'source' : string (api url),
+ *   'retrieved' : int (UNIX timestamp of latest call),
+ *   'tournaments' :
+ *   [ 
+ *     'id' : int,
+ *     'name' : string,
+ *     'surface' : string,
+ *     'year' : int,
+ *     'divisions' : [
+ *       'id' : int,
+ *       'divisionIdentifier' : string,
+ *       'divisionType' : string,
+ *       'divisionAge' : string,
+ *       'teams' : [
  *         'id' : int,
- *         'divisionIdentifier' : string,
- *         'divisionType' : string,
- *         'divisionAge' : string,
- *         'teams' : [
- *         'id' : int,
  *         'name' : string,
+ *         'nameAddition' : string,
  *         'teamName' : string,
  *         'teamId' : int,
  *         'teamClub' : string,
- *         'teamLocation' : string
- *         ]
- *         ]
- *         ]
- *         ]
- *         </code>
+ *         'teamLocation' : string,
+ *         'status' : string,
+ *       ],
+ *       'events': [
+ *         'id' : string,
+ *         'name' : string,
+ *         'city' : string,
+ *         'startDate': string (mysql date),
+ *         'endDate': string,
+ *         'admins' : array or null (emails),
+ *       ]
+ *     ]
+ *   ]
+ * ]
+ * </code>
  */
-function DFVTournaments($refresh = true) {
+function DFVTournaments($refresh, $privileged) {
   global $dfv_refresh_interval;
   $filename = UPLOAD_DIR . "dfv/dfv_tournaments.json";
   recur_mkdirs(UPLOAD_DIR . "dfv", 0775);
@@ -163,6 +175,7 @@ function DFVTournaments($refresh = true) {
   }
 
   if ($refresh) {
+    $debug = 0;
     $retrieved = time();
     ini_set("post_max_size", "30M");
     ini_set("upload_max_filesize", "30M");
@@ -184,12 +197,27 @@ function DFVTournaments($refresh = true) {
 
         $events = [];
         foreach ($parsed->access($tournament, ['events']) as $event) {
+          try {
+            $city = $parsed->access($event, ['locations', 0, 'city']);
+          } catch (Exception $e) {
+            $city = '-';
+          }
+          $dfvadmins = $parsed->access($event, ['admins']);
+          $admins = [];
+
+          if (!empty($dfvadmins))
+            foreach ($dfvadmins as $adm) {
+              $admins[] = $parsed->access($adm, ['email']);
+            }
+
           $new_event = [
             'id' => $parsed->access($event, ['id']),
+            'tournament_id' => $new_tournament['id'],
             'name' => $parsed->access($event, ['name']),
-            'city' => $parsed->access($event, ['locations', 0, 'city']),
+            'city' => $city,
             'startDate' => $parsed->access($event, ['startDate']),
-            'endDate' => $parsed->access($event, ['endDate'])
+            'endDate' => $parsed->access($event, ['endDate']),
+            'admins' => !empty($admins) ? $admins : null,
           ];
           foreach ($parsed->access($event, ['divisionConfirmations']) as $divconf) {
             $div = $parsed->access($divconf, ['divisionRegistration', 'id']);
@@ -204,6 +232,7 @@ function DFVTournaments($refresh = true) {
           $divId = $parsed->access($divreg, ['id']);
           $new_div = [
             'id' => $divId,
+            'tournament_id' => $new_tournament['id'],
             'divisionType' => $parsed->access($divreg, ['divisionType']),
             'divisionAge' => $parsed->access($divreg, ['divisionAge']),
             'divisionIdentifier' => $parsed->access($divreg, ['divisionIdentifier'])
@@ -212,7 +241,10 @@ function DFVTournaments($refresh = true) {
           foreach ($parsed->access($divreg, ['registeredTeams']) as $team) {
             $new_team = [
               'id' => $parsed->access($team, ['id']),
+              'division_id' => $new_div['id'],
+              'tournament_id' => $new_tournament['id'],
               'name' => $parsed->access($team, ['roster', 'team', 'name']),
+              'nameAddition' => $parsed->access($team, ['roster', 'nameAddition']),
               'teamName' => $parsed->access($team, ['teamName']),
               'teamId' => $parsed->access($team, ['roster', 'team', 'id']),
               'teamClub' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
@@ -238,6 +270,23 @@ function DFVTournaments($refresh = true) {
     }
     if (!file_put_contents($filename, json_encode($data), LOCK_EX))
       $data['error'] = _('Warning: Could not cache DFV data locally!');
+  }
+
+  if (!$privileged)
+    cleanData($data);
+
+  return $data;
+}
+
+function cleanData($data) {
+  foreach ($data['tournaments'] as &$t) {
+    if (isset($t['divisions']))
+      foreach ($t['divisions'] as &$div) {
+        if (isset($t['events']))
+          foreach ($div['events'] as &$e) {
+            $e['admins'] = null;
+          }
+      }
   }
   return $data;
 }
@@ -497,9 +546,9 @@ function showSeasonSelection($seasonId, $series_id) {
   $html .= "<label for='matching_type'>" .
     utf8entities(sprintf(_("List only divisions with matching type ('%s')"), U_($type))) . "</label></p>\n";
 
-  $html .= "<p><input id='refresh' class='button' name='refresh' type='submit' value='" . utf8entities(_("Load...")) .
+  $html .= "<p><input id='action_load_teams' class='button' name='action_load_teams' type='submit' value='" . utf8entities(_("Load...")) .
     "'/>";
-  $html .= "<input id='cancel_selection' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
+  $html .= "<input id='cancel_selection' class='button' name='action_cancel' type='submit' value='" . utf8entities(_("Cancel")) .
     "'/>";
   $html .= "</p>\n";
 
@@ -547,8 +596,22 @@ function fill_choices(array $tournaments, $tournament_attributes, $division_attr
   return $choices;
 }
 
+function getDFVDivision($tournament_id, $id) {
+  $data = DFVTournaments(($_GET['action_refresh'] ?? 0) == 1, true);
+  $tournaments = $data['tournaments'];
+  foreach ($tournaments as $tournament) {
+    if ($tournament['id'] == $tournament_id) {
+      $divs = $tournament['divisions'] ?? [];
+      foreach ($divs as $div) {
+        if ($div['id'] == $id) return $div;
+      }
+    }
+  }
+  return null;
+}
+
 function showDFVSelection($seasonId, $series_id, $url_here) {
-  $data = DFVTournaments(($_GET['refresh'] ?? 0) == 1);
+  $data = DFVTournaments(($_GET['action_refresh'] ?? 0) == 1, false);
 
   $tournaments = $data['tournaments'] ?? null;
 
@@ -568,7 +631,7 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
         )
       );
   }
-  $html .= " <a href='$url_here'>" .
+  $html .= " <a href='$url_here&action_refresh=1'>" .
     utf8entities(_("Refresh")) . "</a></p>\n";
 
   if (!empty($data['error']))
@@ -590,8 +653,12 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
     );
 
     $age_filter = add_filter($html, 'age_filter', _('Age'), $choices['divisionAge']);
+    $showEmpty = !empty($_POST['show_empty']);
+    $checked =  $showEmpty ?  "checked='checked'" : '';
+    $html .= "<tr><td><label for='show_empty'>" . _("Show empty") . "</label><td><input type='checkbox'$checked id='show_empty' name='show_empty' /></td></tr>\n";
 
-    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='filter_division' type='submit' value='" .
+
+    $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='action_filter_division' type='submit' value='" .
       utf8entities(_("Show matching divisions...")) . "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
 
     $html .= "<tr><td>" . utf8entities(_("Add teams from:")) . "</td><td>";
@@ -612,12 +679,14 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
         )
       );
       foreach ($divs as $div) {
-        if (matching_division(
-          $tournament,
-          $div,
-          ['year' => $year_filter, 'surface' => $surface_filter],
-          ['divisionType' => $division_filter, 'divisionAge' => $age_filter]
-        )) {
+        if (
+          matching_division(
+            $tournament,
+            $div,
+            ['year' => $year_filter, 'surface' => $surface_filter],
+            ['divisionType' => $division_filter, 'divisionAge' => $age_filter]
+          ) && ($showEmpty || !empty($div['teams']))
+        ) {
           $name = $tournament['name'];
 
           if (!empty($tournament['year']))
@@ -628,7 +697,20 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
             $name .= " - " . $div['divisionIdentifier'];
           $name .= " (" . $div['divisionType'] . ", " . $div['divisionAge'] . ")";
 
-          $options[$div['id']] = ['id' => $div['id'], 'name' => $name, 'division' => $div['divisionIdentifier'] ?? $div['id'] ?? "", 'teams' => $div['teams'], 'events' => $div['events']];
+          $options[$div['id']] = [
+            'id' => $div['id'],
+            'tournament_id' => $div['tournament_id'],
+            'name' => $name,
+            'division' => $div['divisionIdentifier'] ?? $div['id'] ?? "",
+            'tournament' => $tournament['name'],
+            'year' => $tournament['year'],
+            'surface' => $tournament['surface'],
+            'divisionType' => $div['divisionType'],
+            'divisionAge' => $div['divisionAge'],
+
+            'teams' => $div['teams'],
+            'events' => $div['events']
+          ];
         }
       }
     }
@@ -651,14 +733,14 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
 
     $html .= "</select></td></tr></table>\n";
 
-    $html .= "<p><input id='refresh' class='button' name='refresh' type='submit' value='" . utf8entities(_("Load...")) .
+    $html .= "<p><input id='action_load_teams' class='button' name='action_load_teams' type='submit' value='" . utf8entities(_("Load...")) .
       "'/>";
-    $html .= "<input id='cancel_load' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
+    $html .= "<input id='action_cancel' class='button' name='action_cancel' type='submit' value='" . utf8entities(_("Cancel")) .
       "'/>";
     $html .= "</p>\n";
   } else {
     $html .= "<p>";
-    $html .= "<input id='cancel_load' class='button' name='cancel' type='submit' value='" . utf8entities(_("Cancel")) .
+    $html .= "<input id='action_cancel' class='button' name='action_cancel' type='submit' value='" . utf8entities(_("Cancel")) .
       "'/></p>";
   }
   return $html;
