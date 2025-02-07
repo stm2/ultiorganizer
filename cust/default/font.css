@@ -10,8 +10,12 @@ td {
   font-size: 1rem;
 }
 
-.header_text:link, .header_text:visited, .header_text:active,
-  .header_text:hover, .header_text:focus, .header_text {
+.header_text:link,
+.header_text:visited,
+.header_text:active,
+.header_text:hover,
+.header_text:focus,
+.header_text {
   color: var(--headercolor, #006699);
   font-size: 2rem;
   margin-left: 8px;
@@ -21,8 +25,11 @@ td {
   text-transform: uppercase;
 }
 
-.header_text_small:link, .header_text_small:visited, .header_text_small:active,
-  .header_text_small:hover, .header_text_small:focus {
+.header_text_small:link,
+.header_text_small:visited,
+.header_text_small:active,
+.header_text_small:hover,
+.header_text_small:focus {
   color: var(--headercolor, #006699);
   font-size: 1.2rem;
   padding-left: 10px;
@@ -31,7 +38,8 @@ td {
   font-family: Aller, Verdana, Arial, Tahoma, Helvetica, sans-serif;
 }
 
-.seasonnav:link, .seasonnav:visited {
+.seasonnav:link,
+.seasonnav:visited {
   font-weight: bold;
   text-align: center;
   color: var(--bgcolor, #ffffff);
@@ -40,7 +48,9 @@ td {
   display: block;
 }
 
-.seasonnav:active, .seasonnav:hover, .seasonnav:focus {
+.seasonnav:active,
+.seasonnav:hover,
+.seasonnav:focus {
   text-decoration: none;
   font-weight: normal;
 }
@@ -49,7 +59,8 @@ td {
   font-size: 1.1rem;
 }
 
-.nav:link, .nav:visited {
+.nav:link,
+.nav:visited {
   font-size: 1rem;
   font-weight: bold;
   padding: 2px;
@@ -60,13 +71,17 @@ td {
   display: block;
 }
 
-.nav:active, .nav:hover, .nav:focus {
+.nav:active,
+.nav:hover,
+.nav:focus {
   text-decoration: none;
   color: var(--hnavlinkcolor, #000000);
   background-color: var(--hnavlinkbgcolor, #d3d3d3);
 }
 
-.subnav, .subnav:link, .subnav:visited {
+.subnav,
+.subnav:link,
+.subnav:visited {
   font-size: 1rem;
   padding-top: 2px;
   padding-left: 2px;
@@ -76,13 +91,17 @@ td {
   display: block;
 }
 
-.subnav:active, .subnav:hover, .subnav:focus {
+.subnav:active,
+.subnav:hover,
+.subnav:focus {
   text-decoration: underline;
   color: var(--hnavlinkcolor, #000000);
   background-color: var(--hnavlinkbgcolor, #d3d3d3);
 }
 
-.navpoollink, .navpoollink:link, .navpoollink:visited {
+.navpoollink,
+.navpoollink:link,
+.navpoollink:visited {
   font-size: 1rem;
   padding-left: 1ex;
   color: var(--navlinkcolor, #2d2d2d);
@@ -91,7 +110,9 @@ td {
   display: block;
 }
 
-.navpoollink:active, .navpoollink:hover, .navpoollink:focus {
+.navpoollink:active,
+.navpoollink:hover,
+.navpoollink:focus {
   text-decoration: underline;
   color: var(--hnavlinkcolor, #000000);
   background-color: var(--hnavlinkbgcolor, #d3d3d3);
@@ -189,12 +210,16 @@ ul.pagemenu li a.right {
   border-top: 1px solid var(--hardbordercolor, #333);
 }
 
-.thlink, .thlink:link, .thlink:visited {
+.thlink,
+.thlink:link,
+.thlink:visited {
   color: var(--thlinkcolor, #ffffff);
   text-decoration: underline;
 }
 
-.thlink:active, .thlink:hover, .thlink:focus {
+.thlink:active,
+.thlink:hover,
+.thlink:focus {
   color: var(--thhlinkcolor, #996699);
   text-decoration: none;
 }
@@ -205,12 +230,16 @@ ul.pagemenu li a.right {
   padding: 1px;
 }
 
-.topheaderlink, .topheaderlink:link, .topheaderlink:visited {
+.topheaderlink,
+.topheaderlink:link,
+.topheaderlink:visited {
   color: var(--linkcolor, #000000);
   text-decoration: underline;
 }
 
-.topheaderlink:active, .topheaderlink:hover, .topheaderlink:focus {
+.topheaderlink:active,
+.topheaderlink:hover,
+.topheaderlink:focus {
   color: var(--hlinkcolor, #986598);
   text-decoration: none;
 }
@@ -237,7 +266,7 @@ ul.pagemenu li a.right {
 }
 
 /* .teamname { */
-  
+
 /* } */
 
 .winner {
@@ -263,7 +292,12 @@ ul.pagemenu li a.right {
 }
 
 .warning {
-  color: var(--warning, #ff0000);
+  color: var(--warningcolor, #ff0000);
+}
+
+.value-alert {
+  color: var(--hicolor, #5050ff);
+  font-weight: bold;
 }
 
 .home {
@@ -318,7 +352,8 @@ ul.pagemenu li a.right {
   font-variant: small-caps;
 }
 
-.groupinglink:link, .groupinglink:visited {
+.groupinglink:link,
+.groupinglink:visited {
   color: var(--navlinkcolor, #2d2d2d);
   background-color: var(--navlinkbgcolor, inherit);
   text-decoration: underline;
@@ -327,7 +362,8 @@ ul.pagemenu li a.right {
   padding: 0px 5px 0 5px;
 }
 
-.groupinglink:hover, .groupinglink:focus {
+.groupinglink:hover,
+.groupinglink:focus {
   color: var(--navhlinkcolor, #986598);
   background-color: var(--navhlinkbgcolor, inherit);
   text-decoration: none;

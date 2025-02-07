@@ -16,10 +16,12 @@ if ($userid != $_SESSION['uid'] && !hasEditUsersRight()) {
 
 if (isset($_POST['confirmdeletion'])) {
   if (isSuperAdminByUserid($userid) && count(getSuperAdmins()) < 5) {
-    $html .= "<p class='alert'>" .
+    $html .= "<p class='warning'>" .
       utf8entities(
         _(
-          "This is the only super admin account. It cannot be deleted. Please create a separate super admin account first.")) .
+          "This is the only super admin account. It cannot be deleted. Please create a separate super admin account first."
+        )
+      ) .
       "</p>\n";
     showPage($title, $html);
     exit();
@@ -47,7 +49,8 @@ if ($userid == "anonymous") {
   if ($userid == $_SESSION['uid']) {
     $html .= "<p>" .
       utf8entities(
-        _("Are you sure you want to delete your account? This step deletes all your data and cannot be undone!")) .
+        _("Are you sure you want to delete your account? This step deletes all your data and cannot be undone!")
+      ) .
       "</p>";
   } else {
     $html .= "<p>" .
@@ -65,4 +68,3 @@ if ($userid == "anonymous") {
 }
 
 showPage($title, $html);
-?>
