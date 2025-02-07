@@ -464,8 +464,10 @@ if ($stdElo || $stdAcc) {
       $extra = '-';
     } else {
       $diff = $powerRanking[$game['hometeam']] - $powerRanking[$game['visitorteam']];
-      $delta = numf(($game['homescore'] - $game['visitorscore']) - $diff, 1);
-      $extra = ($delta > 0 ? "+" : "") . $delta;
+      $delta = $game['homescore'] - $game['visitorscore'];
+      $extra = numf(($delta) - $diff, 1);
+      $alert = ($diff * $delta < 0 || abs($extra) >= 5);
+      $extra = ($alert ? "<span class='value-alert'>" : "") . ($extra > 0 ? "+" : "") . $extra . (($alert ? "</span>" : ""));
     }
     $html .= GameRow($game, true, true, false, false, true, false, false, false, false, $extra);
   }
