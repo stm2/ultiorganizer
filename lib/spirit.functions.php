@@ -3,7 +3,10 @@
 function SpiritMode($mode_id) {
   $query = sprintf("SELECT mode, text AS name FROM `uo_spirit_category`
           WHERE `mode` = %d AND `index` = 0", (int) $mode_id);
-  return DBQueryToRow($query);
+  $val = DBQueryToRow($query);
+  if (empty($val))
+    return ['mode' => 0, 'name' => 'disabled'];
+  return $val;
 }
 
 function SpiritModes() {
@@ -143,7 +146,8 @@ function GameGetSpiritPoints($gameId, $teamId, $received = true) {
     $teamclause = sprintf(" AND team_id != %d", (int) $teamId);
   $query = sprintf(
     "SELECT score.category_id, score.value, score.text, cat.type, team_id FROM uo_spirit_score score, uo_spirit_category cat WHERE  score.category_id = cat.category_id AND game_id=%d $teamclause ORDER BY cat.index",
-    (int) $gameId);
+    (int) $gameId
+  );
   $scores = DBQueryToArray($query);
   $points = array();
   foreach ($scores as $score) {
@@ -163,7 +167,11 @@ function GameSpiritComplete(int $gameId, int $submitterId, int $spiritmode) {
          WHERE sc.game_id = %d AND team_id != %d AND cat.factor > 0 AND cat.mode = %d
          GROUP BY game_id, team_id
          HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)", //
-    intval($gameId), intval($submitterId), intval($spiritmode), intval($spiritmode));
+    intval($gameId),
+    intval($submitterId),
+    intval($spiritmode),
+    intval($spiritmode)
+  );
 
   $ret = DBQueryRowCount($query) > 0;
 
@@ -187,13 +195,23 @@ function GameSetSpiritPoints($gameId, $teamId, $home, $points, $categories, $che
         if (!is_null($value)) {
           $query = sprintf(
             "INSERT INTO uo_spirit_score (`game_id`, `team_id`, `category_id`, `value`)
-            VALUES (%d, %d, %d, %d)", (int) $gameId, (int) $teamId, (int) $cat, (int) $value);
+            VALUES (%d, %d, %d, %d)",
+            (int) $gameId,
+            (int) $teamId,
+            (int) $cat,
+            (int) $value
+          );
           DBQuery($query);
         }
       } else if ($categories[$cat]['type'] == 2) {
         $query = sprintf(
           "INSERT INTO uo_spirit_score (`game_id`, `team_id`, `category_id`, `text`)
-            VALUES (%d, %d, %d, '%s')", (int) $gameId, (int) $teamId, (int) $cat, mysql_adapt_real_escape_string($value));
+            VALUES (%d, %d, %d, '%s')",
+          (int) $gameId,
+          (int) $teamId,
+          (int) $cat,
+          mysql_adapt_real_escape_string($value)
+        );
         DBQuery($query);
       }
     }
@@ -220,8 +238,10 @@ function SeriesSpiritBoard($seriesId) {
       LEFT JOIN uo_game AS g1 ON (gp.game=g1.game_id)
       LEFT JOIN uo_spirit_category cat ON (st.category_id = cat.category_id)
       WHERE pool.series=%d AND gp.timetable=1 AND g1.isongoing=0 AND g1.hasstarted>0
-      ORDER BY st.team_id, st.category_id", $seriesId);
-  
+      ORDER BY st.team_id, st.category_id",
+    $seriesId
+  );
+
   $scores = DBQuery($query);
   $last_team = null;
   $last_category = null;
@@ -235,7 +255,8 @@ function SeriesSpiritBoard($seriesId) {
         if (!is_null($last_category)) {
           if (!isset($factor[$last_category])) {
             $factor[$last_category] = DBQueryToArray(
-              sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
+              sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category)
+            )[0]['factor'];
           }
           $teamline[$last_category] = SafeDivide($sum, $games);
           $total += SafeDivide($factor[$last_category] * $sum, $games);
@@ -260,12 +281,13 @@ function SeriesSpiritBoard($seriesId) {
   }
   if (!is_null($last_team)) {
     $factor[$last_category] = DBQueryToArray(
-      sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category))[0]['factor'];
-      $teamline[$last_category] = SafeDivide($sum, $games);
-      $total += SafeDivide($factor[$last_category] * $sum, $games);
-      $teamline['total'] = $total;
-      $teamline['games'] = $games;
-      $averages[$last_team] = $teamline;
+      sprintf("SELECT * FROM uo_spirit_category WHERE category_id=%d", (int) $last_category)
+    )[0]['factor'];
+    $teamline[$last_category] = SafeDivide($sum, $games);
+    $total += SafeDivide($factor[$last_category] * $sum, $games);
+    $teamline['total'] = $total;
+    $teamline['games'] = $games;
+    $averages[$last_team] = $teamline;
   }
   return $averages;
 }
@@ -282,12 +304,17 @@ function SpiritSubmitted(int $teamId, int $spiritmode) {
          GROUP BY game_id, team_id
          HAVING scores = (SELECT count(*) FROM uo_spirit_category cat2 WHERE cat2.factor > 0 AND cat2.mode = %d)) sub
        GROUP BY sub.own ORDER BY own DESC", //
-    intval($teamId), intval($teamId), intval($teamId), intval($spiritmode), intval($spiritmode));
-  
+    intval($teamId),
+    intval($teamId),
+    intval($teamId),
+    intval($spiritmode),
+    intval($spiritmode)
+  );
+
   $results = DBQueryToArray($query);
-  
+
   if (empty($results))
     return ['submitted' => 0, 'received' => 0];
-    
-    return ['submitted' => $results[0]['num'] ?? 0, 'received' => $results[1]['num'] ?? 0];
+
+  return ['submitted' => $results[0]['num'] ?? 0, 'received' => $results[1]['num'] ?? 0];
 }

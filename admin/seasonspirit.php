@@ -9,7 +9,8 @@ addHeaderCallback(
     echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
 
     echo getCalendarScript(['lockdate']);
-  });
+  }
+);
 
 $seasonId = $_GET["season"];
 $single = 0;
@@ -26,9 +27,22 @@ $seasonInfo = SeasonInfo($seasonId);
 $globaltoken = "SPSPSP424242SPSP";
 $resultstoken = "SPSPSP424242SPSP";
 
-$sp = ['globalspiritmode' => $seasonInfo['spiritmode'], 'lockdate' => '', 'globaltoken' => $globaltoken,
-  'teamtoken' => true, 'locked' => false, 'public' => false, 'displaytoken' => false,
-  'spiritmode' => GetSeriesSpiritMode($seriesId)];
+// FIXME
+if ($seasonInfo['showspiritpoints'] !== 1) {
+  showPage($title, "Spirit globally disabled, enable in tournament settings.");
+  exit();
+}
+
+$sp = [
+  'globalspiritmode' => $seasonInfo['spiritmode'],
+  'lockdate' => '',
+  'globaltoken' => $globaltoken,
+  'teamtoken' => true,
+  'locked' => false,
+  'public' => false,
+  'displaytoken' => false,
+  'spiritmode' => GetSeriesSpiritMode($seriesId)
+];
 
 if (!empty($_POST['save'])) {
   // TODO
@@ -56,12 +70,13 @@ if (isSeasonAdmin($seasonId)) {
     $sp['globalspiritmode'] = $_POST['globalspiritmode'];
     SetSeason($seasonId, $seasonInfo);
   }
-  
+
   $html .= "<form method='post' action='$url_here'>";
   $html .= "<table class='formtable'>";
   $html .= "<tr><td><label for='globalspiritmode'>" . _("Default Spirit Mode") . "</label></td>";
   $html .= "<td><select class='dropdown' id='globalspiritmode' name='globalspiritmode'>\n";
   $html .= "<option value='0'></option>\n";
+
   foreach ($spiritmodes as $mode) {
     $selected = ($sp['globalspiritmode'] == $mode['mode']) ? " selected='selected'" : "";
     $html .= "<option $selected value='" . intval($mode['mode']) . "'>" . utf8entities(_($mode['name'])) .
@@ -153,8 +168,12 @@ foreach ($teams as $team) {
 if (empty($admins)) {
   $link = "<em>" . _("no team admins") . "</em>";
 } else
-  $link = dm_link($admins, _("Global Spirit Link"), "Use this link for submitting spirit results: TODO",
-    _("send link to teams"));
+  $link = dm_link(
+    $admins,
+    _("Global Spirit Link"),
+    "Use this link for submitting spirit results: TODO",
+    _("send link to teams")
+  );
 
 $html .= "<td><a href='?view=user/addspirit&series=$seriesId&token=$globaltoken'>" . _("global edit link") . "</a>";
 $html .= " | $link</td>";
@@ -243,4 +262,3 @@ $html .= "<input type='submit' name='save' value='" . _("Save") . "'/>";
 $html .= "</form>\n";
 
 showPage($title, $html);
-?>
