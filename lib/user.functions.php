@@ -608,6 +608,11 @@ function getUserpropertyArray($userid, $propertyname) {
   }
 }
 
+function getUserRole($propId) {
+  $query = sprintf("SELECT value FROM uo_userproperties WHERE name='userrole' AND prop_id=%d", intval($propId));
+  return DBQueryToValue($query);
+}
+
 function setSelectedSeason() {
   // season selection changed
   if (!empty($_GET["selseason"])) {
@@ -1316,7 +1321,7 @@ function RemoveTeamAdmin(string $userId, int $teamId) : bool {
 
 function DeleteUser(string $userid) {
   if ($userid != "anonymous") {
-    if (hasEditUsersRight($userid) || $userid = $_SESSION['uid']) {
+    if (hasEditUsersRight($userid) || $userid == $_SESSION['uid']) {
       $query = sprintf("DELETE FROM uo_userproperties WHERE userid='%s'", mysql_adapt_real_escape_string($userid));
       $result = mysql_adapt_query($query);
       if (!$result) {

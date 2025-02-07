@@ -25,7 +25,7 @@ if (!empty($_GET['user'])) {
 //content
 $html .= "<h2>".$title."</h2>";
 if ($_GET['userrole'] == 'superadmin') {
-	$html .= "<h3>"._("Administrator")."</h3>\n";
+	$html .= "<h3>"._("Super administrator")."</h3>\n";
 	$html .= "<form method='post' action='?".$target."'>\n";
 	$html .= "<p>";
 	$html .= "<input type='hidden' name='userrole' value='superadmin'/>\n";

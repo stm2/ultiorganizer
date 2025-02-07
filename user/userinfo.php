@@ -1,10 +1,10 @@
 <?php
-include_once $include_prefix.'lib/team.functions.php';
-include_once $include_prefix.'lib/common.functions.php';
-include_once $include_prefix.'lib/season.functions.php';
-include_once $include_prefix.'lib/series.functions.php';
-include_once $include_prefix.'lib/pool.functions.php';
-include_once $include_prefix.'lib/reservation.functions.php';
+include_once $include_prefix . 'lib/team.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
+include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/series.functions.php';
+include_once $include_prefix . 'lib/pool.functions.php';
+include_once $include_prefix . 'lib/reservation.functions.php';
 
 $html = "";
 $message = "";
@@ -33,7 +33,7 @@ $userinfo = UserInfo($userid);
 if ($userinfo == null || $userid === "anonymous") {
   showPage(_("User information"), "<p>" . sprintf(_("Unknown user '%s'."), utf8entities($userid)) . "</p>");
   exit();
-} 
+}
 
 // if ($userid != "anonymous") 
 {
@@ -76,10 +76,10 @@ if ($userinfo == null || $userid === "anonymous") {
       }
     }
   }
-  
-  if(!empty($_POST['changepsw'])) {
-    $newPassword1=$_POST['Password1'];
-    $newPassword2=$_POST['Password2'];
+
+  if (!empty($_POST['changepsw'])) {
+    $newPassword1 = $_POST['Password1'];
+    $newPassword2 = $_POST['Password2'];
     $pw = UserValidPassword($newPassword1, $newPassword2);
     if (!empty($pw)) {
       $message .= $pw;
@@ -96,16 +96,15 @@ if ($userinfo == null || $userid === "anonymous") {
       if (UserChangePassword($userid, $newPassword1) == 0)
         $message .= "<p>" . _("Nothing was changed.") . "</p><hr/>";
     }
-    
   }
 
   if (!empty($_POST['addeditseasons']) && !empty($_POST['addeditseasonslist'])) {
-    foreach($_POST['addeditseasonslist'] as $seasonid) {
+    foreach ($_POST['addeditseasonslist'] as $seasonid) {
       AddEditSeason($userid, $seasonid);
     }
   }
   if (!empty($_POST['remeditseasons']) && !empty($_POST['remeditseasonslist'])) {
-    foreach($_POST['remeditseasonslist'] as $propid) {
+    foreach ($_POST['remeditseasonslist'] as $propid) {
       RemoveEditSeason($userid, $propid);
     }
   }
@@ -113,7 +112,21 @@ if ($userinfo == null || $userid === "anonymous") {
     RemovePoolSelector($userid, $_POST['deleteSelectorId']);
   }
   if (!empty($_POST['remuserrole_x'])) {
-    RemoveUserRole($userid, $_POST['deleteRoleId']);
+    if (
+      getUserRole($_POST['deleteRoleId']) == 'superadmin' &&
+      ($userid == $_SESSION['uid'] ||
+        (isSuperAdminByUserid($userid) && count(getSuperAdmins()) < 2))
+    ) {
+      $html .= "<p class='warning'>" .
+        utf8entities(
+          _(
+            "You cannot remove your own super admin role and you cannot remove the last super admin. Only another super admin can revoke your super admin privileges."
+          )
+        ) .
+        "</p>\n";
+    } else {
+      RemoveUserRole($userid, $_POST['deleteRoleId']);
+    }
   }
   if (!empty($_POST['remextraemail_x'])) {
     RemoveExtraEmail($userid, $_POST['deleteExtraEmail']);
@@ -129,19 +142,19 @@ if ($userinfo == null || $userid === "anonymous") {
       AddPoolSelector($userid, $selector);
     } elseif ($_POST['selectortype'] == 'team') {
       foreach ($_POST['teams'] as $teamid) {
-        AddPoolSelector($userid, 'team:'.$teamid);
+        AddPoolSelector($userid, 'team:' . $teamid);
       }
     } elseif ($_POST['selectortype'] == 'season') {
       foreach ($_POST['searchseasons'] as $seasonid) {
-        AddPoolSelector($userid, 'season:'.$seasonid);
+        AddPoolSelector($userid, 'season:' . $seasonid);
       }
     } elseif ($_POST['selectortype'] == 'series') {
       foreach ($_POST['series'] as $seriesid) {
-        AddPoolSelector($userid, 'series:'.$seriesid);
+        AddPoolSelector($userid, 'series:' . $seriesid);
       }
     } elseif ($_POST['selectortype'] == 'pool') {
       foreach ($_POST['pools'] as $poolid) {
-        AddPoolSelector($userid, 'pool:'.$poolid);
+        AddPoolSelector($userid, 'pool:' . $poolid);
       }
     }
   }
@@ -158,53 +171,50 @@ if ($userinfo == null || $userid === "anonymous") {
       AddUserRole($userid, $selector);
     } elseif ($_POST['userrole'] == 'teamadmin') {
       if (isset($_POST['teams']))
-      foreach ($_POST['teams'] as $teamid) {
-        AddUserRole($userid, 'teamadmin:'.$teamid);
-      }
+        foreach ($_POST['teams'] as $teamid) {
+          AddUserRole($userid, 'teamadmin:' . $teamid);
+        }
     } elseif ($_POST['userrole'] == 'accradmin') {
       if (isset($_POST['teams']))
-      foreach ($_POST['teams'] as $teamid) {
-        AddUserRole($userid, 'accradmin:'.$teamid);
-      }
+        foreach ($_POST['teams'] as $teamid) {
+          AddUserRole($userid, 'accradmin:' . $teamid);
+        }
     } elseif ($_POST['userrole'] == 'seasonadmin') {
       if (isset($_POST['searchseasons']))
-      foreach ($_POST['searchseasons'] as $seasonid) {
-        AddUserRole($userid, 'seasonadmin:'.$seasonid);
-      }
+        foreach ($_POST['searchseasons'] as $seasonid) {
+          AddUserRole($userid, 'seasonadmin:' . $seasonid);
+        }
     } elseif ($_POST['userrole'] == 'seriesadmin') {
       if (isset($_POST['series']))
-      foreach ($_POST['series'] as $seriesid) {
-        AddUserRole($userid, 'seriesadmin:'.$seriesid);
-      }
+        foreach ($_POST['series'] as $seriesid) {
+          AddUserRole($userid, 'seriesadmin:' . $seriesid);
+        }
     } elseif ($_POST['userrole'] == 'resadmin') {
       if (isset($_POST['reservations']))
-      foreach ($_POST['reservations'] as $reservationId) {
-        AddUserRole($userid, 'resadmin:'.$reservationId);
-      }
+        foreach ($_POST['reservations'] as $reservationId) {
+          AddUserRole($userid, 'resadmin:' . $reservationId);
+        }
     } elseif ($_POST['userrole'] == 'resgameadmin') {
       if (isset($_POST['reservations']))
-      foreach ($_POST['reservations'] as $reservationId) {
-        AddUserRole($userid, 'resgameadmin:'.$reservationId);
-      }
+        foreach ($_POST['reservations'] as $reservationId) {
+          AddUserRole($userid, 'resgameadmin:' . $reservationId);
+        }
     } elseif ($_POST['userrole'] == 'gameadmin') {
       if (isset($_POST['games']))
-      foreach ($_POST['games'] as $gameId) {
-        AddUserRole($userid, 'gameadmin:'.$gameId);
-      }
+        foreach ($_POST['games'] as $gameId) {
+          AddUserRole($userid, 'gameadmin:' . $gameId);
+        }
     } elseif ($_POST['userrole'] == 'playeradmin') {
       if (isset($_POST['players']))
-      foreach ($_POST['players'] as $playerId) {
-        AddUserRole($userid, 'playeradmin:'.$playerId);
-      }
+        foreach ($_POST['players'] as $playerId) {
+          AddUserRole($userid, 'playeradmin:' . $playerId);
+        }
     }
   }
-
 }
 
 $title = _("User information") . ": " . ($userinfo['name']);
-$html .= file_get_contents('script/disable_enter.js.inc');
-
-{
+$html .= file_get_contents('script/disable_enter.js.inc'); {
   $html .= $message;
   $html .= "<form method='post' action='?view=user/userinfo&amp;user=" . urlencode($userid) . "'>\n";
   $html .= "<table cellpadding='8'>
@@ -237,7 +247,7 @@ $html .= file_get_contents('script/disable_enter.js.inc');
         "' onclick='setId1(\"toPrimaryEmailVal\", \"" . utf8entities($extraEmail) . "\");'/>" . "</td></tr>\n";
     }
   }
-  
+
   $html .= "		<tr><td class='infocell'>" . _("Language") . ":</td>
 			<td><select class='dropdown' name='userlocale'>";
   global $locales;
@@ -352,7 +362,7 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
     foreach ($userroles as $role => $param) {
       if ($role == 'superadmin') {
         $html .= "<tr><td>";
-        $html .= _("Administrator");
+        $html .= _("Super administrator");
         $html .= "</td><td>" . getDeleteButton('remuserrole', $param, 'deleteRoleId') . "</td></tr>\n";
       } elseif ($role == 'translationadmin') {
         $html .= "<tr><td>";
@@ -380,7 +390,7 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
         foreach ($param as $akey => $prop_id) {
           $html .= "<tr><td>";
           $html .= _("Division organizer");
-          $html .= " (" . utf8entities(getSeriesName($akey)) . ", ". SeasonName(SeriesSeasonId($akey)) . ")";
+          $html .= " (" . utf8entities(getSeriesName($akey)) . ", " . SeasonName(SeriesSeasonId($akey)) . ")";
           $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
       } elseif ($role == 'accradmin') {
@@ -425,6 +435,8 @@ if (hasEditUsersRight() || $_SESSION['uid'] == $userid) {
           $html .= " (" . utf8entities($playerInfo['firstname'] . " " . $playerInfo['lastname']) . ")";
           $html .= "</td><td>" . getDeleteButton('remuserrole', $prop_id, 'deleteRoleId') . "</td></tr>\n";
         }
+      } else {
+        $html .= "<tr><td>" . utf8entities(sprintf(_("Unknown user role %s"), $role)) . "</td></tr>\n";
       }
     }
     $html .= "</table>\n";
@@ -438,7 +450,6 @@ if (hasEditUsersRight()) {
   $html .= "<form method='get' action='?view=admin/select_userrrole&amp;user=" . urlencode($userid) . "'>";
   $html .= "<p>\n";
   $html .= "<select class='dropdown' name='userrole'>\n";
-  $html .= "<option value='superadmin'>" . _("Administrator") . "</option>\n";
   $html .= "<option value='translationadmin'>" . _("Translation administrator") . "</option>\n";
   $html .= "<option value='useradmin'>" . _("User administrator") . "</option>\n";
   $html .= "<option value='teamadmin'>" . _("Team contact person") . "</option>\n";
@@ -449,6 +460,7 @@ if (hasEditUsersRight()) {
   $html .= "<option value='resgameadmin'>" . _("Reservation game input responsible") . "</option>\n";
   $html .= "<option value='gameadmin'>" . _("Game input responsibility") . "</option>\n";
   $html .= "<option value='playeradmin'>" . _("Player profile administrator") . "</option>\n";
+  $html .= "<option value='superadmin'>" . _("Super administrator") . "</option>\n";
   $html .= "</select>\n";
   $html .= "<input type='hidden' name='view' value='admin/select_userrole'/>\n";
   if (!empty($_GET['user'])) {
@@ -482,4 +494,3 @@ $html .= "<input class='button' type='submit' name='delete' value='$deletion' />
 $html .= "</form>\n";
 
 showPage($title, $html);
-?>
