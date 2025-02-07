@@ -39,7 +39,9 @@ if ($list == "byseeding") {
 }
 $isstatdata = IsStatsDataAvailable();
 
-$html .= "<h1>" . _("Teams") . "</h1>";
+$title = $seasonInfo['name'] . " - " . _("Teams");
+
+$html .= "<h1>" . utf8entities($title) . "</h1>";
 
 $html .= CommentHTML(1, $season);
 
@@ -176,11 +178,11 @@ if ($list == "allteams" || $list == "byseeding") {
 } elseif ($list == "bystandings") {
   $htmlseries = array();
   $maxplacements = 0;
-  
+
   function getName($teamInfo) {
     return !empty($teamInfo['abbreviation']) ? $teamInfo['abbreviation'] : $teamInfo['name'];
   }
-  
+
 
   $series = SeasonSeries($seasonInfo['season_id'], true);
   foreach ($series as $ser) {
@@ -235,7 +237,7 @@ if ($list == "allteams" || $list == "byseeding") {
 
   for ($c = 0; $c < count($batches) - 1; $c++) {
     $html .= "<div class='bystandings'>\n";
-    
+
     $maxplacements = 3;
     for ($series_index = $batches[$c]; $series_index < $batches[$c + 1]; $series_index++) {
       $maxplacements = max(count(SeriesTeams($ser['series_id'])), $maxplacements);
@@ -264,5 +266,3 @@ if ($list == "allteams" || $list == "byseeding") {
 }
 
 showPage($title, $html);
-
-?>

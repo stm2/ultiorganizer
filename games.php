@@ -24,10 +24,10 @@ function grouplink($filters, $newfilters, $name, $selected = false) {
   if ($selected) {
     $filters['selected'] = 'selected';
     return "<a class='groupinglink' href='" . utf8entities(MakeUrl($filters, $newfilters)) .
-       "'><span class='selgroupinglink'>" . utf8entities($name) . "</span></a>";
+      "'><span class='selgroupinglink'>" . utf8entities($name) . "</span></a>";
   } else {
     return "<a class='groupinglink' href='" . utf8entities(MakeUrl($filters, $newfilters)) . "'>" . utf8entities($name) .
-       "</a>";
+      "</a>";
   }
 }
 
@@ -47,11 +47,13 @@ if (iget("series")) {
   $id = iget("series");
   SetCurrentSeries($id);
   $filters['gamefilter'] = "series";
-  $title = _("Schedule") . " " . U_(SeriesName($id));
+  $seasonName = U_(SeasonName(SeriesSeasonId($id)));
+  $title = $seasonName . " - " . _("Schedule") . " " . U_(SeriesName($id));
   $validOnly = !hasEditSeriesRight($id);
 } elseif (iget("pool")) {
   $id = iget("pool");
   $filters['gamefilter'] = "pool";
+  $seasonName = U_(SeasonName(SeriesSeasonId($id)));
   $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
   $detail_links = true;
   $validOnly = !hasEditSeriesRight(PoolSeries($id));
@@ -59,9 +61,11 @@ if (iget("series")) {
   $id = iget("pools");
   $filters['gamefilter'] = "poolgroup";
   $validOnly = false;
-  foreach(explode(",", mysql_adapt_real_escape_string($id)) as $part) {
-    if (empty($title))
-      $title = _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
+  foreach (explode(",", mysql_adapt_real_escape_string($id)) as $part) {
+    if (empty($title)) {
+      $seasonName = U_(SeriesSeasonName(PoolSeries($id)));
+      $title = $seasonName . " - " . _("Schedule") . " " . U_(PoolSeriesName($id)) . ", " . U_(PoolName($id));
+    }
     $validOnly |= !hasEditSeriesRight($part);
   }
   $title .= '...';
@@ -69,7 +73,8 @@ if (iget("series")) {
   $id = iget("team");
   $filters['gamefilter'] = "team";
   $orderdefault = 'places';
-  $title = _("Schedule") . " " . TeamName($id);
+  $seasonName = U_(SeasonName(TeamSeason($id)));
+  $title = $seasonName . " - " . _("Schedule") . " " . TeamName($id);
   $detail_links = true;
 } elseif (iget("season")) {
   $id = iget("season");
@@ -108,29 +113,35 @@ if (!isset($filters['group']))
 $games = TimetableGames($id, $filters['gamefilter'], $filters['time'], $filters['order'], $filters['group'], $validOnly);
 $groups = TimetableGrouping($id, $filters['gamefilter'], $filters['time']);
 
+$html .= "<h1>" . utf8entities($title) . "</h1>";
+
 if (!$print && !$singleview) {
-  
+
   $menutabs[_("By grouping")] = MakeUrl($filters, array('order' => 'tournaments'));
   $menutabs[_("By timeslot")] = MakeUrl($filters, array('order' => 'timeslot'));
   $menutabs[_("By division")] = MakeUrl($filters, array('order' => 'series'));
   $menutabs[_("By location")] = MakeUrl($filters, array('order' => 'places'));
-  
+
   $menutabs[_("Today")] = MakeUrl($filters, array('time' => 'today'));
   $menutabs[_("Tomorrow")] = MakeUrl($filters, array('time' => 'tomorrow'));
   $menutabs[_("Past")] = MakeUrl($filters, array('time' => 'past'));
   $menutabs[_("Future")] = MakeUrl($filters, array('time' => 'coming'));
   $menutabs[_("All")] = MakeUrl($filters, array('time' => 'all'));
-  
+
   $html .= pageMenu($menutabs, MakeUrl($filters), false);
-  
+
   if (count($groups) > 1) {
     $html .= "<p>\n";
     foreach ($groups as $grouptmp) {
       if (empty($grouptmp['reservationgroup'])) {
         $html .= grouplink($filters, array('group' => 'none'), _("Without grouping"));
       } else {
-        $html .= grouplink($filters, array('group' => $grouptmp['reservationgroup']), U_($grouptmp['reservationgroup']),
-          $filters['group'] == $grouptmp['reservationgroup']);
+        $html .= grouplink(
+          $filters,
+          array('group' => $grouptmp['reservationgroup']),
+          U_($grouptmp['reservationgroup']),
+          $filters['group'] == $grouptmp['reservationgroup']
+        );
       }
       $html .= " ";
     }
@@ -190,11 +201,12 @@ $querystring = preg_replace("/&Print=[0-1]/", "", $querystring);
 if (!$print) {
   addFooter(
     MakeUrl(
-      array('view' => 'ical', $filters['gamefilter'] => $id, 'time' => $filters['time'], 'order' => $filters['order'])),
-    _("iCalendar (.ical)"));
+      array('view' => 'ical', $filters['gamefilter'] => $id, 'time' => $filters['time'], 'order' => $filters['order'])
+    ),
+    _("iCalendar (.ical)")
+  );
   addFooter(MakeUrl($filters, array('format' => 'grid')), _("Grid (PDF)"));
   addFooter(MakeUrl($filters, array('format' => 'list')), _("List (PDF)"));
 }
 
 showPage($title, $html);
-?>

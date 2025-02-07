@@ -48,6 +48,9 @@ foreach (SeriesPools($seriesId, true) as $pool) {
   $tabs[$pool['name']][] = MakeUrl(array('view' => 'poolstatus', 'pool' => $pool['pool_id']));
 }
 
+$seasonName = U_(SeriesSeasonName($seriesId));
+$html .= "<h2>" . utf8entities($seasonName) . " - " . _("Division statistics:") . " " . utf8entities($seriesinfo['name']) . "</h2>";
+
 $html .= pageMenu($tabs, MakeUrl($_GET), false);
 
 $columns = array();
@@ -245,8 +248,6 @@ foreach ($allteams as &$ateam) {
 unset($ateam);
 
 $html .= CommentHTML(2, $seriesId);
-
-$html .= "<h2>" . _("Division statistics:") . " " . utf8entities($seriesinfo['name']) . "</h2>";
 
 $html .= "<table class='infotable' border='1' style='width:100%'>\n";
 $html .= "<tr>";
