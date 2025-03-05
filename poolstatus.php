@@ -86,29 +86,32 @@ foreach ($pools as $pool) {
 
   $html .= "<h2>" . utf8entities($seriesName) . "</h2>";
 
-  $html .= CommentHTML(3, $pool['pool_id']);
+  $html .= CommentHTML(3, $pool['pool_id']);  //
 
-  $teams = PoolSchedulingTeams($poolinfo['pool_id']);
+  {
+    $teams = PoolSchedulingTeams($poolinfo['pool_id']);
+    $standings = PoolTeams($poolinfo['pool_id'], "rank");
 
-  if (empty($teams)) {
-    $html .= "<p>" . _("No teams in this pool.") . "</p>";
-  } else if ($poolinfo['type'] == 1) {
-    // round robin
-    $html .= printRoundRobinPool($seasoninfo, $poolinfo);
-  } elseif ($poolinfo['type'] == 2) {
-    // playoff
-    $html .= printPlayoffTree($seasoninfo, $poolinfo);
-  } elseif ($poolinfo['type'] == 3) {
-    // Swissdraw
-    $html .= printSwissdraw($seasoninfo, $poolinfo);
-    $printVP = true;
-  } elseif ($poolinfo['type'] == 4) {
-    // Cross matches
-    $html .= printCrossmatchPool($seasoninfo, $poolinfo);
-  } elseif ($poolinfo['type'] == 100) {
-    $html .= printPlacementPool($seasoninfo, $poolinfo);
-  } else {
-    $html .= "<p>" . _("Unknown pool type") . "</p>\n";
+    if (empty($teams) && empty($standings)) {
+      $html .= "<p>" . _("No teams in this pool.") . "</p>";
+    } else if ($poolinfo['type'] == 1) {
+      // round robin
+      $html .= printRoundRobinPool($seasoninfo, $poolinfo);
+    } elseif ($poolinfo['type'] == 2) {
+      // playoff
+      $html .= printPlayoffTree($seasoninfo, $poolinfo);
+    } elseif ($poolinfo['type'] == 3) {
+      // Swissdraw
+      $html .= printSwissdraw($seasoninfo, $poolinfo);
+      $printVP = true;
+    } elseif ($poolinfo['type'] == 4) {
+      // Cross matches
+      $html .= printCrossmatchPool($seasoninfo, $poolinfo);
+    } elseif ($poolinfo['type'] == 100) {
+      $html .= printPlacementPool($seasoninfo, $poolinfo);
+    } else {
+      $html .= "<p>" . _("Unknown pool type") . "</p>\n";
+    }
   }
 
   if (!$seriesScoreboard && !$print) {
