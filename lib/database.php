@@ -133,7 +133,7 @@ function DBQueryInsert($query) {
  * Executes sql query and  returns result as an value.
  *
  * @param string $query database query
- * @return mixed Value of first cell on first row
+ * @return mixed Value of first cell on first row; -1 if no rows
  */
 function DBQueryToValue($query, $docasting=false) {
   $result = mysql_adapt_query($query);
