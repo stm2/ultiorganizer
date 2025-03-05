@@ -1776,3 +1776,220 @@ EOF;
 EOF;
   return $html;
 }
+
+function displayTeamTable($series_id, $teams, $club, $country, $edit, $short = false, &$teamListItems) {
+  global $focusId;
+  $html = "<table class='admintable'><tbody id='addedteams' class='dd_target'>\n";
+
+  $html .= "<tr><td></td><th class='center' title='" . utf8entities(_("Seed")) . "'>#</th>";
+  $html .= "<th>" . utf8entities(_("Name")) . "</th>";
+  $html .= "<th>" . utf8entities(_("Abbrev")) . "</th>";
+
+  if ($club) {
+    $html .= "<th>" . utf8entities(_("Club")) . "</th>";
+  }
+  if ($country) {
+    $html .= "<th>" . utf8entities(_("Country")) . "</th>";
+  }
+  if ($edit) {
+    $html .= "<th colspan='4'></th>";
+  }
+  $html .= "</tr>\n";
+
+  $total = 0;
+
+  function get_field($size, $maxlength, $name, $value, $short) {
+    if ($short) {
+      return "<td><input type='hidden' name='$name' value='" . utf8entities($value) . "'/>" . utf8entities($value) .
+        "</td>\n";
+    } else {
+      return "<td><input class='input' size='$size' maxlength='$maxlength' name='$name' value='" . utf8entities($value) .
+        "'/></td>\n";
+    }
+  }
+  $contact = utf8entities(_("Contact person"));
+  $roster = utf8entities(_("Roster"));
+  $details = utf8entities(_("edit details"));
+  $delete = utf8entities(_("Delete"));
+
+  $tId = 0;
+  foreach ($teams as $team) {
+    if ($short || !isset($team['team_id'])) {
+      $team_id = "[]";
+      ++$tId;
+    } else {
+      $team_id = $team['team_id'];
+      $tId = $team_id;
+    }
+    $total++;
+    $rid = "teamdrag$tId";
+    $hid = "draghandle$tId";
+    $teamListItems[] = ['id' => $rid, 'hId' => $hid, 'parent' => 'addedteams', 'item_class' => 'admintablerow'];
+
+    $html .= "<tr class='admintablerow' id='$rid' ><td class='teamdrag' ><img id='$hid' src='images/draghandle.png' class='draghandle tableicon' /></td>";
+    if ($focusId == null) {
+      $fid = " id='focus0'";
+      $focusId = 'focus0';
+    } else {
+      $fid = '';
+    }
+    $html .= "<td><input class='input team_item_seed' size='2' maxlength='4'$fid name='seed$team_id' value='" .
+      $team['rank'] . "'/></td>";
+
+    $html .= get_field(20, 50, "name$team_id", $team['name'], $short);
+    $html .= get_field(9, 15, "abbrev$team_id", $team['abbreviation'], $short);
+
+    if ($club) {
+      $html .= get_field(18, 50, "club$team_id", $team['clubname'], $short);
+    }
+
+    $width = "";
+    if ($country) {
+      $countryId = $team['country'] ?? 0;
+      if ($short) {
+        $sCountry = CountryName($countryId);
+        if ($sCountry === -1) $sCountry = '???';
+        $sCountry = utf8entities($sCountry);
+        $html .= "<td>$sCountry</td>";
+      } else {
+        $width = "";
+        if ($club) {
+          $width = "80px";
+        }
+        $html .= "<td>" . CountryDropListWithValues("country$team_id", "country$team_id", $team['country'], $width) .
+          "</td>";
+      }
+    }
+    if ($edit) {
+      $html .= "<td>";
+
+      $admins = getTeamAdmins($team['team_id']);
+      if (count($admins) > 0) {
+        $is_empty = "not_empty";
+      } else {
+        $is_empty = "is_empty";
+      }
+
+      $html .= "<a href='?view=admin/addteamadmins&amp;series=$series_id'><img class='tableicon $is_empty' src='images/contact.png' alt='C' title='$contact' /></a>";
+      $html .= "</td>";
+
+      $html .= "<td class='center'><a href='?view=user/teamplayers&amp;team=" . $team['team_id'] . "'>" .
+        "<img class='tableicon' src='images/playerlist.png' alt='R' title='$roster'/>" . "</a></td>";
+
+      $html .= "<td>";
+      $html .= "<a href='?view=admin/addseasonteams&amp;team=$team_id'><img class='deletebutton' src='images/settings.png' alt='D' title='$details'/></a></td>";
+      if (CanDeleteTeam($team['team_id'])) {
+        $html .= "<td><input class='deletebutton tableicon' type='image' src='images/remove.png' alt='X' title='$delete' name='remove' value='" .
+          utf8entities(_("X")) . "' onclick=\"setId(" . $team['team_id'] . ");\"/>";
+      } else {
+        $html .= "<td>";
+      }
+      $html .= "</td>";
+    }
+    $html .= "</tr>\n";
+  }
+
+  $total++;
+
+  if ($edit) {
+    $focusId = 'name0';
+    $html .= "<tr><td></td>";
+    $html .= "<td style='padding-top:15px'><input class='input' size='2' maxlength='3' name='seed0' value='$total'/></td>";
+    $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='name0' id='name0' value=''/></td>";
+    $html .= "<td style='padding-top:15px'><input class='input' size='9' maxlength='15' name='abbrev0' value=''/></td>";
+    if ($club) {
+      $html .= "<td style='padding-top:15px'><input class='input' size='18' maxlength='50' name='club0' value=''/></td>";
+    }
+    if ($country) {
+      $html .= "<td style='padding-top:15px'>" . CountryDropListWithValues("country0", "country0", "", $width) . "</td>";
+    }
+
+    $html .= "<td style='padding-top:15px' colspan='4'><input id='add' class='button' name='add' type='submit' value='" .
+      utf8entities(_("Add")) . "'/></td>";
+    $html .= "</tr>\n";
+  }
+
+  $html .= "</tbody></table>\n";
+  return $html;
+}
+
+function displayTeamList(array $teams, bool $club, bool $country, array &$teamlist) {
+
+  function getItem(array $team, bool $country, array &$teamListItems) {
+    $teamId = intval($team['team_id']);
+    $seed = intval($team['rank']);
+    $name = utf8entities($team['name']);
+    $displayName = $team['name'] != $team['team_name'] ?
+      utf8entities($team['team_name'] . " (" . $team['name'] . ")") : utf8entities($team['name']);
+    $abbrev = utf8entities($team['abbreviation']);
+    $club = utf8entities($team['team_club']);
+    $location = utf8entities($team['team_location']);
+    if ($country)
+      $countryId = intval($team['team_country'] ?? 0);
+
+    $teamListItems[] = [
+      'id' => "team_item$teamId",
+      'hId' => "draggable$teamId",
+      'parent' => 'addedteams',
+      'item_class' => 'team_item'
+    ];
+
+    $html = "<tr class='team_item' id='team_item$teamId'><td>";
+    $html .= "<input type='hidden' id='tId$teamId' name='tIds[]' value='$teamId'/>";
+    $html .= "<input type='hidden' class='editmode' name='name[]' value='$name'/>\n";
+    $html .= "<input type='hidden' class='editmode' name='abbrev[]' value='$abbrev'/>\n";
+    $html .= "<input type='hidden' class='editmode' name='clubname[]' value='$club'/>\n";
+    $html .= "<input type='hidden' class='editmode' name='location[]' value='$location'/>\n";
+    if ($country)
+      $html .= "<input type='hidden' class='editmode' name='country[]' value='$countryId'/>\n";
+
+    $html .= "<input type='number' class='editmode team_item_seed' name='seed[]' min='0' size='3' style='width: 3rem;' id='seed$teamId' style='display:inline' maxlength='5' value='$seed'/>\n";
+    $html .= "<div class ='draggable_wrapper' id='draggable$teamId'>";
+    $html .= "<img id='draghandle$teamId' src='images/draghandle.png' class='draghandle tableicon' />";
+    $html .= "<span class='teamname'>" . $displayName . "</span>";
+    if (!empty($club)) {
+      $html .= " - <span class='clubname'>" . $club . ", " . $location . "</span>";
+    } else {
+      $html .= " - <span class='clubname'>" . $location . "</span>";
+    }
+    if ($country) {
+      $countryName = utf8entities(CountryName($team['country']));
+      if ($countryName != -1)
+        $html .= " - <span class='countryname'>$countryName</span>";
+      else
+        $html .= " - <span class='countryname'>???</span>";
+    }
+    // $html .= "<span class='draghandle' id='draghandle$teamId'>&#8661;</span></div>";
+    $html .= "</input>";
+    $html .= "</td></tr>\n";
+    return $html;
+  }
+
+  $t = 0;
+  $added = $notAdded = "";
+  foreach ($teams as $team) {
+    ++$t;
+    if (empty($team['team_id']))
+      $team['team_id'] = $t;
+    if ($team['rank'] > 0)
+      $added .= getItem($team, $country, $teamlist);
+    else
+      $notAdded .= getItem($team, $country, $teamlist);
+  }
+
+  //   $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
+  $html = "<h3>" . _("Teams to add") . "</h3>\n";
+  $html .= "<div class='team_list' >";
+  $html .= "<table class='team_list'><tbody id='addedteams' class='dd_target'  style='min-height:10rem'>\n";
+  $html .= $added;
+  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
+  $html .= "</tbody></table></div>\n";
+
+  $html .= "<h3>" . _("Teams to ignore") . "</h3>\n";
+  $html .= "<div class='team_list'>";
+  $html .= "<table class='team_list'><tbody id='notaddedteams' class='dd_target' >\n";
+  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
+  $html .= $notAdded;
+  $html .= "</tbody></table></div>\n";
+  return $html;
+}

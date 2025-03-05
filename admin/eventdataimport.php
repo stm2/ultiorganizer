@@ -269,8 +269,6 @@ if (empty($_GET['source']) || isset($_POST['action_cancel'])) {
     }
   }
 
-  // debug_to_apache(['import_data' => $import_data, 'modified_import_data' => $modified_import_data]);
-
   if (!empty($import_data))
     $html .= getHiddenInput(json_encode($import_data), 'import_data');
 
@@ -281,6 +279,7 @@ if (empty($_GET['source']) || isset($_POST['action_cancel'])) {
     $source = $_GET['source'];
     $html .= getHiddenInput($source, 'source');
     $html .= getHiddenInput('do_import', 'next_step');
+
     [$html2, $scripts2] = get_replacement_form(
       $error_message,
       $seasonId,

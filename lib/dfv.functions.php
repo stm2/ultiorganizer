@@ -129,11 +129,11 @@ $dfv_refresh_interval = 86400; // 24h
  *       'teams' : [
  *         'id' : int,
  *         'name' : string,
- *         'nameAddition' : string,
- *         'teamName' : string,
- *         'teamId' : int,
- *         'teamClub' : string,
- *         'teamLocation' : string,
+ *         'name_addition' : string,
+ *         'team_name' : string,
+ *         'team_id' : int,
+ *         'team_club' : string,
+ *         'team_location' : string,
  *         'status' : string,
  *       ],
  *       'events': [
@@ -244,11 +244,11 @@ function DFVTournaments($refresh, $privileged) {
               'division_id' => $new_div['id'],
               'tournament_id' => $new_tournament['id'],
               'name' => $parsed->access($team, ['roster', 'team', 'name']),
-              'nameAddition' => $parsed->access($team, ['roster', 'nameAddition']),
-              'teamName' => $parsed->access($team, ['teamName']),
-              'teamId' => $parsed->access($team, ['roster', 'team', 'id']),
-              'teamClub' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
-              'teamLocation' => $parsed->access($team, ['roster', 'team', 'location', 'city']),
+              'name_addition' => $parsed->access($team, ['roster', 'nameAddition']), // TODO deprecated?
+              'team_name' => $parsed->access($team, ['teamName']),
+              'team_id' => $parsed->access($team, ['roster', 'team', 'id']),
+              'team_club' => $parsed->access($team, ['roster', 'team', 'club', 'name']),
+              'team_location' => $parsed->access($team, ['roster', 'team', 'location', 'city']),
               'status' => $parsed->access($team, ['status'])
             ];
             $new_div['teams'][] = $new_team;
@@ -262,7 +262,6 @@ function DFVTournaments($refresh, $privileged) {
 
           $new_tournament['divisions'][] = $new_div;
         }
-        // debug_to_apache([$new_tournament, $events]);
 
         $new_tournaments[] = $new_tournament;
       }
@@ -298,218 +297,7 @@ function division_to_dfv($ulti_division) {
   return $translation[$ulti_division] ?? '';
 }
 
-function teamTable($series_id, $teams, $club, $country, $edit, $short = false, &$teamListItems) {
-  global $focusId;
-  $html = "<table class='admintable'><tbody id='addedteams' class='dd_target'>\n";
-
-  $html .= "<tr><td></td><th class='center' title='" . utf8entities(_("Seed")) . "'>#</th>";
-  $html .= "<th>" . utf8entities(_("Name")) . "</th>";
-  $html .= "<th>" . utf8entities(_("Abbrev")) . "</th>";
-
-  if ($club) {
-    $html .= "<th>" . utf8entities(_("Club")) . "</th>";
-  }
-  if ($country) {
-    $html .= "<th>" . utf8entities(_("Country")) . "</th>";
-  }
-  if ($edit) {
-    $html .= "<th colspan='4'></th>";
-  }
-  $html .= "</tr>\n";
-
-  $total = 0;
-
-  function get_field($size, $maxlength, $name, $value, $short) {
-    if ($short) {
-      return "<td><input type='hidden' name='$name' value='" . utf8entities($value) . "'/>" . utf8entities($value) .
-        "</td>\n";
-    } else {
-      return "<td><input class='input' size='$size' maxlength='$maxlength' name='$name' value='" . utf8entities($value) .
-        "'/></td>\n";
-    }
-  }
-  $contact = utf8entities(_("Contact person"));
-  $roster = utf8entities(_("Roster"));
-  $details = utf8entities(_("edit details"));
-  $delete = utf8entities(_("Delete"));
-
-  $tId = 0;
-  foreach ($teams as $team) {
-    if ($short || !isset($team['team_id'])) {
-      $team_id = "[]";
-      ++$tId;
-    } else {
-      $team_id = $team['team_id'];
-      $tId = $team_id;
-    }
-    $total++;
-    $rid = "teamdrag$tId";
-    $hid = "draghandle$tId";
-    $teamListItems[] = ['id' => $rid, 'hId' => $hid, 'parent' => 'addedteams', 'item_class' => 'admintablerow'];
-
-    $html .= "<tr class='admintablerow' id='$rid' ><td class='teamdrag' ><img id='$hid' src='images/draghandle.png' class='draghandle tableicon' /></td>";
-    if ($focusId == null) {
-      $fid = " id='focus0'";
-      $focusId = 'focus0';
-    } else {
-      $fid = '';
-    }
-    $html .= "<td><input class='input team_item_seed' size='2' maxlength='4'$fid name='seed$team_id' value='" .
-      $team['rank'] . "'/></td>";
-
-    $html .= get_field(20, 50, "name$team_id", $team['name'], $short);
-    $html .= get_field(9, 15, "abbrev$team_id", $team['abbreviation'], $short);
-
-    if ($club) {
-      $html .= get_field(18, 50, "club$team_id", $team['clubname'], $short);
-    }
-
-    $width = "";
-    if ($country) {
-      if ($short) {
-        $html .= "<td>" . CountryName($team['country']) . "</td>";
-      } else {
-        $width = "";
-        if ($club) {
-          $width = "80px";
-        }
-        $html .= "<td>" . CountryDropListWithValues("country$team_id", "country$team_id", $team['country'], $width) .
-          "</td>";
-      }
-    }
-    if ($edit) {
-      $html .= "<td>";
-
-      $admins = getTeamAdmins($team['team_id']);
-      if (count($admins) > 0) {
-        $is_empty = "not_empty";
-      } else {
-        $is_empty = "is_empty";
-      }
-
-      $html .= "<a href='?view=admin/addteamadmins&amp;series=$series_id'><img class='tableicon $is_empty' src='images/contact.png' alt='C' title='$contact' /></a>";
-      $html .= "</td>";
-
-      $html .= "<td class='center'><a href='?view=user/teamplayers&amp;team=" . $team['team_id'] . "'>" .
-        "<img class='tableicon' src='images/playerlist.png' alt='R' title='$roster'/>" . "</a></td>";
-
-      $html .= "<td>";
-      $html .= "<a href='?view=admin/addseasonteams&amp;team=$team_id'><img class='deletebutton' src='images/settings.png' alt='D' title='$details'/></a></td>";
-      if (CanDeleteTeam($team['team_id'])) {
-        $html .= "<td><input class='deletebutton tableicon' type='image' src='images/remove.png' alt='X' title='$delete' name='remove' value='" .
-          utf8entities(_("X")) . "' onclick=\"setId(" . $team['team_id'] . ");\"/>";
-      } else {
-        $html .= "<td>";
-      }
-      $html .= "</td>";
-    }
-    $html .= "</tr>\n";
-  }
-
-  $total++;
-
-  if ($edit) {
-    $focusId = 'name0';
-    $html .= "<tr><td></td>";
-    $html .= "<td style='padding-top:15px'><input class='input' size='2' maxlength='3' name='seed0' value='$total'/></td>";
-    $html .= "<td style='padding-top:15px'><input class='input' size='20' maxlength='50' name='name0' id='name0' value=''/></td>";
-    $html .= "<td style='padding-top:15px'><input class='input' size='9' maxlength='15' name='abbrev0' value=''/></td>";
-    if ($club) {
-      $html .= "<td style='padding-top:15px'><input class='input' size='18' maxlength='50' name='club0' value=''/></td>";
-    }
-    if ($country) {
-      $html .= "<td style='padding-top:15px'>" . CountryDropListWithValues("country0", "country0", "", $width) . "</td>";
-    }
-
-    $html .= "<td style='padding-top:15px' colspan='4'><input id='add' class='button' name='add' type='submit' value='" .
-      utf8entities(_("Add")) . "'/></td>";
-    $html .= "</tr>\n";
-  }
-
-  $html .= "</tbody></table>\n";
-  return $html;
-}
-
-function teamList(array $teams, bool $club, bool $country, array &$teamlist) {
-
-  function getItem(array $team, bool $country, array &$teamListItems) {
-    $teamId = intval($team['team_id']);
-    $seed = intval($team['rank']);
-    $name = utf8entities($team['name']);
-    $displayName = $team['name'] != $team['teamName'] ?
-      utf8entities($team['name'] . " (" . $team['teamName'] . ")") : utf8entities($team['name']);
-    $abbrev = utf8entities($team['abbreviation']);
-    // $club = intval($team['club']);
-    $club = utf8entities($team['clubname']);
-    // $club = utf8entities(ClubName($team['clubname']));
-    if ($country)
-      $countryId = intval($team['country']);
-
-    $teamListItems[] = [
-      'id' => "team_item$teamId",
-      'hId' => "draggable$teamId",
-      'parent' => 'addedteams',
-      'item_class' => 'team_item'
-    ];
-
-    $html = "<tr class='team_item' id='team_item$teamId'><td>";
-    $html .= "<input type='hidden' id='tId$teamId' name='tIds[]' value='$teamId'/>";
-    $html .= "<input type='hidden' class='editmode' name='name[]' value='$name'/>\n";
-    $html .= "<input type='hidden' class='editmode' name='abbrev[]' value='$abbrev'/>\n";
-    $html .= "<input type='hidden' class='editmode' name='clubname[]' value='$club'/>\n";
-    if ($country)
-      $html .= "<input type='hidden' class='editmode' name='country[]' value='$countryId'/>\n";
-
-    $html .= "<input type='number' class='editmode team_item_seed' name='seed[]' min='0' size='3' style='width: 3rem;' id='seed$teamId' style='display:inline' maxlength='5' value='$seed'/>\n";
-    $html .= "<div class ='draggable_wrapper' id='draggable$teamId'>";
-    $html .= "<img id='draghandle$teamId' src='images/draghandle.png' class='draghandle tableicon' />";
-    $html .= "<span class='teamname'>" . $displayName . "</span>";
-    if (!empty($club)) {
-      $html .= " - <span class='clubname'>" . $club . "</span>";
-    }
-    if ($country) {
-      $countryName = utf8entities(CountryName($team['country']));
-      if ($countryName != -1)
-        $html .= " - <span class='countryname'>$countryName</span>";
-      else
-        $html .= " - <span class='countryname'>???</span>";
-    }
-    // $html .= "<span class='draghandle' id='draghandle$teamId'>&#8661;</span></div>";
-    $html .= "</input>";
-    $html .= "</td></tr>\n";
-    return $html;
-  }
-
-  $t = 0;
-  $added = $notAdded = "";
-  foreach ($teams as $team) {
-    ++$t;
-    if (empty($team['team_id']))
-      $team['team_id'] = $t;
-    if ($team['rank'] > 0)
-      $added .= getItem($team, $country, $teamlist);
-    else
-      $notAdded .= getItem($team, $country, $teamlist);
-  }
-
-  //   $html .= "<div style='border: thin black solid; min-width: 40em; min-height: 10rem;'>";
-  $html = "<h3>" . _("Teams to add") . "</h3>\n";
-  $html .= "<div class='team_list' >";
-  $html .= "<table class='team_list'><tbody id='addedteams' class='dd_target'  style='min-height:10rem'>\n";
-  $html .= $added;
-  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
-  $html .= "</tbody></table></div>\n";
-
-  $html .= "<h3>" . _("Teams to ignore") . "</h3>\n";
-  $html .= "<div class='team_list'>";
-  $html .= "<table class='team_list'><tbody id='notaddedteams' class='dd_target' >\n";
-  $html .= "<tr><td class='team_item placeholder'>&nbsp;</td></tr>\n";
-  $html .= $notAdded;
-  $html .= "</tbody></table></div>\n";
-  return $html;
-}
-
-function showSeasonSelection($seasonId, $series_id) {
+function displaySeasonSelection($seasonId, $series_id) {
   $seasons = SeasonsArray();
   $series_info = SeriesInfo($series_id);
   $type = $series_info['type'];
@@ -610,7 +398,7 @@ function getDFVDivision($tournament_id, $id) {
   return null;
 }
 
-function showDFVSelection($seasonId, $series_id, $url_here) {
+function displayDFVSelection($seasonId, $series_id, $url_here) {
   $data = DFVTournaments(($_GET['action_refresh'] ?? 0) == 1, false);
 
   $tournaments = $data['tournaments'] ?? null;
@@ -655,11 +443,12 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
     $age_filter = add_filter($html, 'age_filter', _('Age'), $choices['divisionAge']);
     $showEmpty = !empty($_POST['show_empty']);
     $checked =  $showEmpty ?  "checked='checked'" : '';
-    $html .= "<tr><td><label for='show_empty'>" . _("Show empty") . "</label><td><input type='checkbox'$checked id='show_empty' name='show_empty' /></td></tr>\n";
+    $html .= "<tr><td><label for='show_empty'>" . _("Show empty divisions") . "</label><td><input type='checkbox'$checked id='show_empty' name='show_empty' /></td></tr>\n";
 
 
+    $html .= "<tr><td colspan='2'>" . utf8entities(_("Optionally select search parameters above, then")) . "</td></tr>\n";
     $html .= "<tr><td colspan='2'><input id='filter_button' class='button' name='action_filter_division' type='submit' value='" .
-      utf8entities(_("Show matching divisions...")) . "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
+      utf8entities(_("Update list of divisions...")) . "'/></td></tr><tr><td>&nbsp;</td></tr>\n";
 
     $html .= "<tr><td>" . utf8entities(_("Add teams from:")) . "</td><td>";
 
@@ -733,7 +522,7 @@ function showDFVSelection($seasonId, $series_id, $url_here) {
 
     $html .= "</select></td></tr></table>\n";
 
-    $html .= "<p><input id='action_load_teams' class='button' name='action_load_teams' type='submit' value='" . utf8entities(_("Load...")) .
+    $html .= "<p><input id='action_load_teams' class='button' name='action_load_teams' type='submit' value='" . utf8entities(_("Show teams...")) .
       "'/>";
     $html .= "<input id='action_cancel' class='button' name='action_cancel' type='submit' value='" . utf8entities(_("Cancel")) .
       "'/>";

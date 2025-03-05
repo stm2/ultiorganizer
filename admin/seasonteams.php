@@ -6,6 +6,7 @@ include_once 'lib/team.functions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/country.functions.php';
 
+include_once 'lib/common.functions.php';
 include_once 'lib/dfv.functions.php';
 
 include_once 'lib/yui.functions.php';
@@ -145,7 +146,10 @@ if (!empty($_POST['remove_x'])) {
               if ($club && !empty($_POST['clubname'])) {
                 $clubId = ClubId($_POST['clubname'][$i]);
                 if ($clubId == -1) {
-                  $clubId = AddClub($series_id, $_POST['club'][$i]);
+                  $clubId = AddClub($series_id, $_POST['clubname'][$i]);
+                  $cp = ClubInfo($clubId);
+                  $cp['city'] = $_POST['location'][$i];
+                  SetClubProfile($clubId, $cp);
                 }
               }
 
@@ -203,11 +207,11 @@ if (!empty($_POST['remove_x'])) {
           $html .= "<p><input type='hidden' id='importstage' name='importstage' value='$importstage'/></p>";
 
           if ($importstage == 1) {
-            $html .= showSeasonSelection($seasonId, $series_id, $importstage);
+            $html .= displaySeasonSelection($seasonId, $series_id, $importstage);
           }
           if ($importstage == 2) {
             $url_here = $get_link($seasonId, $series_id, ['importstage' => $importstage], $single, true);
-            $html .= showDFVSelection($seasonId, $series_id, $importstage, $url_here);
+            $html .= displayDFVSelection($seasonId, $series_id, $importstage, $url_here);
           }
 
           if (isset($_POST['action_load_teams'])) {
@@ -228,7 +232,8 @@ if (!empty($_POST['remove_x'])) {
                 foreach ($teams as $i => &$team) {
                   $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';
                   $team['name'] = $team['name'];
-                  $team['clubname'] = $team['teamLocation'];
+                  $team['clubname'] = $team['team_club'];
+                  $team['location'] = $team['team_location'];
                   $team['abbreviation'] = null;
                   $team['country'] = null;
                 }
@@ -237,7 +242,7 @@ if (!empty($_POST['remove_x'])) {
             }
 
             if (!empty($teams)) {
-              $html .= teamList($teams, $club, $country, $teamListItems);
+              $html .= displayTeamList($teams, $club, $country, $teamListItems);
 
               $html .= "<p>";
               $html .= "<input class='button' name='import_add' type='submit' value='" . utf8entities(_("Add")) .
@@ -264,7 +269,7 @@ if ($showTeams) {
   }
   unset($team);
 
-  $html .= teamTable($series_id, $teams, $club, $country, true, false, $teamListItems);
+  $html .= displayTeamTable($series_id, $teams, $club, $country, true, false, $teamListItems);
 
   $html .= "<p>";
   $html .= "<input id='save' class='button' name='save' type='submit' value='" . utf8entities(_("Save")) . "'/> ";
