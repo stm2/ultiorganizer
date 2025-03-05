@@ -15,7 +15,7 @@ if ($userid != $_SESSION['uid'] && !hasEditUsersRight()) {
 }
 
 if (isset($_POST['confirmdeletion'])) {
-  if (isSuperAdminByUserid($userid) && count(getSuperAdmins()) < 5) {
+  if (isSuperAdminByUserid($userid) && count(getSuperAdmins()) < 2) {
     $html .= "<p class='warning'>" .
       utf8entities(
         _(
