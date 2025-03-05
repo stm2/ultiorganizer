@@ -146,7 +146,7 @@ function RemoveClub($clubId) {
 }
 
 function AddClub($seriesId, $name) {
-	if (hasEditTeamsRight($seriesId)) {
+	if (hasEditTeamsRight($seriesId) || isSuperAdmin()) {
 		$query = sprintf("INSERT INTO uo_club (name) VALUES ('%s')",
 			mysql_adapt_real_escape_string($name));
 		$result = mysql_adapt_query($query);
@@ -181,11 +181,11 @@ function SetClubProfile($teamId,$profile) {
     		$profile['story'] = mb_substr($profile['story'], 0, 5000);
 		$profile['achievements'] = mb_substr($profile['achievements'], 0, 5000);
 		$query = sprintf("UPDATE uo_club SET name='%s', contacts='%s', 
-				country='%s', city='%s', founded=%s, story='%s',
+				country='%d', city='%s', founded=%s, story='%s',
 				achievements='%s', valid=%d WHERE club_id='%s'",
 				mysql_adapt_real_escape_string($profile['name']),
 				mysql_adapt_real_escape_string($profile['contacts']),
-				mysql_adapt_real_escape_string($profile['country']),
+				intval($profile['country']),
 				mysql_adapt_real_escape_string($profile['city']),
 				$profile['founded'] !=null ? intval($profile['founded']):'NULL',
 				mysql_adapt_real_escape_string($profile['story']),
