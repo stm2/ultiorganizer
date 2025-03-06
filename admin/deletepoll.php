@@ -12,6 +12,8 @@ $seriesName = SeriesName($poll['series_id']);
 $title = _("Delete poll");
 $html = '';
 
+ensureEditSeriesRight($poll['series_id']);
+
 $backurl = isset($_SERVER['HTTP_REFERER']) ? utf8entities($_SERVER['HTTP_REFERER']) : '';
 if (isset($_POST['backurl'])) {
   $backurl = $_POST['backurl'];
@@ -20,7 +22,7 @@ if (isset($_POST['backurl'])) {
 if (isset($_POST['confirm'])) {
   DeletePoll($pollId);
 
-  
+
   header("location:$backurl");
 } else if (isset($_POST['abort'])) {
   header("location:$backurl");
@@ -55,5 +57,3 @@ $html .= "<input class='button' name='confirm' type='submit' value='" . _("Delet
 $html .= "</form>\n";
 
 showPage($title, $html);
-
-?>

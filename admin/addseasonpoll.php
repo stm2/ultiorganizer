@@ -24,6 +24,8 @@ if (empty($poll)) {
 $title = _("Manage poll");
 $html = "";
 
+ensureEditSeriesRight($seriesId);
+
 function emptyPoll($seriesId) {
   $x = array("poll_id" => -1, "name" => "", "password" => NULL, "series_id" => $seriesId, 'description' => '');
   foreach (PollStatuses() as $flag => $name) {
@@ -96,4 +98,3 @@ if ($pollId == -1) {
 $html .= "</form>\n";
 
 showPage($title, $html);
-?>

@@ -3,6 +3,8 @@ $title = _("Restore anonymous user settings");
 
 $html = "<h2>$title</h2>";
 
+ensureSuperAdmin($title);
+
 $restore = array('result' => 0);
 
 if (isSuperAdmin() && isset($_POST['restore'])) {

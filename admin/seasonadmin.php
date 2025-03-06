@@ -15,6 +15,8 @@ if (empty($info))
 $title = _("Event").": ". U_($info['name']);
 $html = "";
 
+ensureSeasonAdmin($seasonId, $title);
+
 $html .=  "<h2>".utf8entities(U_($info['name']))."</h2>\n";
 $html .=  "<table style='white-space: nowrap;' border='0'>\n";
 $html .=  "<tr><td style='width:300px'>";

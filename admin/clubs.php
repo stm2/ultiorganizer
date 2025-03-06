@@ -4,8 +4,9 @@ include_once 'lib/club.functions.php';
 include_once 'lib/country.functions.php';
 
 $title = _("Clubs and Countries");
-
 $html = "";
+
+ensureSuperAdmin($title);
 
 if (isset($_POST['removeclub_x']) && isset($_POST['hiddenDeleteId'])) {
 	$id = $_POST['hiddenDeleteId'];

@@ -10,6 +10,8 @@ $baseurl = "?view=admin/dbequalize";
 $html = "";
 $result = "";
 
+ensureSuperAdmin($title);
+
 if(!empty($_GET["filter"])) {
 	$filter = $_GET["filter"];
 }elseif(!empty($_POST["filter"])) {

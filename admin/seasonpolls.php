@@ -10,6 +10,8 @@ $seasonInfo = SeasonInfo($season);
 $title = sprintf(_("Manage polls for %s"), utf8entities($seasonInfo['name']));
 $html = "";
 
+ensureSeasonAdmin($season, $title);
+
 $serieses = SeasonSeries($season);
 
 $statuses = PollStatuses();
@@ -109,4 +111,3 @@ if (!count($serieses)) {
 }
 
 showPage($title, $html);
-?>

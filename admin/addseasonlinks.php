@@ -6,6 +6,8 @@ $title = _("Event links");
 $html = "";
 $seasonId = $_GET["season"];
 
+ensureSuperAdmin($title);
+
 if(!empty($_POST['savebutton'])){
 
 	$settings = array();

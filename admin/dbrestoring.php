@@ -4,6 +4,8 @@ include_once 'menufunctions.php';
 $title = _("Database restore");
 setBackurl("?view=admin/dbrestore");
 
+ensureSuperAdmin($title);
+
 function get_error($error) {
   $phpFileUploadErrors = array(
     0 => 'There is no error, the file uploaded with success',

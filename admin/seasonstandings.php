@@ -14,7 +14,7 @@ CurrentSeries($season, $series_id, $single, _("Pool Rankings"));
 $title = utf8entities(SeasonName($season)) . ": " . _("Pool Rankings");
 $html = "";
 
-ensureEditSeriesRight($series_id);
+ensureEditSeriesRight($series_id, $title);
 
 $_SESSION['hide_played_pools'] = !empty($_SESSION['hide_played_pools']) ? $_SESSION['hide_played_pools'] : 0;
 

@@ -5,6 +5,8 @@ include_once 'lib/season.functions.php';
 $title = _("Users");
 $html = "";
 
+ensurePrivileges(hasEditUsersRight(), $title);
+
 if (hasEditUsersRight()) {
 	if (isset($_POST['deleteuser'])) {
 		if (isset($_POST['users'])) {
@@ -21,7 +23,7 @@ if (hasEditUsersRight()) {
 	} elseif (isset($_POST['recoverpassword'])) {
 		if (isset($_POST['users'])) {
 			foreach ($_POST['users'] as $userid) {
-				if (UserResetPasswordRequest(urldecode($userid))) {
+				if (UserResetPassword(urldecode($userid))) {
 					$html .= "<p>" . sprintf(_("Recovery request sent to %s."), utf8entities($userid)) . "</p>\n";
 				} else {
 					$html .= "<p class='warning'>" . sprintf(_("No recovery request sent to %s."), utf8entities($userid)) . "</p>\n";

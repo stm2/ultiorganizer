@@ -6,6 +6,8 @@ $season = $_GET['season'] ?? CurrentSeason();
 $title = _("Transfer times");
 $html = "";
 
+ensureSeasonAdmin($season, $title);
+
 if (!empty($_POST['change_reservations'])) {
   header('location:' . urldecode($_POST['reservation_url']));
   exit();

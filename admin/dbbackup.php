@@ -2,7 +2,12 @@
 include_once 'menufunctions.php';
 include_once 'lib/club.functions.php';
 include_once 'lib/reservation.functions.php';
+//common page
+$title = _("Database backup");
 $html = "";
+
+ensureSuperAdmin($title);
+
 if (isset($_POST['backup']) && !empty($_POST['tables']) && isSuperAdmin()){
 	$tables = $_POST["tables"];
 	$return = "SET NAMES 'utf8';\n\n";
@@ -72,9 +77,6 @@ if (isset($_POST['backup']) && !empty($_POST['tables']) && isSuperAdmin()){
 	echo $gzipoutput;
 
 }
-
-//common page
-$title = _("Database backup");
 
 if(isSuperAdmin()){
 	

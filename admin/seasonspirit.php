@@ -20,7 +20,7 @@ CurrentSeries($seasonId, $seriesId, $single, _("Teams"));
 $title = SeasonName($seasonId) . ": " . _("Teams");
 $html = "";
 
-ensureEditSeriesRight($seriesId);
+ensureEditSeriesRight($seriesId, $title);
 
 $seasonInfo = SeasonInfo($seasonId);
 

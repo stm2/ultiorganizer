@@ -6,6 +6,8 @@ include_once 'lib/pool.functions.php';
 $title = _("Edit");
 $html = "";
 
+ensurePrivileges(hasCurrentSeasonsEditRight(), $title);
+
 $poolId=0;
 //pool parameters
 $pp = array(

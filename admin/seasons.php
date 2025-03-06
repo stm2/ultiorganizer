@@ -7,6 +7,7 @@ include_once 'lib/configuration.functions.php';
 
 $title = _("Events");
 $html = "";
+ensureSuperAdmin($title);
 
 // process itself on submit
 if (!empty($_POST['remove_x']) && !empty($_POST['hiddenDeleteId'])) {
@@ -98,8 +99,14 @@ while ($row = mysqli_fetch_assoc($seasons)) {
 
   if (CanDeleteSeason($seasonId)) {
     $html .= "<td class='center'>" .
-      getDeleteButton('remove', $seasonId, 'hiddenDeleteId', 'images/remove.png', 'X',
-        sprintf(_("Are you sure you want to delete the event '%s'?"), U_($info['name']))) . "</td>";
+      getDeleteButton(
+        'remove',
+        $seasonId,
+        'hiddenDeleteId',
+        'images/remove.png',
+        'X',
+        sprintf(_("Are you sure you want to delete the event '%s'?"), U_($info['name']))
+      ) . "</td>";
   } else {
     $html .= "<td></td>";
   }
@@ -110,10 +117,9 @@ $html .= "</table>";
 $html .= "<div>";
 $html .= "<a href='?view=admin/eventdataimport'>" . utf8entities(_("Import event")) . "</a> | ";
 $html .= "<a href='?view=admin/seasonstats'>" . utf8entities(_("All event statistics")) . "</a></div>";
-$html .= "<p><input class='button' name='add' type='button' value='" .utf8entities( _("Add")) .
+$html .= "<p><input class='button' name='add' type='button' value='" . utf8entities(_("Add")) .
   "' onclick=\"window.location.href='?view=admin/addseasons'\"/></p>";
 $html .= "<p><input type='hidden' id='hiddenDeleteId' name='hiddenDeleteId'/></p>";
 $html .= "</form>\n";
 
 showPage($title, $html);
-?>

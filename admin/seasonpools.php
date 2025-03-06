@@ -11,7 +11,7 @@ CurrentSeries($season, $series_id, $single, _("Pools"));
 $title = utf8entities(SeasonName($season)) . ": " . _("Pools");
 $html = "";
 
-ensureEditSeriesRight($series_id);
+ensureEditSeriesRight($series_id, $title);
 
 //pool parameters
 $pp = array(

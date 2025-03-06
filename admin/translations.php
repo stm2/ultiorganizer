@@ -2,7 +2,8 @@
 include_once 'lib/translation.functions.php';
 
 
-$title = _("Translations");	
+$title = _("Translations");
+ensurePrivileges(hasTranslationRight(), $title);
 
 //process itself if remove button was pressed
 if(!empty($_POST['remove_x'])) {

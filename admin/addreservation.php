@@ -15,17 +15,20 @@ if (!empty($_GET['season'])) {
   $season = $_GET['season'];
 }
 
+ensureSeasonAdmin($season);
+
 //reservation parameters
 $res = array(
-	"id"=>$reservationId,
-	"location"=>"",
-	"fieldname"=>"",
-	"reservationgroup"=>"",
-	"date"=>"",
-	"starttime"=>"",
-	"endtime"=>"",
-	"season"=>$season,
-	"timeslots"=>"");
+  "id" => $reservationId,
+  "location" => "",
+  "fieldname" => "",
+  "reservationgroup" => "",
+  "date" => "",
+  "starttime" => "",
+  "endtime" => "",
+  "season" => $season,
+  "timeslots" => ""
+);
 
 function time_fix($post, $key, $date) {
   if (isset($post[$key])) {
@@ -57,8 +60,10 @@ function check_input($post, $season, &$res) {
   if (empty($res['season'])) {
     $error .= "<p>" . _("Season required.") . "</p>";
   }
-  if (empty($res['starttime']) || empty($res['endtime']) ||
-    strtotime($res['endtime']) - strtotime($res['starttime']) < 60) {
+  if (
+    empty($res['starttime']) || empty($res['endtime']) ||
+    strtotime($res['endtime']) - strtotime($res['starttime']) < 60
+  ) {
     $error .= "<p>" . sprintf(_("Error: Duration must be at least %d minutes"), 1) . "</p>";
   }
   return $error;
@@ -118,30 +123,31 @@ include_once 'lib/yui.functions.php';
 addHeaderCallback(
   function () {
     echo yuiLoad(array("utilities", "calendar", "datasource", "autocomplete"));
-    
+
     echo getCalendarScript(['date']);
-  });
+  }
+);
 
 if ($reservationId > 0) {
   $reservationInfo = ReservationInfo($reservationId);
-  $res['id']=$reservationId;
-  $res['location']=$reservationInfo['location'];
-  $res['fieldname']=$reservationInfo['fieldname'];
-  $res['reservationgroup']=$reservationInfo['reservationgroup'];
-  $res['date']=ShortDate($reservationInfo['date']);
-  $res['starttime']=DefHourFormat($reservationInfo['starttime']);
-  $res['endtime']=DefHourFormat($reservationInfo['endtime']);
-  $res['season']=$reservationInfo['season'];
-  $res['timeslots']=$reservationInfo['timeslots'];
-  if(!empty($allfields)){
-     $res['fieldname']=$allfields;
+  $res['id'] = $reservationId;
+  $res['location'] = $reservationInfo['location'];
+  $res['fieldname'] = $reservationInfo['fieldname'];
+  $res['reservationgroup'] = $reservationInfo['reservationgroup'];
+  $res['date'] = ShortDate($reservationInfo['date']);
+  $res['starttime'] = DefHourFormat($reservationInfo['starttime']);
+  $res['endtime'] = DefHourFormat($reservationInfo['endtime']);
+  $res['season'] = $reservationInfo['season'];
+  $res['timeslots'] = $reservationInfo['timeslots'];
+  if (!empty($allfields)) {
+    $res['fieldname'] = $allfields;
   }
 }
 
-$html .= "<form method='post' action='?view=admin/addreservation&amp;season=".$season."&amp;reservation=".$res['id']."'>\n";
+$html .= "<form method='post' action='?view=admin/addreservation&amp;season=" . $season . "&amp;reservation=" . $res['id'] . "'>\n";
 $html .= "<table class='formtable'>\n";
 
-$html .= "<tr><td>"._("Date")." ("._("dd.mm.yyyy")."):</td><td>";
+$html .= "<tr><td>" . _("Date") . " (" . _("dd.mm.yyyy") . "):</td><td>";
 
 $value = utf8entities(ShortDate($res['date']));
 $html .= getCalendarInput('date', $value);
@@ -152,12 +158,12 @@ $html .= getCalendarInput('date', $value);
 // $html .= "<tr><td></td><td><div id='calContainer1'></div>";
 $html .= "</td></tr>\n";
 
-$html .= "<tr><td>"._("Start time")." ("._("hh:mm")."):</td><td>";
-$html .= "<input type='text' class='input' name='starttime' value='".utf8entities(DefHourFormat($res['starttime']))."'/>\n";
+$html .= "<tr><td>" . _("Start time") . " (" . _("hh:mm") . "):</td><td>";
+$html .= "<input type='text' class='input' name='starttime' value='" . utf8entities(DefHourFormat($res['starttime'])) . "'/>\n";
 $html .= "</td></tr>\n";
 
-$html .= "<tr><td>"._("End time")." ("._("hh:mm")."):</td><td>";
-$html .= "<input type='text' class='input' name='endtime' value='".utf8entities(DefHourFormat($res['endtime']))."'/>\n";
+$html .= "<tr><td>" . _("End time") . " (" . _("hh:mm") . "):</td><td>";
+$html .= "<input type='text' class='input' name='endtime' value='" . utf8entities(DefHourFormat($res['endtime'])) . "'/>\n";
 $html .= "</td></tr>\n";
 
 /* Not yet supported
@@ -166,52 +172,54 @@ $html .= "<input type='text' class='input' size='32' maxlength='100' name='times
 $html .= "</td></tr>\n";
 */
 
-$html .= "<tr><td>"._("Grouping name").":</td>";
-$html .= "<td>".TranslatedField("reservationgroup", $res['reservationgroup'])."</td></tr>\n";
-$html .= "<tr><td>"._("Fields").":</td><td>";
+$html .= "<tr><td>" . _("Grouping name") . ":</td>";
+$html .= "<td>" . TranslatedField("reservationgroup", $res['reservationgroup']) . "</td></tr>\n";
+$html .= "<tr><td>" . _("Fields") . ":</td><td>";
 
 $html .= TranslatedField("fieldname", $res['fieldname']);
 
-if(!$addmore){
-  $html .= "</td></tr><tr><td></td><td>". _("Enter separate field numbers (1,2,3) or multiple fields (1-30)");
+if (!$addmore) {
+  $html .= "</td></tr><tr><td></td><td>" . _("Enter separate field numbers (1,2,3) or multiple fields (1-30)");
 }
 $html .= "</td></tr>\n";
 
-$location_info=null;
-if($res['location']>0){
+$location_info = null;
+if ($res['location'] > 0) {
   $location_info = LocationInfo($res['location']);
   if ($location_info != null)
     $location_info = $location_info['name'];
 }
-$html .= LocationInput('location', 'location', $location_info, _("Location"), $res['location']); 
+$html .= LocationInput('location', 'location', $location_info, _("Location"), $res['location']);
 
-if(isSuperAdmin()){
-  $html .= "<tr><td>"._("Season").":</td><td>";
+if (isSuperAdmin()) {
+  $html .= "<tr><td>" . _("Season") . ":</td><td>";
   $html .= "<select class='dropdown' name='resseason'>\n";
   $html .= "<option class='dropdown' value=''></option>";
   $seasons = Seasons();
 
-  while($row = mysqli_fetch_assoc($seasons)){
-    if($res['season'] == $row['season_id'] || $season == $row['season_id']){
-      $html .= "<option class='dropdown' selected='selected' value='".utf8entities($row['season_id'])."'>". utf8entities($row['name']) ."</option>";
-    }else{
-      $html .= "<option class='dropdown' value='".utf8entities($row['season_id'])."'>". utf8entities($row['name']) ."</option>";
+  while ($row = mysqli_fetch_assoc($seasons)) {
+    if ($res['season'] == $row['season_id'] || $season == $row['season_id']) {
+      $html .= "<option class='dropdown' selected='selected' value='" . utf8entities($row['season_id']) . "'>" . utf8entities($row['name']) . "</option>";
+    } else {
+      $html .= "<option class='dropdown' value='" . utf8entities($row['season_id']) . "'>" . utf8entities($row['name']) . "</option>";
     }
   }
   $html .= "</select>\n";
   $html .= "</td></tr>\n";
+} else {
+  $html .= "<tr><td>" . _("Season") . ":</td><td>" . utf8entities(SeasonName($season)) . "</td></tr>\n";
 }
 
 $html .= "<tr><td>";
 
 
 if (!$addmore) {
-  $html .= "<br /><input type='hidden' name='id' value='".utf8entities($res['id'])."'/>";
-  $html .= "<input type='submit' class='button' name='save' value='"._("Save")."'/>";
+  $html .= "<br /><input type='hidden' name='id' value='" . utf8entities($res['id']) . "'/>";
+  $html .= "<input type='submit' class='button' name='save' value='" . _("Save") . "'/>";
 } else {
-  $html .= "<input type='submit' class='button' name='add' value='"._("Add")."'/>";
+  $html .= "<input type='submit' class='button' name='add' value='" . _("Add") . "'/>";
 }
-$html .= "<input class='button' type='button' name='back'  value='"._("Return")."' onclick=\"window.location.href='?view=admin/reservations&amp;season=".$season."'\"/>";
+$html .= "<input class='button' type='button' name='back'  value='" . _("Return") . "' onclick=\"window.location.href='?view=admin/reservations&amp;season=" . $season . "'\"/>";
 $html .= "</td><td>&nbsp;</td></tr>\n";
 $html .= "</table>\n";
 $html .= "</form>\n";
@@ -220,4 +228,3 @@ $html .= TranslationScript("reservationgroup");
 $html .= TranslationScript("fieldname");
 
 showPage($title, $html);
-?>

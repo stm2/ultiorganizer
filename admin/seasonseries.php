@@ -8,7 +8,7 @@ $season = $_GET["season"];
 $html = "";
 $title = (SeasonName($season)).": "._("Divisions");
 
-ensureSeasonAdmin($season);
+ensureSeasonAdmin($season, $title);
 
 //process itself on submit
 if(!empty($_POST['remove_x'])){

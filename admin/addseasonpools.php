@@ -12,12 +12,14 @@ if ($poolId > 0) {
   $info = PoolInfo($poolId);
   $season = $info['season'];
   $seriesId = $info['series'];
+  $title = sprintf(_("Edit pool %s"), $info['name']);
 } else {
   $poolId = 0;
   $season = $_GET['season'] ?? null;
   $seriesId = intval($_GET['series'] ?? -1);
   if ($season === null || $seriesId <= 0)
     die("missing parameter");
+  $title = sprintf(_("Add pool to %s"), SeriesName($seriesId));
 }
 
 ensureEditSeriesRight($seriesId);
@@ -99,32 +101,32 @@ if (! empty($_POST['save'])) {
   $pp['color'] = $_POST['color'];
   $pp['forfeitscore'] = intval($_POST['forfeitscore']);
   $pp['forfeitagainst'] = intval($_POST['forfeitagainst']);
-  
+
   if (! empty($_POST['visible']) && $_POST['type'] != 100)
     $pp['visible'] = 1;
   else
     $pp['visible'] = 0;
-  
+
   if (! empty($_POST['played']))
     $pp['played'] = 1;
   else
     $pp['played'] = 0;
-  
+
   if (! empty($_POST['continuation']) || $_POST['type'] == 100)
     $pp['continuingpool'] = 1;
   else
     $pp['continuingpool'] = 0;
-  
+
   if (! empty($_POST['placementpool']) || $_POST['type'] == 100)
     $pp['placementpool'] = 1;
   else
     $pp['placementpool'] = 0;
-  
+
   if (! empty($_POST['drawsallowed']))
     $pp['drawsallowed'] = 1;
   else
     $pp['drawsallowed'] = 0;
-  
+
   if ($ok) {
     SetPoolDetails($poolId, $pp, $comment);
     session_write_close();
@@ -133,7 +135,7 @@ if (! empty($_POST['save'])) {
 }
 if ($poolId) {
   $info = PoolInfo($poolId);
-  
+
   $pp['name'] = $info['name'];
   $pp['timeoutlen'] = $info['timeoutlen'];
   $pp['halftime'] = $info['halftime'];
@@ -162,7 +164,6 @@ if ($poolId) {
   $pp['forfeitscore'] = $info['forfeitscore'];
   $pp['drawsallowed'] = $info['drawsallowed'];
 }
-$title = _("Edit");
 
 // common page
 pageTopHeadOpen($title);
@@ -177,27 +178,27 @@ echo yuiLoad(array(
 
 ?>
 <script type="text/javascript">
-
-(function() {
-    var Event = YAHOO.util.Event, picker;
+  (function() {
+    var Event = YAHOO.util.Event,
+      picker;
 
     Event.onDOMReady(function() {
-            picker = new YAHOO.widget.ColorPicker("colorcontainer", {
-                    showhsvcontrols: false,
-                    showhexcontrols: true,
-                    showhexsummary: false,
-                    showrgbcontrols: false,
-                    showwebsafe: false,
-          images: {
-            PICKER_THUMB: "script/yui/colorpicker/assets/picker_thumb.png",
-            HUE_THUMB: "script/yui/colorpicker/assets/hue_thumb.png"
-            }
-                });
-            picker.setValue([<?php
-            echo hexdec(substr($pp['color'], 0, 2)) . ", ";
-            echo hexdec(substr($pp['color'], 2, 2)) . ", ";
-            echo hexdec(substr($pp['color'], 4, 2));
-            ?>], true);
+      picker = new YAHOO.widget.ColorPicker("colorcontainer", {
+        showhsvcontrols: false,
+        showhexcontrols: true,
+        showhexsummary: false,
+        showrgbcontrols: false,
+        showwebsafe: false,
+        images: {
+          PICKER_THUMB: "script/yui/colorpicker/assets/picker_thumb.png",
+          HUE_THUMB: "script/yui/colorpicker/assets/hue_thumb.png"
+        }
+      });
+      picker.setValue([<?php
+                        echo hexdec(substr($pp['color'], 0, 2)) . ", ";
+                        echo hexdec(substr($pp['color'], 2, 2)) . ", ";
+                        echo hexdec(substr($pp['color'], 4, 2));
+                        ?>], true);
       var onRgbChange = function(o) {
         var val = picker.get("hex");
         YAHOO.util.Dom.get('color').value = val;
@@ -210,17 +211,16 @@ echo yuiLoad(array(
 
       var handleColorButton = function() {
         var containerDiv = YAHOO.util.Dom.get("colorcontainer");
-        if(containerDiv.style.display == "none"){
+        if (containerDiv.style.display == "none") {
           YAHOO.util.Dom.setStyle(containerDiv, "display", "block");
         } else {
           YAHOO.util.Dom.setStyle(containerDiv, "display", "none");
         }
       }
-        YAHOO.util.Event.addListener("showcolor", "click", handleColorButton);
+      YAHOO.util.Event.addListener("showcolor", "click", handleColorButton);
 
-        });
-})();
-
+    });
+  })();
 </script>
 
 <?php
@@ -246,9 +246,9 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   echo "<tr>
       <td class='infocell'>" . _("Template") . ":</td>
       <td><select class='dropdown' name='template'>";
-  
+
   $templates = PoolTemplates();
-  
+
   foreach ($templates as $row) {
     if ($template == $row['template_id']) {
       echo "<option class='dropdown' selected='selected' value='" . utf8entities($row['template_id']) . "'>" . utf8entities($row['name']) . "</option>";
@@ -258,7 +258,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   }
   echo "</select></td>
     </tr>";
-  
+
   echo "</table>
       <p><input class='button' name='add' type='submit' value='" . _("Add") . "'/>
       <input class='button' type='button' name='takaisin'  value='" . _("Return") . "' onclick=\"window.location.href='?view=admin/seasonpools&amp;season=$season'\"/></p>
@@ -266,41 +266,41 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
 } else if ($poolId && !$addmore) {
   echo "<h2>" . _("Edit pool") . ":</h2>\n";
   echo "<form method='post' action='?view=admin/addseasonpools&amp;pool=$poolId&amp;season=$season'>";
-  
+
   echo "<table class='formtable'>
     <tr>
       <td class='infocell'>" . _("Name") . ":</td>
       <td>" . TranslatedField("name", $pp['name']) . "</td>
     </tr>\n";
-  
+
   $seriesname = SeriesName($pp['series']);
   echo "<tr><td class='infocell'>" . _("Division") . ":</td>
       <td><input class='input' id='series' name='series' disabled='disabled' value='" . utf8entities($seriesname) . "'/></td>
       <td></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Order") . " (A,B,C,D ...):</td>
     <td><input class='input' id='ordering' name='ordering' value='" . utf8entities($pp['ordering']) . "'/></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Type") . ":</td>\n<td>";
-  
+
   echo "<select class='dropdown' name='type' id='type' onchange='updateBoxes();'>";
-  
+
   $hasGames = !CanGenerateGames($poolId);
-  
+
   foreach (PoolTypes() as $type => $typeId) {
-    $selected = ($typeId == $info['type'])?" selected='selected'":"";
+    $selected = ($typeId == $info['type']) ? " selected='selected'" : "";
     $name = PoolTypeName($typeId);
     if ($name === null) continue;
     $name = utf8entities($name);
     if ($hasGames && $typeId == 100) $selected .= " disabled='disabled'";
-    
+
     echo "<option class='dropdown'${selected} value='$typeId'>$name</option>";
   }
-    
+
   echo "</select></td></tr>\n";
-    
+
   echo "<tr><td class='infocell'>" . _("Special playoff template") . ":</td>";
-  
+
   echo "<td><input class='input' type='text' id='playoff_template' name='playoff_template' list='template_choices' value='" . utf8entities($pp['playoff_template']) . "' />\n";
   echo "<datalist id='template_choices'>\n";
   foreach (PlayoffTemplates() as $key => $template) {
@@ -308,29 +308,29 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     echo "<option $selected value='" . utf8entities($template) . "' />\n";
   }
   echo "</datalist></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Move games") . ":</td><td>";
-  
+
   echo "<select class='dropdown' name='mvgames'>";
   if ($pp['mvgames'] == "0")
     echo "<option class='dropdown' selected='selected' value='0'>" . _("All") . "</option>";
   else
     echo "<option class='dropdown' value='0'>" . _("All") . "</option>";
-  
+
   if ($pp['mvgames'] == "1")
     echo "<option class='dropdown' selected='selected' value='1'>" . _("Nothing") . "</option>";
   else
     echo "<option class='dropdown' value='1'>" . _("Nothing") . "</option>";
-  
+
   if ($pp['mvgames'] == "2")
     echo "<option class='dropdown' selected='selected' value='2'>" . _("Mutual") . "</option>";
   else
     echo "<option class='dropdown' value='2'>" . _("Mutual") . "</option>";
-  
+
   echo "</select></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Visible") . ":</td>";
-  
+
   $frompool = PoolGetMoveFrom($info['pool_id'], 1);
   $followingPool = false;
   if (!empty($frompool)) {
@@ -347,14 +347,14 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
       echo "<td><input class='input' type='checkbox' id='visible' name='visible' /></td>";
   }
   echo "<td></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Played") . ":</td>";
   if (intval($pp['played']))
     echo "<td><input class='input' type='checkbox' id='played' name='played' checked='checked'/></td>";
   else
     echo "<td><input class='input' type='checkbox' id='played' name='played' /></td>";
   echo "<td></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("continuation pool") . ":</td>";
   if ($followingPool || $pp['type'] == 100) { // Playoff or Swissdraw or placement
     echo "<td><input class='input' disabled='disabled' type='checkbox' id='continuation' name='continuation' checked='checked'/></td>";
@@ -365,7 +365,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
       echo "<td><input class='input' type='checkbox' id='continuation' name='continuation' /></td>";
   }
   echo "<td></td></tr>";
-  
+
   echo "<tr><td class='infocell'>" . _("Placement pool") . ":</td>";
   if ($pp['type'] == 100)
     echo "<td><input class='input' disabled='disabled' type='checkbox' id='placementpool' name='placementpool' checked='checked'/></td>";
@@ -374,7 +374,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   else
     echo "<td><input class='input' type='checkbox' id='placementpool' name='placementpool' /></td>";
   echo "<td></td></tr>";
-  
+
   if (intval($pp['continuingpool'])) {
     echo "<tr><td class='infocell'>" . _("Initial moves") . ":</td>
       <td><a href='?view=admin/poolmoves&amp;pool=$poolId'>" . _("select") . "</a></td>
@@ -384,20 +384,20 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
   echo "<td><input class='input' type='hidden' id='color' name='color' value='" . utf8entities($pp['color']) . "'/>\n";
   echo "<button type='button' id='showcolor' class='button' style='background-color:#" . $pp['color'] . "'>" . _("Select") . "</button></td>";
   echo "<td></td></tr>";
-  
+
   $comment = CommentRaw(3, $poolId);
   echo "<tr><td class='infocell'>" . htmlentities(_("Comment (you can use <b>, <em>, and <br /> tags)")) . ":</td>
     <td><textarea class='input' rows='10' cols='70' maxlength='5000' id='comment' name='comment'>" . htmlentities($comment) . "</textarea></td></tr>";
-  
+
   echo "</table>";
   echo "<div class='yui-skin-sam colorcontainer' id='colorcontainer' style='display:none'></div>";
-  
+
   echo "<h2>" . _("Teams") . ":</h2>";
-  
+
   $teams = PoolTeams($poolId);
   if (count($teams)) {
     echo "<table class='infotable'><tr><th>" . _("Name") . "</th><th>" . _("Club") . "</th></tr>\n";
-    
+
     foreach ($teams as $team) {
       echo "<tr>";
       echo "<td>" . utf8entities($team['name']) . "</td>";
@@ -409,11 +409,11 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     echo "<p>" . _("No teams") . "</p>";
   }
   // echo "<p><input class='button' name='add' type='button' value='"._("Valitse ...")."' onclick=\"window.location.href='?view=admin/serieteams&amp;Serie=$seriesId&amp;season=$season'\"/></p>";
-  
+
   echo "<h2>" . _("Rules") . " " . _("(from the selected template)") . ":</h2>";
-  
+
   echo "<table class='formtable'>";
-  
+
   echo "<tr><td class='infocell'>" . _("Game points") . ":</td>
       <td><input class='input' id='gameto' name='gameto' value='" . utf8entities($pp['winningscore']) . "'/></td>
       <td></td></tr>
@@ -455,12 +455,12 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
     echo "<option class='dropdown' selected='selected' value='game'>" . _("per game") . "</option>";
   else
     echo "<option class='dropdown' value='game'>" . _("per game") . "</option>";
-  
+
   if ($pp['timeoutsper'] == "half")
     echo "<option class='dropdown' selected='selected' value='half'>" . _("per half") . "</option>";
   else
     echo "<option class='dropdown' value='half'>" . _("per half") . "</option>";
-  
+
   echo "  </select>
       </td></tr>
 
@@ -472,7 +472,7 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
       <td><input class='input' id='timeoutsOnOvertime' name='timeoutsOnOvertime' value='" . utf8entities($pp['timeoutsovertime']) . "'/></td>
       <td>" . _("per team") . "</td></tr>
     ";
-  
+
   echo "
     <tr><td class='infocell'>" . _("Forfeit/BYE against") . ":</td>
       <td><input class='input' id='forfeitagainst' name='forfeitagainst' value='" . utf8entities($pp['forfeitagainst']) . "'/></td>
@@ -483,16 +483,16 @@ if ((! $poolId || $addmore) && !empty($season) && !empty($seriesId)) {
       <td>" . _("points for their remaining opponent") . "</td></tr>
 
     ";
-  
+
   echo "<tr><td class='infocell'>" . _("Draws allowed") . ":</td>";
   if (intval($pp['drawsallowed']))
     echo "<td><input class='input' type='checkbox' id='drawsallowed' name='drawsallowed' checked='checked'/></td>";
   else
     echo "<td><input class='input' type='checkbox' id='drawsallowed' name='drawsallowed' /></td>";
   echo "<td></td></tr>";
-  
+
   echo "</table>";
-  
+
   echo "<p><input class='button' name='save' type='submit' value='" . _("Save") . "'/>";
   echo "<input class='button' type='button' name='back'  value='" . _("Return") . "' onclick=\"window.location.href='?view=admin/seasonpools&amp;season=$season'\"/></p>";
   echo "</form>\n";
