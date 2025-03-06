@@ -722,7 +722,6 @@ function leftMenu($id = 0, $pagestart = true, $printable = false) {
     startTable($leftmenu, $heading);
     echo "<a class='subnav' href='?view=admin/users'>&raquo; " . utf8entities(_("Users")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/eventviewer'>&raquo; " . utf8entities(_("Logs")) . "</a>\n";
-    // echo "<a class='subnav' href='?view=admin/sms'>&raquo; ".utf8entities(_("SMS"))."</a>\n";
     echo "<a class='subnav' href='?view=admin/dbadmin'>&raquo; " . utf8entities(_("Database")) . "</a>\n";
     echo "<a class='subnav' href='?view=admin/serverconf'>&raquo; " . utf8entities(_("Settings")) . "</a>\n";
   }
