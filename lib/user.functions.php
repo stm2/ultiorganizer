@@ -2112,8 +2112,16 @@ function UserScript($id) {
 }
 
 function GetUsers($mode, $search) {
-  $query = sprintf("SELECT id, userid, name from uo_users WHERE uo_users.userid LIKE '%%%s%%' OR name LIKE '%%%s%%'",
-    mysql_adapt_real_escape_string($search), mysql_adapt_real_escape_string($search));
+  $query = "SELECT id, userid, name FROM uo_users";
+
+  if ($mode === 'search') {
+    $search = mysql_adapt_real_escape_string($search);
+    $query .= " WHERE userid LIKE '%$search%' OR name LIKE '%$search%'";
+  } elseif ($mode === 'id') {
+    $search = intval($search);
+    $query .= " WHERE id = $search";
+  }
+
   $result = mysql_adapt_query($query);
 
   if (!$result) {
@@ -2141,7 +2149,12 @@ function GetSearchUsers() {
 function GetUserYears($admin = false) {
   $query = "SELECT count(*) as count, YEAR(last_login) as year FROM uo_users u";
   if (!$admin) {
-    $query .= " WHERE NOT EXISTS(SELECT * FROM uo_userproperties up WHERE u.userid = up.userid AND up.name = 'userrole' AND up.value = 'superadmin')";
+    $query .= " WHERE NOT EXISTS (
+      SELECT 1 FROM uo_userproperties up 
+      WHERE u.userid = up.userid 
+        AND up.name = 'userrole' 
+        AND up.value = 'superadmin'
+    )";
   }
   $query .= " GROUP BY YEAR(last_login) ORDER BY year ASC";
   return DBQueryToArray($query);
@@ -2160,8 +2173,12 @@ function DeleteUsersBefore($year, bool $confirmed) {
     Log1("database", "delete", "", "", "delete $count orphaned user properties", "user");
   }
 
-  $notexists = "u.userid != 'anonymous' AND NOT EXISTS (SELECT prop_id FROM (SELECT prop_id FROM uo_userproperties up2 
-    WHERE u.userid = up2.userid AND up2.name = 'userrole' AND up2.value = 'superadmin') AS b)";
+  $notexists = "u.userid != 'anonymous' AND NOT EXISTS (
+    SELECT 1 FROM uo_userproperties up2 
+    WHERE u.userid = up2.userid 
+      AND up2.name = 'userrole' 
+      AND up2.value = 'superadmin'
+  )";
 
   if ($year === NULL) {
     $selector = "u.last_login IS NULL";
@@ -2172,11 +2189,13 @@ function DeleteUsersBefore($year, bool $confirmed) {
 
   if ($confirmed == true) {
     $query = "DELETE u, up FROM uo_users as u
-      LEFT JOIN uo_userproperties as up ON (u.userid = up.userid) WHERE $selector AND $notexists";
+      LEFT JOIN uo_userproperties as up ON (u.userid = up.userid) 
+      WHERE $selector AND $notexists";
     return DBQuery($query);
   } else {
-    $query = "SELECT userid, name, email, last_login FROM uo_users as u WHERE $selector AND $notexists";
+    $query = "SELECT userid, name, email, last_login 
+      FROM uo_users as u 
+      WHERE $selector AND $notexists";
     return DBQueryToArray($query);
-    // return $count + DBQueryToValue("SELECT count(*) FROM uo_users as u WHERE $selector AND $notexists");
   }
 }
