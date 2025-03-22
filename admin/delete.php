@@ -74,25 +74,36 @@ if (isset($_POST['deletepools'])) {
       $html .= "<p>" . sprintf(_("Insufficent rights to delete pool %s"), $name) . "</p>\n";
     } else {
 
-      $query = sprintf("SELECT count(*) FROM uo_gameevent WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "SELECT count(*) FROM uo_gameevent WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       $pevents = DBQueryToValue($query);
-      $query = sprintf("SELECT count(*) FROM uo_defense WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "SELECT count(*) FROM uo_defense WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       $pevents += DBQueryToValue($query);
-      $query = sprintf("SELECT count(*) FROM uo_timeout WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "SELECT count(*) FROM uo_timeout WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       $pevents += DBQueryToValue($query);
-      $query = sprintf("SELECT count(*) FROM uo_goal WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "SELECT count(*) FROM uo_goal WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       $pevents += DBQueryToValue($query);
 
-      $query = sprintf("SELECT count(*) FROM uo_played WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "SELECT count(*) FROM uo_played WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       $pdata = DBQueryToValue($query);
       $query = sprintf(
         "SELECT count(*) FROM uo_spirit_score WHERE game_id IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+        (int) $poolId
+      );
       $pdata += DBQueryToValue($query);
 
       // //// TODO uo_scheduling_name
@@ -115,7 +126,14 @@ if (isset($_POST['deletepools'])) {
       $html .= "<li>" .
         sprintf(
           _("Pool %s with %d games, %d moved games, %d moved teams, %d transfers, %d game events, and %d other data"),
-          $name, $pgames, $pmoved, $pteams, $ptransfers, $pevents, $pdata) . "</li>\n";
+          $name,
+          $pgames,
+          $pmoved,
+          $pteams,
+          $ptransfers,
+          $pevents,
+          $pdata
+        ) . "</li>\n";
     }
   }
   if (count($_POST['pools'])) {
@@ -124,7 +142,9 @@ if (isset($_POST['deletepools'])) {
     $html .= "<br /><p>" .
       sprintf(
         _(
-          "Are you sure you want to delete this data? This might have undesirable side effects, especially if the tournament is running!")) .
+          "Are you sure you want to delete this data? This might have undesirable side effects, especially if the tournament is running!"
+        )
+      ) .
       "</p><br />\n";
 
     $html .= "<p><input class='button' type='submit' name='deletepoolsconfirm' value='" . _("Delete pools") . "'/></p>";
@@ -145,8 +165,10 @@ if (isset($_POST['deletepools'])) {
     } else {
       $name = PoolName($poolId);
 
-      $query = sprintf("DELETE FROM uo_gameevent WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "DELETE FROM uo_gameevent WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       DBQuery($query);
 
       $query = sprintf("DELETE FROM uo_defense WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)", (int) $poolId);
@@ -161,8 +183,10 @@ if (isset($_POST['deletepools'])) {
       $query = sprintf("DELETE FROM uo_played WHERE game IN (SELECT game_id FROM uo_game WHERE pool=%d)", (int) $poolId);
       DBQuery($query);
 
-      $query = sprintf("DELETE FROM uo_spirit_score WHERE game_id IN (SELECT game_id FROM uo_game WHERE pool=%d)",
-        (int) $poolId);
+      $query = sprintf(
+        "DELETE FROM uo_spirit_score WHERE game_id IN (SELECT game_id FROM uo_game WHERE pool=%d)",
+        (int) $poolId
+      );
       DBQuery($query);
 
       // //// TODO uo_scheduling_name
@@ -202,6 +226,7 @@ if ($continue) {
   if (empty($mode)) {
     $html .= "<p>" . getLink(_("Delete games ..."), $seasonId, null, 'games') . "</p>\n";
     $html .= "<p>" . getLink(_("Delete pools ..."), $seasonId, null, 'pools') . "</p>\n";
+    $html .= "<p>" . "<a href='?view=admin/addseasonusers&amp;season=" . urlencode($seasonId) . "'>" . _("Delete user roles ...") . "</a>" . "</p>\n";
   } elseif ($mode === 'games') {
     if (empty($seriesId)) {
       $series = SeasonSeries($seasonId);
@@ -221,8 +246,12 @@ if ($continue) {
       $html .= "<p>" . _("Select pools to play or undo") . ":</p>\n";
       $html .= "<form method='post' id='delete_form' action='" . getLinkUrl($seasonId, $seriesId, $mode) . "'>";
 
-      $html .= SeasonPoolGamesTable('delete_form', $seasonId,
-        array(0 => array('series_id' => $seriesId, 'name' => SeriesName($seriesId))), true);
+      $html .= SeasonPoolGamesTable(
+        'delete_form',
+        $seasonId,
+        array(0 => array('series_id' => $seriesId, 'name' => SeriesName($seriesId))),
+        true
+      );
 
       $html .= "<p><input class='button' type='submit' name='reset_games' value='" . _("Reset played games") . "'/></p>";
       $html .= "<div>";
@@ -233,10 +262,12 @@ if ($continue) {
       $html .= "</form>";
     }
   } else if ($mode == 'pools') {
-
     $target = "view=admin/delete";
-    $html .= SearchPool($target, array('season' => $seasonId, 'series' => $seriesId, 'mode' => $mode),
-      array('deletepools' => _("Select"), 'cancel' => _("Cancel")));
+    $html .= SearchPool(
+      $target,
+      array('season' => $seasonId, 'series' => $seriesId, 'mode' => $mode),
+      array('deletepools' => _("Select"), 'cancel' => _("Cancel"))
+    );
   } else if ($mode == 'series') {
     // TODO
     // delete series:
@@ -296,5 +327,3 @@ if ($continue) {
 }
 
 showPage($title, $html);
-
-?>

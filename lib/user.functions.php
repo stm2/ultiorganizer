@@ -1193,19 +1193,27 @@ function RemoveUserRole(string $userid, int $propid) {
  */
 function AddUserRole(string $userid, string $role) {
   if (isSuperAdmin() || ($role != 'superadmin' && hasEditUsersRight())) {
-    $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
+    $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
       mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
-    $result = mysql_adapt_query($query);
-    if (!$result) {
-      die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
-    }
-    Log1("security", "add", $userid, $role, "userrole");
+    $exist = DBQueryToValue($query);
 
-    invalidateSessions();
-    if ($userid == $_SESSION['uid']) {
-      SetUserSessionData($userid);
+    if ($exist == 0) {
+      $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
+        mysql_adapt_real_escape_string($userid), mysql_adapt_real_escape_string($role));
+      $result = mysql_adapt_query($query);
+      if (!$result) {
+        die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+      }
+      Log1("security", "add", $userid, $role, "userrole");
+
+      invalidateSessions();
+      if ($userid == $_SESSION['uid']) {
+        SetUserSessionData($userid);
+      }
+      return true;
+    } else {
+      return false;
     }
-    return true;
   } else {
     die('Insufficient rights to change user info');
   }

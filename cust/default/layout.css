@@ -495,12 +495,6 @@ yuicalendar.table {
   border: 1px solid var(--fgcolor, #fff);
 }
 
-
-select.series_select {
-  width: 35em;
-  max-height: 15em;
-}
-
 div.workarea {
   padding: 0px;
   float: left;
@@ -571,9 +565,14 @@ ul.draglist, ol.draglist, ul.time_list, ul.team_list, select.series_select {
   min-height: 2em;
 }
 
-ul.draglist, ol.draglist, select.series_select {
+ul.draglist, ol.draglist {
   background-color: var(--draglistcolor, #f7f7f7);
   width: 20em;
+}
+
+select.series_select {
+  background-color: var(--draglistcolor, #f7f7f7);
+  max-height: 15em;
 }
 
 ul.team_list {
