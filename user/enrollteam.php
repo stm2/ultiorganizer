@@ -119,7 +119,7 @@ foreach($result as $row) {
 			echo "<td>". _("Confirmed")."</td>";
 		}
 		if (hasEditTeamsRight($row['series_id']) || $row2['status'] == 0) {
-			echo "<td><input class='button' type='image' name='remenroll' src='images/remove.png' value='X' alt='X' onclick='setId(".$row2['id'].", \"deleteEnrollId".$hiddenIndex."\");'/></td>";
+			echo "<td>" . getDeleteButton("remenroll", $row2['id'], "deleteEnrollId".$hiddenIndex) . "</td>";
 		}
 		
 		echo "</tr>\n";
