@@ -231,7 +231,9 @@ if (!empty($_POST['remove_x'])) {
                 $valid = 0;
                 foreach ($teams as $i => &$team) {
                   $team['rank'] = (($team['status'] ?? '') == 'CONFIRMED') ? ++$valid : '';
-                  $team['name'] = $team['name'];
+                  $team['name'] = $team['team_name'] ?? $team['name'];
+                  if (empty($team['team_club']))
+                    $team['team_club'] = $team['team_location'];
                   $team['clubname'] = $team['team_club'];
                   $team['location'] = $team['team_location'];
                   $team['abbreviation'] = null;

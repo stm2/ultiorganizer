@@ -1939,6 +1939,7 @@ function displayTeamList(array $teams, bool $club, bool $country, array &$teamli
     $html .= "<input type='hidden' class='editmode' name='name[]' value='$name'/>\n";
     $html .= "<input type='hidden' class='editmode' name='abbrev[]' value='$abbrev'/>\n";
     $html .= "<input type='hidden' class='editmode' name='clubname[]' value='$club'/>\n";
+    // FIXME name = 'clublocation[]' ??
     $html .= "<input type='hidden' class='editmode' name='location[]' value='$location'/>\n";
     if ($country)
       $html .= "<input type='hidden' class='editmode' name='country[]' value='$countryId'/>\n";

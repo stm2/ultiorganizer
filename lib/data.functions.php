@@ -914,6 +914,7 @@ class EventDataXMLHandler {
         $newClub = $this->replacers['clubname'][$key];
         if (!empty($newClub)) {
           $clubId = ClubId($newClub);
+          $this->debug .= "replace " . $newClub . "\n";
           if ($clubId > 0) {
             $row['club'] = $clubId;
           } else {
@@ -922,7 +923,6 @@ class EventDataXMLHandler {
             $this->log($this->mode, 'uo_club', $newClubId);
             $row['club'] = $newClubId;
           }
-          $this->debug .= "replace " . $newClub;
         }
 
         $newId = $this->InsertRow($tagName, $row);
@@ -1568,7 +1568,6 @@ function do_event_data_import($importmode, $mock, $replacers, $source, $filename
       $html .= "</ul>";
       if (empty($eventdatahandler->error)) {
         $html .= "<p>" . sprintf(_("Successfully imported into %s."), $new_season_name) . "</p>\n";
-        // debug_to_apache($eventdatahandler->getLog());
         $wasImported = array_filter(
           $eventdatahandler->getLog(),
           fn($l) => $l['tag'] == 'uo_series'
@@ -1870,10 +1869,19 @@ function get_replacement_form($error_message, $seasonId, $import_data, $modified
       $tid = "teamnames" . utf8entities($tkey);
       $cid = "clubnames" . utf8entities($tkey);
 
-      $club = $tval['club'];
-      $club = $modified_import_data['clubs'][$club] ?? [];
-      if (empty($club) || ($tval['clubname'] ?? $club['name']) != $club['name']) {
-        $club = ['name' => $tval['clubname'], 'city' => $tval['location'] ?? '-', 'country' => $tval['club_country'] ?? 0];
+      $club = $tval['club'] ?? 0;
+      if (empty($club)) {
+        if (!empty($tval['clubname'])) {
+          $club = ['name' => $tval['clubname'], 'city' => $tval['location'] ?? '-', 'country' => $tval['club_country'] ?? 0];
+        } else {
+          $club = [];
+        }
+      } else {
+        $club = $modified_import_data['clubs'][$club] ?? [];
+
+        if (empty($club) || (!empty($tval['clubname']) &&  $tval['clubname'] != $club['name'])) {
+          $club = ['name' => $tval['clubname'] ?? $club['name'], 'city' => $tval['location'] ?? '-', 'country' => $tval['club_country'] ?? 0];
+        }
       }
 
       if (!empty($club)) {
@@ -1881,6 +1889,8 @@ function get_replacement_form($error_message, $seasonId, $import_data, $modified
         $slocation = utf8entities($club['clubname'] ?? '');
         if (empty($slocation)) $slocation = $club['city'];
         $scountry = utf8entities($club['country']);
+      } else {
+        $sclub = $slocation = $scountry = '';
       }
 
       $html .= "<tr><td>" .
@@ -1931,7 +1941,6 @@ function get_replacers($post, &$import_data = null) {
       if (!empty($import_data)) {
         $sres = $import_data['reservations'][$resId];
       }
-      // debug_to_apache($resId . " sres: " . print_r($sres, true) . "import_data: " . print_r($import_data, true));
 
       $origin = null;
       if (isset($post["copyofrlocation$resId"])) // is this a copy?
@@ -1976,10 +1985,8 @@ function get_replacers($post, &$import_data = null) {
         if (!empty($sres))
           $sres['starttime'] = EpocToMysql(strtotime($sres['starttime']) + $replacers['date'][$resId]);
       }
-      // debug_to_apache([$resId, "sres" =>  $sres, "rep" => $replacers, "help" => $help_replacers]);
       if (!empty($sres))
         $import_data['reservations'][$resId] = $sres;
-      // debug_to_apache(["import_data" => $import_data]);
     }
   }
   foreach ($post['rename_series'] as $i => $serId) {
@@ -2002,7 +2009,6 @@ function get_replacers($post, &$import_data = null) {
     if (!empty($import_data)) {
       foreach ($import_data['series'] as $serId => $ser) {
         if (isset($ser['teams'][$teamId])) {
-          // debug_to_apache("teamId: $teamId, serId: $serId, old: {$import_data['series'][$serId]['teams'][$teamId]['name']}, new: {$replacers['team_name'][$teamId]}");
           $import_data['series'][$serId]['teams'][$teamId]['name'] = $replacers['team_name'][$teamId];
           $import_data['series'][$serId]['teams'][$teamId]['clubname'] = $replacers['clubname'][$teamId];
           $import_data['series'][$serId]['teams'][$teamId]['club_location'] = $replacers['club_location'][$teamId];
