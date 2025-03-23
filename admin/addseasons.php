@@ -163,11 +163,19 @@ if(empty($seasonId)){
   $disabled="disabled='disabled'";
 }
 
+function addTooltip($tooltip) {
+  return " <a href='#' title='" . utf8entities($tooltip) .
+    "' onclick='alert(\"" . utf8entities($tooltip) . "\")'>?</a>";
+}
+
+
 $html .= "<table class='formtable'>";
-$html .= "<tr><td class='infocell'>"._("Event id").": </td>\n";
-$html .= "<td><input class='input' size='30' name='added_id' $disabled value='$sValue'></input></td></tr>\n";
-$html .= "<tr><td class='infocell'>"._("Name").": </td>
-      <td>".TranslatedField2("seasonname", $sp['name'], '')."</td>
+$html .= "<tr><td class='infocell'>" . _("Event id") . ":</td>\n";
+$html .= "<td><input class='input' size='30' name='added_id' $disabled value='$sValue'></input>" .
+  addTooltip(_("Unique identifier for the event, internal use only")) .
+  "</td></tr>\n";
+$html .= "<tr><td class='infocell'>" . _("Name") . ": </td>
+  <td>" . TranslatedField2("seasonname", $sp['name'], '') . "</td>
     </tr>\n";
 $html .= "<tr><td class='infocell'>"._("Type").": </td><td><select class='dropdown' name='type'>\n";
 
@@ -186,19 +194,19 @@ $html .= "<tr><td class='infocell'>"._("Tournament").": </td><td><input class='i
 if ($sp['istournament']) {
   $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("Affects the name in pages (tournament or season)")) . "</td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("International").": </td><td><input class='input' type='checkbox' name='isinternational' ";
 if ($sp['isinternational']) {
   $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("Teams are have a nationality and flag")) . "</td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("For national teams").": </td><td><input class='input' type='checkbox' name='isnationalteams' ";
 if ($sp['isnationalteams']) {
   $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("Teams are national teams only and have no club name; typically combine with 'International'")) . "</td></tr>";
 
 // $html .= "<tr><td class='infocell'>"._("Spirit mode").": </td><td>";
 // $spiritmodes = SpiritModes();
@@ -215,10 +223,11 @@ $html .= "<tr><td class='infocell'>"._("Spirit points visible").": </td><td><inp
 if ($sp['showspiritpoints']) {
   $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("General switch to enable spirit points; details are configured in the submenu'")) . "</td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("Organizer").": </td><td><input class='input' size='50' maxlength='50' name='organizer' value='".utf8entities($sp['organizer'])."'/></td></tr>";
-$html .= "<tr><td class='infocell'>"._("Category").": </td><td><input class='input' size='50' maxlength='50' name='category' value='".utf8entities($sp['category'])."'/></td></tr>";
+$html .= "<tr><td class='infocell'>" . _("Organizer") . ": </td><td><input class='input' size='50' maxlength='50' name='organizer' value='" . utf8entities($sp['organizer']) . "'/></td></tr>";
+$html .= "<tr><td class='infocell'>" . _("Category") . ": </td><td><input class='input' size='50' maxlength='50' name='category' value='" . utf8entities($sp['category']) . "'/>" .
+  addTooltip(_("For finding tournaments")) . "</td></tr>";
 
 $html .= "<tr><td class='infocell'>".utf8entities(_("Comment (you can use <b>, <em>, and <br /> tags)")).":</td>
     <td><textarea class='input' rows='10' cols='70' maxlength='10000' name='comment'>".utf8entities($comment)."</textarea></td></tr>";
@@ -239,23 +248,26 @@ $html .= "</select>\n";
 //$html .= DefTimeFormat($dateTime->format("Y-m-d H:i:s"));
 $html .= "</td></tr>";
 
-$html .= "<tr><td class='infocell'>"._("Starts")." ("._("dd.mm.yyyy")."): </td><td>". 
-  getCalendarInput('seasonstarttime', ShortDate($sp['starttime'])) . "</td></tr>";
-$html .= "<tr><td class='infocell'>"._("Ends")." ("._("dd.mm.yyyy")."): </td><td>" .
-  getCalendarInput('seasonendtime', ShortDate($sp['endtime'])).  "</td></tr>";
-$html .= "<tr><td class='infocell'>"._("Open for enrollment").": </td><td><input class='input' type='checkbox' name='enrollopen' ";
+$html .= "<tr><td class='infocell'>" . _("Starts") . " (" . _("dd.mm.yyyy") . "): </td><td>" .
+  getCalendarInput('seasonstarttime', ShortDate($sp['starttime'])) . "</td><td>" .
+  addTooltip(_("For sorting and similar'")) . "</td></tr>";
+$html .= "<tr><td class='infocell'>" . _("Ends") . " (" . _("dd.mm.yyyy") . "): </td><td>" .
+  getCalendarInput('seasonendtime', ShortDate($sp['endtime'])) .  "</td><td>" .
+  addTooltip(_("For sorting and similar'")) . "</td></tr>";
+$html .= "<tr><td class='infocell'>" . _("Open for enrollment") . ": </td><td><input class='input' type='checkbox' name='enrollopen' ";
 if ($sp['enrollopen']) {
   $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("Enable public enrollment of teams'")) . "</td></tr>";
 $html .= "<tr><td class='infocell'>"._("Enrolling ends")."<br/>("._("only informational")."): </td>";
 $html .= "<td>" . getCalendarInput('enrollendtime', ShortDate($sp['enroll_deadline'])) . "</td></tr>";
 
 $html .= "<tr><td class='infocell'>"._("Shown in main menu").": </td><td><input class='input' type='checkbox' name='iscurrent' ";
 if ($sp['iscurrent']) {
-  $html .= "checked='checked'";
+  "</td><td>" .
+    $html .= "checked='checked'";
 }
-$html .= "/></td></tr>";
+$html .= "/>" . addTooltip(_("Display to the public'")) . "</td></tr>";
 
 $html .= "</table>\n";
 if(empty($seasonId)){
