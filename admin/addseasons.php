@@ -251,15 +251,15 @@ $html .= "</td></tr>";
 
 $html .= "<tr><td class='infocell'>" . _("Starts") . " (" . _("dd.mm.yyyy") . "): </td><td>" .
   getCalendarInput('seasonstarttime', ShortDate($sp['starttime'])) . "</td><td>" .
-  addTooltip(_("For sorting and similar'")) . "</td></tr>";
+  addTooltip(_("For sorting and similar")) . "</td></tr>";
 $html .= "<tr><td class='infocell'>" . _("Ends") . " (" . _("dd.mm.yyyy") . "): </td><td>" .
   getCalendarInput('seasonendtime', ShortDate($sp['endtime'])) .  "</td><td>" .
-  addTooltip(_("For sorting and similar'")) . "</td></tr>";
+  addTooltip(_("For sorting and similar")) . "</td></tr>";
 $html .= "<tr><td class='infocell'>" . _("Open for enrollment") . ": </td><td><input class='input' type='checkbox' name='enrollopen' ";
 if ($sp['enrollopen']) {
   $html .= "checked='checked'";
 }
-$html .= "/>" . addTooltip(_("Enable public enrollment of teams'")) . "</td></tr>";
+$html .= "/>" . addTooltip(_("Enable public enrollment of teams")) . "</td></tr>";
 $html .= "<tr><td class='infocell'>" . _("Enrolling ends") . "<br/>(" . _("only informational") . "): </td>";
 $html .= "<td>" . getCalendarInput('enrollendtime', ShortDate($sp['enroll_deadline'])) . "</td></tr>";
 
@@ -268,7 +268,7 @@ if ($sp['iscurrent']) {
   "</td><td>" .
     $html .= "checked='checked'";
 }
-$html .= "/>" . addTooltip(_("Display to the public'")) . "</td></tr>";
+$html .= "/>" . addTooltip(_("Display to the public")) . "</td></tr>";
 
 $html .= "</table>\n";
 if (empty($seasonId)) {

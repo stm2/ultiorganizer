@@ -210,7 +210,7 @@ if (!empty($_POST['confirm_remove_all_season'])) {
 } elseif (!empty($_POST['remove_all_season'])) {
   $admins = SeasonAdmins($seasonId);
   $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=$seaLink'>";
-  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %s season admins?"), count($admins)) . "</p>";
+  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %d season admins?"), count($admins)) . "</p>";
   $html .= "<p><input class='button' name='confirm_remove_all_season' type='submit' value='" . _("Yes") . "'/>";
   $html .= "<input class='button' name='cancel' type='submit' value='" . _("No") . "'/></p>";
   $html .= "</form>";
@@ -235,14 +235,14 @@ if (!empty($_POST['confirm_remove_all_season'])) {
 } elseif (!empty($_POST['remove_all_series'])) {
   $seriesAdmins = SeasonSeriesAdmins($seasonId);
   $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=$seaLink'>";
-  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %s division admins?"), count($seriesAdmins)) . "</p>";
+  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %d division admins?"), count($seriesAdmins)) . "</p>";
   $html .= "<p><input class='button' name='confirm_remove_all_series' type='submit' value='" . _("Yes") . "'/>";
   $html .= "<input class='button' name='cancel' type='submit' value='" . _("No") . "'/></p>";
   $html .= "</form>";
 } else if (!empty($_POST['remove_all_teams'])) {
   $teamAdmins = SeasonTeamAdmins($seasonId, false);
   $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=$seaLink'>";
-  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %s team admins?"), count($teamAdmins)) . "</p>";
+  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %d team admins?"), count($teamAdmins)) . "</p>";
   $html .= "<p><input class='button' name='confirm_remove_all_teams' type='submit' value='" . _("Yes") . "'/>";
   $html .= "<input class='button' name='cancel' type='submit' value='" . _("No") . "'/></p>";
   $html .= "</form>";
@@ -266,7 +266,7 @@ if (!empty($_POST['confirm_remove_all_season'])) {
 } else if (!empty($_POST['remove_all_scorekeepers'])) {
   $scorekeepers =  count(SeasonReservationGameAdmins($seasonId, true)) + count(SeasonGameAdmins($seasonId, true));
   $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=$seaLink'>";
-  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %s scorekeepers?"), $scorekeepers) . "</p>";
+  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %d scorekeepers?"), $scorekeepers) . "</p>";
   $html .= "<p><input class='button' name='confirm_remove_all_scorekeepers' type='submit' value='" . _("Yes") . "'/>";
   $html .= "<input class='button' name='cancel' type='submit' value='" . _("No") . "'/></p>";
   $html .= "</form>";
@@ -304,7 +304,7 @@ if (!empty($_POST['confirm_remove_all_season'])) {
 } else if (!empty($_POST['remove_all_accradmins'])) {
   $accradmins = SeasonAccreditationAdmins($seasonId, false);
   $html .= "<form method='post' action='?view=admin/addseasonusers&amp;season=$seaLink'>";
-  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %s accreditation admins?"), count($accradmins)) . "</p>";
+  $html .= "<p>" . sprintf(_("Are you sure you want to remove all %d accreditation admins?"), count($accradmins)) . "</p>";
   $html .= "<p><input class='button' name='confirm_remove_all_accradmins' type='submit' value='" . _("Yes") . "'/>";
   $html .= "<input class='button' name='cancel' type='submit' value='" . _("No") . "'/></p>";
   $html .= "</form>";
@@ -469,7 +469,7 @@ foreach ($admins as $user) {
   $html .= "<td style='width:75px'>" . userLink($user['userid']) . "</td><td>"
     . utf8entities($user['name']) . " (" . mailto_link($user['email'], $user['name'], $user['email'], $seasonName) . ")</td>";
   if ($user['games'] == count($seasongames)) {
-    $html .= "<td>" . sprintf(_("All %s games"), count($seasongames)) . "</td>";
+    $html .= "<td>" . sprintf(_("All %d games"), count($seasongames)) . "</td>";
   } else {
     $html .= "<td colspan='2'>" . sprintf(_("%s games"), $user['games']) . "</td>";
   }
