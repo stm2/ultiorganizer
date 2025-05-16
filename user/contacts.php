@@ -72,11 +72,11 @@ foreach ($series as $row) {
     $html .= "<li><b>" . utf8entities($seriesName) . "</b>\n";
     $admins = SeriesAdmins($row['series_id']);
     $all = [];
+    $html .= "  <ul>";
     $found = 0;
     foreach ($admins as $user) {
       if (!empty($user['email'])) {
-        if ($found++ == 0)
-          $html .= "  <ul>";
+        $found++;
         $html .= "  <li>" . utf8entities($user['name']) . " (" .
           mailto_link($user['email'], $user['name'], $emaillink, $seriesName) . ", " .
           dm_link([$user['email'], $user['name']], $seriesName) . ")</li>\n";
@@ -84,9 +84,6 @@ foreach ($series as $row) {
         $seasonAdmins[$user['email']] = $user;
       }
     }
-    if ($found)
-      $html .= "</ul>";
-    $html .= "</li>\n";
     if (empty($all)) {
       $html .= "<li>" . utf8entities(_("No admins known")) . "</li>\n";
     } else {
@@ -96,6 +93,8 @@ foreach ($series as $row) {
 
       $html .= "<li>" . utf8entities(_("All admins")) . " ($mailtoall, " . dm_link($all, $subject) . ")</li>\n";
     }
+    $html .= "</ul>";
+    $html .= "</li>\n";
   }
 }
 
@@ -150,12 +149,14 @@ foreach ($series as $row) {
     $resp = SeriesTeamResponsibles($row['series_id']);
     if (!empty($resp)) {
       $emails = [];
-      $resp = array_filter($resp,
+      $resp = array_filter(
+        $resp,
         function ($row) use (&$emails) {
           $ret = !isset($emails[$row['email']]);
           $emails[$row['email']] = true;
           return $ret;
-        });
+        }
+      );
 
       $subject = U_($row['name']);
       $html .= "<li>" . utf8entities(sprintf(_("All %d team admins in %s"), count($resp), $subject)) . " (<a href='" .
@@ -166,4 +167,3 @@ foreach ($series as $row) {
 $html .= "</ul>\n";
 
 showPage($title, $html);
-?>
