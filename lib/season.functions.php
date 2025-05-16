@@ -465,7 +465,7 @@ function SeasonAllGames($season) {
 function SeasonTeamAdmins($seasonId, $group = false) {
   if (isSeasonAdmin($seasonId)) {
     if ($group) {
-      $namefield = "COUNT (*) AS teams";
+      $namefield = ", COUNT(*) AS teams";
       $groupclause = " GROUP BY u.userid";
       $orderclause = "ORDER BY u.userid";
     } else {
