@@ -410,6 +410,7 @@ if ($importstage == 3) {
     return [$ranks[$a['location']], $a['starttime'], $a['fieldname']] <=> [$ranks[$b['location']], $b['starttime'], $b['fieldname']];
   });
 
+  // split multi-day events into single day events
   $events = $importDivision['events'];
   $all_events = [];
   foreach ($events as $event) {
@@ -441,6 +442,8 @@ if ($importstage == 3) {
     return $d1;
   });
 
+  // $debug = print_r(['reservations' => $reservations, 'events' => $events, 'all_events' => $all_events], true);
+
   $resNum = 0;
   $dateIds = array();
   $prevLocation = $prevStart = null;
@@ -470,7 +473,7 @@ if ($importstage == 3) {
       ++$resNum;
       $place = $res['location_name'];
       $size = $rsizes[$res['location']][$res['date']];
-      $start = $res['starttime'];
+      $resStart = $res['starttime'];
 
       $newplace = $event['name'] . " - " . $event['city'];
       $newlocation = DBResourceToArray(getLocations('exact_name', $event['city']));
@@ -485,7 +488,7 @@ if ($importstage == 3) {
       $lname = $res['location_name'];
 
       // $html .= "<div style='display: flex; flex-flow: row wrap'><label><p>" .
-      //   sprintf("Reservation %s (%s, %s, %s) mapped to %s", $resNum, $place, $size, $start, $newplace)
+      //   sprintf("Reservation %s (%s, %s, %s) mapped to %s", $resNum, $place, $size, $resStart, $newplace)
       //   . "</p></label>"; // $newplace, $newstart, $newlocation
       // $html .= LocationInput2($rlid, 'rlocations', $lname, $locId2);
       // // $html .= "<div style='flex: 1 1 0%'><input class='input' name='newlocations[]' value='$newLocationName' /> ($newLocationAddress)</div>";
@@ -495,15 +498,39 @@ if ($importstage == 3) {
 
     $modres = $modified_import_data['reservations'][$rid];
 
-    $modres['location'] = $newLocationId;
-    $newDate = (new DateTime($modres['starttime']))->add(
-      (new DateTime((new DateTime($start))->format('m/d/Y'))
-      )->diff(
-        new DateTime($event['startDate'])
 
-      )
-    );
+    $modres['location'] = $newLocationId;
+
+    $resDay = (new DateTime($resStart))->format('Y-m-d');
+    $firstDay = (new DateTime($event['startDate']))->format('Y-m-d');
+    $resDayTime = new DateTime($resDay);
+    $firstDayTime = new DateTime($firstDay);
+
+    // FIXME instead isolate the game days of reservations and event, map them and apply res start times
+    // Calculate the difference (interval) between $resStart and $firstDay
+    $diff = $resDayTime->diff($firstDayTime);
+    $diffDays = $diff->days;
+
+    // Add the difference to $startTime
+    $newDate = (new DateTime($modres['starttime']));
+    $newDate->modify("+$diffDays days");
+
+    $modres0 = $modres;
     $modres['starttime'] = EpocToMysql($newDate->getTimestamp());
+    // $debug .= print_r([
+    //   'modres' => $modres0,
+    //   'start' => $resStart,
+    //   'eventDate' => $event['startDate'],
+    //   'resDay' => $resDay,
+    //   'firstDay' => $firstDay,
+    //   'resdayTime' => $resDayTime,
+    //   'firstdayTime' => $firstDayTime,
+    //   'diff' => $diff,
+    //   'starttime' => $modres['starttime'],
+    //   'newDate' => $newDate,
+    //   'newstart' => $newDate->format('Y-m-d H:i:s'),
+    //   'newtime' => $modres['starttime']
+    // ], true);
     $modres['reservationgroup'] = $resgroup;
 
     $modified_import_data['reservations'][$rid] = $modres;
@@ -608,6 +635,10 @@ if ($importstage > 0 && $importstage < 4) {
 
 $html .= "<input type='hidden' name='importstage' value='$importstage'>\n";
 $html .= "</form>\n";
+
+// $html .= "<div id='debug' style='display:block; white-space:pre'>";
+// $html .= $debug;
+// $html .= "</div>";
 
 $html .= $scripts;
 
