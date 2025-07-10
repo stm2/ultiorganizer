@@ -740,19 +740,19 @@ function setTranslationAdmin($userid, $value) {
 }
 
 function isSuperAdminByUserid($userid) {
-  if (hasEditUsersRight()) {
-    $query = sprintf("SELECT * FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='superadmin'",
-      mysql_adapt_real_escape_string($userid));
-    $result = mysql_adapt_query($query);
-    if (!$result) {
-      die('Invalid query: ' . mysql_adapt_error());
-    }
+  $query = sprintf(
+    "SELECT * FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='superadmin'",
+    mysql_adapt_real_escape_string($userid)
+  );
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
 
-    if ($row = mysqli_fetch_assoc($result)) {
-      return true;
-    } else {
-      return false;
-    }
+  if ($row = mysqli_fetch_assoc($result)) {
+    return true;
+  } else {
+    return false;
   }
 }
 
