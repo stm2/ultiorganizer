@@ -1,9 +1,25 @@
-<?php 
+<?php
 
-function EventCategories(){
-	return array("security","user","enrolment","club","team","player","season","series","pool","game","media");
-	}
-	
+function EventCategories() {
+  return array(
+    "security",
+    "user",
+    "club",
+    "country",
+    "database",
+    "enrolment",
+    "game",
+    "mail",
+    "Media",
+    "player",
+    "pool",
+    "season",
+    "series",
+    "spirit",
+    "team",
+  );
+}
+
 function LogEvent($event){
 		if(empty($event['id1']))
 			$event['id1']="";

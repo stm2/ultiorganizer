@@ -5,6 +5,7 @@ include_once $include_prefix . 'lib/team.functions.php';
 include_once $include_prefix . 'lib/reservation.functions.php';
 include_once $include_prefix . 'lib/logging.functions.php';
 include_once $include_prefix . 'lib/common.functions.php';
+include_once $include_prefix . 'lib/mail.interface.php';
 
 // include_once $include_prefix.'lib/configuration.functions.php';
 function FailRedirect($user, $query = '') {
@@ -1390,7 +1391,7 @@ function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $me
   global $serverConf;
   $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
-  if (!mail($newEmail, _("Confirm your account to ultiorganizer"), $message, $headers)) {
+  if (!sendMail($newEmail, _("Confirm your account to ultiorganizer"), $message, $headers)) {
     $query = sprintf("DELETE FROM uo_registerrequest WHERE userid='%s'", mysql_adapt_real_escape_string($newUsername));
     $result = mysql_adapt_query($query);
     if (!$result) {
@@ -1442,7 +1443,7 @@ function AddExtraEmailRequest($userid, $extraEmail, $message = 'verify_email.txt
   global $serverConf;
   $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
-  if (!mail($extraEmail, _("Confirm extra email address for ultiorganizer"), $message, $headers)) {
+  if (!sendMail($extraEmail, _("Confirm extra email address for ultiorganizer"), $message, $headers)) {
     $query = sprintf("DELETE FROM uo_extraemailrequest WHERE token='%s'", mysql_adapt_real_escape_string($token));
     $result = mysql_adapt_query($query);
     if (!$result) {
@@ -1837,7 +1838,7 @@ function UserRecoverPasswordRequest($userId) {
     global $serverConf;
     $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
-    if (mail($email, _("Password recovery request"), $message, $headers)) {
+    if (sendMail($email, _("Password recovery request"), $message, $headers)) {
       return true;
     } else {
       return false;
@@ -1874,9 +1875,12 @@ function UserResetPassword($userId) {
     global $serverConf;
     $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
-    if (mail($email, _("New password to ultiorganizer"), $message, $headers)) {
-      $query = sprintf("UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'",
-        mysql_adapt_real_escape_string($password), mysql_adapt_real_escape_string($userId));
+    if (sendMail($email, _("New password to ultiorganizer"), $message, $headers)) {
+      $query = sprintf(
+        "UPDATE uo_users SET password=MD5('%s') WHERE userid='%s'",
+        mysql_adapt_real_escape_string($password),
+        mysql_adapt_real_escape_string($userId)
+      );
       $result = mysql_adapt_query($query);
       if (!$result) {
         die('Invalid query: ' . mysql_adapt_error());

@@ -18,5 +18,4 @@ define('WORD_DELIMITER', '/([\;\,\-_\s\/\.])/');
 
 define('ENABLE_ADMIN_DB_ACCESS', 'disabled');
 
-?>
 

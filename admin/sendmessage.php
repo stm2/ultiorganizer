@@ -1,4 +1,7 @@
 <?php
+
+include_once 'lib/mail.interface.php';
+
 $title = _("Send message");
 $html = "";
 
@@ -11,12 +14,12 @@ $message = iget('message');
 if (isset($_POST['send'])) {
   $message = $_POST['message'] ?? "";
   $subject = $_POST['subject'] ?? "";
-  if (empty($message) && empty($subject)) {
-    $html .= "<p class='warning'>" . _("You must provide a message or a subject.") . "</p>\n";
+  if (empty($message) || empty($subject)) {
+    $html .= "<p class='warning'>" . _("You must provide a message and a subject.") . "</p>\n";
   } else {
-    $html .= "<p>Sending message from " . utf8entities(UserInfo($_SESSION['uid'])['name']) . " to " .
-      utf8entities(iget('recipients')) . "):</p><div style='white-space: pre-wrap;'>" .
-      utf8entities(print_r($_POST, true)) . "</div>";
+    // $html .= "<p>Sending message from " . utf8entities(UserInfo($_SESSION['uid'])['name']) . " to " .
+    //   utf8entities(iget('recipients')) . "):</p><div style='white-space: pre-wrap;'>" .
+    //   utf8entities(print_r($_POST, true)) . "</div>";
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
 
@@ -24,16 +27,19 @@ if (isset($_POST['send'])) {
     $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
     Log2("mail", "send", count($recipients) . " recipients: $subject");
+    $clean = true;
     foreach ($recipients as $row) {
       $mail = $row['email'];
       $who = $row['name'];
-      if (mail($mail, $subject, $message, $headers)) {
-        $html .= "<p>" . sprintf(_("Message sent to %s"), utf8entities($who)) . "</p>\n";
-        $message = $subject = "";
+      if (sendMail($mail, $subject, $message, $headers)) {
+        $html .= "<p>" . sprintf(_("Message sent to %s."), utf8entities($who)) . "</p>\n";
       } else {
-        $html .= "<p class='warning'>" . sprintf(_("Message could not be sent to %s"), utf8entities($who)) . "!</p>\n";
+        $html .= "<p class='warning'>" . sprintf(_("Message could not be sent to %s."), utf8entities($who)) . "</p>\n";
+        $clean = false;
       }
     }
+    if ($clean)
+      $message = $subject = "";
   }
 }
 
@@ -64,4 +70,3 @@ $html .= "<input class='button' name='send' type='submit' value='" . utf8entitie
 $html .= "</form>";
 
 showPage($title, $html);
-
