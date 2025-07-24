@@ -24,13 +24,15 @@ if (!empty($_POST['save'])) {
     } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
       $message .= "<p>" .
         _(
-          "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize registration, before you can use the account.") .
+          "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize registration, before you can use the account."
+        ) .
         "</p>\n";
       $mailsent = true;
     } else {
       $message .= "<p class='warning'>" .
         _(
-          "The confirmation e-mail could not be sent. There may be a problem with your e-mail address or this might be a temporary error. In the latter case you can try again later.") .
+          "The confirmation e-mail could not be sent. There may be a problem with your e-mail address or this might be a temporary error. In the latter case you can try again later."
+        ) .
         "<p>\n";
       $error = 2;
     }
@@ -38,6 +40,34 @@ if (!empty($_POST['save'])) {
 
   if ($error > 0) {
     $message .= "<p>" . _("Please correct the errors and try again") . ".</p>\n";
+  }
+}
+
+if ($_GET['resend'] ?? false) {
+  // resend confirmation mail
+  $request = getRegisterRequestByEmail($_GET['email'] ?? '');
+  $max_delta = 60;
+  if ($request) {
+    $delta = getNow() - strtotime($request['last_login']);
+    if ($delta > $max_delta) {
+      AddRegisterRequest($request['userid'], $request['password'], $request['name'], $request['email']);
+      $message =
+        "<p>" . sprintf(_("A new confirmation e-mail has been sent to the e-mail address '%s'."), $_GET['email']) . "</p>\n" .
+        "<p>" . _("Please follow the link in the e-mail to finalize registration, before you can use the account.") . "</p>\n";
+    } else {
+      $message = "<p class='warning'>" .
+        sprintf(_("You can request a new confirmation e-mail in %d minutes %d seconds."), ($max_delta - $delta) / 60, ($max_delta - $delta) % 60) .
+        "<a href='?view=register&resend=1&email=" . urlencode($_GET['email']) . "'>" . _("Request new e-mail") . "</a></p>\n";
+    }
+    showPage($title, $message);
+    exit;
+  } elseif (isset($_GET['email']) && !empty($_GET['email'])) {
+    $message = "<p class='warning'>" . sprintf(
+      _("No registration request found for the e-mail address '%s'."),
+      $_GET['email']
+    ) . "</p>\n";
+  } else {
+    $message = "<p class='warning'>" . _("No registration request found for the given e-mail address.") . "</p>\n";
   }
 }
 
@@ -57,14 +87,16 @@ if (!empty($_GET['token'])) {
 // help
 $help = "<p>" .
   _(
-    "Registration is only needed for event organizers, team contact persons, and players needing to create or change data in system.") .
+    "Registration is only needed for event organizers, team contact persons, and players needing to create or change data in system."
+  ) .
   " ";
 $help .= _("Registration process:") . "</p>
 	<ol>
 		<li> " . _("Fill your registration information in fields below.") . "</li>
 		<li> " .
   _(
-    "A confirmation e-mail will be sent immediately to the e-mail address provided. (Note that confirmation e-mail can be incorrectly filterd as spam by your e-mail client and in this case you can find it in the spam folder instead of your inbox.)") .
+    "A confirmation e-mail will be sent immediately to the e-mail address provided. (Note that confirmation e-mail can be incorrectly filterd as spam by your e-mail client and in this case you can find it in the spam folder instead of your inbox.)"
+  ) .
   "</li>
 		<li> " . _("Follow the link in the e-mail to confirm your registration.") . "</li>
 	</ol>";
@@ -85,7 +117,7 @@ if (!$confirmed && !$mailsent) {
   } else {
     $query_string = "view=frontpage";
   }
-  
+
   $html .= "<form method='post' action='?view=register";
   $html .= "'>\n";
   $html .= "<table class='formtable'>
@@ -126,7 +158,9 @@ if (!$confirmed && !$mailsent) {
   $html .= "<td class='infocell'><label for='confirm_privacy'>" .
     utf8entities(
       _(
-        "I accept the privacy policy. I agree that this site stores my personal data (including name and e-mail given above) as declared in the privacy policy.")) .
+        "I accept the privacy policy. I agree that this site stores my personal data (including name and e-mail given above) as declared in the privacy policy."
+      )
+    ) .
     "</label></td></tr>\n";
 
   $html .= "<tr><td colspan='2' align='right'><br/>
@@ -135,11 +169,9 @@ if (!$confirmed && !$mailsent) {
 
   $html .= "<tr><td colspan='2'>" . _("Already have an account:") . " <a class='topheaderlink' href='?view=login&amp;query=" .
     urlencode($query_string) . "'>" . utf8entities(_("Login")) . "</a></td></tr>\n";
-    
+
   $html .= "</table>\n";
   $html .= "</form>";
 }
 
 showPage($title, $html);
-
-?>

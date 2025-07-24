@@ -1,6 +1,6 @@
-This email has been sent to you as a response to a request to register at $ultiorganizer.
-
-Please follow the link below or cut-and-paste it to a browser address bar to confirm your
-registration 
+Diese E-Mail wurde gesendet, weil jemand versucht hat, den Benutzer mit dem Namen $username auf $ultiorganizer zu registrieren.
+Wenn Sie das waren, folgen Sie bitte dem folgenden Link oder kopieren die Adresse in einen Webbrowser um ihre Registrierung abzuschließen.
 
 $url
+
+Falls Sie die Registrierung nicht veranlasst haben, handelt es sich um einen Fehler und Sie brauchen nichts zu tun.

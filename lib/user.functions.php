@@ -367,8 +367,15 @@ function UserValidPassword($newPassword1, $newPassword2) {
   return $message;
 }
 
-function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEmail, $checkDuplicate = false,
-  $checkPw = true) {
+function UserValid(
+  $newUsername,
+  $newPassword1,
+  $newPassword2,
+  $newName,
+  $newEmail,
+  $checkDuplicate = false,
+  $checkPw = true
+) {
   $html = "";
   if (empty($newUsername) || strlen($newUsername) < 3 || strlen($newUsername) > 30) {
     $html .= "<p class='warning'>" . sprintf(_("Username is too short or too long (between %d and %d letters.)"), 3, 30) .
@@ -379,6 +386,23 @@ function UserValid($newUsername, $newPassword1, $newPassword2, $newName, $newEma
 
   if ($uidcheck != $newUsername || preg_match('/[ ]/', $newUsername) || preg_match('/[^a-z0-9._]/i', $newUsername)) {
     $html .= "<p class='warning'>" . _("User id may not have spaces or special characters") . ".</p>";
+  }
+
+  $request = getRegisterRequestByEmail($newEmail);
+  if ($request) {
+    $html .= "<p class='warning'>" .
+      sprintf(_("There is already a pending registration request for email %s. Please check your email for the confirmation link."), $newEmail) .
+      "</p>";
+    $delta = getNow() - strtotime($request['last_login']);
+    $max_delta = 60;
+    if ($delta > $max_delta) {
+      $html .= "<p><a href='?view=register&resend=true&email=" . urlencode($newEmail) . "'>" .
+        _("Click here to resend the confirmation email") . "</a></p>";
+    } else {
+      $html .= "<p><a href='?view=register&resend=true&email=" . urlencode($newEmail) . "'>" .
+        sprintf(_("Click here in %d minutes %d seconds to resend the confirmation email."), ($max_delta - $delta) / 60, ($max_delta - $delta) % 60) . "</a></p>";
+    }
+    return $html;
   }
 
   if ($checkDuplicate && (IsRegistered($newUsername) || $newUsername === "anonymous")) {
@@ -1287,7 +1311,7 @@ function GetTeamAdmins(int $teamId) {
  * @param string $teamId
  * @return boolean
  */
-function AddTeamAdmin(string $userId, int $teamId) : bool {
+function AddTeamAdmin(string $userId, int $teamId): bool {
   $seriesId = getTeamSeries($teamId);
   if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
     $role = "teamadmin:$teamId";
@@ -1315,7 +1339,7 @@ function AddTeamAdmin(string $userId, int $teamId) : bool {
   }
 }
 
-function RemoveTeamAdmin(string $userId, int $teamId) : bool {
+function RemoveTeamAdmin(string $userId, int $teamId): bool {
   $seriesId = getTeamSeries($teamId);
   if (hasEditUsersRight() || hasEditSeriesRight($seriesId)) {
     $role = "teamadmin:$teamId";
@@ -1370,21 +1394,41 @@ function DeleteRegisterRequest(string $userId) {
 function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $message = 'register.txt') {
   Log1("user", "add", $newUsername, "", "register request");
   $token = uuidSecure();
-  $query = sprintf(
-    "INSERT INTO uo_registerrequest (userid, password, name, email, token, last_login) VALUES ('%s', MD5('%s'), '%s', '%s', '%s', NOW())",
-    mysql_adapt_real_escape_string($newUsername), mysql_adapt_real_escape_string($newPassword),
-    mysql_adapt_real_escape_string($newName), mysql_adapt_real_escape_string($newEmail),
-    mysql_adapt_real_escape_string($token));
-  $result = mysql_adapt_query($query);
-  if (!$result) {
-    die('Invalid query: ' . mysql_adapt_error());
+
+  $request = getRegisterRequestByEmail($newEmail);
+  if ($request) {
+    // update existing request
+    $query = sprintf(
+      "UPDATE uo_registerrequest SET token='%s', last_login=NOW() WHERE email='%s' ",
+      mysql_adapt_real_escape_string($token),
+      mysql_adapt_real_escape_string($request['email'])
+    );
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
+  } else {
+    // create new request
+    $query = sprintf(
+      "INSERT INTO uo_registerrequest (userid, password, name, email, token, last_login) VALUES ('%s', MD5('%s'), '%s', '%s', '%s', NOW())",
+      mysql_adapt_real_escape_string($newUsername),
+      mysql_adapt_real_escape_string($newPassword),
+      mysql_adapt_real_escape_string($newName),
+      mysql_adapt_real_escape_string($newEmail),
+      mysql_adapt_real_escape_string($token)
+    );
+    $result = mysql_adapt_query($query);
+    if (!$result) {
+      die('Invalid query: ' . mysql_adapt_error());
+    }
   }
+
   $message = file_get_contents('locale/' . GetSessionLocale() . '/LC_MESSAGES/' . $message);
 
   // for IIS
   $url = GetURLBase() . "?view=register&token=" . urlencode($token);
 
-  $message = str_replace(array('$url', '$ultiorganizer'), array($url, _("Ultiorganizer")), $message);
+  $message = str_replace(array('$url', '$ultiorganizer', '$username'), array($url, _("Ultiorganizer"), $newUsername), $message);
   $headers = "MIME-Version: 1.0" . "\r\n";
   $headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
 
@@ -1401,6 +1445,28 @@ function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $me
   } else {
     return true;
   }
+}
+
+function ResendRegisterRequest($email) {
+  $request = getRegisterRequestByEmail($email);
+  if ($request) {
+    $delta = getNow() - strtotime($request['last_login']);
+    if ($delta > $max_delta) {
+    }
+  }
+}
+
+function getRegisterRequestByEmail($email) {
+  $email = mysql_adapt_real_escape_string(strtolower($email));
+  $query = sprintf("SELECT * FROM uo_registerrequest WHERE email='%s'", $email);
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    die('Invalid query: ' . mysql_adapt_error());
+  }
+  if ($row = mysqli_fetch_assoc($result)) {
+    return $row;
+  }
+  return false;
 }
 
 function emailUsed($email) {
