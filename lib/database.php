@@ -64,6 +64,19 @@ function CheckDB() {
   }
 }
 
+function getNow() {
+  $query = "SELECT NOW() as now";
+  $result = mysql_adapt_query($query);
+  if (!$result) {
+    die('Invalid query: ("' . $query . '")' . "<br/>\n" . mysql_adapt_error());
+  }
+  if ($row = mysqli_fetch_assoc($result)) {
+    return strtotime($row['now']);
+  } else {
+    return null;
+  }
+}
+
 /**
  * Starts a transaction.
  */
