@@ -1642,6 +1642,33 @@ function dm_link(array $recipients, string $subject = null, string $message = nu
   return "<a href='$encode'>$text</a>";
 }
 
+/**
+ * Obfuscate an email address for display:
+ * Shows first and last letter of user, first and last letter of domain, * in between.
+ * Example: j***e@d***n.com
+ */
+function obfuscateEmail($email) {
+  if (empty($email)) return '';
+  $parts = explode('@', $email);
+  if (count($parts) != 2) return $email;
+  list($user, $domain) = $parts;
+
+  // Obfuscate user part
+  $userObf = strlen($user) > 2
+    ? $user[0] . str_repeat('*', strlen($user) - 2) . $user[strlen($user) - 1]
+    : $user;
+
+  // Obfuscate domain part (before first dot)
+  $domainParts = explode('.', $domain, 2);
+  $dom = $domainParts[0];
+  $domObf = strlen($dom) > 2
+    ? $dom[0] . str_repeat('*', strlen($dom) - 2) . $dom[strlen($dom) - 1]
+    : $dom;
+  $rest = isset($domainParts[1]) ? '.' . $domainParts[1] : '';
+
+  return $userObf . '@' . $domObf . $rest;
+}
+
 function almostSecureRandom($min, $max) {
   if ($max - $min < 0 || $max - $min > mt_getrandmax())
     die("invalid random number requested");

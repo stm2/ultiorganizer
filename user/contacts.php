@@ -17,17 +17,56 @@ if (!isset($links[$season]['?view=user/contacts&amp;season=' . urlencode($season
 }
 
 $seasonName = SeasonName($season);
-$emaillink = _("e-mail");
-$emaillinku = utf8entities(_("e-mail"));
+$emaillinku = '';
+if (hasViewUsersRight()) {
+  $emaillinku = utf8entities(_("e-mail"));
+}
+
 
 function mailtoall(array $all, string $subject) {
   global $emaillinku;
+  if (empty($emaillinku)) {
+    return "";
+  }
+
   $mailtoall = "";
   foreach ($all as $row) {
     $mailtoall .= mailto_address($row['email'], $row['name']) . ";";
   }
   $subject = utf8entities(rawurlencode($subject));
-  return "<a href='mailto:$mailtoall?subject=$subject'>$emaillinku</a>";
+  return "<a href='mailto:$mailtoall?subject=$subject'>$emaillinku</a>, ";
+}
+
+function mailtoone(string $email, string $name, string $subject) {
+  global $emaillinku;
+  if (empty($emaillinku)) {
+    return "";
+  }
+
+  if (!empty($emaillinku)) {
+    $mailto = "<a href='" . mailto_encode($email, $name, null, $subject) . "'>$emaillinku</a>, ";
+  }
+  return $mailto;
+}
+
+function user_item(array $user, string $subject) {
+  $html = "<li class='contact-user'>";
+  $html .= "<input type='checkbox' class='contact-user' name='recipients[]' value='" . $user['userid'] . "' />";
+  $html .= utf8entities($user['name']) . " ("
+    . mailtoone($user['email'], $user['name'], $subject)
+    . dm_link([['email' => $user['email'], 'name' => $user['name']]], $subject) . ") ";
+  $html .= "</li>\n";
+  return $html;
+}
+
+function users_item(array $users, string $subject) {
+  $html = "<li class='contact-category'>";
+  $html .= "<input type='checkbox' class='contact-category' name='recipients[]' value='" . implode(',', array_column($users, 'userid')) . "' />";
+  $html .= utf8entities(_("All organizers")) . " ("
+    . mailtoall($users, $subject)
+    . dm_link($users, $subject) . ") ";
+  $html .= "</li>\n";
+  return $html;
 }
 
 $html .= "<h2>" . utf8entities(_("Contacts")) . "</h2>\n";
@@ -37,28 +76,32 @@ if (isSeasonAdmin($season)) {
   $resp = SeasonTeamAdmins($season, true);
 
   if (!empty($resp)) {
-    $html .= "<p>" . sprintf(_("All %d users registered for the event"), count($resp)) . " (";
-    $html .= "<a href='" . mailto_encode($resp, 'email', 'name', $seasonName) . "'>$emaillinku</a>, ";
-    $html .= dm_link($resp, $seasonName) . ")</p>\n";
+    $html .= "<p>" . sprintf(_("All %d users registered for the event"), count($resp)) . " ("
+      . mailtoall($resp, $seasonName)
+      . dm_link($resp, $seasonName) . ")</p>\n";
   }
 }
 
 $html .= "<h3>" . utf8entities(_("Mail to Event Organizers")) . "</h3>\n";
 
+$html .= "<form action='?view=admin/sendmessage' method='post'>\n";
+
 $admins = SeasonAdmins($season);
 $html .= "<ul>";
 $all = [];
+$all_ids = [];
 foreach ($admins as $user) {
   if (!empty($user['email'])) {
-    $html .= "<li>" . utf8entities($user['name']) . " (" .
-      mailto_link($user['email'], $user['name'], $emaillink, $seasonName) . ", " .
-      dm_link([['email' => $user['email'], 'name' => $user['name']]], $seasonName) . ")</li>\n";
-    $all[] = ['email' => $user['email'], 'name' => $user['name']];
+    $html .= user_item($user, $seasonName, true);
+    $all[] = $user;
+    $all_ids[] = $user['userid'];
   }
 }
 $subject = $seasonName;
-$mailtoall = mailtoall($all, $subject);
-$html .= "<li>" . _("All organizers") . " ($mailtoall, " . dm_link($all, $subject) . ")</li>\n";
+
+if (count($all) > 1) {
+  $html .= users_item($all, $seasonName, true);
+}
 $html .= "</ul>\n";
 
 $html .= "<h3>" . utf8entities(_("Mail to Division Organizers")) . "</h3>\n";
@@ -72,15 +115,16 @@ foreach ($series as $row) {
     $html .= "<li><b>" . utf8entities($seriesName) . "</b>\n";
     $admins = SeriesAdmins($row['series_id']);
     $all = [];
+    $all_ids = [];
     $html .= "  <ul>";
     $found = 0;
     foreach ($admins as $user) {
       if (!empty($user['email'])) {
         $found++;
-        $html .= "  <li>" . utf8entities($user['name']) . " (" .
-          mailto_link($user['email'], $user['name'], $emaillink, $seriesName) . ", " .
-          dm_link([$user['email'], $user['name']], $seriesName) . ")</li>\n";
-        $all[] = ['email' => $user['email'], 'name' => $user['name']];
+
+        $html .= user_item($user, $seriesName, true);
+
+        $all[] = $user;
         $seasonAdmins[$user['email']] = $user;
       }
     }
@@ -89,9 +133,10 @@ foreach ($series as $row) {
     } else {
       $numSeries++;
       $subject = $seriesName;
-      $mailtoall = mailtoall($all, $subject);
 
-      $html .= "<li>" . utf8entities(_("All admins")) . " ($mailtoall, " . dm_link($all, $subject) . ")</li>\n";
+      if (count($all) > 1) {
+        $html .= users_item($all, $subject);
+      }
     }
     $html .= "</ul>";
     $html .= "</li>\n";
@@ -100,13 +145,16 @@ foreach ($series as $row) {
 
 if ($numSeries > 0) {
   $all = [];
+  $all_ids = [];
   foreach ($seasonAdmins as $user) {
     $all[] = ['email' => $user['email'], 'name' => $user['name']];
+    $all_ids[] = $user['userid'];
   }
   $subject = $seasonName;
 
-  $mailtoall = mailtoall($all, $subject);
-  $html .= "<li>" . utf8entities(_("All season admins")) . " ($mailtoall, " . dm_link($all, $subject) . ")</li>";
+  if (count($all) > 1) {
+    $html .= users_item($all, $subject);
+  }
 }
 
 $html .= "</ul>\n";
@@ -121,49 +169,45 @@ foreach ($series as $row) {
 
     $teams = SeriesTeams($row['series_id']);
     $found = 0;
+    $respUserObjs = [];
     foreach ($teams as $team) {
       if ($found++ == 0)
         $html .= "<ul>";
       $html .= "<li>" . utf8entities($team['name']) . ": ";
       $admins = GetTeamAdmins($team['team_id']);
+      $teamUserObjs = [];
       if (empty($admins)) {
         $html .= "---";
       } else {
         foreach ($admins as $user) {
           if (!empty($user['email'])) {
             $subject = $row['name'] . ", " . $team['name'];
-            $html .= utf8entities($team['name']) . " (" .
-              mailto_link($user['email'], $user['name'], _("E-mail"), $subject) . ", " .
-              dm_link([$user['email'], $user['name']], $subject) . "); ";
-            // $html .= " (".utf8entities($user['name']).")";
+            $html .= user_item($user, $subject);
+
+            $teamUserObjs[] = $user;
+            $respUserObjs[] = $user;
           }
         }
+      }
+      $subject = $team['name'];
+      if (!empty($teamUserObjs) && count($teamUserObjs) > 1) {
+        $html .= users_item($teamUserObjs, $subject);
       }
 
       $html .= "</li>\n";
     }
-    if ($found > 0)
+    if ($found > 0) {
       $html .= "</ul>\n";
+    }
     $html .= "</li>\n";
 
-    $resp = SeriesTeamResponsibles($row['series_id']);
-    if (!empty($resp)) {
-      $emails = [];
-      $resp = array_filter(
-        $resp,
-        function ($row) use (&$emails) {
-          $ret = !isset($emails[$row['email']]);
-          $emails[$row['email']] = true;
-          return $ret;
-        }
-      );
-
-      $subject = U_($row['name']);
-      $html .= "<li>" . utf8entities(sprintf(_("All %d team admins in %s"), count($resp), $subject)) . " (<a href='" .
-        mailto_encode($resp, 'email', 'name', $subject) . "'>$emaillinku</a>, " . dm_link($resp, $subject) . ")</li>";
+    if (!empty($respUserObjs) && count($respUserObjs) > 1) {
+      $html .= users_item($respUserObjs, $subject);
     }
   }
 }
 $html .= "</ul>\n";
+$html .= "<p><input class='button' type='submit' value='" . utf8entities(_("Send message to selected")) . "' /></p>\n";
+$html .= "</form>\n";
 
 showPage($title, $html);
