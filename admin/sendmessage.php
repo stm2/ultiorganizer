@@ -30,6 +30,13 @@ $message = iget('message');
 if (isset($_POST['send'])) {
   $message = $_POST['message'] ?? "";
   $subject = $_POST['subject'] ?? "";
+  // Sanitize subject: remove all newlines and carriage returns
+  $subject = str_replace(["\r", "\n"], " ", $subject);
+  // Optionally trim and limit subject length
+  $subject = trim($subject);
+  $subject = mb_substr($subject, 0, 200);
+  // Sanitize message: allow newlines, but remove any \r
+  $message = str_replace(["\r"], "", $message);
   if (empty($message) || empty($subject)) {
     $html .= "<p class='warning'>" . _("You must provide a message and a subject.") . "</p>\n";
   } else {
@@ -38,9 +45,24 @@ if (isset($_POST['send'])) {
     //   utf8entities(print_r($_POST, true)) . "</div>";
     $headers = "MIME-Version: 1.0" . "\r\n";
     $headers .= "Content-type: text/plain; charset=UTF-8" . "\r\n";
-
     global $serverConf;
     $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
+
+    // Sanitize CC and BCC inputs: split by comma, trim, and filter valid emails
+    $cc_raw = $_POST['cc'] ?? '';
+    $bcc_raw = $_POST['bcc'] ?? '';
+    $cc_list = array_filter(array_map('trim', explode(',', $cc_raw)), function ($email) {
+      return filter_var($email, FILTER_VALIDATE_EMAIL);
+    });
+    $bcc_list = array_filter(array_map('trim', explode(',', $bcc_raw)), function ($email) {
+      return filter_var($email, FILTER_VALIDATE_EMAIL);
+    });
+    if (!empty($cc_list)) {
+      $headers .= "Cc: " . implode(', ', $cc_list) . "\r\n";
+    }
+    if (!empty($bcc_list)) {
+      $headers .= "Bcc: " . implode(', ', $bcc_list) . "\r\n";
+    }
 
     Log2("mail", "send", count($recipients) . " recipients: $subject");
     $clean = true;
@@ -54,10 +76,16 @@ if (isset($_POST['send'])) {
         if (!$user) {
           $warning .= "<p class='warning'>" . sprintf(_("User %s not found."), utf8entities($row)) . "</p>\n";
         }
-        $mail = $user['email'] ?? "";
-        $who = $user['name'] ?? $row;
+        // Sanitize and validate user info
+        $mail = isset($user['email']) ? str_replace(["\r", "\n"], "", $user['email']) : "";
+        if (!empty($mail) && !filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+          $warning .= "<p class='warning'>" . sprintf(_("Invalid email for user %s: %s"), utf8entities($row), utf8entities($mail)) . "</p>\n";
+          $mail = "";
+        }
+        $who = isset($user['name']) ? str_replace(["\r", "\n"], " ", $user['name']) : $row;
       }
       $html .= $warning;
+
       if (sendMail($mail, $subject, $message, $headers)) {
         $html .= "<p>" . sprintf(_("Message sent to %s."), utf8entities($who)) . "</p>\n";
       } else {
@@ -129,6 +157,14 @@ foreach ($recipients as $row) {
 }
 $html .= "</div>\n";
 $html .= $warning;
+
+$html .= "<h3>" . _("CC") . "</h3>\n";
+$html .= "<input class='input' size='50' maxlength='200' name='cc' value=''/><br />";
+$html .= "<p class='info'>" . _("Separate multiple addresses with commas.") . "</p>\n";
+
+$html .= "<h3>" . _("BCC") . "</h3>\n";
+$html .= "<input class='input' size='50' maxlength='200' name='bcc' value=''/><br />";
+$html .= "<p class='info'>" . _("Separate multiple addresses with commas.") . "</p>\n";
 
 $html .= "<h3>" . _("Subject") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='100' name='subject' value='$subject'/><br />";
