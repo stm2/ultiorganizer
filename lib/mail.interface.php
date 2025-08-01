@@ -44,3 +44,12 @@ function sendMail($to, $subject, $message, $headers = "") {
     return mail($to, $subject, $message, $headers);
   }
 }
+
+function getFromAddress() {
+  global $serverConf;
+  if (isset($serverConf['EmailSource']) && !empty($serverConf['EmailSource'])) {
+    return $serverConf['EmailSource'];
+  } else {
+    return "no-reply@" . $_SERVER['HTTP_HOST'];
+  }
+}

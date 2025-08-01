@@ -50,7 +50,7 @@ if (hasEditUsersRight()) {
 		if (isset($_POST['users'])) {
 			foreach ($_POST['users'] as $userid) {
 				if (UserResetPassword(urldecode($userid))) {
-					$html .= "<p>" . sprintf(_("Recovery request sent to %s."), utf8entities($userid)) . "</p>\n";
+					$html .= "<p>" . sprintf(_("Recovery request sent to %s. Make sure that you can receive mails from %s and the e-mail is not in your spam folder."), utf8entities($userid), getFromAddress()) . "</p>\n";
 				} else {
 					$html .= "<p class='warning'>" . sprintf(_("No recovery request sent to %s."), utf8entities($userid)) . "</p>\n";
 				}

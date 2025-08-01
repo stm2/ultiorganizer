@@ -23,8 +23,9 @@ if (!empty($_POST['save'])) {
       $error = 1;
     } else if (AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail)) {
       $message .= "<p>" .
-        _(
-          "The confirmation e-mail has been sent to the e-mail address provided. You have to follow the link in the e-mail to finalize registration, before you can use the account."
+        sprintf(
+          _("The confirmation e-mail has been sent to the e-mail address provided. Make sure that you can receive mails from %s and the e-mail is not in your spam folder. You have to follow the link in the e-mail to finalize registration, before you can use the account."),
+          getFromAddress()
         ) .
         "</p>\n";
       $mailsent = true;
@@ -45,26 +46,28 @@ if (!empty($_POST['save'])) {
 
 if ($_GET['resend'] ?? false) {
   // resend confirmation mail
-  $request = getRegisterRequestByEmail($_GET['email'] ?? '');
+  $request = getRegisterRequestByUserId($_GET['userid'] ?? '');
   $max_delta = 60;
   if ($request) {
     $delta = getNow() - strtotime($request['last_login']);
+    $message .=         "<p>" . sprintf(_("There is an existing registration request for the user '%s'."), $_GET['userid']) . "</p>\n";
+
     if ($delta > $max_delta) {
       AddRegisterRequest($request['userid'], $request['password'], $request['name'], $request['email']);
-      $message =
-        "<p>" . sprintf(_("A new confirmation e-mail has been sent to the e-mail address '%s'."), $_GET['email']) . "</p>\n" .
+      $message .=
+        "<p>" . sprintf(_("A new confirmation e-mail has been sent to the e-mail address registered for the user '%s'."), $_GET['userid']) . "</p>\n" .
         "<p>" . _("Please follow the link in the e-mail to finalize registration, before you can use the account.") . "</p>\n";
     } else {
-      $message = "<p class='warning'>" .
+      $message .= "<p class='warning'>" .
         sprintf(_("You can request a new confirmation e-mail in %d minutes %d seconds."), ($max_delta - $delta) / 60, ($max_delta - $delta) % 60) .
-        "<a href='?view=register&resend=1&email=" . urlencode($_GET['email']) . "'>" . _("Request new e-mail") . "</a></p>\n";
+        "<a href='?view=register&resend=1&userid=" . urlencode($request['userid']) . "'>" . _("Request new e-mail") . "</a></p>\n";
     }
     showPage($title, $message);
     exit;
-  } elseif (isset($_GET['email']) && !empty($_GET['email'])) {
+  } elseif (isset($_GET['userid']) && !empty($_GET['userid'])) {
     $message = "<p class='warning'>" . sprintf(
-      _("No registration request found for the e-mail address '%s'."),
-      $_GET['email']
+      _("No registration request found for the user ID '%s'."),
+      $_GET['userid']
     ) . "</p>\n";
   } else {
     $message = "<p class='warning'>" . _("No registration request found for the given e-mail address.") . "</p>\n";

@@ -1,4 +1,6 @@
 <?php
+require_once dirname(__FILE__) . '/lib/user.functions.php';
+
 if (IsRegistered($_SESSION['uid'])) {
   header("location:?view=frontpage");
 }
@@ -14,23 +16,23 @@ $html = "";
 $warning = "";
 
 function getResetForm($userId, $token) {
-  $html .= "<p>" . _("Please enter your new password below.") . "</p>\n";
+  $html = "<p>" . _("Please enter your new password below.") . "</p>\n";
   $html .= "<form method='post' action='?view=login&amp;user=" . utf8entities($userId) . "'>\n";
   $html .= "<table class='formtable'>
-		<tr><td class='infocell'>" . _("Username") . ":</td>
-			<td>" . $userId . "</td></tr>
-		<tr><td class='infocell'><label for='Password'>" . _("Password") .
+    <tr><td class='infocell'>" . _("Username") . ":</td>
+      <td>" . $userId . "</td></tr>
+    <tr><td class='infocell'><label for='Password'>" . _("Password") .
     "</label>:</td>
-			<td><input type='password' class='input' size='40' maxlength='20' id='Password' name='Password' value=''/></td></tr>
-		<tr><label for='Password2'><td class='infocell'>" . _("Repeat password") .
+      <td><input type='password' class='input' size='40' maxlength='20' id='Password' name='Password' value=''/></td></tr>
+    <tr><label for='Password2'><td class='infocell'>" . _("Repeat password") .
     "</label>:</td>
-			<td><input type='password' class='input' size='40' maxlength='20' id='Password2' name='Password2' value=''/></td></tr>";
+      <td><input type='password' class='input' size='40' maxlength='20' id='Password2' name='Password2' value=''/></td></tr>";
 
   $html .= "<tr><td colspan = '2'><br/>
-	      <input class='button' type='submit' name='changepw' value='" . _("Change password") .
+        <input class='button' type='submit' name='changepw' value='" . _("Change password") .
     "' />
-	      <input type='hidden' id='token' name='token' value='" . utf8entities($token) . "'/>
-	      </td></tr>\n";
+        <input type='hidden' id='token' name='token' value='" . utf8entities($token) . "'/>
+        </td></tr>\n";
   $html .= "</table>\n";
   $html .= "</form>";
   return $html;
@@ -42,8 +44,10 @@ if (isset($_POST['recoverpassword'])) {
     if (isset($_POST['email']) && $_POST['email']) {
       $userId = UserIdForMail($_POST['email']);
       $html .= "<p>" .
-        sprintf(_("If the address '%s' is registered, an email with further instructions was sent."),
-          utf8entities($_POST['email'])) . "</p>\n";
+        sprintf(
+          _("If the address '%s' is registered, an email with further instructions was sent."),
+          utf8entities($_POST['email'])
+        ) . "</p>\n";
     } else {
       $warning = "<p class='warning'>" . _("You must enter either a username or an registered email address.") . "</p>\n";
     }
@@ -52,8 +56,10 @@ if (isset($_POST['recoverpassword'])) {
     $ret = UserRecoverPasswordRequest($userId);
   }
   if ($userId && empty($html)) {
-    $html .= sprintf(_("If '%s' is a registered user, an email will be sent to the corresponding address."),
-      utf8entities($userId));
+    $html .= sprintf(
+      _("If '%s' is a registered user, an email will be sent to the corresponding address."),
+      utf8entities($userId)
+    );
   }
 }
 
@@ -87,7 +93,8 @@ if (!empty($_POST['changepw']) && !empty($userId)) {
     $html .= "<p>" .
       _(
         "Invalid or expired token.
-         Please <a href='login?failed=1&amp;user=$userId'>try again</a> or, if this problem persists, contact an administrator.") .
+         Please <a href='login?failed=1&amp;user=$userId'>try again</a> or, if this problem persists, contact an administrator."
+      ) .
       "</p>";
   }
 }
@@ -97,7 +104,8 @@ if (!empty($warning) || isset($_GET['recover'])) { // 1. recover request
   $html .= "<form method='post' action='?view=login&amp;user=" . urlencode($userId) . "'>\n";
   $html .= "<p>" .
     _(
-      "If you have forgotten your password, enter <em>either</em> your username <em>or</em> your email below. If we have your email address, you will receive an email with further instructions.") .
+      "If you have forgotten your password, enter <em>either</em> your username <em>or</em> your email below. If we have your email address, you will receive an email with further instructions."
+    ) .
     "</p>\n";
   $html .= "<table class='formtable'><tr><td class='infocell'><label for='user'>" . _("Username") . "</label>:</td>";
   $html .= "<td><input type='text' class='input' maxlength='20' size='40' id='user' name='user' value='" . utf8entities($userId) .
@@ -106,6 +114,15 @@ if (!empty($warning) || isset($_GET['recover'])) { // 1. recover request
   $html .= "<td><input type='text' class='input' maxlength='100' size='40' id='email' name='email' size='40' /></td></tr></table>\n";
   $html .= "<p><input class='button' type='submit' name='recoverpassword' value='" . _("Recover password") . "'/></p>\n";
   $html .= "</form>\n";
+}
+
+// Check if userId is a pending register request and redirect
+if ($userId) {
+  $registerRequest = getRegisterRequestByUserid($userId);
+  if ($registerRequest) {
+    header("Location: ?view=register&resend=1&userid=" . urlencode($registerRequest['userid']));
+    exit();
+  }
 }
 
 if (empty($html)) {
@@ -128,4 +145,3 @@ if (empty($html)) {
   $html .= loginForm($query_string, $userId);
 }
 showPage($title, $html);
-?>

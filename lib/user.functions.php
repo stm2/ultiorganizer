@@ -396,10 +396,10 @@ function UserValid(
     $delta = getNow() - strtotime($request['last_login']);
     $max_delta = 60;
     if ($delta > $max_delta) {
-      $html .= "<p><a href='?view=register&resend=true&email=" . urlencode($newEmail) . "'>" .
+      $html .= "<p><a href='?view=register&resend=1&userid=" . urlencode($request['userid']) . "'>" .
         _("Click here to resend the confirmation email") . "</a></p>";
     } else {
-      $html .= "<p><a href='?view=register&resend=true&email=" . urlencode($newEmail) . "'>" .
+      $html .= "<p><a href='?view=register&resend=1&userid=" . urlencode($request['userid']) . "'>" .
         sprintf(_("Click here in %d minutes %d seconds to resend the confirmation email."), ($max_delta - $delta) / 60, ($max_delta - $delta) % 60) . "</a></p>";
     }
     return $html;
@@ -1447,15 +1447,6 @@ function AddRegisterRequest($newUsername, $newPassword, $newName, $newEmail, $me
   }
 }
 
-function ResendRegisterRequest($email) {
-  $request = getRegisterRequestByEmail($email);
-  if ($request) {
-    $delta = getNow() - strtotime($request['last_login']);
-    if ($delta > $max_delta) {
-    }
-  }
-}
-
 function getRegisterRequestByEmail($email) {
   $email = mysql_adapt_real_escape_string(strtolower($email));
   $query = sprintf("SELECT * FROM uo_registerrequest WHERE email='%s'", $email);
@@ -1467,6 +1458,19 @@ function getRegisterRequestByEmail($email) {
     return $row;
   }
   return false;
+}
+
+// Helper to get register request by userid
+function getRegisterRequestByUserid($userid) {
+  $query = sprintf(
+    "SELECT * FROM uo_registerrequest WHERE userid='%s'",
+    mysql_adapt_real_escape_string($userid)
+  );
+  $result = mysql_adapt_query($query);
+  if ($result && ($row = mysqli_fetch_assoc($result))) {
+    return $row;
+  }
+  return null;
 }
 
 function emailUsed($email) {
