@@ -38,7 +38,7 @@ function sendMail($to, $subject, $message, $headers = "") {
   // Log2("mail", "send", "Sending mail to $to with subject: $subject");
 
   if ($serverConf['MailSimulate'] == "true") {
-    $log = "DATE: " . date('Y-m-d H:i:s') . "\nTO: $to\nSUBJECT: $subject\nHEADERS: $headers\nMESSAGE:\n$message\n----\n";
+    $log = "DATE: " . date('Y-m-d H:i:s') . "\nTO: $to\nSUBJECT: $subject\nHEADERS:\n$headers\nMESSAGE:\n$message\n----\n";
     return empty(file_put_contents($serverConf['MailSimulateFile'], $log, FILE_APPEND)) ? false : true;
   } else {
     return mail($to, $subject, $message, $headers);

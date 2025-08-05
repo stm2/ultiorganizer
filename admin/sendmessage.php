@@ -51,6 +51,16 @@ if (empty($recipients) && isset($_POST['recipients'])) {
 $subject = iget('subject');
 $message = iget('message');
 
+$replyto = '';
+$userinfo = UserInfo($_SESSION['uid']);
+if ($userinfo && !empty($userinfo['email']) && filter_var($userinfo['email'], FILTER_VALIDATE_EMAIL)) {
+  $replyto = $userinfo['email'];
+}
+
+$to_raw = $_POST['to'] ?? '';
+$cc_raw = $_POST['cc'] ?? '';
+$bcc_raw = $_POST['bcc'] ?? '';
+
 if (isset($_POST['send'])) {
   $message = $_POST['message'] ?? "";
   $subject = $_POST['subject'] ?? "";
@@ -65,9 +75,6 @@ if (isset($_POST['send'])) {
     }
   }
   // To/CC/BCC fields, pre-fill from posted values
-  $to_raw = $_POST['to'] ?? '';
-  $cc_raw = $_POST['cc'] ?? '';
-  $bcc_raw = $_POST['bcc'] ?? '';
   $to_list = array_filter(array_map('trim', explode(',', $to_raw)));
   $all_recipient_strings = array_merge($all_recipient_strings, $to_list);
   // Do not add cc/bcc to recipients; only use for headers
@@ -150,6 +157,9 @@ if (isset($_POST['send'])) {
     global $serverConf;
     $headers .= "From: " . $serverConf['EmailSource'] . "\r\n";
 
+    if ($replyto) {
+      $headers .= "Reply-To: $replyto\r\n";
+    }
 
     if (!empty($cc_header)) {
       $headers .= "Cc: " . implode(', ', $cc_header) . "\r\n";
@@ -248,6 +258,14 @@ $html .= "<p class='info'>" . _("Separate multiple addresses or user names with 
 $html .= "<h3>" . pgettext("sendmessage", "BCC") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='200' name='bcc' value='" . htmlspecialchars($bcc_raw, ENT_QUOTES, 'UTF-8') . "'/><br />";
 $html .= "<p class='info'>" . _("Separate multiple addresses or user names with commas.") . "</p>\n";
+
+if ($replyto) {
+  $username = $userinfo['name'] ?? $_SESSION['uid'];
+  $html .= "<h3>" . pgettext("sendmessage", "Reply-To") . "</h3>\n";
+  $html .= "<p>" . sprintf("%s &lt;%s&gt;", utf8entities($username), utf8entities($replyto)) . "</p>\n";
+} else {
+  $html .= "<p class='warning'>" . _("No Reply-To address set. Please check your user settings.") . "</p>\n";
+}
 
 $html .= "<h3>" . pgettext("sendmessage", "Subject") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='100' name='subject' value='$subject'/><br />";
