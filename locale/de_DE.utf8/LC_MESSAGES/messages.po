@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-23 22:56+0100\n"
+"POT-Creation-Date: 2025-08-05 13:53+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: ../../..\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.4.2\n"
 "X-Poedit-KeywordsList: pgettext:1c,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ext\n"
@@ -140,7 +140,7 @@ msgstr "Wert"
 #: admin/accreditation.php:116 admin/eventviewer.php:85 menufunctions.php:212
 #: user/addpolloption.php:201 user/enrollteam.php:87
 msgid "User"
-msgstr "Benutzer"
+msgstr "Konto"
 
 #: admin/accreditation.php:116 admin/eventviewer.php:87
 msgid "Source"
@@ -189,13 +189,17 @@ msgstr "Keine Reservierungen hinzugefügt."
 msgid "Add field reservation"
 msgstr "Feld-Reservierung hinzufügen"
 
-#: admin/addreservation.php:150 admin/reservations.php:95
+#: admin/addreservation.php:132
+msgid "Edit field reservation"
+msgstr "Feld-Reservierung hinzufügen"
+
+#: admin/addreservation.php:151 admin/reservations.php:95
 #: lib/data.functions.php:1824 lib/search.functions.php:802
 #: lib/timetable.functions.php:485
 msgid "Date"
 msgstr "Datum"
 
-#: admin/addreservation.php:150 admin/addseasons.php:252
+#: admin/addreservation.php:151 admin/addseasons.php:252
 #: admin/addseasons.php:255 lib/data.functions.php:1824
 #: lib/search.functions.php:262 lib/search.functions.php:268
 #: lib/search.functions.php:323 lib/search.functions.php:327
@@ -203,46 +207,46 @@ msgstr "Datum"
 msgid "dd.mm.yyyy"
 msgstr "TT.MM.JJJJ"
 
-#: admin/addreservation.php:161 lib/search.functions.php:262
+#: admin/addreservation.php:162 lib/search.functions.php:262
 #: lib/search.functions.php:323
 msgid "Start time"
 msgstr "Startzeit"
 
-#: admin/addreservation.php:161 admin/addreservation.php:165
+#: admin/addreservation.php:162 admin/addreservation.php:166
 msgid "hh:mm"
 msgstr "HH:MM"
 
-#: admin/addreservation.php:165 lib/search.functions.php:268
+#: admin/addreservation.php:166 lib/search.functions.php:268
 #: lib/search.functions.php:327
 msgid "End time"
 msgstr "Ende"
 
-#: admin/addreservation.php:175 lib/search.functions.php:275
+#: admin/addreservation.php:176 lib/search.functions.php:275
 msgid "Grouping name"
 msgstr "Gruppierungsname"
 
-#: admin/addreservation.php:177 admin/locations.php:181
+#: admin/addreservation.php:178 admin/locations.php:181
 #: admin/reservations.php:51
 msgid "Fields"
 msgstr "Felder"
 
-#: admin/addreservation.php:182
+#: admin/addreservation.php:183
 msgid "Enter separate field numbers (1,2,3) or multiple fields (1-30)"
 msgstr "Geben Sie Feldnummern an, z. B. 1,2,3 oder 1-30"
 
-#: admin/addreservation.php:192 admin/editgame.php:164
+#: admin/addreservation.php:193 admin/editgame.php:164
 #: admin/reservations.php:95 lib/search.functions.php:285
 #: lib/search.functions.php:355 lib/search.functions.php:802
 #: lib/search.functions.php:897
 msgid "Location"
 msgstr "Ort"
 
-#: admin/addreservation.php:195 admin/addreservation.php:210
+#: admin/addreservation.php:196 admin/addreservation.php:211
 #: admin/seasonadmin.php:26 teamcard.php:636
 msgid "Season"
 msgstr "Saison"
 
-#: admin/addreservation.php:218 admin/addseasonlinks.php:100
+#: admin/addreservation.php:219 admin/addseasonlinks.php:100
 #: admin/addseasonpoll.php:96 admin/addseasonpools.php:496
 #: admin/addseasons.php:277 admin/addseasonseries.php:131
 #: admin/addseasonteams.php:218 admin/addserieformats.php:182
@@ -250,8 +254,8 @@ msgstr "Saison"
 #: admin/locations.php:195 admin/seasongames.php:251 admin/seasonmoves.php:219
 #: admin/seasonpolls.php:95 admin/seasonpools.php:310
 #: admin/seasonseries.php:168 admin/seasonspirit.php:261
-#: admin/seasonstandings.php:537 admin/seasonteams.php:275
-#: admin/select_teams.php:119 admin/serieteams.php:230 admin/serverconf.php:235
+#: admin/seasonstandings.php:537 admin/seasonteams.php:277
+#: admin/select_teams.php:119 admin/serieteams.php:230 admin/serverconf.php:262
 #: admin/translations.php:137 mobile/addfirstoffence.php:45
 #: mobile/addhalftime.php:34 mobile/addofficial.php:25
 #: mobile/addplayerlists.php:126 mobile/addspiritpoints.php:55
@@ -261,26 +265,26 @@ msgstr "Saison"
 #: scorekeeper/addplayerlists.php:143 scorekeeper/addspiritpoints.php:60
 #: scorekeeper/addtimeouts.php:203 user/addmedialink.php:156
 #: user/addplayerlists.php:232 user/addpolloption.php:221
-#: user/addspirit.php:253 user/clubprofile.php:217 user/playerprofile.php:357
+#: user/addspirit.php:269 user/clubprofile.php:217 user/playerprofile.php:357
 #: user/respgames.php:229 user/teamplayers.php:270 user/teamprofile.php:176
 #: user/userinfo.php:274
 msgid "Save"
 msgstr "Speichern"
 
-#: admin/addreservation.php:220 admin/addseasonpoll.php:94
+#: admin/addreservation.php:221 admin/addseasonpoll.php:94
 #: admin/addseasonpools.php:263 admin/addseasons.php:275
 #: admin/addseasonseries.php:133 admin/addseasonteams.php:220
 #: admin/addserieformats.php:184 admin/adduser.php:91 admin/clubs.php:49
 #: admin/clubs.php:87 admin/locations.php:123 admin/poolmoves.php:355
 #: admin/seasonpools.php:306 admin/seasons.php:120 admin/seasonseries.php:161
-#: admin/seasonteams.php:248 admin/serieformats.php:49
-#: admin/translations.php:133 c.php:1902 lib/common.functions.php:1908
+#: admin/seasonteams.php:250 admin/serieformats.php:49
+#: admin/translations.php:133 lib/common.functions.php:1935
 #: user/addextraemail.php:88 user/addpolloption.php:223 user/enrollteam.php:143
 #: user/teamplayers.php:260 user/userinfo.php:355 user/userinfo.php:473
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: admin/addreservation.php:222 admin/addseasonpools.php:264
+#: admin/addreservation.php:223 admin/addseasonpools.php:264
 #: admin/addseasonpools.php:497 admin/addseasons.php:281
 #: admin/addseasonseries.php:135 admin/addseasonteams.php:224
 #: admin/addteamadmins.php:99 admin/dbbackup.php:119 admin/dbequalize.php:123
@@ -288,7 +292,7 @@ msgstr "Hinzufügen"
 #: admin/eventdataimport.php:101 admin/executesql.php:140 admin/failed.php:25
 #: admin/poolmoves.php:358 admin/schedule.php:329 admin/schedule.php:544
 #: admin/seasonmoves.php:220 admin/select_teams.php:124
-#: admin/serieteams.php:353 admin/success.php:25 lib/user.functions.php:195
+#: admin/serieteams.php:353 admin/success.php:25 lib/user.functions.php:196
 #: menufunctions.php:301 plugins/lisence_modifier.php:66
 #: plugins/reassign_playoffpools.php:118 user/addmedialink.php:158
 #: user/clubprofile.php:219 user/playerprofile.php:358 user/teamprofile.php:177
@@ -303,7 +307,7 @@ msgstr "Turnierlinks"
 #: admin/addseasons.php:180 admin/addseasonseries.php:109
 #: admin/eventviewer.php:86 admin/seasonadmin.php:28 admin/seasonpools.php:110
 #: admin/seasons.php:50 admin/seasonseries.php:64 admin/seasonstats.php:17
-#: admin/seasonstats.php:31 admin/serverconf.php:199 user/addmedialink.php:120
+#: admin/seasonstats.php:31 admin/serverconf.php:226 user/addmedialink.php:120
 #: user/addmedialink.php:130 user/clubprofile.php:178
 #: user/playerprofile.php:320 user/teamprofile.php:138
 msgid "Type"
@@ -311,7 +315,7 @@ msgstr "Typ"
 
 #: admin/addseasonlinks.php:70 admin/addseasonpools.php:243
 #: admin/addseasonpools.php:281 admin/addseasonseries.php:106
-#: admin/seasonpools.php:106 admin/serverconf.php:199
+#: admin/seasonpools.php:106 admin/serverconf.php:226
 msgid "Order"
 msgstr "Reihenfolge"
 
@@ -326,7 +330,7 @@ msgstr "Reihenfolge"
 #: admin/locations.php:168 admin/seasonpolls.php:40 admin/seasonpools.php:105
 #: admin/seasons.php:49 admin/seasonseries.php:64 admin/seasonspirit.php:213
 #: admin/seasonstats.php:17 admin/seasonstats.php:31 admin/serieformats.php:25
-#: admin/serieteams.php:196 admin/serverconf.php:199 c.php:1779
+#: admin/serieteams.php:196 admin/serverconf.php:226
 #: cust/bula/pdfprinter.php:132 cust/bula/pdfprinter.php:142
 #: cust/bula/pdfprinter.php:253 cust/default/pdfprinter.php:475
 #: cust/default/pdfprinter.php:483 cust/default/pdfprinter.php:568
@@ -336,10 +340,10 @@ msgstr "Reihenfolge"
 #: cust/wfdf/pdfprinter.php:135 cust/wfdf/pdfprinter.php:248
 #: cust/windmill/pdfprinter.php:130 cust/windmill/pdfprinter.php:140
 #: cust/windmill/pdfprinter.php:251 gameplay.php:53 gameplay.php:79
-#: gameplay.php:514 gameplay.php:538 lib/common.functions.php:1785
+#: gameplay.php:514 gameplay.php:538 lib/common.functions.php:1812
 #: lib/search.functions.php:168 lib/search.functions.php:223
 #: lib/search.functions.php:647 lib/search.functions.php:739 playerlist.php:21
-#: register.php:92 statistics.php:114 statistics.php:154 teamcard.php:92
+#: register.php:127 statistics.php:114 statistics.php:154 teamcard.php:92
 #: teamcard.php:138 user/addmedialink.php:132 user/addplayerlists.php:148
 #: user/addplayerlists.php:190 user/clubprofile.php:134
 #: user/clubprofile.php:180 user/playerprofile.php:322 user/pollresult.php:198
@@ -347,19 +351,19 @@ msgstr "Reihenfolge"
 msgid "Name"
 msgstr "Name"
 
-#: admin/addseasonlinks.php:70 admin/serverconf.php:199
+#: admin/addseasonlinks.php:70 admin/serverconf.php:226
 msgid "Url"
 msgstr "URL"
 
-#: admin/addseasonlinks.php:84 admin/serverconf.php:214
+#: admin/addseasonlinks.php:84 admin/serverconf.php:241
 msgid "Menu link"
 msgstr "Menü-Link"
 
-#: admin/addseasonlinks.php:85 admin/serverconf.php:215
+#: admin/addseasonlinks.php:85 admin/serverconf.php:242
 msgid "Menu mail"
 msgstr "Menü-E-Mail"
 
-#: admin/addseasonlinks.php:94 admin/serverconf.php:225
+#: admin/addseasonlinks.php:94 admin/serverconf.php:252
 msgid "3rd party API settings"
 msgstr "Einstellungen für fremde APIs"
 
@@ -384,7 +388,7 @@ msgid "Edit poll"
 msgstr "Umfrage bearbeiten"
 
 #: admin/addseasonpoll.php:79 admin/adduser.php:24 admin/adduser.php:58
-#: login.php:22 menufunctions.php:368 menufunctions.php:1252 register.php:104
+#: login.php:24 menufunctions.php:368 menufunctions.php:1252 register.php:139
 #: scorekeeper/login.php:21
 msgid "Password"
 msgstr "Passwort"
@@ -517,8 +521,8 @@ msgstr "Farbe"
 #: admin/select_userrole.php:80 ext/index.php:64
 #: plugins/generate_players.php:59 plugins/generate_teams.php:57
 #: plugins/import_csv_players.php:79 plugins/simulate_games.php:174
-#: plugins/update_pool_colors.php:67 user/addspirit.php:67
-#: user/addspirit.php:73 user/select_poolselector.php:23
+#: plugins/update_pool_colors.php:67 user/addspirit.php:69
+#: user/addspirit.php:84 user/select_poolselector.php:23
 #: user/select_poolselector.php:27 user/select_poolselector.php:30
 #: user/select_poolselector.php:33 user/select_poolselector.php:36
 msgid "Select"
@@ -542,14 +546,14 @@ msgid "Teams"
 msgstr "Teams"
 
 #: admin/addseasonpools.php:399 admin/addseasonteams.php:150
-#: admin/dbequalize.php:132 admin/serieteams.php:196 c.php:1783
-#: lib/common.functions.php:1789 teamcard.php:28 user/clubprofile.php:42
+#: admin/dbequalize.php:132 admin/serieteams.php:196
+#: lib/common.functions.php:1816 teamcard.php:28 user/clubprofile.php:42
 #: user/enrollteam.php:82
 msgid "Club"
 msgstr "Verein"
 
 #: admin/addseasonpools.php:409 admin/dfvimport.php:156
-#: admin/seasonteams.php:260
+#: admin/seasonteams.php:262
 msgid "No teams"
 msgstr "Keine Teams"
 
@@ -680,7 +684,7 @@ msgstr ""
 "Turnier-ID darf keine Leerzeichen oder Sonderzeichen enthalten und darf nur "
 "20 Zeichen lang sein"
 
-#: admin/addseasons.php:65 admin/addseasons.php:88 lib/user.functions.php:400
+#: admin/addseasons.php:65 admin/addseasons.php:88 lib/user.functions.php:425
 msgid "Name can not be empty"
 msgstr "Name darf nicht leer sein"
 
@@ -856,9 +860,8 @@ msgstr "Team ändern"
 msgid "Add team"
 msgstr "Team hinzufügen"
 
-#: admin/addseasonteams.php:160 c.php:1786 clubcard.php:23
-#: lib/common.functions.php:1792 user/clubprofile.php:143
-#: user/enrollteam.php:85
+#: admin/addseasonteams.php:160 clubcard.php:23 lib/common.functions.php:1819
+#: user/clubprofile.php:143 user/enrollteam.php:85
 msgid "Country"
 msgstr "Land"
 
@@ -872,8 +875,8 @@ msgid "Starting pool"
 msgstr "Startgruppe"
 
 #: admin/addseasonteams.php:194 admin/seasonstandings.php:359
-#: admin/seasonstandings.php:412 admin/serieteams.php:195 c.php:1778
-#: lib/common.functions.php:1784
+#: admin/seasonstandings.php:412 admin/serieteams.php:195
+#: lib/common.functions.php:1811
 msgid "Seed"
 msgstr "Setzliste"
 
@@ -892,19 +895,19 @@ msgstr "Turnierbenutzer"
 #: admin/addseasonusers.php:87
 #, php-format
 msgid "User rights added for %s."
-msgstr "Benutzerrechte für %s hinzugefügt."
+msgstr "Kontoberechtigungen für %s hinzugefügt."
 
 #: admin/addseasonusers.php:89 admin/editgame.php:75
 msgid "Invalid user"
-msgstr "Ungültiger Benutzer"
+msgstr "Ungültiger Kontoname"
 
 #: admin/addseasonusers.php:136 admin/addseasonusers.php:544
 #: admin/addteamadmins.php:63 admin/poolmoves.php:228 admin/poolmoves.php:309
 #: admin/seasonmoves.php:160 admin/seasonpools.php:265
 #: admin/seasonseries.php:122 admin/seasonstandings.php:402
 #: admin/seasonstandings.php:451 admin/serieformats.php:45
-#: admin/serverconf.php:208 admin/translations.php:123 c.php:1485 c.php:1877
-#: lib/common.functions.php:1491 lib/common.functions.php:1883
+#: admin/serverconf.php:235 admin/translations.php:123
+#: lib/common.functions.php:1491 lib/common.functions.php:1910
 #: lib/search.functions.php:815
 msgid "X"
 msgstr "X"
@@ -912,7 +915,7 @@ msgstr "X"
 #: admin/addseasonusers.php:154 admin/addseasonusers.php:171
 #: admin/addseasonusers.php:550
 msgid "User Id(s)"
-msgstr "Benutzer-ID(s)"
+msgstr "Konten-ID(s)"
 
 #: admin/addseasonusers.php:156 admin/addseasonusers.php:158
 #: admin/addseasonusers.php:173 admin/addseasonusers.php:175
@@ -929,9 +932,9 @@ msgstr "E-Mail(s)"
 
 #: admin/addseasonusers.php:159 admin/addseasonusers.php:176
 #: admin/addseasonusers.php:499 admin/addseasonusers.php:554
-#: admin/addteamadmins.php:94 admin/adduser.php:4 admin/users.php:39
+#: admin/addteamadmins.php:94 admin/adduser.php:4 admin/users.php:65
 msgid "Add new user"
-msgstr "Neuer Benutzer"
+msgstr "Neues Konto"
 
 #: admin/addseasonusers.php:161 admin/addseasonusers.php:178
 #: admin/addseasonusers.php:513 admin/addseasonusers.php:568
@@ -1070,7 +1073,7 @@ msgstr "Alle Teamadministratoren entfernen"
 msgid "Scorekeepers"
 msgstr "Ergebniseingeber"
 
-#: admin/addseasonusers.php:450 user/addspirit.php:63 user/addspirit.php:205
+#: admin/addseasonusers.php:450 user/addspirit.php:63 user/addspirit.php:221
 msgid "All games"
 msgstr "Alle Spiele"
 
@@ -1078,7 +1081,7 @@ msgstr "Alle Spiele"
 msgid "In role of event admin"
 msgstr "Als Turnieradministrator"
 
-#: admin/addseasonusers.php:461 admin/dfvimport.php:557
+#: admin/addseasonusers.php:461 admin/dfvimport.php:584
 #, php-format
 msgid "%s reservations"
 msgstr "%s Reservierungen"
@@ -1101,7 +1104,7 @@ msgstr ""
 
 #: admin/addseasonusers.php:495
 msgid "User Id (s)"
-msgstr "Benutzer-ID(s)"
+msgstr "Kontoname(n)"
 
 #: admin/addseasonusers.php:505 admin/editgame.php:175 admin/editgame.php:179
 #: admin/movingtimes.php:145 admin/movingtimes.php:170
@@ -1119,7 +1122,7 @@ msgstr "Benutzer-ID(s)"
 #: lib/search.functions.php:808 lib/search.functions.php:836
 #: lib/timetable.functions.php:284 lib/timetable.functions.php:364
 #: lib/timetable.functions.php:421 lib/timetable.functions.php:496
-#: lib/timetable.functions.php:498 lib/user.functions.php:1779
+#: lib/timetable.functions.php:498 lib/user.functions.php:1850
 #: mobile/respgames.php:106 mobile/respgames.php:110 reservationinfo.php:11
 #: reservationinfo.php:25 scorekeeper/respgames.php:101
 #: user/adddefensesheet.php:203 user/addscoresheet.php:384
@@ -1160,11 +1163,11 @@ msgstr "Zurück"
 
 #: admin/addteamadmins.php:30 admin/addteamadmins.php:40
 msgid "Invalid user:"
-msgstr "Ungültiger Benutzer:"
+msgstr "Ungültiger Kontoname:"
 
 #: admin/addteamadmins.php:38
 msgid "User rights added for:"
-msgstr "Benutzerrechte hinzugefügt für:"
+msgstr "Kontoberechtigungen hinzugefügt für:"
 
 #: admin/addteamadmins.php:75
 msgid "No team admins, yet..."
@@ -1176,7 +1179,7 @@ msgstr "Mehr hinzufügen"
 
 #: admin/addteamadmins.php:85 admin/editgame.php:196
 msgid "User Id"
-msgstr "Benutzer-ID"
+msgstr "Konto-ID"
 
 #: admin/addteamadmins.php:87 admin/editgame.php:197
 msgid "E-Mail"
@@ -1184,17 +1187,17 @@ msgstr "E-Mail"
 
 #: admin/adduser.php:22
 msgid "Added new user"
-msgstr "Neuer Benutzer hinzugefügt"
+msgstr "Neues Konto hinzugefügt"
 
 #: admin/adduser.php:23 admin/adduser.php:53 lib/search.functions.php:647
-#: login.php:20 login.php:102 menufunctions.php:364 menufunctions.php:1247
-#: register.php:98 scorekeeper/login.php:19 user/userinfo.php:229
+#: login.php:22 login.php:110 menufunctions.php:364 menufunctions.php:1247
+#: register.php:133 scorekeeper/login.php:19 user/userinfo.php:229
 msgid "Username"
-msgstr "Benutzername"
+msgstr "Kontoname"
 
 #: admin/adduser.php:26
 msgid "User has been notified to change password."
-msgstr "Der Benutzer wurde darauf hingewiesen, das Passwort zu ändern."
+msgstr "Ein Hinweis, das Passwort für das Konto zu ändern, wurde verschickt."
 
 #: admin/adduser.php:28
 msgid "Could not send password recovery mail."
@@ -1206,7 +1209,7 @@ msgstr "Korrigieren Sie die Fehler und versuchen Sie es nochmal"
 
 #: admin/adduser.php:65 lib/search.functions.php:180
 #: lib/search.functions.php:235 lib/search.functions.php:647
-#: lib/search.functions.php:739 login.php:105 user/addextraemail.php:80
+#: lib/search.functions.php:739 login.php:113 user/addextraemail.php:80
 msgid "Email"
 msgstr "E-Mail"
 
@@ -1353,8 +1356,8 @@ msgid ""
 "This resets the settings needed when there is no logged in user. Doing this "
 "should cause no trouble. Are you sure?"
 msgstr ""
-"Dies sollte die Einstellungen für den Fall zurücksetzen, dass keine Benutzer "
-"eingeloggt ist. Dies sollte keine Probleme verursachen. Sind Sie sicher?"
+"Dies sollte die Einstellungen für Benutzer*innen zurücksetzen, die nicht "
+"eingeloggt sind. Dies sollte keine Probleme verursachen. Sind Sie sicher?"
 
 #: admin/dbanonymous.php:34
 msgid "Override and continue?"
@@ -1591,7 +1594,7 @@ msgid "Restoring"
 msgstr "Wiederherstellung läuft"
 
 #: admin/dbrestoring.php:582 admin/dbrestoring.php:613
-#: lib/user.functions.php:169
+#: lib/user.functions.php:170
 msgid "Insufficient rights"
 msgstr "Nötige Berechtigung fehlt"
 
@@ -1624,9 +1627,8 @@ msgstr "Gruppen zur Löschung auswählen (experimentell!)"
 
 #: admin/delete.php:41 admin/deletepoll.php:56 admin/locations.php:198
 #: admin/poolmoves.php:212 admin/poolmoves.php:286 admin/seasonpolls.php:81
-#: admin/seasonseries.php:123 admin/users.php:42 c.php:1807
-#: lib/common.functions.php:1813 menufunctions.php:1121
-#: mobile/deletescore.php:24 mobile/deletescore.php:44
+#: admin/seasonseries.php:123 admin/users.php:68 lib/common.functions.php:1840
+#: menufunctions.php:1121 mobile/deletescore.php:24 mobile/deletescore.php:44
 #: scorekeeper/deletescore.php:51 user/addpolloption.php:226
 #: user/teamplayers.php:169 user/votepoll.php:202
 msgid "Delete"
@@ -1637,7 +1639,7 @@ msgstr "Löschen"
 msgid "Pool %s has been reset."
 msgstr "Pool %s wurde zurückgesetzt."
 
-#: admin/delete.php:59
+#: admin/delete.php:59 admin/users.php:29
 msgid "Confirm deletion"
 msgstr "Löschung bestätigen"
 
@@ -1706,20 +1708,20 @@ msgstr "Pools zum Spielen oder Rückgängigmachen"
 msgid "Reset played games"
 msgstr "Beendete Spiele zurücksetzen"
 
-#: admin/delete.php:269 admin/dfvimport.php:126 admin/dfvimport.php:600
+#: admin/delete.php:269 admin/dfvimport.php:126 admin/dfvimport.php:627
 #: admin/purge.php:67 admin/seasonpools.php:311 admin/seasonseries.php:169
-#: admin/seasonteams.php:257 admin/seasonteams.php:276
+#: admin/seasonteams.php:259 admin/seasonteams.php:278
 #: admin/select_userrole.php:36 admin/select_userrole.php:59
 #: admin/select_userrole.php:62 admin/select_userrole.php:65
 #: admin/select_userrole.php:68 admin/select_userrole.php:71
 #: admin/select_userrole.php:74 admin/select_userrole.php:77
-#: admin/select_userrole.php:80 admin/translations.php:138
+#: admin/select_userrole.php:80 admin/translations.php:138 admin/users.php:44
 #: lib/data.functions.php:1910 lib/dfv.functions.php:339
 #: lib/dfv.functions.php:527 lib/dfv.functions.php:532
 #: mobile/addscoresheet.php:209 result.php:104
 #: scorekeeper/addscoresheet.php:282 scorekeeper/result.php:112
 #: user/adddefensesheet.php:340 user/addscoresheet.php:522
-#: user/addspirit.php:67 user/addspirit.php:73 user/select_poolselector.php:27
+#: user/addspirit.php:69 user/addspirit.php:84 user/select_poolselector.php:27
 #: user/select_poolselector.php:30 user/select_poolselector.php:33
 #: user/select_poolselector.php:36 user/teamplayers.php:271
 #: user/userinfo.php:276
@@ -1786,12 +1788,12 @@ msgstr "Ligenadministratoren für %s"
 #: admin/dfvimport.php:309
 #, php-format
 msgid "Found user %s"
-msgstr "Benutzer %s gefunden"
+msgstr "Konto %s gefunden"
 
 #: admin/dfvimport.php:318
 #, php-format
 msgid "Did not find %s users"
-msgstr "Konnte %s Benutzer nicht finden"
+msgstr "Konnte %s Konten nicht finden"
 
 #: admin/dfvimport.php:321
 #, php-format
@@ -1809,21 +1811,21 @@ msgstr "Fehler beim Importieren von %s:"
 msgid "Would you like to start over?"
 msgstr "Möchten Sie von vorne beginnen?"
 
-#: admin/dfvimport.php:478
+#: admin/dfvimport.php:481
 msgid "new location"
 msgstr "Neuer Ort"
 
-#: admin/dfvimport.php:553
+#: admin/dfvimport.php:580
 #, php-format
 msgid "Import %s into %s"
 msgstr "Import von %s nach %s"
 
-#: admin/dfvimport.php:555
+#: admin/dfvimport.php:582
 #, php-format
 msgid "%s teams"
 msgstr "%s Teams"
 
-#: admin/dfvimport.php:599 lib/data.functions.php:1909
+#: admin/dfvimport.php:626 lib/data.functions.php:1909
 #: plugins/import_csv_players.php:94 plugins/import_csv_teams.php:95
 #: plugins/import_csv_wu23c2010.php:237 plugins/import_csv_wucc2010.php:180
 #: plugins/import_csv_wujc2012.php:203 plugins/import_slkl_old_data.php:303
@@ -2006,7 +2008,7 @@ msgstr "IDs auflösen"
 
 #: admin/eventviewer.php:80
 msgid "Only user"
-msgstr "Nur Benutzer"
+msgstr "Nur Kontoname"
 
 #: admin/eventviewer.php:82 lib/dfv.functions.php:423
 msgid "Refresh"
@@ -2045,7 +2047,7 @@ msgstr "Ereignisse löschen"
 
 #: admin/executesql.php:19
 msgid "Inadequate user rights"
-msgstr "Benutzerrechte reichen nicht aus"
+msgstr "Kontoberechtigungen reichen nicht aus"
 
 #: admin/executesql.php:41
 msgid "Invalid query:"
@@ -2106,7 +2108,7 @@ msgid "Search"
 msgstr "Suchen"
 
 #: admin/locations.php:139 admin/seasongames.php:236 admin/seasonpools.php:261
-#: c.php:1806 lib/common.functions.php:1812
+#: lib/common.functions.php:1839
 msgid "edit details"
 msgstr "Detail ändern"
 
@@ -2563,16 +2565,16 @@ msgstr "Einträge gelöscht."
 #: admin/purge.php:144
 #, php-format
 msgid "Delete %d users without login. Are you sure?"
-msgstr "Lösche %d Benutzer ohne Login. Sind Sie sicher?"
+msgstr "Lösche %d Konten ohne Login. Sind Sie sicher?"
 
 #: admin/purge.php:154
 #, php-format
 msgid "Deleting %%d users from %d and earlier. Are you sure?"
-msgstr "Lösche %%d Benutzer mit letztem Login %d oder früher. Sind Sie sicher?"
+msgstr "Lösche %%d Konten mit letztem Login %d oder früher. Sind Sie sicher?"
 
 #: admin/purge.php:155
 msgid "Users purged."
-msgstr "Benutzer bereinigt."
+msgstr "Konten bereinigt."
 
 #: admin/purge.php:163
 msgid "Purge cancelled!"
@@ -2655,17 +2657,17 @@ msgstr "Klassen"
 #: admin/purge.php:222 admin/purge.php:226 admin/users.php:5
 #: menufunctions.php:723
 msgid "Users"
-msgstr "Benutzer"
+msgstr "Konten"
 
 #: admin/purge.php:223
 #, php-format
 msgid "Delete users with no login"
-msgstr "Lösche Benutzer ohne Login"
+msgstr "Lösche Konten ohne Login"
 
 #: admin/purge.php:224
 #, php-format
 msgid "Delete users with no login after %s"
-msgstr "Lösche Benutzer ohne Login nach %s"
+msgstr "Lösche Konten ohne Login nach %s"
 
 #: admin/purge.php:225
 msgid "Adminstrator accounts are not deleted."
@@ -2872,7 +2874,7 @@ msgstr "nicht sichtbar"
 #: gameplay.php:488 mobile/addscoresheet.php:199
 #: scorekeeper/addscoresheet.php:275 user/adddefensesheet.php:58
 #: user/addplayerlists.php:131 user/addresult.php:54 user/addscoresheet.php:173
-#: user/addspirit.php:197
+#: user/addspirit.php:213
 msgid "Spirit points"
 msgstr "Spiritpunkte"
 
@@ -2906,7 +2908,7 @@ msgstr "Klassen"
 #: countrycard.php:54 menufunctions.php:918 mobile/respgames.php:167
 #: scorekeeper/addscoresheet.php:273 scorekeeper/respgames.php:144
 #: user/adddefensesheet.php:55 user/addplayerlists.php:128
-#: user/addresult.php:51 user/addscoresheet.php:170 user/addspirit.php:195
+#: user/addresult.php:51 user/addscoresheet.php:170 user/addspirit.php:211
 #: user/respteams.php:38
 msgid "Players"
 msgstr "Spieler"
@@ -3450,7 +3452,7 @@ msgstr "Transf. nach"
 
 #: admin/seasonstandings.php:463 admin/seasonstandings.php:466
 msgid "Pos"
-msgstr "Pos."
+msgstr "Pos"
 
 #: admin/seasonstandings.php:463
 msgid "To"
@@ -3509,33 +3511,33 @@ msgstr "Turnierstatistik"
 msgid "Teams from %s"
 msgstr "Teams von %s"
 
-#: admin/seasonteams.php:249
+#: admin/seasonteams.php:251
 msgid "Add new teams"
 msgstr "Neue Teams hinzufügen"
 
-#: admin/seasonteams.php:253
+#: admin/seasonteams.php:255
 msgid "Replace"
 msgstr "Ersetzen"
 
-#: admin/seasonteams.php:253
+#: admin/seasonteams.php:255
 #, php-format
 msgid "Rename %s teams with lowest seed #"
 msgstr ""
 "Erste %s Teams (nach aufsteigend sortierter Setzreihenfolge) umbenennen"
 
-#: admin/seasonteams.php:283
+#: admin/seasonteams.php:285
 msgid "Import teams from other division"
 msgstr "Teams aus anderer Division einlesen"
 
-#: admin/seasonteams.php:285
+#: admin/seasonteams.php:287
 msgid "Import teams from DFV"
 msgstr "Teams von DFV einlesen"
 
-#: admin/seasonteams.php:290
+#: admin/seasonteams.php:292
 msgid "Add Team Admins"
 msgstr "Teamadministratoren hinzufügen"
 
-#: admin/seasonteams.php:291
+#: admin/seasonteams.php:293
 msgid "Print team rosters"
 msgstr "Spielerlisten drucken"
 
@@ -3585,7 +3587,7 @@ msgstr "Abbrechen"
 
 #: admin/select_userrole.php:49 user/userinfo.php:377 user/userinfo.php:458
 msgid "User administrator"
-msgstr "Benutzeradministrator"
+msgstr "Kontenadministrator"
 
 #: admin/select_userrole.php:58 user/userinfo.php:382 user/userinfo.php:459
 msgid "Team contact person"
@@ -3616,37 +3618,98 @@ msgstr "Spieleingabe für eine Reservierung"
 msgid "Player profile administrator"
 msgstr "Spielerprofilverwalter"
 
-#: admin/sendmessage.php:2
+#: admin/sendmessage.php:4
 msgid "Send message"
 msgstr "Nachricht senden"
 
-#: admin/sendmessage.php:15
-msgid "You must provide a message or a subject."
-msgstr "Nachricht oder Betreff erforderlich"
+#: admin/sendmessage.php:20
+#, php-format
+msgid "Invalid email address: %s"
+msgstr "Ungültige E-Mailadresse: %s"
 
 #: admin/sendmessage.php:31
 #, php-format
-msgid "Message sent to %s"
-msgstr "Nachricht versendet an %s"
+msgid "User %s not found or has invalid email."
+msgstr "Konto %s nicht gefunden oder ungültige E-Mailadresse"
 
-#: admin/sendmessage.php:34
+#: admin/sendmessage.php:139
+msgid "You must provide a message and a subject."
+msgstr "Nachricht und Betreff erforderlich."
+
+#: admin/sendmessage.php:140 admin/sendmessage.php:143
+#: admin/sendmessage.php:146
+msgid "Message not sent! Please correct the errors and try again."
+msgstr ""
+"Nachricht wurde nicht verschickt! Korrigieren Sie bitte die Fehler und "
+"versuchen Sie es nochmal"
+
+#: admin/sendmessage.php:145
+msgid "No valid recipients found."
+msgstr "Keine gültigen Empfänger gefunden."
+
+#: admin/sendmessage.php:167
 #, php-format
-msgid "Message could not be sent to %s"
-msgstr "Nachricht konnte nicht an %s versendet werden"
+msgid "Message sent to %s."
+msgstr "Nachricht an %s wurde abgeschickt."
 
-#: admin/sendmessage.php:45
+#: admin/sendmessage.php:169
+#, php-format
+msgid "Message could not be sent to %s."
+msgstr "Nachricht konnte nicht an %s versendet werden."
+
+#: admin/sendmessage.php:179
+msgid "No recipients selected."
+msgstr "Keine Empfänger ausgewählt."
+
+#: admin/sendmessage.php:214
 msgid "Recipients"
 msgstr "Empfänger"
 
-#: admin/sendmessage.php:57
+#: admin/sendmessage.php:225
+#, php-format
+msgid "User %s not found."
+msgstr "Account %s nicht gefunden."
+
+#: admin/sendmessage.php:240
+msgctxt "sendmessage"
+msgid "To"
+msgstr "An"
+
+#: admin/sendmessage.php:242 admin/sendmessage.php:246
+#: admin/sendmessage.php:250
+msgid "Separate multiple addresses or user names with commas."
+msgstr "Mehrere Adressen oder Kontennamen mit Komma trennen."
+
+#: admin/sendmessage.php:244
+msgctxt "sendmessage"
+msgid "CC"
+msgstr "CC"
+
+#: admin/sendmessage.php:248
+msgctxt "sendmessage"
+msgid "BCC"
+msgstr "BCC"
+
+#: admin/sendmessage.php:252
+msgctxt "sendmessage"
 msgid "Subject"
 msgstr "Betreff"
 
-#: admin/sendmessage.php:60
+#: admin/sendmessage.php:255
+msgctxt "sendmessage"
 msgid "Message"
 msgstr "Nachricht"
 
-#: admin/sendmessage.php:62
+#: admin/sendmessage.php:261
+msgid "Send with errors"
+msgstr "Mit Fehlern senden"
+
+#: admin/sendmessage.php:262
+msgid "Check again"
+msgstr "Neu prüfen"
+
+#: admin/sendmessage.php:264
+msgctxt "sendmessage"
 msgid "Send"
 msgstr "Senden"
 
@@ -3776,47 +3839,55 @@ msgstr "... oder ändern Sie den Rang des Teams im Ausgangspool manuell"
 msgid "Server configuration"
 msgstr "Serverkonfiguration"
 
-#: admin/serverconf.php:110
+#: admin/serverconf.php:119
 msgid "Show phpinfo()"
 msgstr "Zeige phpinfo()"
 
-#: admin/serverconf.php:120
+#: admin/serverconf.php:129
 msgid "Page title"
 msgstr "Seitentitel"
 
-#: admin/serverconf.php:128
+#: admin/serverconf.php:137
 msgid "Google Maps key"
 msgstr "Google Maps-Schlüssel"
 
-#: admin/serverconf.php:135
+#: admin/serverconf.php:144
 msgid "System email sender address"
 msgstr "Absenderadresse für Systemmails"
 
-#: admin/serverconf.php:142
+#: admin/serverconf.php:151
 msgid "Show Defense statistics"
 msgstr "Defensestatistik anzeigen"
 
-#: admin/serverconf.php:153
+#: admin/serverconf.php:162
 msgid "Home team is game responsible"
 msgstr "Heimteam ist für Spieleingabe verantwortlich"
 
-#: admin/serverconf.php:164
+#: admin/serverconf.php:173
 msgid "Default Timezone"
 msgstr "Zeitzonen-Voreinstellung"
 
-#: admin/serverconf.php:180
+#: admin/serverconf.php:189
 msgid "Default Locale"
 msgstr "Standardsprache"
 
-#: admin/serverconf.php:197
+#: admin/serverconf.php:205
+msgid "Simulate email sending (write to file)"
+msgstr "E-Mailversand simulieren (in Datei schreiben)"
+
+#: admin/serverconf.php:216
+msgid "Mail simulation file"
+msgstr "Datei für E-Mail-Simulation"
+
+#: admin/serverconf.php:224
 msgid "UI settings"
 msgstr "UI-Einstellungen"
 
-#: admin/serverconf.php:216
+#: admin/serverconf.php:243
 msgid "Administrator"
 msgstr "Administrator"
 
-#: admin/serverconf.php:231
+#: admin/serverconf.php:258
 msgid "Internal settings"
 msgstr "Interne Einstellungen"
 
@@ -3879,22 +3950,49 @@ msgstr "Groß-/Kleinschreibung des Schlüssels ist wichtig"
 msgid "Key"
 msgstr "Schlüssel"
 
-#: admin/users.php:15
+#: admin/users.php:16
 #, php-format
 msgid "Did not delete super user account %s."
 msgstr "Globales Administratorkonto %s wurde nicht gelöscht."
 
-#: admin/users.php:27
+#: admin/users.php:19
 #, php-format
-msgid "Recovery request sent to %s."
-msgstr "Zurücksetzungsnachricht an %s gesendet."
+msgid "Deleted registration request for user %s."
+msgstr "Registrierungsanfrage für Kontonamen %s gelöscht."
 
-#: admin/users.php:29
+#: admin/users.php:22
+#, php-format
+msgid "Deleted user account %s."
+msgstr "Konto %s wurde gelöscht."
+
+#: admin/users.php:42
+msgid ""
+"Are you sure you want to delete the selected users or registration requests? "
+"This cannot be undone!"
+msgstr ""
+"Sind Sie sicher, dass Sie die ausgewählten Konten oder Registrierungen "
+"löschen möchten? Dies kann nicht rückgängig gemacht werden!"
+
+#: admin/users.php:43 user/confirmdeletion.php:64
+msgid "Yes, delete"
+msgstr "Ja, löschen"
+
+#: admin/users.php:53
+#, php-format
+msgid ""
+"Recovery request sent to %s. Make sure that you can receive mails from %s "
+"and the e-mail is not in your spam folder."
+msgstr ""
+"Nachricht zur Neueingabe des Passworts an %s verschickt. Stellen Sie sicher, "
+"dass Sie Mails von %s erhalten können und die Nachrichten nicht im "
+"Spamordner sind."
+
+#: admin/users.php:55
 #, php-format
 msgid "No recovery request sent to %s."
 msgstr "Keine Zurücksetzungsnachricht an %s gesendet."
 
-#: admin/users.php:42
+#: admin/users.php:68
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -3931,79 +4029,6 @@ msgstr "Länder"
 msgid "All players"
 msgstr "Alle Spieler"
 
-#: c.php:55 lib/common.functions.php:61
-msgid "Sun"
-msgstr "So"
-
-#: c.php:58 lib/common.functions.php:64
-msgid "Mon"
-msgstr "Mo"
-
-#: c.php:61 lib/common.functions.php:67
-msgid "Tue"
-msgstr "Di"
-
-#: c.php:64 lib/common.functions.php:70
-msgid "Wed"
-msgstr "Mi"
-
-#: c.php:67 lib/common.functions.php:73
-msgid "Thu"
-msgstr "Do"
-
-#: c.php:70 lib/common.functions.php:76
-msgid "Fri"
-msgstr "Fr"
-
-#: c.php:73 lib/common.functions.php:79
-msgid "Sat"
-msgstr "Sa"
-
-#: c.php:1634 lib/common.functions.php:1640
-msgid "send message"
-msgstr "Nachricht senden"
-
-#: c.php:1679 lib/common.functions.php:1685
-msgid "Check all"
-msgstr "Alle wählen"
-
-#: c.php:1684 lib/common.functions.php:1690
-msgid ""
-"This page requires JavaScript to function, but JavaScript appears to be "
-"disabled."
-msgstr ""
-"Diese Seite benötigt JavaScript um richtig zu funktionieren, aber JavaScript "
-"scheint deaktiviert zu sein."
-
-#: c.php:1780 lib/common.functions.php:1786
-msgid "Abbrev"
-msgstr "Abkürzung"
-
-#: c.php:1804 lib/common.functions.php:1810
-msgid "Contact person"
-msgstr "Kontaktperson"
-
-#: c.php:1805 clubcard.php:100 clubcard.php:124 countrycard.php:26
-#: countrycard.php:51 cust/bula/pdfprinter.php:107 cust/bula/pdfprinter.php:229
-#: cust/default/pdfprinter.php:453 cust/default/pdfprinter.php:551
-#: cust/fpudd/pdfprinter.php:249 cust/slkl/pdfprinter.php:110
-#: cust/slkl/pdfprinter.php:218 cust/wfdf/pdfprinter.php:100
-#: cust/wfdf/pdfprinter.php:224 cust/windmill/pdfprinter.php:105
-#: cust/windmill/pdfprinter.php:227 lib/common.functions.php:1811
-#: playerlist.php:12 playerlist.php:17 scorekeeper/addplayerlists.php:84
-#: teams.php:97 user/clubprofile.php:113 user/respteams.php:22
-#: user/teamplayers.php:9 user/teamplayers.php:132 user/teamprofile.php:98
-msgid "Roster"
-msgstr "Spielerliste"
-
-#: c.php:1975 lib/common.functions.php:1982
-msgid "Teams to add"
-msgstr "Teams hinzufügen"
-
-#: c.php:1982 lib/common.functions.php:1989
-msgid "Teams to ignore"
-msgstr "Teams ignorieren"
-
 #: clubcard.php:11
 msgid "Club Card"
 msgstr "Vereinskarte"
@@ -4027,7 +4052,7 @@ msgid "Homepage"
 msgstr "Homepage"
 
 #: clubcard.php:49 clubcard.php:52 menufunctions.php:1096
-#: user/clubprofile.php:154 user/contacts.php:4 user/contacts.php:33
+#: user/clubprofile.php:154 user/contacts.php:4 user/contacts.php:72
 msgid "Contacts"
 msgstr "Kontakte"
 
@@ -4043,6 +4068,19 @@ msgstr "Vereinsseiten"
 #: clubcard.php:83 gameplay.php:279 playercard.php:113 teamcard.php:79
 msgid "Photos and Videos"
 msgstr "Fotos und Videos"
+
+#: clubcard.php:100 clubcard.php:124 countrycard.php:26 countrycard.php:51
+#: cust/bula/pdfprinter.php:107 cust/bula/pdfprinter.php:229
+#: cust/default/pdfprinter.php:453 cust/default/pdfprinter.php:551
+#: cust/fpudd/pdfprinter.php:249 cust/slkl/pdfprinter.php:110
+#: cust/slkl/pdfprinter.php:218 cust/wfdf/pdfprinter.php:100
+#: cust/wfdf/pdfprinter.php:224 cust/windmill/pdfprinter.php:105
+#: cust/windmill/pdfprinter.php:227 lib/common.functions.php:1838
+#: playerlist.php:12 playerlist.php:17 scorekeeper/addplayerlists.php:84
+#: teams.php:97 user/clubprofile.php:113 user/respteams.php:22
+#: user/teamplayers.php:9 user/teamplayers.php:132 user/teamprofile.php:98
+msgid "Roster"
+msgstr "Spielerliste"
 
 #: clubcard.php:101 clubcard.php:125 countrycard.php:27 countrycard.php:52
 #: gamecard.php:185 poolstatus.php:164 poolstatus.php:197 poolstatus.php:199
@@ -4135,7 +4173,7 @@ msgstr "Anleitung zum Ausfüllen der Spielberichte:"
 #: cust/bula/pdfprinter.php:208 cust/default/CustomPDF.php:18
 #: cust/wfdf/pdfprinter.php:200 cust/windmill/pdfprinter.php:206
 msgid "Officials fill in their names."
-msgstr "Namen der Offiziellen"
+msgstr "Namen der Offiziellen."
 
 #: cust/bula/pdfprinter.php:209 cust/default/CustomPDF.php:20
 #: cust/wfdf/pdfprinter.php:202 cust/windmill/pdfprinter.php:207
@@ -4326,7 +4364,7 @@ msgstr "Erste Offense und Genderverhältnis für ersten Punkt markieren."
 
 #: cust/default/CustomPDF.php:36
 msgid "Mark goals scored."
-msgstr "Markiere erzielte Punkte"
+msgstr "Markiere erzielte Punkte."
 
 #: cust/default/CustomPDF.php:37
 msgid "When a team takes a time-out, check appropriate box."
@@ -5431,8 +5469,8 @@ msgstr "LOGO EXAMPLE"
 #: ext/countrystatus.php:17 ext/eventpools.php:18 ext/poolscoreboard.php:16
 #: ext/poolstatus.php:17 ext/teamcoming.php:17 ext/teamplayed.php:18
 #: ext/teamscoreboard.php:17 ext/tournament.php:22 ical.php:47
-#: lib/user.functions.php:1386 lib/user.functions.php:1438
-#: lib/user.functions.php:1831 scorekeeper/index.php:102
+#: lib/user.functions.php:1431 lib/user.functions.php:1509
+#: lib/user.functions.php:1902 scorekeeper/index.php:102
 msgid "Ultiorganizer"
 msgstr "Ultiorganizer"
 
@@ -6303,7 +6341,7 @@ msgstr "Punktedifferenz"
 #: scorekeeper/addresult.php:25 scorekeeper/respgames.php:143
 #: user/adddefensesheet.php:54 user/addplayerlists.php:127
 #: user/addresult.php:15 user/addresult.php:50 user/addscoresheet.php:169
-#: user/addspirit.php:194 user/respgames.php:23 user/respgames.php:202
+#: user/addspirit.php:210 user/respgames.php:23 user/respgames.php:202
 msgid "Result"
 msgstr "Ergebnis"
 
@@ -6319,7 +6357,7 @@ msgstr "läuft"
 
 #: gameplay.php:41
 msgid "Play-by-play results not available"
-msgstr ""
+msgstr "Detaillierte Ergebniss nicht verfügbar"
 
 #: gameplay.php:42
 msgid "Please check the status again later"
@@ -6472,6 +6510,66 @@ msgstr "Missing gd extensinon for image handiling."
 #: lib/club.functions.php:236
 msgid "Error converting image."
 msgstr "Fehler beim Importieren des Bildes."
+
+#: lib/common.functions.php:61
+msgid "Sun"
+msgstr "So"
+
+#: lib/common.functions.php:64
+msgid "Mon"
+msgstr "Mo"
+
+#: lib/common.functions.php:67
+msgid "Tue"
+msgstr "Di"
+
+#: lib/common.functions.php:70
+msgid "Wed"
+msgstr "Mi"
+
+#: lib/common.functions.php:73
+msgid "Thu"
+msgstr "Do"
+
+#: lib/common.functions.php:76
+msgid "Fri"
+msgstr "Fr"
+
+#: lib/common.functions.php:79
+msgid "Sat"
+msgstr "Sa"
+
+#: lib/common.functions.php:1640
+msgid "send message"
+msgstr "Nachricht senden"
+
+#: lib/common.functions.php:1712
+msgid "Check all"
+msgstr "Alle wählen"
+
+#: lib/common.functions.php:1717
+msgid ""
+"This page requires JavaScript to function, but JavaScript appears to be "
+"disabled."
+msgstr ""
+"Diese Seite benötigt JavaScript um richtig zu funktionieren, aber JavaScript "
+"scheint deaktiviert zu sein."
+
+#: lib/common.functions.php:1813
+msgid "Abbrev"
+msgstr "Abkürzung"
+
+#: lib/common.functions.php:1837
+msgid "Contact person"
+msgstr "Kontaktperson"
+
+#: lib/common.functions.php:2009
+msgid "Teams to add"
+msgstr "Teams hinzufügen"
+
+#: lib/common.functions.php:2016
+msgid "Teams to ignore"
+msgstr "Teams ignorieren"
 
 #: lib/data.functions.php:75
 msgid "Insufficient rights to export data."
@@ -6635,7 +6733,7 @@ msgstr "Klassenname"
 
 #: lib/data.functions.php:1900
 msgid "Team / Club"
-msgstr ""
+msgstr "Team / Club"
 
 #: lib/data.functions.php:1908
 msgid "Mock (test only)"
@@ -6695,7 +6793,7 @@ msgstr "Leere Klassen anzeigen"
 
 #: lib/dfv.functions.php:449
 msgid "Optionally select search parameters above, then"
-msgstr ""
+msgstr "Wählen Sie die Suchparameter wie gewünscht, dann"
 
 #: lib/dfv.functions.php:451
 msgid "Update list of divisions..."
@@ -6737,7 +6835,7 @@ msgstr "Keine Punkte."
 
 #: lib/game.functions.php:622
 msgid "No draws allowed."
-msgstr "Unentschieden nicht erlaubt"
+msgstr "Unentschieden nicht erlaubt."
 
 #: lib/game.functions.php:1236
 #, php-format
@@ -6903,91 +7001,111 @@ msgstr "Video"
 msgid "Live video"
 msgstr "Live-Video"
 
-#: lib/user.functions.php:132 login.php:118
+#: lib/user.functions.php:133 login.php:135
 msgid "You must login to access this page."
 msgstr "Sie müssen eingeloggt sein, um diese Seite aufzurufen."
 
-#: lib/user.functions.php:136
+#: lib/user.functions.php:137
 msgid "Please open this login link in a new window, then reload this page."
 msgstr ""
 "Bitte öffnen Sie diesen Loginlink in einem neuen Fenster, danach laden Sie "
 "diese Seite neu."
 
-#: lib/user.functions.php:143
+#: lib/user.functions.php:144
 msgid "Please login"
 msgstr "Bitte einloggen"
 
-#: lib/user.functions.php:173
+#: lib/user.functions.php:174
 msgid "Insufficient rights!"
 msgstr "Nötige Berechtigung fehlt!"
 
-#: lib/user.functions.php:176
+#: lib/user.functions.php:177
 #, php-format
 msgid "You are not a season admin for %s."
 msgstr "Sie sind nicht saisonverantwortlich für %s."
 
-#: lib/user.functions.php:179
+#: lib/user.functions.php:180
 #, php-format
 msgid "You cannot change series for season %s."
 msgstr "Sie können die Klassen für die Saison %s nicht ändern."
 
-#: lib/user.functions.php:182
+#: lib/user.functions.php:183
 #, php-format
 msgid "You cannot change any series for season %s."
 msgstr "Sie können für die Saison %s keine Klassen verändern."
 
-#: lib/user.functions.php:185
+#: lib/user.functions.php:186
 #, php-format
 msgid "You cannot edit division %s."
 msgstr "Sie können die Klasse %s nicht ändern."
 
-#: lib/user.functions.php:188
+#: lib/user.functions.php:189
 msgid "You are not allowed to do this."
 msgstr "Sie haben nicht die Berechtigung das zu tun."
 
-#: lib/user.functions.php:197 menufunctions.php:697
+#: lib/user.functions.php:198 menufunctions.php:697
 msgid "Go to front page"
 msgstr "Zur Startseite"
 
-#: lib/user.functions.php:354
+#: lib/user.functions.php:355
 msgid "Password cannot be empty."
 msgstr "Passwort darf nicht leer sein."
 
-#: lib/user.functions.php:359
+#: lib/user.functions.php:360
 #, php-format
 msgid "Password is too short or too long (between %d and %d letters)."
 msgstr "Passwort zu kurz oder zu lang (zwischen %d und %d Buchstaben)."
 
-#: lib/user.functions.php:363
+#: lib/user.functions.php:364
 msgid "Passwords do not match."
 msgstr "Passwörter stimmen nicht überein."
 
-#: lib/user.functions.php:373
+#: lib/user.functions.php:381
 #, php-format
 msgid "Username is too short or too long (between %d and %d letters.)"
-msgstr "Benutzername zu kurz oder zu lang (zwischen %d und %d Buchstaben)."
+msgstr "Kontoname zu kurz oder zu lang (zwischen %d und %d Buchstaben)."
 
-#: lib/user.functions.php:380
+#: lib/user.functions.php:388
 msgid "User id may not have spaces or special characters"
-msgstr "Der Benutzername darf keine Leerzeichen oder Sonderzeichen enthalten"
+msgstr "Der Kontoname darf keine Leerzeichen oder Sonderzeichen enthalten"
 
-#: lib/user.functions.php:384
+#: lib/user.functions.php:394
+#, php-format
+msgid ""
+"There is already a pending registration request for email %s. Please check "
+"your email for the confirmation link."
+msgstr ""
+"Es gibt schon eine Registrierungsanfrage für die Adresse %s. Bitte "
+"überprüfen Sie ihren Posteingang."
+
+#: lib/user.functions.php:400
+msgid "Click here to resend the confirmation email"
+msgstr "Klicken Sie hier, um die Bestätigungsmail erneut an Sie zu versenden."
+
+#: lib/user.functions.php:403
+#, php-format
+msgid "Click here in %d minutes %d seconds to resend the confirmation email."
+msgstr ""
+"Klicken Sie hier in %d Minuten, %d Sekunden um die Bestätigungsmail erneut "
+"an Sie zu senden."
+
+#: lib/user.functions.php:409
 msgid "The username is already in use"
-msgstr "Der Benutzername ist schon vergeben"
+msgstr "Der Kontoname ist schon vergeben"
 
-#: lib/user.functions.php:396
+#: lib/user.functions.php:421
 msgid "Illegal characters in the password"
 msgstr "Passwort enthält ungültige Zeichen"
 
-#: lib/user.functions.php:404 user/addextraemail.php:26
+#: lib/user.functions.php:429 user/addextraemail.php:26
 msgid "Email can not be empty"
 msgstr "E-Mail darf nicht leer sein"
 
-#: lib/user.functions.php:408
+#: lib/user.functions.php:433
 msgid "Invalid email address"
 msgstr "Ungültige E-Mailadresse"
 
-#: lib/user.functions.php:413
+#: lib/user.functions.php:438
 msgid ""
 "Email address already in use. If you have forgotten your login details, "
 "please follow this link: <a href='?view=login&recover=1'>Recover lost "
@@ -6997,57 +7115,56 @@ msgstr ""
 "haben, folgen Sie diesem Link: <a href='?view=login&recover=1'>Vergessenes "
 "Passwort / Benutzername</a>"
 
-#: lib/user.functions.php:1393
+#: lib/user.functions.php:1438
 msgid "Confirm your account to ultiorganizer"
 msgstr "Bestätigen Sie Ihr Konto bei Ultiorganizer"
 
-#: lib/user.functions.php:1445
+#: lib/user.functions.php:1516
 msgid "Confirm extra email address for ultiorganizer"
 msgstr "Extra E-Mailadresse für Ultiorganizer bestätigen"
 
-#: lib/user.functions.php:1840
+#: lib/user.functions.php:1911
 msgid "Password recovery request"
 msgstr "Zurücksetzen des Passworts"
 
-#: lib/user.functions.php:1877
+#: lib/user.functions.php:1948
 msgid "New password to ultiorganizer"
 msgstr "Neues Passwort für Ultiorganizer"
 
-#: lib/user.functions.php:1936
+#: lib/user.functions.php:2010
 #, php-format
 msgid "Error running query, error '%s'"
 msgstr "Fehler beim Ausführen der Abfrage, Fehler '%s'"
 
-#: lib/user.functions.php:1958
+#: lib/user.functions.php:2032
 #, php-format
 msgid "No or too many anonymous users (%s). Additional users will be deleted."
 msgstr ""
-"Kein oder zu viele anonyme Benutzer (%s). Zusätzliche Benutzer werden "
-"gelöscht."
+"Kein oder zu viele anonyme Konten (%s). Zusätzliche Konten werden gelöscht."
 
-#: lib/user.functions.php:1983
+#: lib/user.functions.php:2057
 #, php-format
 msgid "Anonymous userid is %d instead of 1. This may be okay."
 msgstr ""
 "ID des anonymen Benutzers ist %d statt 1. Das ist wahrscheinlich in Ordnung."
 
-#: login.php:6 login.php:107
+#: login.php:8 login.php:115
 msgid "Recover password"
 msgstr "Passwort zurücksetzen"
 
-#: login.php:17
+#: login.php:19
 msgid "Please enter your new password below."
 msgstr "Bitte geben Sie unten Ihr neues Passwort ein."
 
-#: login.php:25 register.php:110 user/userinfo.php:482
+#: login.php:27 register.php:145 user/userinfo.php:482
 msgid "Repeat password"
 msgstr "Passwort (Wdh.)"
 
-#: login.php:30
+#: login.php:32
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: login.php:45
+#: login.php:48
 #, php-format
 msgid ""
 "If the address '%s' is registered, an email with further instructions was "
@@ -7056,26 +7173,26 @@ msgstr ""
 "Falls die Adresse '%s' registriert ist, wurde eine Mail mit weiteren "
 "Anweisungen an Sie geschickt."
 
-#: login.php:48
+#: login.php:52
 msgid "You must enter either a username or an registered email address."
 msgstr ""
 "Sie müssen entweder einen Benutzernamen oder eine registrierte E-Mailadresse "
 "eingeben."
 
-#: login.php:55
+#: login.php:60
 #, php-format
 msgid ""
 "If '%s' is a registered user, an email will be sent to the corresponding "
 "address."
 msgstr ""
-"Falls '%s' ein registrierter Benutzer ist, wird eine E-Mail an die "
+"Falls '%s' ein existierendes Konto ist, wird eine E-Mail an die "
 "entsprechende Adresse geschickt."
 
-#: login.php:66
+#: login.php:72
 msgid "Invalid or expired token."
 msgstr "Ungültiges oder abgelaufenes Sicherheitstoken."
 
-#: login.php:68
+#: login.php:74
 msgid ""
 "Click this link to try again</a> or, if this problem persists, contact an "
 "administrator."
@@ -7083,13 +7200,13 @@ msgstr ""
 "Klicken Sie auf diesen Link, um es erneut zu probieren</a>, oder, falls das "
 "Problem dauerhaft besteht, kontaktieren Sie einen Administrator."
 
-#: login.php:81
+#: login.php:87
 msgid "Your password has been changed. Please login with your new password."
 msgstr ""
 "Ihr Passwort wurde geändert. Bitte melden Sie sich mit Ihrem neuen Passwort "
 "an."
 
-#: login.php:100
+#: login.php:107
 msgid ""
 "If you have forgotten your password, enter <em>either</em> your username "
 "<em>or</em> your email below. If we have your email address, you will "
@@ -7099,19 +7216,19 @@ msgstr ""
 "Benutzernamen </em>oder</em> Ihre E-Mailadresse unten ein. Wenn Ihre Adresse "
 "bekannt ist, erhalten Sie dorthin eine Nachricht mit weiteren Instruktionen."
 
-#: login.php:112 menufunctions.php:208 menufunctions.php:372
+#: login.php:129 menufunctions.php:208 menufunctions.php:372
 #: menufunctions.php:1260 menufunctions.php:1262 mobile/index.php:16
-#: register.php:137 scorekeeper/index.php:106 scorekeeper/login.php:23
+#: register.php:174 scorekeeper/index.php:106 scorekeeper/login.php:23
 msgid "Login"
 msgstr "Login"
 
-#: login.php:115
+#: login.php:132
 msgid ""
 "Username/password did not match. Try again or request to recover a lost "
 "password."
 msgstr ""
-"Benutzername/Passwort stimmen nicht überein. Bitte versuchen Sie es erneut "
-"oder setzen Sie Ihr Passwort zurück."
+"Kontoname/Passwort stimmen nicht überein. Bitte versuchen Sie es erneut oder "
+"setzen Sie Ihr Passwort zurück."
 
 #: logout.php:2 menufunctions.php:215 menufunctions.php:391
 #: scorekeeper/index.php:104
@@ -7124,7 +7241,7 @@ msgstr "Sie sind ausgeloggt"
 
 #: menufunctions.php:209
 msgid "New User"
-msgstr "Neuer Benutzer"
+msgstr "Neues Konto"
 
 #: menufunctions.php:225
 msgid "Hide Menu"
@@ -7262,7 +7379,7 @@ msgstr "Anleitung"
 msgid "Admin Help"
 msgstr "Admin-Hilfe"
 
-#: menufunctions.php:956 privacy.php:5 register.php:124
+#: menufunctions.php:956 privacy.php:5 register.php:159
 msgid "Privacy Policy"
 msgstr "Datenschutzerklärung"
 
@@ -7286,7 +7403,7 @@ msgstr "..."
 
 #: menufunctions.php:1250
 msgid "New user?"
-msgstr "Neuer Benutzer?"
+msgstr "Neues Konto?"
 
 #: menufunctions.php:1255
 msgid "Recover lost password?"
@@ -7405,12 +7522,12 @@ msgstr "Punktendes Team wählen!"
 #: mobile/addscoresheet.php:187 scorekeeper/addhalftime.php:36
 #: scorekeeper/addscoresheet.php:228
 msgid "min"
-msgstr "min."
+msgstr "min"
 
 #: mobile/addscoresheet.php:187 scorekeeper/addhalftime.php:36
 #: scorekeeper/addscoresheet.php:228
 msgid "sec"
-msgstr "sec."
+msgstr "sec"
 
 #: mobile/addscoresheet.php:190 mobile/addscoresheet.php:207
 #: scorekeeper/addscoresheet.php:256
@@ -7742,7 +7859,7 @@ msgstr "Neuer Farbe"
 
 #: plugins/update_pool_colors.php:100
 msgid "Offset"
-msgstr ""
+msgstr "Offset"
 
 #: plugins/update_pool_colors.php:101
 msgid "Distance"
@@ -7808,7 +7925,7 @@ msgstr "Sieger macht weiter in:"
 msgid "Losers continues in:"
 msgstr "Verlierer macht weiter in:"
 
-#: register.php:6 register.php:133 user/addextraemail.php:3
+#: register.php:6 register.php:170 user/addextraemail.php:3
 msgid "Register"
 msgstr "Registrieren"
 
@@ -7820,16 +7937,20 @@ msgstr ""
 "Datenschutzrichtlinien anerkennen."
 
 #: register.php:27
+#, php-format
 msgid ""
-"The confirmation e-mail has been sent to the e-mail address provided. You "
-"have to follow the link in the e-mail to finalize registration, before you "
-"can use the account."
+"The confirmation e-mail has been sent to the e-mail address provided. Make "
+"sure that you can receive mails from %s and the e-mail is not in your spam "
+"folder. You have to follow the link in the e-mail to finalize registration, "
+"before you can use the account."
 msgstr ""
 "Eine E-Mail ist an die hinterlegte E-Mailadresse zur Bestätigung gesendet "
-"worden. Sie müssen dem Link in dieser E-Mail folgen, um die Registrierung "
-"abzuschließen. Danach erst kann das Konto benutzt werden."
+"worden. Stellen Sie bitte sicher, dass Sie Mails von %s empfangen können und "
+"die Nachricht nicht in Ihrem Spamordner ist. Sie müssen dem Link in dieser E-"
+"Mail folgen, um die Registrierung abzuschließen. Danach erst kann das Konto "
+"benutzt werden."
 
-#: register.php:33
+#: register.php:35
 msgid ""
 "The confirmation e-mail could not be sent. There may be a problem with your "
 "e-mail address or this might be a temporary error. In the latter case you "
@@ -7840,19 +7961,61 @@ msgstr ""
 "vorübergehender Fehler sein. Im letzteren Fall können Sie es später noch "
 "einmal probieren."
 
-#: register.php:40
+#: register.php:43
 msgid "Please correct the errors and try again"
 msgstr "Korrigieren Sie bitte die Fehler und versuchen Sie es nochmal"
 
-#: register.php:50
+#: register.php:53
+#, php-format
+msgid "There is an existing registration request for the user '%s'."
+msgstr "Es gibt schon eine Registrierungsanfrage für den Kontonamen '%s'."
+
+#: register.php:58
+#, php-format
+msgid ""
+"A new confirmation e-mail has been sent to the e-mail address registered for "
+"the user '%s'."
+msgstr ""
+"Eine weitere Bestätigungsmail ist an die angegebene E-Mailadresse des "
+"Accounts '%s' versendet worden."
+
+#: register.php:59
+msgid ""
+"Please follow the link in the e-mail to finalize registration, before you "
+"can use the account."
+msgstr ""
+"Bitte folgen Sie dem Link in der E-Mail, um die Registrierung abzuschließen. "
+"Danach erst kann der Account benutzt werden."
+
+#: register.php:62
+#, php-format
+msgid "You can request a new confirmation e-mail in %d minutes %d seconds."
+msgstr ""
+"Sie können eine neue Bestätigungsmail in %d Minuten und %d Sekunden "
+"anfordern."
+
+#: register.php:63
+msgid "Request new e-mail"
+msgstr "Neue E-Mail anfordern"
+
+#: register.php:69
+#, php-format
+msgid "No registration request found for the user ID '%s'."
+msgstr "Keine Registrierungsanfrage für die ID '%s' gefunden."
+
+#: register.php:73
+msgid "No registration request found for the given e-mail address."
+msgstr "Für die angegebene E-Mailadresse gibt es keine Registrierungsanfrage"
+
+#: register.php:83
 msgid "Your registration was confirmed successfully."
 msgstr "Ihre Registrierung ist erfolgreich bestätigt worden."
 
-#: register.php:53
+#: register.php:86
 msgid "Confirming your registration failed."
 msgstr "Die Bestätigung Ihrer Registrierung ist fehlgeschlagen."
 
-#: register.php:60
+#: register.php:93
 msgid ""
 "Registration is only needed for event organizers, team contact persons, and "
 "players needing to create or change data in system."
@@ -7860,15 +8023,15 @@ msgstr ""
 "Eine Registrierung ist nur für Ausrichter, Team-Kontaktpersonen und Spieler, "
 "die Systemdaten eintragen oder ändern müssen, nötig."
 
-#: register.php:62
+#: register.php:96
 msgid "Registration process:"
 msgstr "Registrierungsprozess:"
 
-#: register.php:64
+#: register.php:98
 msgid "Fill your registration information in fields below."
 msgstr "Füllen Sie das Formular mit den Registrierungsdaten unten aus."
 
-#: register.php:67
+#: register.php:101
 msgid ""
 "A confirmation e-mail will be sent immediately to the e-mail address "
 "provided. (Note that confirmation e-mail can be incorrectly filterd as spam "
@@ -7879,21 +8042,21 @@ msgstr ""
 "Sie, dass diese unrichtigerweise als Spam klassifiziert werden könnte. In "
 "diesem Fall finden Sie sie in Ihrem Spam-Ordner.)"
 
-#: register.php:69
+#: register.php:104
 msgid "Follow the link in the e-mail to confirm your registration."
 msgstr "Folgen Sie dem Link in der E-Mail, um die Registrierung zu bestätigen."
 
-#: register.php:116 user/contacts.php:137 user/playerprofile.php:220
+#: register.php:151 user/playerprofile.php:220
 msgid "E-mail"
 msgstr "E-Mail"
 
-#: register.php:123
+#: register.php:158
 msgid "You can read about our privacy policy by following this link:"
 msgstr ""
 "Sie können unsere Datenschutzrichtlinien nachlesen, indem Sie diesem Link "
 "folgen:"
 
-#: register.php:129
+#: register.php:164
 msgid ""
 "I accept the privacy policy. I agree that this site stores my personal data "
 "(including name and e-mail given above) as declared in the privacy policy."
@@ -7902,7 +8065,7 @@ msgstr ""
 "meine persönlichen Daten (einschließlich Name und E-Mail wie oben angegeben) "
 "benutzt, wie es die Datenschutzrichtlinien erklären."
 
-#: register.php:136
+#: register.php:173
 msgid "Already have an account:"
 msgstr "Sie haben schon einen Account:"
 
@@ -8067,7 +8230,7 @@ msgid "Insufficient rights to edit spirit for this game."
 msgstr ""
 
 #: scorekeeper/addspiritpoints.php:48 scorekeeper/addspiritpoints.php:53
-#: user/addspirit.php:232 user/addspirit.php:238
+#: user/addspirit.php:248 user/addspirit.php:254
 msgid "Spirit points given for"
 msgstr "Spiritpunkte für"
 
@@ -8076,7 +8239,7 @@ msgid "Spirit points for"
 msgstr "Spiritpunkte für"
 
 #: scorekeeper/addspiritpoints.php:75 user/addspirit.php:56
-#: user/addspirit.php:270
+#: user/addspirit.php:286
 #, php-format
 msgid "Spirit points are not used in %s."
 msgstr ""
@@ -8115,7 +8278,7 @@ msgstr "Ergebnis mit Spiel-ID eingeben"
 
 #: scorekeeper/result.php:110
 msgid "Reverse teams..."
-msgstr "Teams vertauschen"
+msgstr "Teams vertauschen..."
 
 #: scorekeeper/result.php:111
 msgid "Confirm result"
@@ -8143,7 +8306,7 @@ msgstr "Liga-Parameter nicht angegeben"
 
 #: seriesstatus.php:31
 msgid "Insufficient rights."
-msgstr "Nötige Berechtigung fehlt"
+msgstr "Nötige Berechtigung fehlt."
 
 #: seriesstatus.php:52
 msgid "Division statistics:"
@@ -8494,12 +8657,12 @@ msgid "Feed in defense sheet"
 msgstr "Defensebericht eingeben"
 
 #: user/adddefensesheet.php:56 user/addplayerlists.php:129
-#: user/addresult.php:52 user/addscoresheet.php:171 user/addspirit.php:196
+#: user/addresult.php:52 user/addscoresheet.php:171 user/addspirit.php:212
 msgid "Score sheet"
 msgstr "Spielbericht"
 
 #: user/adddefensesheet.php:62 user/addplayerlists.php:135
-#: user/addresult.php:57 user/addscoresheet.php:177 user/addspirit.php:199
+#: user/addresult.php:57 user/addscoresheet.php:177 user/addspirit.php:215
 msgid "Defense sheet"
 msgstr "Defensebericht"
 
@@ -8762,7 +8925,7 @@ msgstr "Spiel läuft, aktueller Spielstand: %s - %s."
 msgid "Game reset"
 msgstr "Spiel zurückgesetzt"
 
-#: user/addresult.php:70 user/addspirit.php:214
+#: user/addresult.php:70 user/addspirit.php:230
 msgid "Game is running."
 msgstr "Spiel läuft."
 
@@ -8813,41 +8976,41 @@ msgstr "Ergebnis speichern"
 msgid "Submitting team"
 msgstr "Vergebendes Team"
 
-#: user/addspirit.php:71
+#: user/addspirit.php:80
 msgid "Search Division"
 msgstr "Klasse / Liga suchen"
 
-#: user/addspirit.php:122 user/addspirit.php:135
+#: user/addspirit.php:137 user/addspirit.php:150
 #, php-format
 msgid "Incomplete spirit scores were saved for %s."
 msgstr "Unvollständige Spiritwertung gespeichert für %s."
 
-#: user/addspirit.php:145
+#: user/addspirit.php:161
 msgid "Game result was not updated."
 msgstr "Spielergebnis wurde nicht verändert."
 
-#: user/addspirit.php:147
+#: user/addspirit.php:163
 msgid "Game not ready."
 msgstr "Spiel nicht bereit."
 
-#: user/addspirit.php:150
+#: user/addspirit.php:166
 msgid "Not authorized. Nothing was saved."
 msgstr "Nicht autorisiert. Es wurde nichts gespeichert."
 
-#: user/addspirit.php:181
+#: user/addspirit.php:197
 #, php-format
 msgid "Invalid game %d"
 msgstr "Ungültiges Spiel %d"
 
-#: user/addspirit.php:204
+#: user/addspirit.php:220
 msgid "Search team"
 msgstr "Team suchen"
 
-#: user/addspirit.php:218
-msgid "Final result: "
+#: user/addspirit.php:234
+msgid "Final result:"
 msgstr "Endergebnis:"
 
-#: user/addspirit.php:223
+#: user/addspirit.php:239
 msgid ""
 "If you think this is not correct, please contact the tournament "
 "administration immediately!"
@@ -8855,24 +9018,24 @@ msgstr ""
 "Wenn Sie denken, dass dies nicht korrekt ist, kontaktieren Sie bitte "
 "umgehend die Turnierleitung!"
 
-#: user/addspirit.php:250
+#: user/addspirit.php:266
 msgid "Save and previous game &laquo;"
 msgstr "Speichern und vorheriges Spiel &laquo;"
 
-#: user/addspirit.php:254
+#: user/addspirit.php:270
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: user/addspirit.php:257
+#: user/addspirit.php:273
 msgid "&raquo; Save and next game"
 msgstr "&raquo; Speichern und nächstes Spiel"
 
-#: user/addspirit.php:261
+#: user/addspirit.php:277
 #, php-format
 msgid "Previous game: %s"
 msgstr "Vorheriges Spiel: %s"
 
-#: user/addspirit.php:265
+#: user/addspirit.php:281
 #, php-format
 msgid "Next game: %s"
 msgstr "Nächstes Spie: %s"
@@ -8935,7 +9098,7 @@ msgstr ""
 
 #: user/confirmdeletion.php:45
 msgid "Cannot delete anonymous user"
-msgstr "Kann anonymen Benutzer nicht löschen"
+msgstr "Kann anonymes Konto nicht löschen"
 
 #: user/confirmdeletion.php:52
 msgid ""
@@ -8949,10 +9112,6 @@ msgstr ""
 msgid "This is an admin account!"
 msgstr "Dies ist ein Administratorkonto!"
 
-#: user/confirmdeletion.php:64
-msgid "Yes, delete"
-msgstr "Ja, löschen"
-
 #: user/confirmdeletion.php:65
 msgid "No, abort"
 msgstr "Nein, abbrechen"
@@ -8961,47 +9120,38 @@ msgstr "Nein, abbrechen"
 msgid "Event mandatory"
 msgstr "Turnier/Saison erforderlich"
 
-#: user/contacts.php:20 user/contacts.php:21
+#: user/contacts.php:22
 msgid "e-mail"
 msgstr "E-Mail"
 
-#: user/contacts.php:40
-#, php-format
-msgid "All %d users registered for the event"
-msgstr "Mail an alle %d Benutzer, die für dieses Turnier registriert sind"
-
-#: user/contacts.php:46
-msgid "Mail to Event Organizers"
-msgstr "Kontakt Turnierorganisatoren"
-
-#: user/contacts.php:61
+#: user/contacts.php:65
 msgid "All organizers"
 msgstr "Alle Organisatoren"
 
-#: user/contacts.php:64
+#: user/contacts.php:79
+#, php-format
+msgid "All %d users registered for the event"
+msgstr "Mail an alle %d Konten, die für dieses Turnier registriert sind"
+
+#: user/contacts.php:85
+msgid "Mail to Event Organizers"
+msgstr "Kontakt Turnierorganisatoren"
+
+#: user/contacts.php:107
 msgid "Mail to Division Organizers"
 msgstr "Kontakt Ligenverwalter"
 
-#: user/contacts.php:91
+#: user/contacts.php:132
 msgid "No admins known"
 msgstr "Keine Admins eingetragen"
 
-#: user/contacts.php:97
-msgid "All admins"
-msgstr "Alle Administratoren"
-
-#: user/contacts.php:110
-msgid "All season admins"
-msgstr "Alle Ligenadministratoren"
-
-#: user/contacts.php:115
+#: user/contacts.php:162
 msgid "Mail to Teams"
 msgstr "Mail an Teams"
 
-#: user/contacts.php:161
-#, php-format
-msgid "All %d team admins in %s"
-msgstr "Alle %d Teamadministratoren in %s"
+#: user/contacts.php:210
+msgid "Send message to selected"
+msgstr "Nachricht an Auswahl senden"
 
 #: user/enrollteam.php:12
 msgid "Enrolled teams"
@@ -9021,7 +9171,7 @@ msgstr "Bestätigt"
 
 #: user/login_request.php:13
 msgid "User name is required"
-msgstr "Benutzername erforderlich"
+msgstr "Kontoname erforderlich"
 
 #: user/login_request.php:17
 msgid "Password is required"
@@ -9061,7 +9211,7 @@ msgstr "Reservierung %s"
 
 #: user/pdfscoresheet.php:159
 msgid "No reservations for this user!"
-msgstr "Keine Reservierungen für diesen Benutzer!"
+msgstr "Keine Reservierungen für diesen Kontonamen!"
 
 #: user/pdfscoresheet.php:164
 #, php-format
@@ -9102,7 +9252,7 @@ msgid "Fields on separate pages"
 msgstr "Felder auf getrennten Seiten"
 
 #: user/pdfscoresheet.php:226
-msgid "Score sheets for a pool "
+msgid "Score sheets for a pool"
 msgstr "Spielberichte für einen Pool"
 
 #: user/pdfscoresheet.php:228
@@ -9578,7 +9728,7 @@ msgstr "Teamstatistik anzeigen"
 
 #: user/userinfo.php:28 user/userinfo.php:34 user/userinfo.php:220
 msgid "User information"
-msgstr "Benutzerdaten"
+msgstr "Kontoinformationen"
 
 #: user/userinfo.php:28
 msgid "You are not logged in."
@@ -9757,6 +9907,20 @@ msgstr "Überstimmen"
 #: user_guide.php:12
 msgid "Sorry, user guide not available for your language."
 msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
+
+#, php-format
+#~ msgid "Recovery request sent to %s."
+#~ msgstr "Zurücksetzungsnachricht an %s gesendet."
+
+#~ msgid "All admins"
+#~ msgstr "Alle Administratoren"
+
+#~ msgid "All season admins"
+#~ msgstr "Alle Ligenadministratoren"
+
+#, php-format
+#~ msgid "All %d team admins in %s"
+#~ msgstr "Alle %d Teamadministratoren in %s"
 
 #~ msgid "Some games"
 #~ msgstr "Einige Spiele"
@@ -10183,15 +10347,6 @@ msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
 #~ "E-Mailadresse ist schon in Benutzung. Falls Sie Ihre Logindaten vergessen "
 #~ "haben, versuchen Sie sie <a href='?view=login&recover=1'>wiederzufinden</"
 #~ "a>"
-
-#~ msgid ""
-#~ "Confirmation email has been sent to the email address provided. You have "
-#~ "to follow the link in the mail to finalize registration, before you can "
-#~ "use the account."
-#~ msgstr ""
-#~ "Eine E-Mail ist an die hinterlegte E-Mailadresse zur Bestätigung gesendet "
-#~ "worden. Sie müssen dem Link in dieser E-Mail folgen, um die Registrierung "
-#~ "abzuschließen. Danach erst kann der Account benutzt werden."
 
 #~ msgid "Registration was confirmed successfully."
 #~ msgstr "Die Registrierung ist erfolgreich bestätigt worden."

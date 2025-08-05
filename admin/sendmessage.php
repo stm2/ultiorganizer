@@ -237,22 +237,22 @@ foreach ($recipients as $row) {
 $html .= "</div>\n";
 $html .= $warning;
 
-$html .= "<h3>" . _("To") . "</h3>\n";
+$html .= "<h3>" . pgettext("sendmessage", "To") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='200' name='to' value='" . htmlspecialchars($to_raw, ENT_QUOTES, 'UTF-8') . "'/><br />";
-$html .= "<p class='info'>" . _("Separate multiple addresses with commas.") . "</p>\n";
+$html .= "<p class='info'>" . _("Separate multiple addresses or user names with commas.") . "</p>\n";
 
-$html .= "<h3>" . _("CC") . "</h3>\n";
+$html .= "<h3>" . pgettext("sendmessage", "CC") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='200' name='cc' value='" . htmlspecialchars($cc_raw, ENT_QUOTES, 'UTF-8') . "'/><br />";
-$html .= "<p class='info'>" . _("Separate multiple addresses with commas.") . "</p>\n";
+$html .= "<p class='info'>" . _("Separate multiple addresses or user names with commas.") . "</p>\n";
 
-$html .= "<h3>" . _("BCC") . "</h3>\n";
+$html .= "<h3>" . pgettext("sendmessage", "BCC") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='200' name='bcc' value='" . htmlspecialchars($bcc_raw, ENT_QUOTES, 'UTF-8') . "'/><br />";
-$html .= "<p class='info'>" . _("Separate multiple addresses with commas.") . "</p>\n";
+$html .= "<p class='info'>" . _("Separate multiple addresses or user names with commas.") . "</p>\n";
 
-$html .= "<h3>" . _("Subject") . "</h3>\n";
+$html .= "<h3>" . pgettext("sendmessage", "Subject") . "</h3>\n";
 $html .= "<input class='input' size='50' maxlength='100' name='subject' value='$subject'/><br />";
 
-$html .= "<h3>" . _("Message") . "</h3>\n";
+$html .= "<h3>" . pgettext("sendmessage", "Message") . "</h3>\n";
 $html .= "<div><textarea  class='input borderbox' rows='20' maxlength='50000' id='message' name='message'>$message</textarea></div>\n";
 
 
@@ -261,7 +261,7 @@ if (isset($show_send_buttons) && $show_send_buttons) {
     ("<input class='button' name='send_with_errors' type='submit' value='" . utf8entities(_("Send with errors")) . "'/>&nbsp;"
       . "<input class='button' name='check_again' type='submit' value='" . utf8entities(_("Check again")) . "'/>");
 } else {
-  $html .= ("<input class='button' name='send' type='submit' value='" . utf8entities(_("Send")) . "'/>");
+  $html .= ("<input class='button' name='send' type='submit' value='" . utf8entities(pgettext("sendmessage", "Send")) . "'/>");
 }
 
 $html .= "</form>";

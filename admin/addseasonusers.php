@@ -492,7 +492,7 @@ if ($teamresp) {
 $html .= "</table>";
 if (!empty($_GET["access"]) && $_GET["access"] == "gameadmin") {
   $html .= "<table class='formtable'>\n";
-  $html .= "<tr><td>" . _("User Id (s)") . "</td><td>";
+  $html .= "<tr><td>" . _("User Id(s)") . "</td><td>";
   $html .= UserInput('gameusers', '');
   $html .= "</td><td>" . _("or") . "</td>\n";
   $html .= "<td>" . _("E-Mail(s)") . "</td><td><input class='input' size='20' name='emails'/></td>\n";

@@ -63,14 +63,29 @@ if ($gameId <= 0) {
       $html .= "<a href='?view=user/addspirit&series=$seriesId&allgames=1'>" . _("All games") . "</a>\n";
     }
     $html .= "<h3>" . _("Submitting team") . "</h3>";
-    $html .= SearchTeam($target, array('token' => $token, 'seriesid' => $seriesId),
+    $html .= SearchTeam(
+      $target,
+      array('token' => $token, 'seriesid' => $seriesId),
       array('selectteam' => _("Select"), 'cancel' => _("Cancel")),
-      ['seriesid' => $seriesId, 'searchseasons' => [1 => SeriesSeasonId($seriesId)], 'searchstart' => "",
-        'searchend' => date('d.m.Y'), 'searchteam' => true], false);
+      [
+        'seriesid' => $seriesId,
+        'searchseasons' => [1 => SeriesSeasonId($seriesId)],
+        'searchstart' => "",
+        'searchend' => date('d.m.Y'),
+        'searchteam' => true
+      ],
+      false
+    );
   } elseif ($seriesId <= 0) {
     $html .= "<h3>" . _("Search Division") . "</h3>\n";
-    $html .= SearchSeries($target, array('token' => $token),
-      array('selectseries' => _("Select"), 'cancel' => _("Cancel")), null, ['searchser' => true], false);
+    $html .= SearchSeries(
+      $target,
+      array('token' => $token),
+      array('selectseries' => _("Select"), 'cancel' => _("Cancel")),
+      null,
+      ['searchser' => true],
+      false
+    );
   } else if (!$allgames || !hasEditSeriesRight($seriesId)) {
     // $html .= "<h3>" . _("Search Game") . "</h3>\n";
     // $html .= SearchGame($target, array('token' => $token, 'submitterid' => $submitterId, 'seriesid' => $seriesId),
@@ -121,7 +136,7 @@ if ($gameId > 0) {
                 else
                   $missing = sprintf(_("Incomplete spirit scores were saved for %s."), $game_result['hometeamname']);
               } // else if($categories[$cat]['type'] == 1) {
-                // $points[$cat] =
+              // $points[$cat] =
             }
 
             GameSetSpiritPoints($saveId, $game_result['hometeam'], 1, $points, $categories, false);
@@ -139,7 +154,8 @@ if ($gameId > 0) {
           }
           if ((($game_result['homescore'] == 0 && $game_result['visitorscore'] == 0) || $game_result['isongoing']) &&
             (intval($_POST['homescore']) + intval($_POST['visitorscore']) > 0) &&
-            ($_POST['homescore'] != $game_result['homescore'] || $_POST['visitorscore'] != $game_result['visitorscore']))
+            ($_POST['homescore'] != $game_result['homescore'] || $_POST['visitorscore'] != $game_result['visitorscore'])
+          )
             GameSetResult($saveId, $_POST['homescore'], $_POST['visitorscore'], hasEditSeriesRight($seriesId), false);
           else
             $html .= "<p>" . _("Game result was not updated.") . "</p>\n";
@@ -215,7 +231,7 @@ if ($gameId > 0) {
     } else if ($game_result['homescore'] > 0 || $game_result['visitorscore'] > 0) {
       $edit = "disabled";
     }
-    $html .= "<p>" . _("Final result: ") . "<input class='input' name='homescore' $edit value='" .
+    $html .= "<p>" . _("Final result:") . " <input class='input' name='homescore' $edit value='" .
       utf8entities($game_result['homescore']) .
       "' maxlength='4' size='5'/> - <input class='input' name='visitorscore' $edit value='" .
       utf8entities($game_result['visitorscore']) . "' maxlength='4' size='5'/>$running";
@@ -271,5 +287,3 @@ if ($gameId > 0) {
   }
 }
 showPage($title, $html);
-
-?>

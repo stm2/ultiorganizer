@@ -223,7 +223,7 @@ function searchModes() {
   $seasonRef = utf8entities($season);
   $html .= "<hr /><ul>";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=pool'>" .
-    utf8entities(_("Score sheets for a pool ")) . "</a></li>\n";
+    utf8entities(_("Score sheets for a pool")) . "</a></li>\n";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=reservation'>" .
     utf8entities(_("Score sheets for a reservation")) . "</a></li>\n";
   $html .= "<li><a href='?view=user/pdfscoresheet&amp;season=$seasonRef&amp;search=game'>" .
