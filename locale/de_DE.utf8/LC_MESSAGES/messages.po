@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 13:53+0200\n"
+"POT-Creation-Date: 2025-08-05 15:04+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: stm <stm2@sourceforge.net>\n"
 "Language-Team: Ultiorganizer\n"
@@ -913,7 +913,7 @@ msgid "X"
 msgstr "X"
 
 #: admin/addseasonusers.php:154 admin/addseasonusers.php:171
-#: admin/addseasonusers.php:550
+#: admin/addseasonusers.php:495 admin/addseasonusers.php:550
 msgid "User Id(s)"
 msgstr "Konten-ID(s)"
 
@@ -1101,10 +1101,6 @@ msgid "All team admins have scorekeeping rights for teams' games."
 msgstr ""
 "Alle Teamadministratoren haben Ergebniseingaberechte für die Spiele ihrer "
 "Teams."
-
-#: admin/addseasonusers.php:495
-msgid "User Id (s)"
-msgstr "Kontoname(n)"
 
 #: admin/addseasonusers.php:505 admin/editgame.php:175 admin/editgame.php:179
 #: admin/movingtimes.php:145 admin/movingtimes.php:170
@@ -3632,83 +3628,92 @@ msgstr "Ungültige E-Mailadresse: %s"
 msgid "User %s not found or has invalid email."
 msgstr "Konto %s nicht gefunden oder ungültige E-Mailadresse"
 
-#: admin/sendmessage.php:139
+#: admin/sendmessage.php:146
 msgid "You must provide a message and a subject."
 msgstr "Nachricht und Betreff erforderlich."
 
-#: admin/sendmessage.php:140 admin/sendmessage.php:143
-#: admin/sendmessage.php:146
+#: admin/sendmessage.php:147 admin/sendmessage.php:150
+#: admin/sendmessage.php:153
 msgid "Message not sent! Please correct the errors and try again."
 msgstr ""
 "Nachricht wurde nicht verschickt! Korrigieren Sie bitte die Fehler und "
 "versuchen Sie es nochmal"
 
-#: admin/sendmessage.php:145
+#: admin/sendmessage.php:152
 msgid "No valid recipients found."
 msgstr "Keine gültigen Empfänger gefunden."
 
-#: admin/sendmessage.php:167
+#: admin/sendmessage.php:177
 #, php-format
 msgid "Message sent to %s."
 msgstr "Nachricht an %s wurde abgeschickt."
 
-#: admin/sendmessage.php:169
+#: admin/sendmessage.php:179
 #, php-format
 msgid "Message could not be sent to %s."
 msgstr "Nachricht konnte nicht an %s versendet werden."
 
-#: admin/sendmessage.php:179
+#: admin/sendmessage.php:189
 msgid "No recipients selected."
 msgstr "Keine Empfänger ausgewählt."
 
-#: admin/sendmessage.php:214
+#: admin/sendmessage.php:224
 msgid "Recipients"
 msgstr "Empfänger"
 
-#: admin/sendmessage.php:225
+#: admin/sendmessage.php:235
 #, php-format
 msgid "User %s not found."
 msgstr "Account %s nicht gefunden."
 
-#: admin/sendmessage.php:240
+#: admin/sendmessage.php:250
 msgctxt "sendmessage"
 msgid "To"
 msgstr "An"
 
-#: admin/sendmessage.php:242 admin/sendmessage.php:246
-#: admin/sendmessage.php:250
+#: admin/sendmessage.php:252 admin/sendmessage.php:256
+#: admin/sendmessage.php:260
 msgid "Separate multiple addresses or user names with commas."
 msgstr "Mehrere Adressen oder Kontennamen mit Komma trennen."
 
-#: admin/sendmessage.php:244
+#: admin/sendmessage.php:254
 msgctxt "sendmessage"
 msgid "CC"
 msgstr "CC"
 
-#: admin/sendmessage.php:248
+#: admin/sendmessage.php:258
 msgctxt "sendmessage"
 msgid "BCC"
 msgstr "BCC"
 
-#: admin/sendmessage.php:252
+#: admin/sendmessage.php:264
+msgctxt "sendmessage"
+msgid "Reply-To"
+msgstr "Antwort an"
+
+#: admin/sendmessage.php:267
+msgid "No Reply-To address set. Please check your user settings."
+msgstr ""
+
+#: admin/sendmessage.php:270
 msgctxt "sendmessage"
 msgid "Subject"
 msgstr "Betreff"
 
-#: admin/sendmessage.php:255
+#: admin/sendmessage.php:273
 msgctxt "sendmessage"
 msgid "Message"
 msgstr "Nachricht"
 
-#: admin/sendmessage.php:261
+#: admin/sendmessage.php:279
 msgid "Send with errors"
 msgstr "Mit Fehlern senden"
 
-#: admin/sendmessage.php:262
+#: admin/sendmessage.php:280
 msgid "Check again"
 msgstr "Neu prüfen"
 
-#: admin/sendmessage.php:264
+#: admin/sendmessage.php:282
 msgctxt "sendmessage"
 msgid "Send"
 msgstr "Senden"
@@ -9907,6 +9912,9 @@ msgstr "Überstimmen"
 #: user_guide.php:12
 msgid "Sorry, user guide not available for your language."
 msgstr "Es tut uns leid, es gibt keine Anleitung in Ihrer Sprache."
+
+#~ msgid "User Id (s)"
+#~ msgstr "Kontoname(n)"
 
 #, php-format
 #~ msgid "Recovery request sent to %s."
