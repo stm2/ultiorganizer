@@ -129,6 +129,7 @@ addHeaderCallback(
 );
 
 if ($reservationId > 0) {
+  $title = _("Edit field reservation");
   $reservationInfo = ReservationInfo($reservationId);
   $res['id'] = $reservationId;
   $res['location'] = $reservationInfo['location'];
