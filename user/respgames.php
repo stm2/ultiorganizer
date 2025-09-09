@@ -1,31 +1,154 @@
 <?php
-include_once $include_prefix.'lib/team.functions.php';
-include_once $include_prefix.'lib/common.functions.php';
-include_once $include_prefix.'lib/season.functions.php';
-include_once $include_prefix.'lib/series.functions.php';
-include_once $include_prefix.'lib/timetable.functions.php';
+include_once $include_prefix . 'lib/team.functions.php';
+include_once $include_prefix . 'lib/common.functions.php';
+include_once $include_prefix . 'lib/season.functions.php';
+include_once $include_prefix . 'lib/series.functions.php';
+include_once $include_prefix . 'lib/timetable.functions.php';
 include_once $include_prefix . 'lib/spirit.functions.php';
 
 $title = _("Game responsibilities");
 $group = "all";
-$tab = 0;
 
 $html = "";
 
-if(!empty($_GET["group"])) {
+if (isset($_GET["group"])) {
   $group  = $_GET["group"];
+}
+
+function tabIndex(&$tab) {
+  $ret = " tabindex='" . ++$tab . "'";
+  return $ret;
+}
+
+function respgameslink($season, $series_id, $group, $hide, $mass, $htmlentities = true) {
+  if ($hide == "none")
+    $hide = "";
+  else
+    $hide = "&amp;hidden=" . $hide;
+  $ret = "?view=user/respgames&amp;season=$season" . ($series_id ? "&amp;series=$series_id" : "") .
+    "&amp;group=$group$hide&amp;massinput=$mass";
+  return $ret;
+}
+
+function GameResponsibilityTable($respGameArray, $season, $series_id, $group, $hide, $mass, $hidestarted, &$activeSeries, &$activeGroups, &$tab) {
+  global $thinsp;
+  $html = "<form method='post' action='" . respgameslink($season, $series_id, $group, $hide, $mass) . "'>";
+
+  $total = 0;
+  $MAX_INPUT = 120;
+  $first = true;
+
+  $respGameArrayAll = GameResponsibilityArray($season);
+  foreach ($respGameArrayAll as $reservationgroup => $resArray) {
+    // $activeGroups[$reservationgroup] = true;
+    foreach ($resArray as $resId => $gameArray) {
+      foreach ($gameArray as $gameId => $game) {
+        if (is_numeric($gameId)) {
+          $activeSeries[$game['series']] = true;
+        }
+      }
+    }
+  }
+  foreach ($respGameArray as $reservationgroup => $resArray) {
+    $activeGroups[$reservationgroup] = true;
+
+    if ($group != "all" && $reservationgroup != $group) {
+      continue;
+    }
+
+    if ($first) {
+      $first = false;
+      $html .= "<table cellpadding='2' border='0' style='width:100%'>";
+    } else {
+      //$html .= "<hr/>\n";
+    }
+    if ($group == "all" && !empty($reservationgroup)) {
+      $html .= "<tr><td colspan='9'><h2>" . utf8entities($reservationgroup) . "</h2></td></tr>\n";
+    }
+
+    foreach ($resArray as $resId => $gameArray) {
+      $html .= "<tr><th class='left' colspan='7'>";
+      $html .= DefWeekDateFormat($gameArray['starttime']) . " ";
+      if ($resId)
+        $html .= "<a class='thlink' href='?view=reservationinfo&amp;reservation=" . $resId . "'>" .
+          $gameArray['locationname'] . "</a>";
+      else
+        $html .= _("No location");
+      $html .= "</th>\n<th class='right' colspan='1'>";
+      $html .= "<a class='thlink' href='?view=user/pdfscoresheet&amp;reservation=" . ($resId ? $resId : "none") . "&amp;season=" . $season .
+        "'>" . _("Print scoresheets") . "</a>";
+      $html .= "</th></tr>\n";
+
+      foreach ($gameArray as $gameId => $game) {
+        if (!is_numeric($gameId)) {
+          continue;
+        }
+        if (($hidestarted == 1  && GameHasStarted($game)) || ($hidestarted == 0 && !GameHasStarted($game))) {
+          continue;
+        }
+
+        $html .= "<tr><td>" . DefHourFormat($game['time']) . "</td>";
+        if ($game['hometeam'] && $game['visitorteam']) {
+          $html .= "<td>" . utf8entities($game['hometeamname']) . "</td><td>-</td><td>" . utf8entities($game['visitorteamname']) . "</td>";
+        } else {
+          $html .= "<td>" . utf8entities($game['phometeamname']) . "</td><td>-</td><td>" . utf8entities($game['pvisitorteamname']) . "</td>";
+        }
+
+        if ($total++ < $MAX_INPUT && $_SESSION['massinput']) {
+          $html .= "<td colspan='3' style='white-space: nowrap'>
+      		<input type='hidden' id='scoreId" . $gameId . "' name='scoreId[]' value='$gameId'/>
+      		<input type='text' style='width:5ex' size='2' maxlength='3' value='" . (is_null($game['homescore']) ? "" : intval($game['homescore'])) . "' id='homescore$gameId' name='homescore[]' oninput='confirmLeave(this, true, null);' autofocus" . tabIndex($tab) . "/> 
+      		<input type='text' style='width:5ex' size='2' maxlength='3' value='" . (is_null($game['visitorscore']) ? "" : intval($game['visitorscore'])) . "' id='visitorscore$gameId' name='visitorscore[]' oninput='confirmLeave(this, true, null);'" . tabIndex($tab) . "/></td>";
+        } else {
+          $html .= "<td>" . intval($game['homescore']) . "</td><td>-</td><td>" . intval($game['visitorscore']) . "</td>";
+        }
+
+        $html .= "<td class='right'>";
+
+        if ($game['hometeam'] && $game['visitorteam']) {
+          $html .= "<a href='?view=user/addresult&amp;game=" . $gameId . "'>" . _("Result") . "</a> |{$thinsp}";
+          /*$html .= "<a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Players")."</a>{$thinsp}|{$thinsp}";*/
+          $html .= "<a href='?view=user/addscoresheet&amp;game=$gameId'>" . _("Scoresheet") . "</a>";
+
+          if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && hasEditSpiritRight($gameId)) {
+            $html .= "{$thinsp}|{$thinsp}<a href='?view=user/addspirit&amp;game=$gameId'>" . _("Spirit") . "</a>";
+          }
+
+          /*if(ShowDefenseStats())
+        {
+          $html .= "${thinsp}|${thinsp}<a href='?view=user/adddefensesheet&amp;game=$gameId'>"._("Defense sheet")."</a>";
+        }*/
+        }
+        /*if (intval($game['hasstarted'])>0) {
+        $html .= "${thinsp}|${thinsp}<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>"._("Game play")."</a>";
+      }*/
+        $html .= "</td>";
+        $html .= "</tr>\n";
+        if ($total == $MAX_INPUT && $_SESSION['massinput'])
+          $html .= "<tr><td colspan='8' style='text-align:center;'>" . _("Mass input game limit exceeded!") . "</td></tr>\n";
+      }
+    }
+  }
+  if (!$first)
+    $html .= "</table>\n";
+
+  if ($_SESSION['massinput']) {
+    $html .= "<input class='button' name='save' type='submit' value='" . _("Save") . "' onclick='confirmLeave(null, false, null);'/>";
+  }
+  $html .= "</form>\n";
+  return $html;
 }
 
 $html .= file_get_contents('script/disable_enter.js.inc');
 
-$help = "<p>"._("Feed in the data for your game responsibilities").":</p>
+$help = "<p>" . _("Feed in the data for your game responsibilities") . ":</p>
 	<ol>
-		<li> "._("Result")." </li>
-		<li> "._("Players in the game")." </li>
-		<li> "._("Game score sheet")." </li>
+		<li> " . _("Result") . " </li>
+		<li> " . _("Players in the game") . " </li>
+		<li> " . _("Game score sheet") . " </li>
 	</ol>
-	<p>"._("Click on Mass input to input multiple results at once, then Save").".</p>
-	<p>"._("Check the game play after feeding in the score sheet").".</p>";
+	<p>" . _("Click on Mass input to input multiple results at once, then Save") . ".</p>
+	<p>" . _("Check the game play after feeding in the score sheet") . ".</p>";
 
 $html .= onPageHelpAvailable($help);
 //content
@@ -44,192 +167,103 @@ $series = SeasonSeries($season);
 
 
 $hidestarted = -1;
-$hide="none";
-if(!empty($_GET["hidden"])) {
-  $hidestarted = ($_GET["hidden"] == "started")?1:0;
-  $hide=$_GET['hidden'];
+$hide = "none";
+if (!empty($_GET["hidden"])) {
+  $hidestarted = ($_GET["hidden"] == "started") ? 1 : 0;
+  $hide = $_GET['hidden'];
 }
 
 if (!empty($_GET["massinput"])) {
-	$_SESSION['massinput'] = true;
-	$mass = "1";
+  $_SESSION['massinput'] = true;
+  $mass = "1";
 } else {
-	$_SESSION['massinput'] = false;
-	$mass = "0";
+  $_SESSION['massinput'] = false;
+  $mass = "0";
 }
 
 //process itself on submit
 $feedback = "";
 if (!empty($_POST['save'])) {
-	$feedback = GameProcessMassInput($_POST);
+  $feedback = GameProcessMassInput($_POST);
 }
-
-$menutabs = array();
-foreach($series as $row){
-  if (!isset($menutabs[U_($row['name'])]))
-    $menutabs[U_($row['name'])]=array();
-  
-  $menutabs[U_($row['name'])][]="?view=user/respgames&season=".$season."&series=".$row['series_id'];
-}
-$menutabs[_("...")]="?view=user/respgames&season=".$season;
-$html .= pageMenu($menutabs, respgameslink($season, $series_id, $group, $hide, $mass, false), false);
-
-
-$seasoninfo = SeasonInfo($season);
-$groups = TimetableGrouping($season, "season", "all");
-$html .= "<table width='100%'><tr><td class='grouping_container'>\n";
-
-function respgameslink($season, $series_id, $group, $hide, $mass, $htmlentities=true) {
-  if($hide=="none")
-    $hide = "";
-  else
-    $hide = "&amp;hidden=".$hide;
-  $ret = "?view=user/respgames&amp;season=$season" . ($series_id ? "&amp;series=$series_id" : "") .
-       "&amp;group=$group$hide&amp;massinput=$mass";
-  return $ret;
-}
-
-if(count($groups)>0){
-  foreach($groups as $grouptmp){
-    if($group==$grouptmp['reservationgroup']){
-      $html .= "<a class='groupinglink' tabindex='".++$tab."' href='".respgameslink($season, $series_id, urlencode($grouptmp['reservationgroup']), $hide, $mass)."'><span class='selgroupinglink'>".U_($grouptmp['reservationgroup'])."</span></a>";
-    }else{
-      $html .= "<a class='groupinglink' tabindex='".++$tab."' href='".respgameslink($season, $series_id, urlencode($grouptmp['reservationgroup']), $hide, $mass)."'>".U_($grouptmp['reservationgroup'])."</a>";
-    }
-    $html .= "&nbsp;&nbsp;&nbsp; ";
-  }
-  if($group=="all"){
-    $html .= "<a class='groupinglink' tabindex='".++$tab."' href='".respgameslink($season, $series_id, "all", $hide, $mass)."'><span class='selgroupinglink'>"._("All")."</span></a>";
-  }else{
-    $html .= "<a class='groupinglink' tabindex='".++$tab."' href='".respgameslink($season, $series_id, "all", $hide, $mass)."'>"._("All")."</a>";
-  }
-}
-$html .= "</td>\n";
-
-$html .="<td>";
-if ($hidestarted != 1) {
-  $html .= "<a href='".respgameslink($season, $series_id, $group, "started", $mass)."' tabindex='".++$tab."'>"._("Hide played games")."</a> ";
-}
-if ($hidestarted != 0) {
-  if ($hidestarted != 1)
-    $html .= "| ";
-  $html .= "<a href='".respgameslink($season, $series_id, $group, "future", $mass)."' tabindex='".++$tab."'>"._("Hide future games")."</a> ";
-}
-if($hidestarted != -1){
-  $html .= "| <a href='".respgameslink($season, $series_id, $group, "none", $mass)."' tabindex='".++$tab."'>"._("Show all games")."</a> ";
-}
-$html .= "</td>\n";
-
-$html .= "</td><td style='text-align:right;' tabindex='".++$tab."'>";
-if ($_SESSION ['massinput']) {
-	$html .= "<a class='button' href='".respgameslink($season, $series_id, $group, $hide, "0")."'>" . _ ( "Just display values" ) . "</a>";
-} else {
-	$html .= "<a class='button' href='".respgameslink($season, $series_id, $group, $hide, "1")."'>" . _ ( "Mass input" ) . "</a>";
-}
-$html .= "</td></tr></table>\n";
-
 
 $respGameArray = GameResponsibilityArray($season, $series_id);
 
-if(count($respGameArray) == 0) {
-  $html .= "\n<p>"._("No game responsibilities").".</p>\n";
-}else{
+if (count($respGameArray) == 0) {
+  $html .= "\n<p>" . _("No game responsibilities") . ".</p>\n";
+} else {
   $html .= "<noscript>
-	<p><b>"._("Feeding in the score sheet requires JavaScript. Please enable JavaScript in your browser to continue!")."</b></p>
-	</noscript>";	
-}
+	<p><b>" . _("Feeding in the score sheet requires JavaScript. Please enable JavaScript in your browser to continue!") . "</b></p>
+	</noscript>";
 
-$html .= "<form method='post' action='".respgameslink($season, $series_id, $group, $hide, $mass)."'>";
+  $activeSeries = [];
+  $activeGroups = [];
+  $tab = 0;
+  $gameRespTab = GameResponsibilityTable($respGameArray, $season, $series_id, $group, $hide, $mass, $hidestarted, $activeSeries, $activeGroups, $tab);
 
-$total = 0;
-$MAX_INPUT = 120;
-$first = true;
-foreach ($respGameArray as $reservationgroup => $resArray) {
-  if($group != "all" && $reservationgroup != $group){
-    continue;
+  $menutabs = array();
+  foreach ($series as $row) {
+    if (!isset($activeSeries[$row['series_id']]))
+      continue;
+
+    if (!isset($menutabs[U_($row['name'])]))
+      $menutabs[U_($row['name'])] = array();
+
+    $menutabs[U_($row['name'])][] = "?view=user/respgames&season=" . $season . "&series=" . $row['series_id'];
   }
+  $menutabs[_("...")] = "?view=user/respgames&season=" . $season;
+  $html .= pageMenu($menutabs, respgameslink($season, $series_id, $group, $hide, $mass, false), false);
 
-  if($first) {
-    $first = false;
-    $html .= "<table cellpadding='2' border='0' style='width:100%'>";
-  } else {
-    //$html .= "<hr/>\n";
-  }
-  if($group == "all" && !empty($reservationgroup)){
-    $html .= "<tr><td colspan='9'><h2>". utf8entities($reservationgroup) ."</h2></td></tr>\n";
-  }
 
-  foreach($resArray as $resId => $gameArray) {
-    $html .= "<tr><th class='left' colspan='7'>";
-    $html .= DefWeekDateFormat($gameArray['starttime']) . " ";
-    if ($resId)
-      $html .= "<a class='thlink' href='?view=reservationinfo&amp;reservation=" . $resId . "'>" .
-           $gameArray['locationname'] . "</a>";
-    else
-      $html .= _("No location");
-    $html .= "</th>\n<th class='right' colspan='1'>";
-    $html .= "<a class='thlink' href='?view=user/pdfscoresheet&amp;reservation=" . ($resId?$resId:"none") . "&amp;season=" . $season .
-         "'>" . _("Print scoresheets") . "</a>";
-    $html .= "</th></tr>\n";
+  $seasoninfo = SeasonInfo($season);
+  $groups = TimetableGrouping($season, "season", "all");
+  $html .= "<table width='100%'><tr><td class='grouping_container'>\n";
 
-    foreach ($gameArray as $gameId => $game) {
-      if (!is_numeric($gameId)) {
+  if (count($groups) > 0) {
+    foreach ($groups as $grouptmp) {
+      if (!isset($activeGroups[$grouptmp['reservationgroup']]))
         continue;
-      }
-      if (($hidestarted==1  && GameHasStarted($game)) || ($hidestarted==0 && !GameHasStarted($game))) {
-          continue;
-      }
-      
-      $html .= "<tr><td>". DefHourFormat($game['time']) ."</td>";
-      if($game['hometeam'] && $game['visitorteam']){
-        $html .= "<td>". utf8entities($game['hometeamname']) ."</td><td>-</td><td>". utf8entities($game['visitorteamname']) ."</td>";
-      }else{
-        $html .= "<td>". utf8entities($game['phometeamname']) ."</td><td>-</td><td>". utf8entities($game['pvisitorteamname']) ."</td>";
-      }
-      
-      if ($total++ < $MAX_INPUT && $_SESSION['massinput']) {
-      	$html .= "<td colspan='3' style='white-space: nowrap'>
-      		<input type='hidden' id='scoreId" . $gameId . "' name='scoreId[]' value='$gameId'/>
-      		<input type='text' style='width:5ex' size='2' maxlength='3' value='" . (is_null($game['homescore'])?"":intval($game['homescore'])) . "' id='homescore$gameId' name='homescore[]' oninput='confirmLeave(this, true, null);' tabindex='".++$tab."'/> 
-      		<input type='text' style='width:5ex' size='2' maxlength='3' value='" . (is_null($game['visitorscore'])?"":intval($game['visitorscore'])) . "' id='visitorscore$gameId' name='visitorscore[]' oninput='confirmLeave(this, true, null);' tabindex='".++$tab."'/></td>";
+
+      if ($group == $grouptmp['reservationgroup']) {
+        $html .= "<a class='groupinglink' href='" . respgameslink($season, $series_id, urlencode($grouptmp['reservationgroup']), $hide, $mass) . "'" . tabIndex($tab) . "><span class='selgroupinglink'>" . U_($grouptmp['reservationgroup']) . "</span></a>";
       } else {
-      	$html .= "<td>". intval($game['homescore']) ."</td><td>-</td><td>". intval($game['visitorscore']) ."</td>";
+        $html .= "<a class='groupinglink' href='" . respgameslink($season, $series_id, urlencode($grouptmp['reservationgroup']), $hide, $mass) . "'" . tabIndex($tab) . ">" . U_($grouptmp['reservationgroup']) . "</a>";
       }
-
-      $html .= "<td class='right'>";
-      
-      if($game['hometeam'] && $game['visitorteam']){
-        $html .= "<a href='?view=user/addresult&amp;game=".$gameId."'>"._("Result")."</a> |${thinsp}";
-        /*$html .= "<a href='?view=user/addplayerlists&amp;game=".$gameId."'>"._("Players")."</a>${thinsp}|${thinsp}";*/
-        $html .= "<a href='?view=user/addscoresheet&amp;game=$gameId'>"._("Scoresheet")."</a>";
-        if (GetSeriesSpiritMode(GameSeries($gameId)) > 0 && hasEditSpiritRight($gameId)) {
-          $html .= "${thinsp}|${thinsp}<a href='?view=user/addspirit&amp;game=$gameId'>"._("Spirit")."</a>";
-        }
-        
-        /*if(ShowDefenseStats())
-        {
-          $html .= "${thinsp}|${thinsp}<a href='?view=user/adddefensesheet&amp;game=$gameId'>"._("Defense sheet")."</a>";
-        }*/
-      }
-      /*if (intval($game['hasstarted'])>0) {
-        $html .= "${thinsp}|${thinsp}<a href='?view=gameplay&amp;game=". $game['game_id'] ."'>"._("Game play")."</a>";
-      }*/
-      $html .= "</td>";
-      $html .= "</tr>\n";
-      if ($total == $MAX_INPUT && $_SESSION['massinput'])
-        $html .= "<tr><td colspan='8' style='text-align:center;'>" . _("Mass input game limit exceeded!") . "</td></tr>\n";
+      $html .= "&nbsp;&nbsp;&nbsp; ";
     }
-
+    if ($group == "all") {
+      $html .= "<a class='groupinglink' href='" . respgameslink($season, $series_id, "all", $hide, $mass) . "'" . tabIndex($tab) . "><span class='selgroupinglink'>" . _("All") . "</span></a>";
+    } else {
+      $html .= "<a class='groupinglink' href='" . respgameslink($season, $series_id, "all", $hide, $mass) . "'" . tabIndex($tab) . ">" . _("All") . "</a>";
+    }
   }
-}
-if (!$first)
-  $html .= "</table>\n";
+  $html .= "</td>\n";
 
-if ($_SESSION['massinput']) {
-	$html .= "<input class='button' name='save' type='submit' value='" . _("Save") . "' onclick='confirmLeave(null, false, null);' tabindex='".++$tab."'/>";
-}
-$html .= $feedback;
+  $html .= "<td>";
+  if ($hidestarted != 1) {
+    $html .= "<a href='" . respgameslink($season, $series_id, $group, "started", $mass) . "'" . tabIndex($tab) . ">" . _("Hide played games") . "</a> ";
+  }
+  if ($hidestarted != 0) {
+    if ($hidestarted != 1)
+      $html .= "| ";
+    $html .= "<a href='" . respgameslink($season, $series_id, $group, "future", $mass) . "'" . tabIndex($tab) . ">" . _("Hide future games") . "</a> ";
+  }
+  if ($hidestarted != -1) {
+    $html .= "| <a href='" . respgameslink($season, $series_id, $group, "none", $mass) . "'" . tabIndex($tab) . ">" . _("Show all games") . "</a> ";
+  }
+  $html .= "</td>\n";
 
+  $html .= "</td><td style='text-align:right;'>";
+  if ($_SESSION['massinput']) {
+    $html .= "<a class='button' href='" . respgameslink($season, $series_id, $group, $hide, "0") . "'" . tabIndex($tab) . ">" . _("Just display values") . "</a>";
+  } else {
+    $html .= "<a class='button' href='" . respgameslink($season, $series_id, $group, $hide, "1") . "'" . tabIndex($tab) . ">" . _("Mass input") . "</a>";
+  }
+  $html .= "</td></tr></table>\n";
+
+  $html .= $gameRespTab;
+
+  $html .= $feedback;
+}
 
 showPage($title, $html);
-?>
