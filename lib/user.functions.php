@@ -146,7 +146,7 @@ function ensureLogin() {
     }
 
     // login and reload with GET
-    header("location:?view=${mobile}login&query=$query&privileged=1");
+    header("location:?view={$mobile}login&query=$query&privileged=1");
   }
 }
 
@@ -1318,14 +1318,14 @@ function AddTeamAdmin(string $userId, int $teamId): bool {
     $query = sprintf("SELECT COUNT(*) FROM uo_userproperties WHERE userid='%s' AND name='userrole' AND value='%s'",
       mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
     $result = DBQueryToValue($query);
-    
+
     if ($result <= 0) {
       $query = sprintf("INSERT INTO uo_userproperties (userid, name, value) VALUES ('%s', 'userrole', '%s')",
         mysql_adapt_real_escape_string($userId), mysql_adapt_real_escape_string($role));
       $result = DBQuery($query);
       Log1("security", "add", $userId, $teamId, $role);
       AddEditSeason($userId, SeriesSeasonId($seriesId));
-      
+
       invalidateSessions();
       if ($userId == $_SESSION['uid']) {
         SetUserSessionData($userId);
@@ -2090,16 +2090,16 @@ function RestoreAnonymousUser($override = 0) {
 }
 
 function SelectionInput($id, $value, $valueId = null) {
-  $html = "<div id='${id}Autocomplete' class='yui-skin-sam'>\n";
+  $html = "<div id='{$id}Autocomplete' class='yui-skin-sam'>\n";
   if ($valueId !== null) {
-    $html .= "<input type='hidden'  name='${id}' id='${id}' value='" . utf8entities($valueId) . "'/>\n";
-    $html .= "<input class='input' id='${id}Name' style='position:relative;' type='text' name='${id}Name' value='";
+    $html .= "<input type='hidden'  name='{$id}' id='{$id}' value='" . utf8entities($valueId) . "'/>\n";
+    $html .= "<input class='input' id='{$id}Name' style='position:relative;' type='text' name='{$id}Name' value='";
     $html .= utf8entities($value);
   } else {
-    $html .= "<input class='input' id='${id}' style='position:relative;' type='text' name='${id}' value='";
+    $html .= "<input class='input' id='{$id}' style='position:relative;' type='text' name='{$id}' value='";
     $html .= utf8entities($value);
   }
-  $html .= "'/><div id='${id}Container'></div></div>";
+  $html .= "'/><div id='{$id}Container'></div></div>";
 
   return $html;
 }
@@ -2117,36 +2117,36 @@ function SelectionScript($id, $type, $hiddenId = false, $minQueryLength = 1) {
 ";
   if ($hiddenId) {
     $script .= "
-  var ${id}SelectHandler = function(sType, aArgs) {
+  var {$id}SelectHandler = function(sType, aArgs) {
     var oData = aArgs[2];
-    document.getElementById(\"${id}\").value = oData[1];
-    var x = document.getElementById(\"${id}Name\").className;
-    document.getElementById(\"${id}Name\").className = x.replaceAll(' highlight','');
+    document.getElementById(\"{$id}\").value = oData[1];
+    var x = document.getElementById(\"{$id}Name\").className;
+    document.getElementById(\"{$id}Name\").className = x.replaceAll(' highlight','');
   };
 
-  var ${id}SelectHandler2 = function() {
-    var x = document.getElementById(\"${id}Name\").className;
+  var {$id}SelectHandler2 = function() {
+    var x = document.getElementById(\"{$id}Name\").className;
     if (!x || !x.includes(' highlight'))
-      document.getElementById(\"${id}Name\").className+=' highlight';
+      document.getElementById(\"{$id}Name\").className+=' highlight';
   };
 
 ";
   }
   $script .= "
-  Fetch${id} = function(){
-    var ${type}Source = new YAHOO.util.XHRDataSource(\"ext/${type}txt.php\");
-    ${type}Source.responseSchema = {
+  Fetch{$id} = function(){
+    var {$type}Source = new YAHOO.util.XHRDataSource(\"ext/{$type}txt.php\");
+    {$type}Source.responseSchema = {
       recordDelim: \"\\n\",
       fieldDelim: \"\\t\"
     };
-    ${type}Source.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
-    ${type}Source.maxCacheEntries = 60;
+    {$type}Source.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
+    {$type}Source.maxCacheEntries = 60;
 
     // First AutoComplete
-    var ${type}AutoComp = new YAHOO.widget.AutoComplete(\"${trigger}\",\"${id}Container\", ${type}Source);
-    ${type}AutoComp.formatResult = function(oResultData, sQuery, sResultMatch) {
+    var {$type}AutoComp = new YAHOO.widget.AutoComplete(\"{$trigger}\",\"{$id}Container\", {$type}Source);
+    {$type}AutoComp.formatResult = function(oResultData, sQuery, sResultMatch) {
 
-      format = `<div class='${type}CustomResult'><span style='font-weight:bold'>\${sResultMatch}<\/span>`;
+      format = `<div class='{$type}CustomResult'><span style='font-weight:bold'>\${sResultMatch}<\/span>`;
       if (oResultData.length > 1 + idOffset) {
         format += ` / \${oResultData[1 + idOffset]}`;
       }
@@ -2161,19 +2161,19 @@ function SelectionScript($id, $type, $hiddenId = false, $minQueryLength = 1) {
       format += '<\/div>';
       return format;
     };
-    ${type}AutoComp.minQueryLength = $minQueryLength;
+    {$type}AutoComp.minQueryLength = $minQueryLength;
 ";
   if ($hiddenId) {
     $script .= "
-      userAutoComp.itemSelectEvent.subscribe(${id}SelectHandler);
-      userAutoComp.textboxFocusEvent.subscribe(${id}SelectHandler2);
+      userAutoComp.itemSelectEvent.subscribe({$id}SelectHandler);
+      userAutoComp.textboxFocusEvent.subscribe({$id}SelectHandler2);
 ";
   }
 
   $script .= "
     return {
-      oDS: ${type}Source,
-      oAC: ${type}AutoComp
+      oDS: {$type}Source,
+      oAC: {$type}AutoComp
     }
   }();
 //]]>
