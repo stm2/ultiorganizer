@@ -55,7 +55,7 @@ if ($_GET['resend'] ?? false) {
     if ($delta > $max_delta) {
       AddRegisterRequest($request['userid'], $request['password'], $request['name'], $request['email']);
       $message .=
-        "<p>" . sprintf(_("A new confirmation e-mail has been sent to the e-mail address registered for the user '%s'."), $_GET['userid']) . "</p>\n" .
+        "<p>" . sprintf(_("A new confirmation e-mail has been sent to the e-mail address registered for the user '%s'. Make sure that you can receive mails from %s and the e-mail is not in your spam folder."), $_GET['userid'], getFromAddress()) . "</p>\n" .
         "<p>" . _("Please follow the link in the e-mail to finalize registration, before you can use the account.") . "</p>\n";
     } else {
       $message .= "<p class='warning'>" .
