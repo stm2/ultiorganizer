@@ -75,6 +75,7 @@ function source_selection($new = true) {
     utf8entities(_("Import from another division")) . "</a>";
   $html .= "<hr />\n";
   $html .= "<a href='?view=admin/dfvimport$seasonPar'>" . utf8entities(_("Import from DFV")) . "</a><br />\n";
+  $html .= "<a href='?view=plugins/utimport$seasonPar'>" . utf8entities(_("Import from Ultimate Tournament")) . "</a><br />\n";
   return $html;
 }
 

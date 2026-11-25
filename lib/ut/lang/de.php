@@ -1,0 +1,36 @@
+<?php
+declare(strict_types=1);
+
+return [
+  'group' => 'Gruppe %s',
+  'swiss_group' => 'Swiss Draw %s',
+  'round_final' => 'Finale',
+  'round_semi' => 'Halbfinale',
+  'round_quarter' => 'Viertelfinale',
+  'round_eighth' => 'Achtelfinale',
+  'round_ko' => 'K.O.-Runde %d-%d',
+  'fallback_pool' => 'Spiele',
+  'default_pool_name' => 'Gruppe',
+  'pool_rank' => '%s aus %s',
+  'winner_of' => 'Sieger aus %s',
+  'loser_of' => 'Verlierer aus %s',
+  'shell_ordinals' => [
+    1 => 'Erster',
+    2 => 'Zweiter',
+    3 => 'Dritter',
+    4 => 'Vierter',
+    5 => 'Fünfter',
+    6 => 'Sechster',
+    7 => 'Siebter',
+    8 => 'Achter',
+    9 => 'Neunter',
+    10 => 'Zehnter',
+    11 => 'Elfter',
+    12 => 'Zwölfter',
+  ],
+  'tbd' => 'TBD',
+  'banner_imported' => 'Dieses Turnier wurde aus %s synchronisiert.',
+  'banner_open_in_ut' => 'In der App öffnen',
+  'banner_resync' => 'Einstellungen',
+  'rank_with_suffix' => static fn(int $n): string => $n . '.',
+];
