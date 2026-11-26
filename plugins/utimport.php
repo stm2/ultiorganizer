@@ -10,7 +10,7 @@ security=superadmin
 
 [DESCRIPTION]
 title = "Import from Ultimate Tournament"
-description = "Import or re-sync tournament divisions from Ultimate Tournament API"
+description = "Import or re-import tournament divisions from Ultimate Tournament API"
 -->
 <?php
 ob_end_clean();

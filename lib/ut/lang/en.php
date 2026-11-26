@@ -29,7 +29,7 @@ return [
     12 => 'twelfth',
   ],
   'tbd' => 'TBD',
-  'banner_imported' => 'This tournament was synced from %s.',
+  'banner_imported' => 'This tournament was imported from %s.',
   'banner_open_in_ut' => 'Open in app',
   'banner_resync' => 'Settings',
   'rank_with_suffix' => static function (int $n): string {

@@ -173,7 +173,7 @@ final class UtImportPage {
       'reservations' => _("Field reservations"),
     ];
 
-    $html = "<fieldset>\n<legend><strong>" . self::t("Sync completed") . "</strong></legend>\n<ul>\n";
+    $html = "<fieldset>\n<legend><strong>" . self::t("Import completed") . "</strong></legend>\n<ul>\n";
     foreach ($entities as $prop => $label) {
       $line = self::e((string) $label) . ": "
         . $syncSummary->created->$prop . " " . self::t("created") . ", "
@@ -251,7 +251,7 @@ final class UtImportPage {
       . "<th>" . self::t("UT Division") . "</th>"
       . "<th>" . self::t("UO Series") . "</th>"
       . "<th>" . self::t("Status") . "</th>"
-      . "<th>" . self::t("Last Synced") . "</th>"
+      . "<th>" . self::t("Last imported") . "</th>"
       . "</tr>\n";
 
     $initialCheckedCount = 0;
@@ -361,7 +361,7 @@ final class UtImportPage {
     } elseif ($lockedToOtherSeries) {
       $statusText = (string) _("Imported in another series");
     } elseif ($existingLink !== null) {
-      $statusText = (string) _("Synced");
+      $statusText = (string) _("Imported");
     } else {
       $statusText = (string) _("Not imported");
     }
@@ -378,9 +378,8 @@ final class UtImportPage {
   private static function renderStatsLine(int $teams, int $finished, int $games, ?array $compareUt = null): string {
     $span = static function (int $val, string $label, ?int $utVal, string $mismatchStyle): string {
       $mismatch = $utVal !== null && $val !== $utVal;
-      $title = $mismatch ? sprintf((string) _("$label (UT: %d)"), $utVal) : (string) _($label);
       $styleAttr = $mismatch ? " style='$mismatchStyle'" : '';
-      return "<span title='" . self::e($title) . "'$styleAttr>" . $val . "</span>";
+      return "<span title='" . self::e((string) _($label)) . "'$styleAttr>" . $val . "</span>";
     };
 
     return '<small>'
@@ -393,8 +392,8 @@ final class UtImportPage {
   }
 
   private static function renderSyncButton(int $initialCheckedCount): string {
-    $labelOne = (string) _("Sync 1 division with Ultiorganizer");
-    $labelMany = (string) _("Sync %d divisions with Ultiorganizer");
+    $labelOne = (string) _("Import 1 division from Ultimate Tournament to Ultiorganizer");
+    $labelMany = (string) _("Import %d divisions from Ultimate Tournament to Ultiorganizer");
     $syncBtnLabel = $initialCheckedCount === 1 ? $labelOne : sprintf($labelMany, $initialCheckedCount);
     $disabledAttr = $initialCheckedCount === 0 ? " disabled='disabled'" : "";
 

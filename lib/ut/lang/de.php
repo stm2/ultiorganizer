@@ -29,7 +29,7 @@ return [
     12 => 'Zwölfter',
   ],
   'tbd' => 'TBD',
-  'banner_imported' => 'Dieses Turnier wurde aus %s synchronisiert.',
+  'banner_imported' => 'Dieses Turnier wurde aus %s importiert.',
   'banner_open_in_ut' => 'In der App öffnen',
   'banner_resync' => 'Einstellungen',
   'rank_with_suffix' => static fn(int $n): string => $n . '.',
