@@ -291,6 +291,8 @@ function contentEnd() {
   $querystring = $_SERVER['QUERY_STRING'];
   $querystring = preg_replace("/&print=[^&]/", "", $querystring);
 
+  include_once __DIR__ . '/lib/ut/UtBanner.php';
+  echo UtBanner::renderForCurrentRequest();
   echo "</main><!--content-->";
   echo "<footer>\n";
   echo "<hr />";
@@ -1026,6 +1028,8 @@ function getEditSeasonLinks() {
             $seriesname . " " . _("Games"));
           add_menu($menu, $seriesseason, "?view=admin/seasonstandings&amp;season=$seaLink&amp;single=1&amp;series=$series",
             $seriesname . " " . _("Pool rankings"));
+          add_menu($menu, $seriesseason, "?view=plugins/utimport&amp;season=$seaLink&amp;series=$series",
+            $seriesname . " " . _("UT Import"));
           if (SeasonInfo($seriesseason)['showspiritpoints'] == 1)
             add_menu($menu, $seriesseason, "?view=admin/seasonspirit&amp;season=$seaLink&amp;single=1&amp;series=$series",
               $seriesname . " " . _("Spirit"));
