@@ -120,7 +120,15 @@ readonly class UtBracketPlanner {
         $treeRounds = $this->detectFullPlayoffTree($bId, $bracketsById, $outgoingPlayable, $absorbedBrackets);
         if ($treeRounds !== null) {
           $totalRounds = count($treeRounds);
-          $rootName = $this->naming->playoffTreeName($by + 1, $by + $bSize);
+          $hasExtOut = false;
+          foreach ($treeRounds[$totalRounds - 1] as $rbId) {
+            if (!empty($outgoingPlayable[$rbId])) {
+              $hasExtOut = true;
+              break;
+            }
+          }
+          $isPlacementTree = !$hasExtOut;
+          $rootName = $this->naming->playoffTreeName($by + 1, $by + $bSize, $isPlacementTree);
 
           foreach ($treeRounds as $roundIdx => $roundBracketIds) {
             $roundNum = $roundIdx + 1;
@@ -140,16 +148,6 @@ readonly class UtBracketPlanner {
               $gameOffset += max(1, (int) ($rbSize / 2));
             }
 
-            $hasExtOut = false;
-            if ($isFinalRound) {
-              foreach ($roundBracketIds as $rbId) {
-                if (!empty($outgoingPlayable[$rbId])) {
-                  $hasExtOut = true;
-                  break;
-                }
-              }
-            }
-
             $firstBracket = $bracketsById[$roundBracketIds[0]];
             $roundX = $firstBracket->x;
             $roundY = $firstBracket->y;
@@ -163,7 +161,7 @@ readonly class UtBracketPlanner {
               type: UoPoolType::Playoff,
               visible: $isRoot,
               continuingPool: true,
-              placementPool: ($isFinalRound && !$hasExtOut),
+              placementPool: ($isFinalRound && $isPlacementTree),
               sortX: $roundX,
               sortY: $by,
               sortName: $isRoot ? $rootName : ($rootName . ' ' . $roundNum),
@@ -179,7 +177,7 @@ readonly class UtBracketPlanner {
 
         // Not a full multi-round tree
         $hasOutgoing = !empty($outgoingPlayable[$bId]);
-        $name = mb_substr($this->naming->eliminationBase($by, $bSize), 0, 50);
+        $name = $this->naming->eliminationPoolName($by, $bSize, !$hasOutgoing);
 
         $pools[$bId] = new UtPlannedPool(
           utKey: $bId,

@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 /**
  * Configurable pool, game, and placeholder naming templates for UT -> Ultiorganizer sync.
- * Auto-selects German or English from Ultiorganizer's default locale (GetDefaultLocale()),
+ * Auto-selects German or English from the user's active session locale (getSessionLocale()),
+ * falling back to Ultiorganizer's default locale (GetDefaultLocale()),
  * matching Ultimate Tournament's detailed localization (intl_de.arb / intl_en.arb).
  */
 
@@ -18,11 +19,9 @@ readonly class UtNaming {
 
   private static function detectLanguage(?string $locale = null): string {
     if ($locale === null || $locale === '') {
-      if (function_exists('GetDefaultLocale')) {
-        $locale = (string) GetDefaultLocale();
-      }
+      $locale = ut_get_locale();
     }
-    if ($locale !== null && preg_match('/^([a-z]{2})/i', trim($locale), $matches)) {
+    if (preg_match('/^([a-z]{2})/i', trim($locale), $matches)) {
       $code = strtolower($matches[1]);
       if (is_file(__DIR__ . '/lang/' . $code . '.php')) {
         return $code;
@@ -57,8 +56,47 @@ readonly class UtNaming {
     return mb_substr(sprintf($tpl, $name), 0, 50);
   }
 
-  public function playoffTreeName(int $fromPlace, int $toPlace): string {
-    return mb_substr(sprintf($this->templates['round_ko'], $fromPlace, $toPlace), 0, 50);
+  public function playoffTreeName(int $fromPlace, int $toPlace, bool $isPlacement = true): string {
+    if (!$isPlacement) {
+      return mb_substr(sprintf($this->templates['pool_crossover'], $fromPlace, $toPlace), 0, 50);
+    }
+    if ($fromPlace === 1) {
+      if ($toPlace <= 2) {
+        return mb_substr((string) $this->templates['round_final'], 0, 50);
+      }
+      return mb_substr(sprintf($this->templates['pool_top'], $toPlace), 0, 50);
+    }
+    return mb_substr(sprintf($this->templates['pool_placement'], $fromPlace, $toPlace), 0, 50);
+  }
+
+  public function eliminationPoolName(int $y, int $size, bool $isPlacement): string {
+    $effectiveSize = max(2, $size);
+    $fromPlace = $y + 1;
+    $toPlace = $y + $effectiveSize;
+
+    if ($isPlacement) {
+      if ($y === 0) {
+        if ($effectiveSize === 2) {
+          return mb_substr((string) $this->templates['round_final'], 0, 50);
+        }
+        return mb_substr(sprintf($this->templates['pool_top'], $toPlace), 0, 50);
+      }
+      return mb_substr(sprintf($this->templates['pool_placement'], $fromPlace, $toPlace), 0, 50);
+    }
+
+    if ($y === 0) {
+      $named = match ($effectiveSize) {
+        2 => $this->templates['round_final'],
+        4 => $this->templates['round_semi'],
+        8 => $this->templates['round_quarter'],
+        default => null,
+      };
+      if ($named !== null) {
+        return mb_substr((string) $named, 0, 50);
+      }
+    }
+
+    return mb_substr(sprintf($this->templates['pool_crossover'], $fromPlace, $toPlace), 0, 50);
   }
 
   /**

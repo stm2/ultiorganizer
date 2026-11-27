@@ -57,3 +57,13 @@ function ut_pool_color(int $index, string $seed): string {
   }
   return 'FFFFFF';
 }
+
+function ut_get_locale(): string {
+  if (function_exists('getSessionLocale')) {
+    return (string) getSessionLocale();
+  }
+  if (function_exists('GetDefaultLocale')) {
+    return (string) GetDefaultLocale();
+  }
+  return '';
+}

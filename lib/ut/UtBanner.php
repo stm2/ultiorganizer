@@ -65,7 +65,7 @@ final class UtBanner {
 
   /** @return array<string, mixed> */
   private static function loadStrings(): array {
-    $locale = function_exists('getSessionLocale') ? (string) getSessionLocale() : '';
+    $locale = ut_get_locale();
     $lang = preg_match('/^([a-z]{2})/i', trim($locale), $m) && is_file(__DIR__ . '/lang/' . strtolower($m[1]) . '.php')
       ? strtolower($m[1])
       : 'en';
